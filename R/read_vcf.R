@@ -1,24 +1,26 @@
 #' @title read_vcf
 #'
 #' @description
-#' Read VCF file and store its content within an VCFArrow object.
-#' Accepts both uncompressed and gz compressed files.
-#' The GT field is stored as an Apache Arrow in Long format.
-#' Various metrics are precalculated for fast and easy filtering.
-#' GT slot content stored in a TEMP directory for lazy loading.#'
+#' Read VCF file and store its content within a VCFArrow object
 #'
 #' @author Tomas Hrbek April 2026
 #'
-#' @param vcf_file -> VCFArrow object
-#' @param chunk_size -> chunk sizes to read in at a time
+#' @param vcf_file -> VCF file
+#' @param chunk_size -> number of variants to read in at a time, default 50000 (integer)
 #'
 #' @return VCFArrow object
 #'
 #' @details
-#' This function read a VCF file into an VCFRarray object in chunks.
+#' This function read a VCF file into an S4 class object in chunks,
+#' returning a VCFArrow object.
+#' It accepts both uncompressed and gz compressed files.
+#' The GT field is stored as an Apache Arrow in Long format.
+#' Various metrics are precalculated for fast and easy filtering.
+#' GT slot content stored in a TEMP directory for lazy loading.
 #'
 #' @examples
 #' vcf_filter_rank(vcf_file = my_vcf, chunk_size = 50000)
+#' vcf_filter_rank(my_vcf, 50000)
 #' vcf_filter_rank(my_vcf)
 #'
 
