@@ -15,7 +15,7 @@
 #' returning a new VCFArrow object.
 #' QUAL is a Phred-scaled quality metric assessing whether any variant exists
 #' at that position across all samples.
-#' QUAL is different from GQ which represents the confidence in a
+#' QUAL is different from PL which represents the confidence in a
 #' genotype call of a specific sample.
 #' When QUAL not reported '.' (Dot), QUAL is assumed to be above threshold.
 #'
