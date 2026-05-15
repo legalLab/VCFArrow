@@ -103,6 +103,7 @@ read_vcf <- function(vcf_file, chunk_size = 50000) {
     fmt_vec <- as.vector(t(parsed$fmt))
     DP_vec <- as.vector(t(parsed$DP))
     GQ_vec <- as.vector(t(parsed$GQ))
+    ADR_vec <- as.vector(t(parsed$ADR))
 
     gt_long <- data.frame(
       .row_id = row_ids,
@@ -113,6 +114,7 @@ read_vcf <- function(vcf_file, chunk_size = 50000) {
       fmt = fmt_vec,
       DP = DP_vec,
       GQ = GQ_vec,
+      ADR = ADR_vec,
       stringsAsFactors = FALSE
     )
 
@@ -156,7 +158,7 @@ read_vcf <- function(vcf_file, chunk_size = 50000) {
   }
 
   # extract variant information for filtering
-  variants_df <- variants_df %>%
+  variants_df <- variants_df |>
     dplyr::mutate(
       n_alt = stringr::str_count(ALT, ",") + 1,
       is_biallelic = n_alt == 1,

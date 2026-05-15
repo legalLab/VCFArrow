@@ -47,6 +47,7 @@ List parse_vcf_cpp(CharacterVector lines, int nsamples) {
 
   NumericMatrix DP(n, nsamples);
   NumericMatrix GQ(n, nsamples);
+  NumericMatrix ADR(n, nsamples);
 
   CharacterMatrix variants(n, 7);
   CharacterVector info(n);
@@ -79,7 +80,7 @@ List parse_vcf_cpp(CharacterVector lines, int nsamples) {
     format[i] = fields[8];
 
     // ---- parse FORMAT keys (pointer-based) ----
-    int dp_pos = -1, gq_pos = -1, hq_pos = -1;
+    int dp_pos = -1, gq_pos = -1, ad_pos = -1;
 
     int key_idx = 0;
     const char* p = fields[8];
@@ -89,7 +90,7 @@ List parse_vcf_cpp(CharacterVector lines, int nsamples) {
       if (*p == ':' || *p == '\0') {
         if (token_eq(key_start, p, "DP")) dp_pos = key_idx;
         else if (token_eq(key_start, p, "GQ")) gq_pos = key_idx;
-        else if (token_eq(key_start, p, "HQ")) hq_pos = key_idx;
+        else if (token_eq(key_start, p, "AD")) ad_pos = key_idx;
 
         key_idx++;
         if (*p == '\0') break;
@@ -114,6 +115,7 @@ List parse_vcf_cpp(CharacterVector lines, int nsamples) {
 
       double dp_val = NA_REAL;
       double gq_val = NA_REAL;
+      double ad_ratio = NA_REAL;
 
       // GT parsing
       if (field_end - field_start >= 3) {
@@ -140,12 +142,35 @@ List parse_vcf_cpp(CharacterVector lines, int nsamples) {
 
         if (v == field_end || *v == ':') {
 
+          // --- DP ---
           if (val_idx == dp_pos) {
             dp_val = fast_atof(val_start, v);
           }
 
+          // --- GQ ---
           if (val_idx == gq_pos) {
             gq_val = fast_atof(val_start, v);
+          }
+
+          // --- AD (compute ratio inline) ---
+          if (val_idx == ad_pos) {
+
+            const char* a = val_start;
+            const char* b = val_start;
+
+            // find comma
+            while (b < v && *b != ',') b++;
+
+            if (b < v) {
+              double ref = fast_atof(a, b);
+              double alt = fast_atof(b + 1, v);
+
+              if (!NumericVector::is_na(ref) &&
+                  !NumericVector::is_na(alt) &&
+                  (ref + alt) > 0.0) {
+                ad_ratio = alt / (ref + alt);
+              }
+            }
           }
 
           if (v == field_end) break;
@@ -158,6 +183,7 @@ List parse_vcf_cpp(CharacterVector lines, int nsamples) {
 
       DP(i,j) = dp_val;
       GQ(i,j) = gq_val;
+      ADR(i,j) = ad_ratio;
 
       if (*ptr == '\t') ptr++;
     }
@@ -172,6 +198,7 @@ List parse_vcf_cpp(CharacterVector lines, int nsamples) {
     Named("a2") = a2,
     Named("phased") = phased,
     Named("DP") = DP,
-    Named("GQ") = GQ
+    Named("GQ") = GQ,
+    Named("ADR") = ADR
   );
 }
