@@ -1,0 +1,8 @@
+CXX_STD = CXX20
+
+# Use Arrow's own build system flags (critical)
+#PKG_CPPFLAGS += $(shell ${R_HOME}/bin/Rscript -e "arrow::cppflags()")
+#PKG_LIBS += $(shell ${R_HOME}/bin/Rscript -e "arrow::ldflags()")
+
+PKG_CPPFLAGS += $(shell pkg-config --cflags arrow-dataset)
+PKG_LIBS += $(shell pkg-config --libs arrow-dataset)
