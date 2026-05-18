@@ -55,6 +55,12 @@ setMethod(
       print(utils::head(object@info, 5))
     }
 
+    # --- FORMAT preview ---
+    if (length(object@info) > 0) {
+      cat("\nFORMAT (first 5):\n")
+      print(utils::head(object@format, 5))
+    }
+
     # --- samples preview ---
     cat("\nSamples (first 5):\n")
     print(utils::head(object@samples, 5))
