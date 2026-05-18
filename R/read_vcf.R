@@ -19,12 +19,12 @@
 #' GT slot content stored in a TEMP directory for lazy loading.
 #'
 #' @examples
-#' vcf_filter_rank(vcf_file = my_vcf, chunk_size = 50000)
-#' vcf_filter_rank(my_vcf, 50000)
+#' vcf_filter_rank(vcf_file = my_vcf, chunk_size = 100000)
+#' vcf_filter_rank(my_vcf, 100000)
 #' vcf_filter_rank(my_vcf)
 #'
 
-read_vcf <- function(vcf_file, chunk_size = 50000) {
+read_vcf <- function(vcf_file, chunk_size = 100000) {
 
   # helper function
   parse_format_header <- function(header) {
@@ -78,9 +78,18 @@ read_vcf <- function(vcf_file, chunk_size = 50000) {
   format_buffer <- list()
   chunk_id <- 1
 
+  # chunk size message
+  cli::cli_alert_info("VCF is being read in chunks of {chunk_size} variants")
+
+  # set up progress bar
+  cli::cli_progress_bar("Reading in VCF chunk", total = NA)
+
   repeat {
     lines <- readLines(con, n = chunk_size)
     if (length(lines) == 0) break
+
+    # progress update
+    cli::cli_progress_update()
 
     n <- length(lines)
 
@@ -124,8 +133,8 @@ read_vcf <- function(vcf_file, chunk_size = 50000) {
 
     # FORMAT is per-variant → for memory efficiency keep in a separate FORMAT lookup
     format_df <- data.frame(
-      .row_id = as.integer(seq_len(n) + (chunk_id - 1) * chunk_size),
       FORMAT = parsed$format,
+      .row_id = as.integer(seq_len(n) + (chunk_id - 1) * chunk_size),
       stringsAsFactors = FALSE
     )
     format_buffer[[chunk_id]] <- format_df
@@ -135,6 +144,9 @@ read_vcf <- function(vcf_file, chunk_size = 50000) {
 
     chunk_id <- chunk_id + 1
   }
+
+  # end of progress bar
+  cli::cli_progress_done()
 
   # combine FORMAT field
   format_df_all <- do.call(rbind, format_buffer)
