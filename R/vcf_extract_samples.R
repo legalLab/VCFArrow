@@ -30,6 +30,10 @@
 
 vcf_extract_samples <- function(vcf_arrow, samples, keep = TRUE, f_invar = TRUE, verbose = TRUE) {
 
+  if (!inherits(vcf_arrow, "VCFArrow")) {
+    cli::cli_abort("Expecting a VCFArrow object")
+  }
+
   all_samples <- vcf_arrow@samples
 
   # keep only valid samples
