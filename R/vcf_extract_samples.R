@@ -42,7 +42,7 @@ vcf_extract_samples <- function(vcf_arrow, samples, keep = TRUE, f_invar = TRUE,
   }
 
   # if empty → keep all
-  if (samples == "") {
+  if (samples == "" || length(samples) == 0) {
     cli::cli_alert_info("No samples to keep or remove - keeping all samples")
     return(vcf_arrow)
   }
