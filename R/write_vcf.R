@@ -6,7 +6,7 @@
 #' @author Tomas Hrbek April 2026
 #'
 #' @param vcf_arrow -> VCFArrow object
-#' @param file -> name of the VCF file to be written to, default 'output.vcf' (character)
+#' @param out_file -> name of the VCF file to be written to, default 'output.vcf' (character)
 #' @param gzip -> a flag to GZIP VCF when writing, default FALSE (Boolean)
 #'
 #' @return NULL
@@ -21,21 +21,21 @@
 #' and then compress with GZIP or PIGZ.
 #'
 #' @examples
-#' write_vcf(vcf = my_vcf, file = "output.vcf", gzip = FALSE)
+#' write_vcf(vcf = my_vcf, out_file = "output.vcf", gzip = FALSE)
 #' write_vcf(my_vcf, "output.vcf", FALSE)
 #' write_vcf(my_vcf)
 #'
 
-write_vcf <- function(vcf_arrow, file = "output.vcf", gzip = FALSE) {
+write_vcf <- function(vcf_arrow, out_file = "output.vcf", gzip = FALSE) {
 
-  # ---- write header ----
+  # write header
   header <- vcf_arrow@header
   header[length(header)] <- paste(
     c("#CHROM","POS","ID","REF","ALT","QUAL","FILTER","INFO","FORMAT",
       vcf_arrow@samples),
     collapse = "\t"
   )
-  writeLines(header, file)
+  writeLines(header, out_file)
 
   variants <- vcf_arrow@variants
   n_samples <- length(vcf_arrow@samples)
@@ -80,7 +80,7 @@ write_vcf <- function(vcf_arrow, file = "output.vcf", gzip = FALSE) {
     vi <- match(row_ids, variants$.row_id)
 
     write_vcf_chunk_cpp(
-      output_file = file,
+      output_file = out_file,
       chrom = variants$CHROM[vi],
       pos = variants$POS[vi],
       id = variants$ID[vi],
@@ -101,6 +101,7 @@ write_vcf <- function(vcf_arrow, file = "output.vcf", gzip = FALSE) {
 
   # end of progress bar
   cli::cli_progress_done()
+  cli::cli_alert_success("VCFArrow object successfully written to {.file {out_file}}")
 
-  invisible(file)
+  invisible(out_file)
 }
