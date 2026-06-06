@@ -196,5 +196,7 @@ read_vcf <- function(vcf_file, chunk_size = 100000) {
     tmp_dir
   )
 
+  cli::cli_alert_success("VCF successfully read into a VCFArrow object")
+
   return(vcf_arrow)
 }
