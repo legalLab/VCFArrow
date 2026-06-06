@@ -1,144 +1,127 @@
 #' @title vcf2eigenstrat
-#' @description converts vcfR format data to Eigenstrat infiles
-#' @description in part based on vcfR2migrate function (vcfR package)
-#' @author Tomas Hrbek December 2022
 #'
-#' @param vcf -> vcfR object
-#' @param ind_pop -> population assignment of individuals in vcf (factor)
-#' @param keep_pop -> population(s) of interest to include in Eigenstrat infiles (factor)
-#' @param inc_missing -> include missing data (logical)
-#' @param out_file -> name of file to output (Eigenstrat infiles)
+#' @description
+#' Converts a VCFArrow object to Eigenstrat format infile
 #'
-#' @return nothing
+#' @author Tomas Hrbek May 2026
+#'
+#' @param vcf_arrow -> VCFArrow object
+#' @param keep_groups -> groups to retain, default NULL (character)
+#' @param out_file -> name of file to output, default 'eigenstrat_infile' (character)
+#' @param sex -> sex of the individual, default = U (undefined) (character)
+#' @param rel_pos -> relative position along the chromosome in cM or similar, default = 0 (integer)
+#'
+#' @return NULL
 #'
 #' @details
-#' This function converts the vcfR object to a Eigenstrat formatted input files
-#' When list of sexes is not provided, lists all individuals as unknown
-#' When relative position on chromosome (cM distance or similar) is not provides, list as 0
-#' The function will remove indels, and multiallelic loci, and optionally loci with missing data
+#' This function converts a VCFArrow object to an external BayesAss formatted file.
+#' Writing occurs in chunks whose size is determined by the read_vcf() function.
+#' Larger chunks result in faster writing speeds.
+#' If no groups are defined, the default behavior is to use all groups.
 #'
 #' @examples
-#' vcf2eigenstrat(vcf = my_vcf, ind_pop = ind_pop, keep_pop = keepers, sex = list_of_sex, rel_pos = marker_cM_map, inc_missing = TRUE, out_file = "Eigenstrat")
-#' vcf2eigenstrat(my_vcf, ind_pop, keepers, out_file = "Eigenstrat")
-#' vcf2eigenstrat(my_vcf, ind_pop, keepers)
+#' vcf2eigenstrat(vcf_arrow = my_vcf, keep_groups = my_groups, out_file = "eigenstrat_infile")
+#' vcf2eigenstrat(vcf_arrow, my_groups, out_file = "eigenstrat_infile")
+#' vcf2eigenstrat(vcf_arrow)
 #'
 
 vcf2eigenstrat <- function(vcf_arrow, keep_groups = NULL,
                            out_file = "eigenstrat_infile",
-                           sex = "U", rel_pos = 0, inc_missing = TRUE) {
+                           sex = NULL) {
 
   setup <- .vcf_export_setup(vcf_arrow, keep_groups)
+
+  # ── sex vector ─────────────────────────────────────────────────────────────
+  #
+  # Accepted inputs
+  #   NULL            → every retained sample is assigned "U" (unknown)
+  #   length-1 string → recycled across all retained samples
+  #   length-n_samples vector → used as-is (must match after group filtering)
+  #
+  # Allowed values follow the EIGENSTRAT convention: "M", "F", or "U".
+
+  if (is.null(sex)) {
+    sex_vec <- rep("U", setup$n_samples)
+  } else {
+    sex <- as.character(sex)
+    if (length(sex) == 1L) {
+      sex_vec <- rep(sex, setup$n_samples)
+    } else if (length(sex) == setup$n_samples) {
+      sex_vec <- sex
+    } else {
+      cli::cli_abort(c(
+        "{.arg sex} must be {.code NULL}, a single string, or a vector whose \\
+         length equals the number of retained samples.",
+        "i" = "Retained samples after group filtering: {setup$n_samples}.",
+        "i" = "{.arg sex} length supplied: {length(sex)}."
+      ))
+    }
+  }
+
+  # ── genetic position ───────────────────────────────────────────────────────
+  #
+  # EIGENSTRAT's .snp column 3 is the genetic position in Morgans.
+  # Without a recombination map, dividing physical position (bp) by 1 000 000
+  # yields position in Mb, which is a standard proxy for Morgans and is
+  # accepted by all major EIGENSTRAT-compatible tools (ADMIXTOOLS, smartpca).
+  #
+  # setup$variants$POS is the physical position for every retained, filtered
+  # variant, already arranged in .row_id order by .vcf_export_setup().
+
+  rel_pos_vec <- setup$variants$POS / 1e6
 
   # ── .geno ──────────────────────────────────────────────────────────────────
   geno_file <- paste0(out_file, ".geno")
   write_eigenstrat_geno_header_cpp(geno_file)   # create / truncate
 
-  if (!inc_missing) {
-    # Need complete-variant mask: accumulate nobs, then filter
-    cli::cli_alert_info(
-      "inc_missing = FALSE: scanning to identify complete variants..."
-    )
-    nobs_full <- matrix(0L, nrow = setup$n_pops, ncol = setup$n_var)
+  cli::cli_alert_info(
+    "Writing EIGENSTRAT .geno: {setup$n_var} variants x {setup$n_samples} samples..."
+  )
+  cli::cli_progress_bar("Writing chunk", total = length(setup$feather_files))
 
-    cli::cli_progress_bar("Scanning chunk", total = length(setup$feather_files))
-    for (fpath in setup$feather_files) {
-      chunk <- arrow::read_feather(fpath, col_select = c(".row_id", "sample", "a1", "a2"))
-      rc <- .reshape_chunk(chunk, setup)
-      if (!is.null(rc)) {
-        pc <- .pop_counts_from_chunk(rc, setup)
-        nobs_full[, rc$col_idx] <- nobs_full[, rc$col_idx] + pc$nobs
-      }
-      cli::cli_progress_update()
+  for (fpath in setup$feather_files) {
+    chunk <- arrow::read_feather(fpath,
+                                 col_select = c(".row_id", "sample", "a1", "a2"))
+    rc <- .reshape_chunk(chunk, setup)
+    if (!is.null(rc)) {
+      write_eigenstrat_chunk_cpp(rc$a1, rc$a2, geno_file)
     }
-    cli::cli_progress_done()
-
-    complete_mask <- .complete_var_mask(nobs_full, setup)
-    complete_ids  <- setup$valid_row_ids[complete_mask]
-
-    # Second pass: write only complete variants
-    cli::cli_alert_info(
-      "Writing EIGENSTRAT .geno ({sum(complete_mask)} complete variants x \\
-       {setup$n_samples} samples)..."
-    )
-    cli::cli_progress_bar("Writing chunk", total = length(setup$feather_files))
-
-    for (fpath in setup$feather_files) {
-      chunk <- arrow::read_feather(fpath, col_select = c(".row_id", "sample", "a1", "a2"))
-
-      # Filter to complete row_ids only for this pass
-      chunk <- chunk[chunk$.row_id %in% complete_ids &
-                       chunk$sample  %in% setup$samples, ]
-      if (nrow(chunk) == 0L) { cli::cli_progress_update(); next }
-
-      sample_order  <- match(chunk$sample, setup$samples)
-      chunk         <- chunk[order(chunk$.row_id, sample_order), ]
-      chunk_row_ids <- unique(chunk$.row_id)
-      n_cv          <- length(chunk_row_ids)
-
-      a1 <- matrix(chunk$a1, nrow = setup$n_samples, ncol = n_cv)
-      a2 <- matrix(chunk$a2, nrow = setup$n_samples, ncol = n_cv)
-      write_eigenstrat_chunk_cpp(a1, a2, geno_file)
-      cli::cli_progress_update()
-    }
-    cli::cli_progress_done()
-
-    # Restrict variant metadata to complete variants
-    variants_out <- setup$variants[complete_mask, ]
-    loci_out     <- setup$loci[complete_mask]
-    rel_pos_out  <- if (length(rel_pos) == 1L) {
-      rep_len(rel_pos, sum(complete_mask))
-    } else {
-      rel_pos[complete_mask]
-    }
-
-  } else {
-    # Standard chunk-by-chunk path
-    cli::cli_alert_info(
-      "Writing EIGENSTRAT .geno: {setup$n_var} variants x {setup$n_samples} samples..."
-    )
-    cli::cli_progress_bar("Writing chunk", total = length(setup$feather_files))
-
-    for (fpath in setup$feather_files) {
-      chunk <- arrow::read_feather(fpath, col_select = c(".row_id", "sample", "a1", "a2"))
-      rc <- .reshape_chunk(chunk, setup)
-      if (!is.null(rc)) write_eigenstrat_chunk_cpp(rc$a1, rc$a2, geno_file)
-      cli::cli_progress_update()
-    }
-    cli::cli_progress_done()
-
-    variants_out <- setup$variants
-    loci_out     <- setup$loci
-    rel_pos_out  <- rep_len(rel_pos, setup$n_var)
+    cli::cli_progress_update()
   }
+  cli::cli_progress_done()
 
   # ── .ind ───────────────────────────────────────────────────────────────────
   ind_file <- paste0(out_file, ".ind")
-  sex_vec  <- rep_len(sex, setup$n_samples)
+  sex_vec <- rep_len(sex, setup$n_samples)
 
   utils::write.table(
     data.frame(sample = setup$samples,
-               sex    = sex_vec,
-               group  = setup$samples_groups,
+               sex = sex_vec,
+               group = setup$samples_groups,
                stringsAsFactors = FALSE),
-    file      = ind_file,
-    quote     = FALSE, sep = "\t",
-    col.names = FALSE, row.names = FALSE
+    file = ind_file,
+    quote = FALSE,
+    sep = "\t",
+    col.names = FALSE,
+    row.names = FALSE
   )
 
   # ── .snp ───────────────────────────────────────────────────────────────────
   snp_file <- paste0(out_file, ".snp")
 
   utils::write.table(
-    data.frame(ID      = loci_out,
-               CHROM   = variants_out$CHROM,
-               rel_pos = rel_pos_out,
-               POS     = variants_out$POS,
-               REF     = variants_out$REF,
-               ALT     = variants_out$ALT,
+    data.frame(ID = setup$loci,
+               CHROM = setup$variants$CHROM,
+               rel_pos = rel_pos_vec,
+               POS = setup$variants$POS,
+               REF = setup$variants$REF,
+               ALT = setup$variants$ALT,
                stringsAsFactors = FALSE),
-    file      = snp_file,
-    quote     = FALSE, sep = "\t",
-    col.names = FALSE, row.names = FALSE
+    file = snp_file,
+    quote = FALSE,
+    sep = "\t",
+    col.names = FALSE,
+    row.names = FALSE
   )
 
   cli::cli_alert_success(
