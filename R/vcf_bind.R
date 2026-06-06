@@ -47,7 +47,6 @@ vcf_bind <- function(..., .check = TRUE) {
       if (!all(variants$.row_id == ref_var$.row_id)) {
         stop("Variants (.row_id) do not match between VCFArrow objects")
       }
-
       if (!all(variants$CHROM == ref_var$CHROM & variants$POS == ref_var$POS)) {
         cli::cli_abort("Variant coordinates do not match across inputs")
       }
