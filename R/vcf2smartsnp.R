@@ -26,50 +26,24 @@
 vcf2smartsnp <- function(vcf_arrow, keep_groups = NULL,
                          out_file = "smartsnp_infile.txt") {
 
-  if (!inherits(vcf_arrow, "VCFArrow")) {
-    cli::cli_abort("Expecting a VCFArrow object")
+  setup <- .vcf_export_setup(vcf_arrow, keep_groups)
+
+  write_smartsnp_header_cpp(setup$samples, out_file)
+
+  cli::cli_alert_info("Writing SmartSNP: {setup$n_var} variants x {setup$n_samples} samples")
+  cli::cli_progress_bar("Writing chunk", total = length(setup$feather_files))
+
+  for (fpath in setup$feather_files) {
+    chunk <- arrow::read_feather(fpath, col_select = c(".row_id","sample","a1","a2"))
+    rc <- .reshape_chunk(chunk, setup)
+    if (!is.null(rc)) {
+      write_smartsnp_chunk_cpp(rc$a1, rc$a2, out_file)
+      }
+    cli::cli_progress_update()
   }
 
-  all_groups <- vcf_arrow@groups
-
-  # keep all groups if no groups specified
-  if (is.null(keep_groups)) {
-    keep_groups <- unique(all_groups)
-  }
-
-  # define encoder
-  # 0 = hom-ref, 1 = het, 2 = hom-alt, 9 = missing
-  value_fn <- function(a1, a2, REF, ALT) {
-    geno <- rep(9L, length(a1))
-    ok <- !is.na(a1) & !is.na(a2)
-    geno[ok & a1 == 0L & a2 == 0L] <- 0L
-    geno[ok & a1 == 1L & a2 == 1L] <- 2L
-    geno[ok & a1 != a2] <- 1L
-    return(as.character(geno))
-  }
-
-  res <- vcf_build_wide(
-    vcf_arrow = vcf_arrow,
-    keep_groups = keep_groups,
-    value_fn = value_fn,
-    n_rows_per_cell = 1
-  )
-
-  con <- file(out_file, open = "wt")
-  on.exit(close(con))
-
-  writeLines(paste(res$samples, collapse = " "), con)
-
-  # geno_list is (sample → n_var vector); transpose to (variant → all samples)
-  mat <- do.call(rbind, res$data) # n_samples × n_variants
-  mat[is.na(mat)] <- "9"
-
-  # buffered writing - reduces syscall overhead
-  buffer <- character(ncol(mat))
-  for (i in seq_len(ncol(mat))) {
-    buffer[i] <- paste(mat[, i], collapse = " ")
-  }
-  writeLines(buffer, con)
+  cli::cli_progress_done()
+  cli::cli_alert_success("SmartSNP file written to {.file {out_file}}")
 
   invisible(vcf_arrow)
 }
