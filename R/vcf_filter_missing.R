@@ -1,4 +1,4 @@
-#' @title vcf_filter_samples
+#' @title vcf_filter_missing
 #'
 #' @description
 #' Remove samples with > % missing data from a VCFArrow object
@@ -21,12 +21,13 @@
 #' retained samples after sample filtering.
 #'
 #' @examples
-#' vcf_filter_samples(vcf_arrow = my_vcf, threshold = my_threshold)
-#' vcf_filter_samples(my_vcf, my_threshold)
-#' vcf_filter_samples(my_vcf)
+#' vcf_filter_missing(vcf_arrow = my_vcf, threshold = my_threshold)
+#' vcf_filter_missing(my_vcf, my_threshold)
+#' vcf_filter_missing(my_vcf)
 #'
 
-vcf_filter_samples <- function(vcf_arrow, threshold = 0.5, f_invar = TRUE, verbose = TRUE) {
+vcf_filter_missing <- function(vcf_arrow, threshold = 0.5,
+                               f_invar = TRUE, verbose = TRUE) {
 
   if (!inherits(vcf_arrow, "VCFArrow")) {
     cli::cli_abort("Expecting a VCFArrow object")
@@ -43,7 +44,6 @@ vcf_filter_samples <- function(vcf_arrow, threshold = 0.5, f_invar = TRUE, verbo
 
   # samples to keep
   keep_samples <- samp_tbl$sample[samp_tbl$p_miss < threshold]
-  # removed_samples <- samp_tbl$sample[samp_tbl$p_miss >= threshold]
 
   if (length(keep_samples) == 0) {
     cli::cli_abort("All samples removed by filter")

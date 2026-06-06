@@ -12,7 +12,7 @@
 #'
 #' @details
 #' This function removes genotypes below a DP threshold from a VCFArrow object,
-#' returning a new vcfR object.
+#' returning a new VCFArrow object.
 #'
 #' @examples
 #' vcf_filter_coverage(vcf_arrow = my_vcf, threshold = 10)

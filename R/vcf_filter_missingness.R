@@ -7,7 +7,7 @@
 #'
 #' @param vcf_arrow -> VCFArrow object
 #' @param threshold -> decimal missingness threshold, default 0.1 (numeric)
-#' @param verbose -> flag to report total % missing data after filtering, default TRUE (Boolian)
+#' @param verbose -> flag to report total % missing data after filtering, default TRUE (Boolean)
 #'
 #' @return subsetted VCFArrow object
 #'

@@ -20,7 +20,7 @@
 #' When QUAL not reported '.' (Dot), QUAL is assumed to be above threshold.
 #'
 #' @examples
-#' vcf_filter_quality(vcf = my_vcf, threshold = 30)
+#' vcf_filter_quality(vcf_arrow = my_vcf, threshold = 30)
 #' vcf_filter_quality(my_vcf, 30)
 #' vcf_filter_quality(my_vcf)
 #'

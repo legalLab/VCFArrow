@@ -11,7 +11,7 @@
 #'
 #' @details
 #' This function removes non-biallelic loci from a VCFArrow object,
-#' returning a new vcfR object.
+#' returning a new VCFArrow object.
 #'
 #' @examples
 #' vcf_filter_biallelic(vcf_arrow = my_vcf)

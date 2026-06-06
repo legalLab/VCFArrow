@@ -26,7 +26,8 @@
 #' vcf_filter_multiSNP(my_vcf)
 #'
 
-vcf_filter_multiSNP <- function(vcf_arrow, block_size = 10000, minSNP = 2, maxSNP = 5) {
+vcf_filter_multiSNP <- function(vcf_arrow, block_size = 10000,
+                                minSNP = 2, maxSNP = 5) {
 
   if (!inherits(vcf_arrow, "VCFArrow")) {
     cli::cli_abort("Expecting a VCFArrow object")

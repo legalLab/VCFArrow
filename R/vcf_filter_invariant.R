@@ -11,7 +11,7 @@
 #'
 #' @details
 #' This function removes invariant loci from a VCFArrow object,
-#' returning a new vcfR object.
+#' returning a new VCFArrow object.
 #' This might be desirable after subsetting a VCFArrow object by individuals.
 #'
 #' @examples
