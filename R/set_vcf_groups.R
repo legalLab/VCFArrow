@@ -2,9 +2,6 @@
 #'
 #' @description
 #' Associate samples with group info based on "strt" file.
-#' The "strt" is a tsv file with 2+ columns, with 2 columns name id and pop.
-#' By default strt is named "strata" and found in the datapath where the
-#' VCF file is found.
 #'
 #' @author Tomas Hrbek April 2026
 #'
@@ -17,10 +14,13 @@
 #' @details
 #' This function creates list of factors of sample-to-group assignments and
 #' groups based on a strata and group file.
+#' The strt is a tsv file with 2+ columns, with 2 columns named 'id' and 'pop'.
+#' By default strt is named 'strata' and found in the datapath where the
+#' VCF file is found.
 #'
 #' @examples
 #' get_vcf_group_info(vcf = my_vcf, data_path = my_data_path, strt = "strata")
-#' get_vcf_group_info(my_vcf, my_data_path, strata)
+#' get_vcf_group_info(my_vcf, my_data_path, "strata")
 #' get_vcf_group_info(my_vcf, my_data_path)
 #'
 
