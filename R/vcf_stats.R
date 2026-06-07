@@ -53,7 +53,7 @@ vcf_stats <- function(vcf_arrow, res_path, project) {
       homo_ref = sum(is_hom_ref, na.rm = TRUE),
       homo_alt = sum(is_hom_alt, na.rm = TRUE),
       hetero = sum(is_het, na.rm = TRUE),
-      miss = sum(!called),
+      missing = sum(!called),
       non_missing = sum(called),
       total_loci = dplyr::n(),
       .groups = "drop"
@@ -66,7 +66,7 @@ vcf_stats <- function(vcf_arrow, res_path, project) {
     (sample_stats$homo_ref + sample_stats$homo_alt + sample_stats$hetero)
 
   sample_stats$missing_p <-
-    sample_stats$miss / sample_stats$total_loci
+    sample_stats$missing / sample_stats$total_loci
 
   sample_stats <- sample_stats[match(samples, sample_stats$sample), ]
 
@@ -83,14 +83,15 @@ vcf_stats <- function(vcf_arrow, res_path, project) {
     homozygotes_ref = sample_stats$homo_ref,
     homozygotes_alt = sample_stats$homo_alt,
     missing_p = sample_stats$missing_p,
-    missing = sample_stats$miss,
+    missing_n = sample_stats$missing,
     non_missing = sample_stats$non_missing,
     total_loci = sample_stats$total_loci,
     theta_total = theta$theta_w,
     pi_total = theta$pi
   )
 
-  stats <- cbind(stats, theta$theta_g)
+  stats <- cbind(stats, theta$theta_g) |>
+    dplyr::arrange(group, sample)
 
   write.table(
     stats,
