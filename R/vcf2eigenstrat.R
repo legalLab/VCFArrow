@@ -71,6 +71,7 @@ vcf2eigenstrat <- function(vcf_arrow, keep_groups = NULL,
   rel_pos_vec <- setup$variants$POS / 1e6
 
   # ── .geno ──────────────────────────────────────────────────────────────────
+
   geno_file <- paste0(out_file, ".geno")
   write_eigenstrat_geno_header_cpp(geno_file)   # create / truncate
 
@@ -91,8 +92,11 @@ vcf2eigenstrat <- function(vcf_arrow, keep_groups = NULL,
   cli::cli_progress_done()
 
   # ── .ind ───────────────────────────────────────────────────────────────────
+  #
+  # Three whitespace-separated columns, no header:
+  #   sample_name   sex   group_label
+
   ind_file <- paste0(out_file, ".ind")
-  sex_vec <- rep_len(sex, setup$n_samples)
 
   utils::write.table(
     data.frame(sample = setup$samples,
@@ -107,6 +111,10 @@ vcf2eigenstrat <- function(vcf_arrow, keep_groups = NULL,
   )
 
   # ── .snp ───────────────────────────────────────────────────────────────────
+  #
+  # Six whitespace-separated columns, no header:
+  #   SNP_ID   CHROM   genetic_pos(Morgans)   physical_pos(bp)   REF   ALT
+
   snp_file <- paste0(out_file, ".snp")
 
   utils::write.table(
