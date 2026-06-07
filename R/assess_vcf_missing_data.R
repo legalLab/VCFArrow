@@ -46,14 +46,15 @@ assess_vcf_missing_data <- function(vcf_arrow, res_path, species, project, detai
   miss_df <- gt |>
     dplyr::group_by(sample) |>
     dplyr::summarise(
-      n_miss = sum(is.na(a1)),
-      n_total = dplyr::n(),
-      p_miss = n_miss / n_total,
+      missing_n = sum(is.na(a1)),
+      total_loci = dplyr::n(),
+      missing_p = missing_n / total_loci,
       .groups = "drop"
     ) |>
     dplyr::collect() |>
     dplyr::left_join(group_df, by = "sample") |>
-    dplyr::relocate(sample, group, .before = everything())
+    dplyr::relocate(sample, group, missing_n, missing_p, .before = everything()) |>
+    dplyr::arrange(group, sample)
 
   # save table
   write.table(
