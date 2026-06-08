@@ -78,12 +78,14 @@ vcf_bind_sparse <- function(...) {
   }
 
   # collect gt data from every VCFArrow object
+  # NOTE: cli_progress_update() must run in the *same* environment as
+  # cli_progress_bar(). Use a plain for loop to keep everything in one environment.
+  gt_parts <- vector("list", length(vcfs))
   cli::cli_progress_bar("Reading object", total = length(vcfs))
-  gt_parts <- lapply(vcfs, function(v) {
-    res <- .collect_gt(v, common_ids)
+  for (i in seq_along(vcfs)) {
+    gt_parts[[i]] <- .collect_gt(vcfs[[i]], common_ids)
     cli::cli_progress_update()
-    res
-  })
+  }
   cli::cli_progress_done()
 
   # remove any NULLs (VCFArrow had no data for common_ids; should not happen)
