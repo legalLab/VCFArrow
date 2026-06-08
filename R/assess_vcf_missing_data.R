@@ -80,7 +80,7 @@ assess_vcf_missing_data <- function(vcf_arrow, res_path, species, project, detai
   # make the plot
   plt <- ggplot2::ggplot(
     miss_df,
-    ggplot2::aes(x = factor(sample, levels = ordr), y = p_miss, fill = group)
+    ggplot2::aes(x = factor(sample, levels = ordr), y = missing_p, fill = group)
   ) +
     ggplot2::geom_bar(stat = "identity") +
     ggplot2::theme(
