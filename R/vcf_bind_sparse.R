@@ -21,44 +21,153 @@ vcf_bind_sparse <- function(...) {
 
   vcfs <- list(...)
 
-  # make unified variants
-  unified_variants <- dplyr::bind_rows(
-    lapply(vcfs, function(x) x@variants[, c("CHROM","POS","REF","ALT")])
-  ) |>
-    dplyr::distinct() |>
-    dplyr::arrange(CHROM, POS)
+  # input validation
+  if (length(vcfs) < 2L)
+    cli::cli_abort("Provide at least two VCFArrow objects to bind.")
 
-  unified_variants$.row_id <- seq_len(nrow(unified_variants))
+  for (i in seq_along(vcfs))
+    if (!inherits(vcfs[[i]], "VCFArrow"))
+      cli::cli_abort("Argument {i} is not a VCFArrow object.")
 
-  # remap each VCF
-  remap_gt <- function(vcf) {
+  # sample name collision check
+  all_samples <- unlist(lapply(vcfs, function(v) v@samples))
+  all_groups <- unlist(lapply(vcfs, function(v) v@groups))
+  dup <- all_samples[duplicated(all_samples)]
+  if (length(dup))
+    cli::cli_abort(c(
+      "Duplicate sample names found across VCFArrow objects.",
+      "x" = "Duplicate(s): {.val {unique(dup)}}"
+    ))
 
-    mapping <- vcf@variants |>
-      dplyr::select(.row_id, CHROM, POS, REF, ALT) |>
-      dplyr::inner_join(unified_variants,
-                        by = c("CHROM","POS","REF","ALT"),
-                        suffix = c("_old", "_new")) |>
-      dplyr::select(old_id = .row_id_old, new_id = .row_id_new)
+  # variant intersection
+  common_ids <- sort(
+    Reduce(intersect, lapply(vcfs, function(v) as.integer(v@variants$.row_id)))
+  )
+  n_common <- length(common_ids)
 
-    vcf@gt |>
-      dplyr::inner_join(mapping, by = c(".row_id" = "old_id")) |>
-      dplyr::mutate(.row_id = new_id) |>
-      dplyr::select(-new_id)
+  if (n_common == 0L)
+    cli::cli_abort("No common variants found between VCFArrow objects.")
+
+  cli::cli_alert_info(
+    "Binding {length(vcfs)} VCFArrow object{?s}: \\
+     {n_common} common variant{?s}, {length(all_samples)} total sample{?s}."
+  )
+
+  # ── Helper: read one VCFArrow's feather files, filter to target row_ids ───────
+  # Returns a plain data.frame — no Arrow lazy objects.
+  .collect_gt <- function(vcf_obj, target_ids) {
+    ffiles <- list.files(vcf_obj@path, pattern = "\\.arrow$", full.names = TRUE)
+    chunk_idx <- as.integer(stringr::str_extract(basename(ffiles), "\\d+"))
+    ffiles <- ffiles[order(chunk_idx)]
+    samp_keep <- vcf_obj@samples
+
+    parts <- vector("list", length(ffiles))
+    for (i in seq_along(ffiles)) {
+      # Read only the four columns needed for genotype assembly
+      df <- arrow::read_feather(
+        ffiles[[i]],
+        col_select = c(".row_id", "sample", "a1", "a2",
+                       "phased", "fmt", "DP", "GQ", "ADR")
+      )
+      df <- df[df$.row_id %in% target_ids & df$sample %in% samp_keep, , drop = FALSE]
+      if (nrow(df) > 0L) parts[[i]] <- df
+    }
+    non_null <- Filter(Negate(is.null), parts)
+    if (length(non_null) == 0L) return(NULL)
+    do.call(rbind, non_null)
   }
 
-  merged_gt <- dplyr::bind_rows(lapply(vcfs, remap_gt))
+  # collect gt data from every VCFArrow object
+  cli::cli_progress_bar("Reading object", total = length(vcfs))
+  gt_parts <- lapply(vcfs, function(v) {
+    res <- .collect_gt(v, common_ids)
+    cli::cli_progress_update()
+    res
+  })
+  cli::cli_progress_done()
 
-  merged_samples <- unlist(lapply(vcfs, function(x) x@samples), use.names = FALSE)
+  # remove any NULLs (VCFArrow had no data for common_ids; should not happen)
+  gt_parts <- Filter(Negate(is.null), gt_parts)
+  if (length(gt_parts) == 0L)
+    cli::cli_abort("No genotype data was recovered for the common variants.")
 
-  # check duplicates
-  if (anyDuplicated(vcf_new@samples)) {
-    cli::cli_abort("Duplicate sample names detected after binding")
+  # combine data.frames
+  merged_gt <- do.call(rbind, gt_parts)
+  rownames(merged_gt) <- NULL
+
+  # sort: variant-major, then by global sample position
+  sample_pos <- setNames(seq_along(all_samples), all_samples)
+  row_ord <- order(merged_gt$.row_id, sample_pos[merged_gt$sample])
+  merged_gt <- merged_gt[row_ord, ]
+  rownames(merged_gt) <- NULL
+
+  # remap .row_ids to 1 .. n_common
+  id_map <- setNames(seq_len(n_common), as.character(common_ids))
+  merged_gt$.row_id <- id_map[as.character(merged_gt$.row_id)]
+
+  # write output feather chunks
+  tmp_dir <- tempfile("arrow_vcf_bind_")
+  dir.create(tmp_dir)
+  chunk_size <- 100000L
+  n_chunks <- ceiling(n_common / chunk_size)
+
+  cli::cli_progress_bar("Writing chunk", total = n_chunks)
+  for (ci in seq_len(n_chunks)) {
+    id_lo <- (ci - 1L) * chunk_size + 1L
+    id_hi <- min(ci * chunk_size, n_common)
+    mask <- merged_gt$.row_id >= id_lo & merged_gt$.row_id <= id_hi
+    arrow::write_feather(
+      merged_gt[mask, ],
+      file.path(tmp_dir, paste0("chunk_", ci, ".arrow"))
+    )
+    cli::cli_progress_update()
+  }
+  cli::cli_progress_done()
+  rm(merged_gt)   # free memory before building metadata
+
+  # variant metadata
+  # source: first object (most-filtered, authoritative variant set).
+  vars_src <- as.data.frame(vcfs[[1]]@variants)
+  in_cmn <- vars_src$.row_id %in% common_ids
+  vars_out <- vars_src[in_cmn, ]
+  vars_out <- vars_out[order(vars_out$.row_id), ]
+  vars_out$.row_id  <- id_map[as.character(vars_out$.row_id)]
+  rownames(vars_out) <- NULL
+
+  # info vector
+  # @info is parallel to @variants (same length, same order).
+  info_src <- vcfs[[1]]@info
+  info_vec <- if (length(info_src) == nrow(vars_src)) {
+    # select entries for common variants, in the same sorted order as vars_out
+    info_src[in_cmn][order(vars_src$.row_id[in_cmn])]
+  } else {
+    character(n_common)  # fallback: empty info
   }
 
-  vcf_new <- vcfs[[1]]
-  vcf_new@variants <- unified_variants
-  vcf_new@gt <- merged_gt
-  vcf_new@samples <- merged_samples
+  # FORMAT lookup
+  fmt_src <- as.data.frame(vcfs[[1]]@format)
+  if (nrow(fmt_src) > 0L && ".row_id" %in% colnames(fmt_src)) {
+    fmt_out <- fmt_src[fmt_src$.row_id %in% common_ids, , drop = FALSE]
+    fmt_out$.row_id <- id_map[as.character(fmt_out$.row_id)]
+    fmt_out <- fmt_out[order(fmt_out$.row_id), ]
+    rownames(fmt_out) <- NULL
+  } else {
+    fmt_out <- fmt_src
+  }
 
-  return(vcf_new)
+  # assemble new VCFArrow
+  gt_arrow <- arrow::open_dataset(tmp_dir, format = "feather")
+
+  new_vcfarrow <- .new_vcfarrow(
+    vcfs[[1]]@header,
+    info_vec,
+    fmt_out,
+    vars_out,
+    gt_arrow,
+    all_samples,
+    all_groups,
+    tmp_dir
+  )
+
+  return(new_vcfarrow)
 }
