@@ -72,9 +72,9 @@ assess_vcf_missing_data <- function(vcf_arrow, res_path, species, project, detai
 
   # include project name into ggplot2 figure title
   plot_title <- if (details == TRUE) {
-    bquote(paste(italic(.(species)), " (", .(project), ")"))
+    bquote(italic(.(species)) ~ "(" * .(project) * ")")
   } else {
-    bquote(paste(italic(.(species))))
+    bquote(italic(.(species)))
   }
 
   # make the plot
