@@ -90,7 +90,7 @@ assess_vcf_missing_data <- function(vcf_arrow, res_path, species, project, detai
     ) +
     ggplot2::labs(
       x = "sample",
-      y = "% missing",
+      y = "missing",
       title = plot_title
     )
 
