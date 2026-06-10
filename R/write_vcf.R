@@ -64,8 +64,18 @@ write_vcf <- function(vcf_arrow, out_file = "output.vcf", gzip = FALSE) {
 
     chunk <- arrow::read_feather(fpath)  # columns: .row_id, sample, a1, a2, phased, fmt, ...
 
+    # remove filtered samples from chunks
+    # filtering here mirrors the .reshape_chunk() logic used in all exporters
+    chunk <- chunk[chunk$sample %in% samples, , drop = FALSE]
+
+    # progress update
+    if (nrow(chunk) == 0L) {
+      cli::cli_progress_update()
+      next
+    }
+
     # sort so rows are: variant 1 sample 1, variant 1 sample 2, ..., variant 2 sample 1, ...
-    # in practice read_vcf() writes them this way already, but sort defensively.
+    # in practice read_vcf() writes them this way already, but sort defensively
     chunk <- chunk[order(chunk$.row_id, match(chunk$sample, samples)), ]
 
     row_ids <- unique(chunk$.row_id) # integer vector, one entry per variant in chunk
@@ -94,9 +104,6 @@ write_vcf <- function(vcf_arrow, out_file = "output.vcf", gzip = FALSE) {
       n_samples = n_samples,
       gzip = gzip
     )
-
-    # progress update
-    cli::cli_progress_update()
   }
 
   # end of progress bar
