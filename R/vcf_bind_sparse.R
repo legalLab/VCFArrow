@@ -158,7 +158,10 @@ vcf_bind_sparse <- function(...) {
   }
 
   # assemble new VCFArrow
-  gt_arrow <- arrow::open_dataset(tmp_dir, format = "feather")
+  # suppressWarnings: Arrow emits "Invalid metadata$r" when it re-parses the
+  # R-specific IPC schema annotations that write_feather() embeds in new files
+  # benign - no data affected
+  gt_arrow <- suppressWarnings(arrow::open_dataset(tmp_dir, format = "feather"))
 
   new_vcfarrow <- .new_vcfarrow(
     vcfs[[1]]@header,
