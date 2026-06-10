@@ -68,12 +68,6 @@ write_vcf <- function(vcf_arrow, out_file = "output.vcf", gzip = FALSE) {
     # filtering here mirrors the .reshape_chunk() logic used in all exporters
     chunk <- chunk[chunk$sample %in% samples, , drop = FALSE]
 
-    # progress update
-    if (nrow(chunk) == 0L) {
-      cli::cli_progress_update()
-      next
-    }
-
     # sort so rows are: variant 1 sample 1, variant 1 sample 2, ..., variant 2 sample 1, ...
     # in practice read_vcf() writes them this way already, but sort defensively
     chunk <- chunk[order(chunk$.row_id, match(chunk$sample, samples)), ]
@@ -88,6 +82,9 @@ write_vcf <- function(vcf_arrow, out_file = "output.vcf", gzip = FALSE) {
 
     # variant metadata for this chunk (indexed by .row_id)
     vi <- match(row_ids, variants$.row_id)
+
+    # progress update
+    cli::cli_progress_update()
 
     write_vcf_chunk_cpp(
       output_file = out_file,
