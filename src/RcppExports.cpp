@@ -72,19 +72,17 @@ BEGIN_RCPP
 END_RCPP
 }
 // write_structure_cpp
-void write_structure_cpp(const IntegerMatrix& a1_mat, const IntegerMatrix& a2_mat, const CharacterVector& REF, const CharacterVector& ALT, const CharacterVector& samples, const IntegerVector& group_ids, int method_int, const std::string& out_file);
-RcppExport SEXP _VCFArrow_write_structure_cpp(SEXP a1_matSEXP, SEXP a2_matSEXP, SEXP REFSEXP, SEXP ALTSEXP, SEXP samplesSEXP, SEXP group_idsSEXP, SEXP method_intSEXP, SEXP out_fileSEXP) {
+void write_structure_cpp(const IntegerMatrix& a1_mat, const IntegerMatrix& a2_mat, const CharacterVector& samples, const IntegerVector& group_ids, int method_int, const std::string& out_file);
+RcppExport SEXP _VCFArrow_write_structure_cpp(SEXP a1_matSEXP, SEXP a2_matSEXP, SEXP samplesSEXP, SEXP group_idsSEXP, SEXP method_intSEXP, SEXP out_fileSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const IntegerMatrix& >::type a1_mat(a1_matSEXP);
     Rcpp::traits::input_parameter< const IntegerMatrix& >::type a2_mat(a2_matSEXP);
-    Rcpp::traits::input_parameter< const CharacterVector& >::type REF(REFSEXP);
-    Rcpp::traits::input_parameter< const CharacterVector& >::type ALT(ALTSEXP);
     Rcpp::traits::input_parameter< const CharacterVector& >::type samples(samplesSEXP);
     Rcpp::traits::input_parameter< const IntegerVector& >::type group_ids(group_idsSEXP);
     Rcpp::traits::input_parameter< int >::type method_int(method_intSEXP);
     Rcpp::traits::input_parameter< const std::string& >::type out_file(out_fileSEXP);
-    write_structure_cpp(a1_mat, a2_mat, REF, ALT, samples, group_ids, method_int, out_file);
+    write_structure_cpp(a1_mat, a2_mat, samples, group_ids, method_int, out_file);
     return R_NilValue;
 END_RCPP
 }
@@ -302,6 +300,18 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// write_snmf_cpp
+void write_snmf_cpp(const IntegerMatrix& a1_mat, const IntegerMatrix& a2_mat, const std::string& out_file);
+RcppExport SEXP _VCFArrow_write_snmf_cpp(SEXP a1_matSEXP, SEXP a2_matSEXP, SEXP out_fileSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const IntegerMatrix& >::type a1_mat(a1_matSEXP);
+    Rcpp::traits::input_parameter< const IntegerMatrix& >::type a2_mat(a2_matSEXP);
+    Rcpp::traits::input_parameter< const std::string& >::type out_file(out_fileSEXP);
+    write_snmf_cpp(a1_mat, a2_mat, out_file);
+    return R_NilValue;
+END_RCPP
+}
 // write_vcf_chunk_cpp
 void write_vcf_chunk_cpp(std::string output_file, CharacterVector chrom, IntegerVector pos, CharacterVector id, CharacterVector ref, CharacterVector alt, CharacterVector qual, CharacterVector filter_col, CharacterVector info, CharacterVector format_col, CharacterVector fmt_vec, int n_samples, bool gzip);
 RcppExport SEXP _VCFArrow_write_vcf_chunk_cpp(SEXP output_fileSEXP, SEXP chromSEXP, SEXP posSEXP, SEXP idSEXP, SEXP refSEXP, SEXP altSEXP, SEXP qualSEXP, SEXP filter_colSEXP, SEXP infoSEXP, SEXP format_colSEXP, SEXP fmt_vecSEXP, SEXP n_samplesSEXP, SEXP gzipSEXP) {
@@ -331,7 +341,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_VCFArrow_parse_vcf_cpp", (DL_FUNC) &_VCFArrow_parse_vcf_cpp, 2},
     {"_VCFArrow_write_smartsnp_header_cpp", (DL_FUNC) &_VCFArrow_write_smartsnp_header_cpp, 2},
     {"_VCFArrow_write_smartsnp_chunk_cpp", (DL_FUNC) &_VCFArrow_write_smartsnp_chunk_cpp, 3},
-    {"_VCFArrow_write_structure_cpp", (DL_FUNC) &_VCFArrow_write_structure_cpp, 8},
+    {"_VCFArrow_write_structure_cpp", (DL_FUNC) &_VCFArrow_write_structure_cpp, 6},
     {"_VCFArrow_write_arlequin_cpp", (DL_FUNC) &_VCFArrow_write_arlequin_cpp, 8},
     {"_VCFArrow_write_genepop_cpp", (DL_FUNC) &_VCFArrow_write_genepop_cpp, 9},
     {"_VCFArrow_write_fineradstructure_header_cpp", (DL_FUNC) &_VCFArrow_write_fineradstructure_header_cpp, 2},
@@ -347,6 +357,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_VCFArrow_write_nexus_cpp", (DL_FUNC) &_VCFArrow_write_nexus_cpp, 7},
     {"_VCFArrow_write_eigenstrat_geno_header_cpp", (DL_FUNC) &_VCFArrow_write_eigenstrat_geno_header_cpp, 1},
     {"_VCFArrow_write_eigenstrat_chunk_cpp", (DL_FUNC) &_VCFArrow_write_eigenstrat_chunk_cpp, 3},
+    {"_VCFArrow_write_snmf_cpp", (DL_FUNC) &_VCFArrow_write_snmf_cpp, 3},
     {"_VCFArrow_write_vcf_chunk_cpp", (DL_FUNC) &_VCFArrow_write_vcf_chunk_cpp, 13},
     {NULL, NULL, 0}
 };

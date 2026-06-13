@@ -26,8 +26,8 @@ write_smartsnp_chunk_cpp <- function(a1_mat, a2_mat, out_file) {
 
 #' Write a STRUCTURE input file from full-dataset integer matrices
 #' method_int: 0 = Simple (S), 1 = FreeStructure (F)
-write_structure_cpp <- function(a1_mat, a2_mat, REF, ALT, samples, group_ids, method_int, out_file) {
-    invisible(.Call(`_VCFArrow_write_structure_cpp`, a1_mat, a2_mat, REF, ALT, samples, group_ids, method_int, out_file))
+write_structure_cpp <- function(a1_mat, a2_mat, samples, group_ids, method_int, out_file) {
+    invisible(.Call(`_VCFArrow_write_structure_cpp`, a1_mat, a2_mat, samples, group_ids, method_int, out_file))
 }
 
 #' Write an Arlequin (.arp) input file
@@ -138,6 +138,21 @@ write_eigenstrat_geno_header_cpp <- function(out_file) {
 #' without any separator.
 write_eigenstrat_chunk_cpp <- function(a1_mat, a2_mat, out_file) {
     invisible(.Call(`_VCFArrow_write_eigenstrat_chunk_cpp`, a1_mat, a2_mat, out_file))
+}
+
+#' Append one chunk of variants to an sNMF .geno file
+#'
+#' Opens \code{out_file} in append mode and writes one line per variant.
+#' Sample genotype codes are concatenated with NO separator, e.g. "01120".
+#' Encoding: 0 = hom-ref, 1 = het, 2 = hom-alt, 9 = missing.
+#' No header line (sNMF format).
+#'
+#' The caller is responsible for creating / truncating the file before the
+#' first chunk call (e.g. via \code{file.create(out_file)} in R).
+#'
+#' a1_mat / a2_mat: integer matrices (n_samples x n_chunk_var).
+write_snmf_cpp <- function(a1_mat, a2_mat, out_file) {
+    invisible(.Call(`_VCFArrow_write_snmf_cpp`, a1_mat, a2_mat, out_file))
 }
 
 write_vcf_chunk_cpp <- function(output_file, chrom, pos, id, ref, alt, qual, filter_col, info, format_col, fmt_vec, n_samples, gzip = FALSE) {
