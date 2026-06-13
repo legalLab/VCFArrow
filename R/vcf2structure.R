@@ -38,7 +38,6 @@ vcf2structure <- function(vcf_arrow, keep_groups = NULL,
   cli::cli_alert_info("Writing Structure file...")
 
   write_structure_cpp(acc$a1, acc$a2,
-                      setup$variants$REF, setup$variants$ALT,
                       setup$samples, setup$group_ids,
                       if (method == "S") 0L else 1L, out_file)
 
