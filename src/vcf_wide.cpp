@@ -128,16 +128,12 @@ void write_smartsnp_chunk_cpp(const IntegerMatrix& a1_mat,
 // [[Rcpp::export]]
 void write_structure_cpp(const IntegerMatrix& a1_mat,
                          const IntegerMatrix& a2_mat,
-                         const CharacterVector& REF,
-                         const CharacterVector& ALT,
                          const CharacterVector& samples,
                          const IntegerVector& group_ids,
                          int method_int,
                          const std::string& out_file) {
   const int ns = a1_mat.nrow(), nv = a1_mat.ncol();
   WFile w(out_file, false);
-  std::vector<const char*> rp(nv), ap(nv);
-  for (int v = 0; v < nv; ++v) { rp[v] = CHAR(STRING_ELT(REF,v)); ap[v] = CHAR(STRING_ELT(ALT,v)); }
   for (int s = 0; s < ns; ++s) {
     const char* sn = CHAR(STRING_ELT(samples, s));
     for (int hap = 0; hap < 2; ++hap) {
@@ -145,7 +141,11 @@ void write_structure_cpp(const IntegerMatrix& a1_mat,
       if (method_int == 1) wf(w, "\t0\t0\t0\t0");
       for (int v = 0; v < nv; ++v) {
         wf(w, '\t');
-        wf_allele(w, (hap==0) ? a1_mat(s,v) : a2_mat(s,v), rp[v], ap[v], "-9");
+        const int a = (hap == 0) ? a1_mat(s, v) : a2_mat(s, v);
+        if (a == NA_INTEGER) {
+          wf(w, "-9"); continue;
+        }
+        wf(w, (a == 0) ? '0' : '1');
       }
       wf(w, '\n');
     }
@@ -643,6 +643,42 @@ void write_eigenstrat_chunk_cpp(const IntegerMatrix& a1_mat,
   const int ns = a1_mat.nrow(), nv = a1_mat.ncol();
   WFile w(out_file, true);    // append
 
+  for (int v = 0; v < nv; ++v) {
+    for (int s = 0; s < ns; ++s) {
+      const int v1 = a1_mat(s, v), v2 = a2_mat(s, v);
+      if (v1 == NA_INTEGER || v2 == NA_INTEGER) wf(w, '9');
+      else if (v1 == 0 && v2 == 0) wf(w, '0');
+      else if (v1 == 1 && v2 == 1) wf(w, '2');
+      else wf(w, '1');
+    }
+    wf(w, '\n');
+  }
+}
+
+
+ 
+// ═══════════════════════════════════════════════════════════════════════════════
+// XVII.  sNMF  .geno writer
+// ═══════════════════════════════════════════════════════════════════════════════
+ 
+//' Append one chunk of variants to an sNMF .geno file
+//'
+//' Opens \code{out_file} in append mode and writes one line per variant.
+//' Sample genotype codes are concatenated with NO separator, e.g. "01120".
+//' Encoding: 0 = hom-ref, 1 = het, 2 = hom-alt, 9 = missing.
+//' No header line (sNMF format).
+//'
+//' The caller is responsible for creating / truncating the file before the
+//' first chunk call (e.g. via \code{file.create(out_file)} in R).
+//'
+//' a1_mat / a2_mat: integer matrices (n_samples x n_chunk_var).
+// [[Rcpp::export]]
+void write_snmf_cpp(const IntegerMatrix& a1_mat,
+                    const IntegerMatrix& a2_mat,
+                    const std::string& out_file) {
+  const int ns = a1_mat.nrow(), nv = a1_mat.ncol();
+  WFile w(out_file, true);  // append — caller must truncate before first chunk
+ 
   for (int v = 0; v < nv; ++v) {
     for (int s = 0; s < ns; ++s) {
       const int v1 = a1_mat(s, v), v2 = a2_mat(s, v);
