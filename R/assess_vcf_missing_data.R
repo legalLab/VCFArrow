@@ -10,7 +10,7 @@
 #' @param res_path -> path to results (directory for output dataframe and plots)
 #' @param species -> sample name for plot (character)
 #' @param project -> project name / base output file name (character)
-#' @param details -> flag for adding project name into figure title (Boolian)
+#' @param details -> flag for adding project name into figure title (Boolean)
 #'
 #' @return dataframe and plot of missing data for each sample in VCF
 #'
