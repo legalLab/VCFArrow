@@ -5,6 +5,8 @@
 #' @details
 #' This function defines the VCFArrow S4 class
 #'
+#' @exportClass VCFArrow
+#'
 
 setClass(
   "VCFArrow",
@@ -16,6 +18,7 @@ setClass(
     gt = "ANY", # Arrow dataset
     samples = "character", # sample names from gt columns
     groups = "character", # sample group names
-    path = "character" # dataset location - lazy loading
+    path = "character", # dataset location - lazy loading
+    finalizer_env = "environment" # slot for maintaining info for GC
   )
 )
