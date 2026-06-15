@@ -124,7 +124,7 @@ void write_smartsnp_chunk_cpp(const IntegerMatrix& a1_mat,
 // ═══════════════════════════════════════════════════════════════════════════════
 
 //' Write a STRUCTURE input file from full-dataset integer matrices
-//' method_int: 0 = Simple (S), 1 = FreeStructure (F)
+//' method_int: 0 = Simple (S), 1 = FastStructure (F)
 // [[Rcpp::export]]
 void write_structure_cpp(const IntegerMatrix& a1_mat,
                          const IntegerMatrix& a2_mat,
