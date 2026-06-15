@@ -25,7 +25,7 @@ write_smartsnp_chunk_cpp <- function(a1_mat, a2_mat, out_file) {
 }
 
 #' Write a STRUCTURE input file from full-dataset integer matrices
-#' method_int: 0 = Simple (S), 1 = FreeStructure (F)
+#' method_int: 0 = Simple (S), 1 = FastStructure (F)
 write_structure_cpp <- function(a1_mat, a2_mat, samples, group_ids, method_int, out_file) {
     invisible(.Call(`_VCFArrow_write_structure_cpp`, a1_mat, a2_mat, samples, group_ids, method_int, out_file))
 }
