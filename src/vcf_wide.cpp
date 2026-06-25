@@ -87,7 +87,7 @@ static inline char iupac_het(char r, char a) {
 // III.  SmartSNP
 // ═══════════════════════════════════════════════════════════════════════════════
 
-//' Write the sample-names header for a SmartSNP file (creates / truncates)
+// Write the sample-names header for a SmartSNP file (creates / truncates)
 // [[Rcpp::export]]
 void write_smartsnp_header_cpp(const CharacterVector& samples,
                                const std::string& out_file) {
@@ -97,8 +97,8 @@ void write_smartsnp_header_cpp(const CharacterVector& samples,
   wf(w, '\n');
 }
 
-//' Encode (0/1/2/9) and append one chunk of variants to a SmartSNP file
-//' a1_mat / a2_mat: integer matrices (n_samples x n_chunk_var)
+// Encode (0/1/2/9) and append one chunk of variants to a SmartSNP file
+// a1_mat / a2_mat: integer matrices (n_samples x n_chunk_var)
 // [[Rcpp::export]]
 void write_smartsnp_chunk_cpp(const IntegerMatrix& a1_mat,
                               const IntegerMatrix& a2_mat,
@@ -123,8 +123,8 @@ void write_smartsnp_chunk_cpp(const IntegerMatrix& a1_mat,
 // IV.  STRUCTURE
 // ═══════════════════════════════════════════════════════════════════════════════
 
-//' Write a STRUCTURE input file from full-dataset integer matrices
-//' method_int: 0 = Simple (S), 1 = FastStructure (F)
+// Write a STRUCTURE input file from full-dataset integer matrices
+// method_int: 0 = Simple (S), 1 = FastStructure (F)
 // [[Rcpp::export]]
 void write_structure_cpp(const IntegerMatrix& a1_mat,
                          const IntegerMatrix& a2_mat,
@@ -157,7 +157,7 @@ void write_structure_cpp(const IntegerMatrix& a1_mat,
 // V.  Arlequin
 // ═══════════════════════════════════════════════════════════════════════════════
 
-//' Write an Arlequin (.arp) input file
+// Write an Arlequin (.arp) input file
 // [[Rcpp::export]]
 void write_arlequin_cpp(const IntegerMatrix& a1_mat,
                         const IntegerMatrix& a2_mat,
@@ -202,7 +202,7 @@ void write_arlequin_cpp(const IntegerMatrix& a1_mat,
 // VI.  Genepop
 // ═══════════════════════════════════════════════════════════════════════════════
 
-//' Write a Genepop input file
+// Write a Genepop input file
 // [[Rcpp::export]]
 void write_genepop_cpp(const IntegerMatrix& a1_mat,
                        const IntegerMatrix& a2_mat,
@@ -248,7 +248,7 @@ void write_genepop_cpp(const IntegerMatrix& a1_mat,
 // VII.  fineRADstructure
 // ═══════════════════════════════════════════════════════════════════════════════
 
-//' Write the sample-names header for a fineRADstructure file (creates / truncates)
+// Write the sample-names header for a fineRADstructure file (creates / truncates)
 // [[Rcpp::export]]
 void write_fineradstructure_header_cpp(const CharacterVector& samples,
                                        const std::string& out_file) {
@@ -258,8 +258,8 @@ void write_fineradstructure_header_cpp(const CharacterVector& samples,
   wf(w, '\n');
 }
 
-//' Encode and append one chunk to a fineRADstructure file
-//' REF and ALT here are per-chunk (length n_chunk_var).
+// Encode and append one chunk to a fineRADstructure file
+// REF and ALT here are per-chunk (length n_chunk_var).
 // [[Rcpp::export]]
 void write_fineradstructure_chunk_cpp(const IntegerMatrix& a1_mat,
                                       const IntegerMatrix& a2_mat,
@@ -285,7 +285,7 @@ void write_fineradstructure_chunk_cpp(const IntegerMatrix& a1_mat,
 // VIII.  Treemix
 // ═══════════════════════════════════════════════════════════════════════════════
 
-//' Write the population-names header for a Treemix file (creates / truncates)
+// Write the population-names header for a Treemix file (creates / truncates)
 // [[Rcpp::export]]
 void write_treemix_header_cpp(const CharacterVector& pop_names,
                               const std::string& out_file) {
@@ -295,8 +295,8 @@ void write_treemix_header_cpp(const CharacterVector& pop_names,
   wf(w, '\n');
 }
 
-//' Append one chunk of population allele counts to a Treemix file
-//' ref_mat / alt_mat: integer matrices (n_pops x n_chunk_var)
+// Append one chunk of population allele counts to a Treemix file
+// ref_mat / alt_mat: integer matrices (n_pops x n_chunk_var)
 // [[Rcpp::export]]
 void write_treemix_chunk_cpp(const IntegerMatrix& ref_mat,
                              const IntegerMatrix& alt_mat,
@@ -317,8 +317,8 @@ void write_treemix_chunk_cpp(const IntegerMatrix& ref_mat,
 // IX.  BayesScan
 // ═══════════════════════════════════════════════════════════════════════════════
 
-//' Write a BayesScan input file
-//' ref_mat / alt_mat / n_obs_mat: integer matrices (n_pops x n_var)
+// Write a BayesScan input file
+// ref_mat / alt_mat / n_obs_mat: integer matrices (n_pops x n_var)
 // [[Rcpp::export]]
 void write_bayescan_cpp(const IntegerMatrix& ref_mat,
                         const IntegerMatrix& alt_mat,
@@ -344,7 +344,7 @@ void write_bayescan_cpp(const IntegerMatrix& ref_mat,
 // X.  BayesAss
 // ═══════════════════════════════════════════════════════════════════════════════
 
-//' Write a BayesAss3 (.immanc) input file
+// Write a BayesAss3 (.immanc) input file
 // [[Rcpp::export]]
 void write_bayesass_cpp(const IntegerMatrix& a1_mat,
                         const IntegerMatrix& a2_mat,
@@ -384,14 +384,14 @@ void write_bayesass_cpp(const IntegerMatrix& a1_mat,
 
 // ── XIa.  Count format (method "C") ──────────────────────────────────────────
  
-//' Write a Migrate-N allele-count input file (method "C")
-//'
-//' ref_mat / alt_mat / n_obs_mat: integer matrices (n_pops x n_var).
-//' n_obs_mat[p, v] = total chromosomes sampled for pop p at variant v.
-//' Format:
-//'   n_pops n_loci
-//'   max_obs_chromosomes pop_name   (one header per pop)
-//'   ref_count alt_count            (one line per variant)
+// Write a Migrate-N allele-count input file (method "C")
+//
+// ref_mat / alt_mat / n_obs_mat: integer matrices (n_pops x n_var).
+// n_obs_mat[p, v] = total chromosomes sampled for pop p at variant v.
+// Format:
+//   n_pops n_loci
+//   max_obs_chromosomes pop_name   (one header per pop)
+//   ref_count alt_count            (one line per variant)
 // [[Rcpp::export]]
 void write_migrate_cpp(const IntegerMatrix& ref_mat,
                        const IntegerMatrix& alt_mat,
@@ -414,24 +414,24 @@ void write_migrate_cpp(const IntegerMatrix& ref_mat,
 
 // ── XIb.  Sequence format (methods "S" and "N") ──────────────────────────────
  
-//' Write a Migrate-N nucleotide-sequence input file (methods "S" or "N")
-//'
-//' File structure:
-//'   Global header:  " \t n_pops \t n_loci"
-//'   Block header:   "(s100)\t(s100)\t(n76)"   [one label per block, tab-sep]
-//'   Per population: "n_haplotypes \t pop_name"
-//'   Per individual: two lines (haplotype 1, haplotype 2) of the form
-//'                   "ind_name_1 \t ACGT..."
-//'                   nucleotides are concatenated with NO separator between
-//'                   positions — the string is treated as a sequence.
-//'
-//' block_labels: pre-computed CharacterVector of "(s{n})" or "(n{n})" strings,
-//'   one per block.  Computed in R from block_size (method S) or from
-//'   chromosome position intervals (method N).
-//'
-//' Missing allele (NA_integer_): written as '?', the Migrate-N missing marker.
-//'
-//' a1_mat / a2_mat: integer matrices (n_samples x n_var), group-ordered rows.
+// Write a Migrate-N nucleotide-sequence input file (methods "S" or "N")
+//
+// File structure:
+//   Global header:  " \t n_pops \t n_loci"
+//   Block header:   "(s100)\t(s100)\t(n76)"   [one label per block, tab-sep]
+//   Per population: "n_haplotypes \t pop_name"
+//   Per individual: two lines (haplotype 1, haplotype 2) of the form
+//                   "ind_name_1 \t ACGT..."
+//                   nucleotides are concatenated with NO separator between
+//                   positions — the string is treated as a sequence.
+//
+// block_labels: pre-computed CharacterVector of "(s{n})" or "(n{n})" strings,
+//   one per block.  Computed in R from block_size (method S) or from
+//   chromosome position intervals (method N).
+//
+// Missing allele (NA_integer_): written as '?', the Migrate-N missing marker.
+//
+// a1_mat / a2_mat: integer matrices (n_samples x n_var), group-ordered rows.
 // [[Rcpp::export]]
 void write_migrate_seq_cpp(const IntegerMatrix& a1_mat,
                            const IntegerMatrix& a2_mat,
@@ -501,13 +501,13 @@ void write_migrate_seq_cpp(const IntegerMatrix& a1_mat,
 // XII.  Related
 // ═══════════════════════════════════════════════════════════════════════════════
 
-//' Write a Related input file
-//'
-//' One tab-delimited line per sample.  Each locus contributes two adjacent
-//' tab-separated columns (allele1 code, allele2 code), interleaved across all
-//' loci:  a1_L1 \\t a2_L1 \\t a1_L2 \\t a2_L2 ...
-//' Nucleotide codes: A=01 C=02 G=03 T=04, canonical order (lower first).
-//' Missing allele: NA.
+// Write a Related input file
+//
+// One tab-delimited line per sample.  Each locus contributes two adjacent
+// tab-separated columns (allele1 code, allele2 code), interleaved across all
+// loci:  a1_L1 \\t a2_L1 \\t a1_L2 \\t a2_L2 ...
+// Nucleotide codes: A=01 C=02 G=03 T=04, canonical order (lower first).
+// Missing allele: NA.
 // [[Rcpp::export]]
 void write_related_cpp(const IntegerMatrix& a1_mat,
                        const IntegerMatrix& a2_mat,
@@ -561,12 +561,12 @@ void write_related_cpp(const IntegerMatrix& a1_mat,
 // XIII.  Apparent
 // ═══════════════════════════════════════════════════════════════════════════════
 
-//' Write an Apparent input file
-//'
-//' One tab-delimited line per sample.
-//' Format: key \\t locus1 \\t locus2 ...
-//' Each locus cell: "allele1/allele2" nucleotide strings, canonical
-//' (alphabetically lower allele first).  Missing: "?/?".
+// Write an Apparent input file
+//
+// One tab-delimited line per sample.
+// Format: key \\t locus1 \\t locus2 ...
+// Each locus cell: "allele1/allele2" nucleotide strings, canonical
+// (alphabetically lower allele first).  Missing: "?/?".
 // [[Rcpp::export]]
 void write_apparent_cpp(const IntegerMatrix& a1_mat,
                         const IntegerMatrix& a2_mat,
@@ -601,12 +601,12 @@ void write_apparent_cpp(const IntegerMatrix& a1_mat,
 // XIV.  FASTA
 // ═══════════════════════════════════════════════════════════════════════════════
 
-//' Write a FASTA file (one line per sequence, IUPAC nucleotide codes)
-//'
-//' hom-ref → REF nucleotide
-//' hom-alt → ALT nucleotide
-//' het     → IUPAC ambiguity code
-//' missing → ?
+// Write a FASTA file (one line per sequence, IUPAC nucleotide codes)
+//
+// hom-ref → REF nucleotide
+// hom-alt → ALT nucleotide
+// het     → IUPAC ambiguity code
+// missing → ?
 // [[Rcpp::export]]
 void write_fasta_cpp(const IntegerMatrix& a1_mat,
                      const IntegerMatrix& a2_mat,
@@ -638,13 +638,13 @@ void write_fasta_cpp(const IntegerMatrix& a1_mat,
 // XV.  Nexus / SNAPP  (shared writer, format_int controls encoding)
 // ═══════════════════════════════════════════════════════════════════════════════
 
-//' Write a NEXUS file (Nexus DNA or SNAPP encoding)
-//'
-//' format_int:
-//'   0 = Nexus DNA — IUPAC nucleotide codes (same sequence content as FASTA)
-//'   1 = SNAPP     — 0 (hom-ref) / 1 (het) / 2 (hom-alt) / ? (missing)
-//'
-//' Sample names are left-padded to align sequences in the MATRIX block.
+// Write a NEXUS file (Nexus DNA or SNAPP encoding)
+//
+// format_int:
+//   0 = Nexus DNA — IUPAC nucleotide codes (same sequence content as FASTA)
+//   1 = SNAPP     — 0 (hom-ref) / 1 (het) / 2 (hom-alt) / ? (missing)
+//
+// Sample names are left-padded to align sequences in the MATRIX block.
 // [[Rcpp::export]]
 void write_nexus_cpp(const IntegerMatrix& a1_mat,
                      const IntegerMatrix& a2_mat,
@@ -709,13 +709,13 @@ void write_nexus_cpp(const IntegerMatrix& a1_mat,
 // XVI.  EIGENSTRAT  .geno writer
 // ═══════════════════════════════════════════════════════════════════════════════
 
-//' Write the sample-names header for an EIGENSTRAT .geno file (creates / truncates)
-//'
-//' EIGENSTRAT .geno is variant-major: one line per variant, samples as a
-//' concatenated string of digits (no delimiter) in the same order as the .ind
-//' file.  Encoding: 0 = hom-ref, 1 = het, 2 = hom-alt, 9 = missing.
-//' This function creates (or truncates) the file; subsequent calls to
-//' write_eigenstrat_chunk_cpp() append to it.
+// Write the sample-names header for an EIGENSTRAT .geno file (creates / truncates)
+//
+// EIGENSTRAT .geno is variant-major: one line per variant, samples as a
+// concatenated string of digits (no delimiter) in the same order as the .ind
+// file.  Encoding: 0 = hom-ref, 1 = het, 2 = hom-alt, 9 = missing.
+// This function creates (or truncates) the file; subsequent calls to
+// write_eigenstrat_chunk_cpp() append to it.
 // [[Rcpp::export]]
 void write_eigenstrat_geno_header_cpp(const std::string& out_file) {
   // Nothing to write as a header — just create / truncate the file so the
@@ -724,11 +724,11 @@ void write_eigenstrat_geno_header_cpp(const std::string& out_file) {
   (void)w;   // immediately closed by destructor
 }
 
-//' Encode and append one chunk of variants to an EIGENSTRAT .geno file
-//'
-//' a1_mat / a2_mat: integer matrices (n_samples x n_chunk_var), rows = samples,
-//' cols = variants.  Writes one line per variant: all samples concatenated
-//' without any separator.
+// Encode and append one chunk of variants to an EIGENSTRAT .geno file
+//
+// a1_mat / a2_mat: integer matrices (n_samples x n_chunk_var), rows = samples,
+// cols = variants.  Writes one line per variant: all samples concatenated
+// without any separator.
 // [[Rcpp::export]]
 void write_eigenstrat_chunk_cpp(const IntegerMatrix& a1_mat,
                                 const IntegerMatrix& a2_mat,
@@ -754,17 +754,17 @@ void write_eigenstrat_chunk_cpp(const IntegerMatrix& a1_mat,
 // XVII.  sNMF  .geno writer
 // ═══════════════════════════════════════════════════════════════════════════════
  
-//' Append one chunk of variants to an sNMF .geno file
-//'
-//' Opens \code{out_file} in append mode and writes one line per variant.
-//' Sample genotype codes are concatenated with NO separator, e.g. "01120".
-//' Encoding: 0 = hom-ref, 1 = het, 2 = hom-alt, 9 = missing.
-//' No header line (sNMF format).
-//'
-//' The caller is responsible for creating / truncating the file before the
-//' first chunk call (e.g. via \code{file.create(out_file)} in R).
-//'
-//' a1_mat / a2_mat: integer matrices (n_samples x n_chunk_var).
+// Append one chunk of variants to an sNMF .geno file
+//
+// Opens \code{out_file} in append mode and writes one line per variant.
+// Sample genotype codes are concatenated with NO separator, e.g. "01120".
+// Encoding: 0 = hom-ref, 1 = het, 2 = hom-alt, 9 = missing.
+// No header line (sNMF format).
+//
+// The caller is responsible for creating / truncating the file before the
+// first chunk call (e.g. via \code{file.create(out_file)} in R).
+//
+// a1_mat / a2_mat: integer matrices (n_samples x n_chunk_var).
 // [[Rcpp::export]]
 void write_snmf_cpp(const IntegerMatrix& a1_mat,
                     const IntegerMatrix& a2_mat,
