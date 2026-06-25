@@ -43,11 +43,11 @@ vcf_stats <- function(vcf_arrow, res_path, project) {
   valid_row_ids <- vcf_arrow@variants$.row_id
   n_samples <- length(samples)
 
-  feather_files <- list.files(vcf_arrow@path, pattern = "\\.arrow$", full.names = TRUE)
-  if (length(feather_files) == 0L)
+  ffiles <- list.files(vcf_arrow@path, pattern = "\\.arrow$", full.names = TRUE)
+  if (length(ffiles) == 0L)
     cli::cli_abort("No .arrow files found in {vcf_arrow@path}")
-  chunk_nums <- as.integer(stringr::str_extract(basename(feather_files), "\\d+"))
-  feather_files <- feather_files[order(chunk_nums)]
+  chunk_nums <- as.integer(stringr::str_extract(basename(ffiles), "\\d+"))
+  ffiles <- ffiles[order(chunk_nums)]
 
   # Per-sample accumulators (O(n_samples) memory — trivial) ────────────────────
   total_loci <- stats::setNames(integer(n_samples), samples)
@@ -60,11 +60,11 @@ vcf_stats <- function(vcf_arrow, res_path, project) {
 
   cli::cli_alert_info(
     "Computing per-sample stats: {length(valid_row_ids)} variants x \\
-     {n_samples} samples, reading {length(feather_files)} chunk(s) directly"
+     {n_samples} samples, reading {length(ffiles)} chunk(s) directly"
   )
-  cli::cli_progress_bar("Scanning chunk", total = length(feather_files))
+  cli::cli_progress_bar("Scanning chunk", total = length(ffiles))
 
-  for (fpath in feather_files) {
+  for (fpath in ffiles) {
 
     chunk <- arrow::read_feather(
       fpath, col_select = c(".row_id", "sample", "a1", "a2", "DP")
