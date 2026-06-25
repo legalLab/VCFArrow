@@ -216,6 +216,24 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// write_migrate_seq_cpp
+void write_migrate_seq_cpp(const IntegerMatrix& a1_mat, const IntegerMatrix& a2_mat, const CharacterVector& REF, const CharacterVector& ALT, const CharacterVector& samples, const CharacterVector& group_names, const IntegerVector& group_sizes, const CharacterVector& block_labels, const std::string& out_file);
+RcppExport SEXP _VCFArrow_write_migrate_seq_cpp(SEXP a1_matSEXP, SEXP a2_matSEXP, SEXP REFSEXP, SEXP ALTSEXP, SEXP samplesSEXP, SEXP group_namesSEXP, SEXP group_sizesSEXP, SEXP block_labelsSEXP, SEXP out_fileSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const IntegerMatrix& >::type a1_mat(a1_matSEXP);
+    Rcpp::traits::input_parameter< const IntegerMatrix& >::type a2_mat(a2_matSEXP);
+    Rcpp::traits::input_parameter< const CharacterVector& >::type REF(REFSEXP);
+    Rcpp::traits::input_parameter< const CharacterVector& >::type ALT(ALTSEXP);
+    Rcpp::traits::input_parameter< const CharacterVector& >::type samples(samplesSEXP);
+    Rcpp::traits::input_parameter< const CharacterVector& >::type group_names(group_namesSEXP);
+    Rcpp::traits::input_parameter< const IntegerVector& >::type group_sizes(group_sizesSEXP);
+    Rcpp::traits::input_parameter< const CharacterVector& >::type block_labels(block_labelsSEXP);
+    Rcpp::traits::input_parameter< const std::string& >::type out_file(out_fileSEXP);
+    write_migrate_seq_cpp(a1_mat, a2_mat, REF, ALT, samples, group_names, group_sizes, block_labels, out_file);
+    return R_NilValue;
+END_RCPP
+}
 // write_related_cpp
 void write_related_cpp(const IntegerMatrix& a1_mat, const IntegerMatrix& a2_mat, const CharacterVector& REF, const CharacterVector& ALT, const CharacterVector& samples, const std::string& out_file);
 RcppExport SEXP _VCFArrow_write_related_cpp(SEXP a1_matSEXP, SEXP a2_matSEXP, SEXP REFSEXP, SEXP ALTSEXP, SEXP samplesSEXP, SEXP out_fileSEXP) {
@@ -351,6 +369,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_VCFArrow_write_bayescan_cpp", (DL_FUNC) &_VCFArrow_write_bayescan_cpp, 5},
     {"_VCFArrow_write_bayesass_cpp", (DL_FUNC) &_VCFArrow_write_bayesass_cpp, 9},
     {"_VCFArrow_write_migrate_cpp", (DL_FUNC) &_VCFArrow_write_migrate_cpp, 6},
+    {"_VCFArrow_write_migrate_seq_cpp", (DL_FUNC) &_VCFArrow_write_migrate_seq_cpp, 9},
     {"_VCFArrow_write_related_cpp", (DL_FUNC) &_VCFArrow_write_related_cpp, 6},
     {"_VCFArrow_write_apparent_cpp", (DL_FUNC) &_VCFArrow_write_apparent_cpp, 7},
     {"_VCFArrow_write_fasta_cpp", (DL_FUNC) &_VCFArrow_write_fasta_cpp, 6},

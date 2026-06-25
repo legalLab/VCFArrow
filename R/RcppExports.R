@@ -73,9 +73,38 @@ write_bayesass_cpp <- function(a1_mat, a2_mat, REF, ALT, samples, group_names, g
     invisible(.Call(`_VCFArrow_write_bayesass_cpp`, a1_mat, a2_mat, REF, ALT, samples, group_names, group_sizes, loci, out_file))
 }
 
-#' Write a Migrate-N allele-count input file
+#' Write a Migrate-N allele-count input file (method "C")
+#'
+#' ref_mat / alt_mat / n_obs_mat: integer matrices (n_pops x n_var).
+#' n_obs_mat[p, v] = total chromosomes sampled for pop p at variant v.
+#' Format:
+#'   n_pops n_loci
+#'   max_obs_chromosomes pop_name   (one header per pop)
+#'   ref_count alt_count            (one line per variant)
 write_migrate_cpp <- function(ref_mat, alt_mat, n_obs_mat, pop_names, loci, out_file) {
     invisible(.Call(`_VCFArrow_write_migrate_cpp`, ref_mat, alt_mat, n_obs_mat, pop_names, loci, out_file))
+}
+
+#' Write a Migrate-N nucleotide-sequence input file (methods "S" or "N")
+#'
+#' File structure:
+#'   Global header:  " \t n_pops \t n_loci"
+#'   Block header:   "(s100)\t(s100)\t(n76)"   [one label per block, tab-sep]
+#'   Per population: "n_haplotypes \t pop_name"
+#'   Per individual: two lines (haplotype 1, haplotype 2) of the form
+#'                   "ind_name_1 \t ACGT..."
+#'                   nucleotides are concatenated with NO separator between
+#'                   positions — the string is treated as a sequence.
+#'
+#' block_labels: pre-computed CharacterVector of "(s{n})" or "(n{n})" strings,
+#'   one per block.  Computed in R from block_size (method S) or from
+#'   chromosome position intervals (method N).
+#'
+#' Missing allele (NA_integer_): written as '?', the Migrate-N missing marker.
+#'
+#' a1_mat / a2_mat: integer matrices (n_samples x n_var), group-ordered rows.
+write_migrate_seq_cpp <- function(a1_mat, a2_mat, REF, ALT, samples, group_names, group_sizes, block_labels, out_file) {
+    invisible(.Call(`_VCFArrow_write_migrate_seq_cpp`, a1_mat, a2_mat, REF, ALT, samples, group_names, group_sizes, block_labels, out_file))
 }
 
 #' Write a Related input file
