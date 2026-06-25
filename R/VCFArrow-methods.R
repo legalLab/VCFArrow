@@ -1,13 +1,17 @@
-#' @noRd
+#' @title Show method for VCFArrow
 #'
-#' @description helper VCFArrow class functions
+#' @description Print a summary of a VCFArrow object
 #'
 #' @author Tomas Hrbek April 2026
 #'
+#' @param object A VCFArrow object
+#'
 #' @details
-#' These functions are methods of the VCFArrow S4 class
+#' This function is a method of the VCFArrow S4 class
 #' Method to show object content summary
 #' Method to subset by row and column of GT
+#'
+#' @export
 #'
 
 setMethod(
@@ -74,6 +78,26 @@ setMethod(
     invisible(object)
   }
 )
+
+#' @title Subset method for VCFArrow
+#'
+#' @description Subset a VCFArrow object by variants (rows) and samples (columns)
+#'
+#' @author Tomas Hrbek April 2026
+#'
+#' @param x A VCFArrow object
+#' @param i Row indices (numeric or logical)
+#' @param j Column indices: numeric, logical, or sample name character vector
+#' @param drop Ignored; kept for S4 compatibility
+#'
+#' @return A new VCFArrow object containing the selected variants and samples
+#'
+#' @details
+#' This function is a method of the VCFArrow S4 class
+#' Method to subset by row and column of GT
+#'
+#' @export
+#'
 
 setMethod(
   "[",
@@ -145,7 +169,8 @@ setMethod(
       gt = new_gt,
       samples = new_samples,
       groups = x@groups,
-      path = x@path,      # shared dataset
+      path = x@path,  # shared dataset
+      finalizer_env = x@finalizer_env
     )
 
     return(new_obj)
