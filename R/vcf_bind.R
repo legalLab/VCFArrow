@@ -22,6 +22,8 @@
 #' vcf_bind(my_vcf1, my_vcf2, other_vcf, ..., check = TRUE)
 #' vcf_bind(my_vcf1, my_vcf2, other_vcf)
 #'
+#' @export
+#'
 
 vcf_bind <- function(..., .check = TRUE) {
 

@@ -28,6 +28,8 @@
 #' vcf2gt_long(vcf_arrow, my_groups, format = "csv")
 #' vcf2gt_long(vcf_arrow, format = "csv")
 #'
+#' @export
+#'
 
 vcf2gt_long <- function(vcf_arrow, keep_groups = NULL,
                         out_file = "gt_long",

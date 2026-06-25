@@ -22,6 +22,8 @@
 #' vcf2nexus(vcf_arrow, my_groups, out_file = "fasta_infile.fas")
 #' vcf2nexus(vcf_arrow)
 #'
+#' @export
+#'
 
 vcf2fasta <- function(vcf_arrow, keep_groups = NULL,
                       out_file = "fasta_infile.fas") {

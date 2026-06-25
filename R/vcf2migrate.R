@@ -31,6 +31,8 @@
 #' vcf2migrate(vcf_arrow, my_groups, out_file = "migrateN_infile.txt")
 #' vcf2migrate(vcf_arrow)
 #'
+#' @export
+#'
 
 # method = "C"  (allele counts, population-level)
 #   Format:  n_pops n_loci

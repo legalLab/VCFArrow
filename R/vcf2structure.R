@@ -26,6 +26,8 @@
 #' vcf2structure(my_vcf, keep_groups, out_file = "structure.str")
 #' vcf2structure(my_vcf)
 #'
+#' @export
+#'
 
 vcf2structure <- function(vcf_arrow, keep_groups = NULL,
                           out_file = "structure.str", method = "S") {

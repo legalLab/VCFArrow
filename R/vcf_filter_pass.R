@@ -21,12 +21,15 @@
 #' vcf_filter_pass(vcf_arrow = my_vcf)
 #' vcf_filter_pass(my_vcf)
 #'
+#' @export
+#'
 
 vcf_filter_pass <- function(vcf_arrow) {
 
-  if (!inherits(vcf_arrow, "VCFArrow")) {
+  if (!inherits(vcf_arrow, "VCFArrow"))
     cli::cli_abort("Expecting a VCFArrow object")
-  }
+
+  idx <- .vcf_filter_index(vcf_arrow)
 
   # report if missing values in FILTER
   if (any(vcf_arrow@variants$FILTER == ".")) {
@@ -36,6 +39,10 @@ vcf_filter_pass <- function(vcf_arrow) {
   # select passing variants
   keep <- vcf_arrow@variants$FILTER == "PASS" |
     vcf_arrow@variants$FILTER == "."
+
+  cli::cli_alert_info(
+    "Retained {length(keep)} / {idx$n_var} variants (PASS)"
+  )
 
   # apply filter using unified API
   vcf_arrow <- vcf_filter_rows(vcf_arrow, keep)

@@ -11,10 +11,12 @@
 #'
 #' @details
 #' This function binds two or more VCFArrow objects, returning new VCFArrow object.
-#' The VCFArrow objects must have the same SNPs, and must have unique individuals.
+#' The VCFArrow objects need not have the same SNPs, and must have unique individuals.
 #'
 #' @examples
 #' vcf_bind_sparse(my_vcf1, my_vcf2, other_vcf, ...)
+#'
+#' @export
 #'
 
 vcf_bind_sparse <- function(...) {
@@ -164,14 +166,14 @@ vcf_bind_sparse <- function(...) {
   gt_arrow <- suppressWarnings(arrow::open_dataset(tmp_dir, format = "feather"))
 
   new_vcfarrow <- .new_vcfarrow(
-    vcfs[[1]]@header,
-    info_vec,
-    fmt_out,
-    vars_out,
-    gt_arrow,
-    all_samples,
-    all_groups,
-    tmp_dir
+    header = vcfs[[1]]@header,
+    info = info_vec,
+    format = fmt_out,
+    variants = vars_out,
+    gt = gt_arrow,
+    samples = all_samples,
+    groups = all_groups,
+    path = tmp_dir
   )
 
   return(new_vcfarrow)

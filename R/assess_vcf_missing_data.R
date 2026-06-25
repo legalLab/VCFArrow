@@ -1,7 +1,7 @@
 #' @title assess_vcf_missing_data
 #'
 #' @description
-#' Quantifying missing data of all samples in VCF.
+#' Quantifying missing data of all samples in VCF
 #' Inspired by https://grunwaldlab.github.io/Population_Genetics_in_R/qc.html
 #'
 #' @author Tomas Hrbek April 2026
@@ -22,6 +22,8 @@
 #' assess_vcf_missing_data(vcf_arrow = my_vcf, res_path = my_res_path, species = species_name, project = project_name)
 #' assess_vcf_missing_data(my_vcf, my_res_path, species_name, project_name, details = TRUE)
 #' assess_vcf_missing_data(my_vcf, my_res_path, species_name, project_name)
+#'
+#' @export
 #'
 
 assess_vcf_missing_data <- function(vcf_arrow, res_path, species, project,

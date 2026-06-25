@@ -24,6 +24,8 @@
 #' vcf2apparent(vcf_arrow, my_groups, my_key, out_file = "apparent_infile.txt")
 #' vcf2apparent(vcf_arrow)
 #'
+#' @export
+#'
 
 vcf2apparent <- function(vcf_arrow, keep_groups = NULL,
                          key = "All",

@@ -22,6 +22,8 @@
 #' vcf2smartsnp(vcf_arrow, my_groups, out_file = "smartsnp_infile.txt")
 #' vcf2smartsnp(vcf_arrow)
 #'
+#' @export
+#'
 
 vcf2smartsnp <- function(vcf_arrow, keep_groups = NULL,
                          out_file = "smartsnp_infile.txt") {

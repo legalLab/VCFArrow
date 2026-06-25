@@ -21,50 +21,46 @@
 #' vcf_filter_missingness(my_vcf, p_miss, verbose = FALSE)
 #' vcf_filter_missingness(my_vcf, p_miss)
 #'
+#' @export
+#'
 
 vcf_filter_missingness <- function(vcf_arrow, threshold = 0.1, verbose = TRUE) {
 
-  if (!inherits(vcf_arrow, "VCFArrow")) {
+  if (!inherits(vcf_arrow, "VCFArrow"))
     cli::cli_abort("Expecting a VCFArrow object")
+
+  idx <- .vcf_filter_index(vcf_arrow)
+  miss_n <- integer(idx$n_var)  # NA count per variant position
+  total_n <- integer(idx$n_var)  # row count per variant position
+  ffiles <- .get_sorted_feather_files(vcf_arrow@path)
+
+  cli::cli_progress_bar("Scanning chunk (missingness)", total = length(ffiles))
+  for (fpath in ffiles) {
+    chunk <- arrow::read_feather(fpath, col_select = c(".row_id", "sample", "a1"))
+    chunk <- chunk[idx$lv[chunk$.row_id] & chunk$sample %in% idx$samples, , drop = FALSE]
+    if (nrow(chunk) > 0L) {
+      pos <- idx$col_idx[as.character(chunk$.row_id)]
+      tt <- tabulate(pos, nbins = idx$n_var)
+      total_n <- total_n + tt
+      na_pos <- pos[is.na(chunk$a1)]
+      if (length(na_pos) > 0L)
+        miss_n <- miss_n + tabulate(na_pos, nbins = idx$n_var)
+    }
+    chunk <- NULL; gc(verbose = FALSE, full = FALSE)
+    cli::cli_progress_update()
   }
+  cli::cli_progress_done()
 
-  # compute per-variant missingness and select passing variants
-  miss_tbl <- vcf_arrow@gt |>
-    dplyr::group_by(.row_id) |>
-    dplyr::summarise(
-      n_miss = sum(is.na(a1)),
-      n_total = dplyr::n(),
-      .groups = "drop"
-    ) |>
-    dplyr::mutate(
-      p_miss = n_miss / n_total
-    ) |>
-    dplyr::filter(p_miss <= !!threshold) |>
-    dplyr::select(.row_id)
-
-  # collect only row_ids
-  keep <- miss_tbl |>
-    dplyr::collect() |>
-    dplyr::pull(.row_id)
-
-  # apply filter using unified API
+  p_miss <- ifelse(total_n > 0L, miss_n / total_n, 1)
+  keep_pos <- which(p_miss <= threshold)
+  keep <- vcf_arrow@variants$.row_id[keep_pos]
   vcf_arrow <- vcf_filter_rows(vcf_arrow, keep)
 
-  # optional reporting
-  if (verbose) {
-
-    total_stats <- vcf_arrow@gt |>
-      dplyr::summarise(
-        total_na = sum(is.na(a1)),
-        total_n = dplyr::n()
-      ) |>
-      dplyr::collect()
-
-    p_missing <- total_stats$total_na / total_stats$total_n
-
-    cli::cli_alert_info("Final % missing data in VCF is {sprintf('%.2f', 100 * p_missing)}%")
-
-  }
+  if (verbose)
+    cli::cli_alert_info(
+      "Retained {length(keep)} / {idx$n_var} variants \\
+       (per-variant missingness <= {threshold})"
+    )
 
   return(vcf_arrow)
 }

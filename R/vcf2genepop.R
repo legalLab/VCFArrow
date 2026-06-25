@@ -22,16 +22,23 @@
 #' vcf2genepop(vcf_arrow, my_groups, out_file = "genepop_infile.gen")
 #' vcf2genepop(vcf_arrow)
 #'
+#' @export
+#'
 
 vcf2genepop <- function(vcf_arrow, keep_groups = NULL,
                         out_file = "genepop_infile.gen") {
+
   setup <- .vcf_export_setup(vcf_arrow, keep_groups)
-  acc   <- .accumulate_individuals(setup, "Genepop")
+  acc <- .accumulate_individuals(setup, "Genepop")
+
   cli::cli_alert_info("Writing Genepop file...")
+
   write_genepop_cpp(acc$a1, acc$a2,
                     setup$variants$REF, setup$variants$ALT,
                     setup$samples, setup$group_names, setup$group_sizes,
                     setup$loci, out_file)
+
   cli::cli_alert_success("Genepop file written to {.file {out_file}}")
+
   invisible(vcf_arrow)
 }

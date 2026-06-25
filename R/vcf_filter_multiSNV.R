@@ -25,6 +25,8 @@
 #' vcf_filter_multiSNV(my_vcf, 10000, 2, 5)
 #' vcf_filter_multiSNV(my_vcf)
 #'
+#' @export
+#'
 
 vcf_filter_multiSNV <- function(vcf_arrow, block_size = 10000,
                                 minSNV = 2, maxSNV = 5) {

@@ -27,6 +27,8 @@
 #' vcf_extract_groups(my_vcf, my_groups, TRUE, TRUE, TRUE)
 #' vcf_extract_groups(my_vcf, my_groups)
 #'
+#' @export
+#'
 
 vcf_extract_groups <- function(vcf_arrow, groups, keep = TRUE, f_invar = TRUE, verbose = TRUE) {
 
@@ -44,23 +46,33 @@ vcf_extract_groups <- function(vcf_arrow, groups, keep = TRUE, f_invar = TRUE, v
     cli::cli_abort("Some selected groups do not exits in VCFArrow")
   }
 
-  # if empty → keep all
-  if (any(groups == "")) {
+  # if empty → keep all - "keep everything" sentinel
+  if (any(groups == "") || length(groups) == 0) {
     cli::cli_alert_info("No groups of samples to keep or remove - keeping all samples")
     return(vcf_arrow)
   }
 
   # determine which samples belong to target populations
-  if (keep) {
-    keep_samples <- all_samples[all_groups %in% groups]
+  keep_samples <- if (keep) {
+    all_samples[all_groups %in% groups]
   } else {
-    keep_samples <- all_samples[!(all_groups %in% groups)]
+    all_samples[!(all_groups %in% groups)]
   }
+
+  # guard against silently producing a zero-sample VCFArrow.
+  if (length(keep_samples) == 0L)
+    cli::cli_abort(
+      "All samples removed by vcf_extract_groups() — check {.arg groups} \\
+       and {.arg keep}."
+    )
 
   # apply filter using unified API
   if (length(keep_samples) > 1) {
     vcf_arrow <- vcf_filter_columns(vcf_arrow, keep_samples, f_invar, verbose)
   } else {
+    # f_invar forced FALSE with 1 sample: with a single individual, every
+    # locus trivially has exactly one observed genotype state, so invariant
+    # filtering would remove everything.
     vcf_arrow <- vcf_filter_columns(vcf_arrow, keep_samples, f_invar = FALSE, verbose)
   }
 

@@ -23,6 +23,8 @@
 #' vcf_sub_SNVs_stratified(my_vcf, n_SNVs, 42)
 #' vcf_sub_SNVs_stratified(my_vcf)
 #'
+#' @export
+#'
 
 vcf_sub_SNVs_stratified <- function(vcf_arrow, n_SNVs = 1000, seed = NULL) {
 

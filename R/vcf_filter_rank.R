@@ -24,13 +24,15 @@
 #' vcf_filter_rank(my_vcf, 0.4)
 #' vcf_filter_rank(my_vcf)
 #'
+#' @export
+#'
 
 vcf_filter_rank <- function(vcf_arrow, threshold = 0.4, keep_na = FALSE) {
 
-  if (!inherits(vcf_arrow, "VCFArrow")) {
+  if (!inherits(vcf_arrow, "VCFArrow"))
     cli::cli_abort("Expecting a VCFArrow object")
-  }
 
+  idx <- .vcf_filter_index(vcf_arrow)
   rk <- vcf_arrow@variants$Rk
 
   # select passing variants
@@ -43,6 +45,10 @@ vcf_filter_rank <- function(vcf_arrow, threshold = 0.4, keep_na = FALSE) {
   } else {
     !is.na(rk) & rk >= threshold
   }
+
+  cli::cli_alert_info(
+    "Retained {length(keep)} / {idx$n_var} variants (Rank >= {threshold})"
+  )
 
   # apply filter using unified API
   vcf_arrow <- vcf_filter_rows(vcf_arrow, keep)

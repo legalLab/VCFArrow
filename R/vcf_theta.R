@@ -21,6 +21,8 @@
 #' vcf_theta(gt_matrix = my_gt_matrix, samples = vcf_arrow@samples, grps = vcf_arrow@groups)
 #' vcf_theta(my_gt_matrix, vcf_arrow@samples, vcf_arrow@groups)
 #'
+#' @export
+#'
 
 vcf_theta <- function(vcf_arrow, keep_groups = NULL) {
 

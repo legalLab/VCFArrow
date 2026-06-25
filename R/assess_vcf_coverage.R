@@ -1,7 +1,7 @@
 #' @title assess_vcf_coverage
 #'
 #' @description
-#' Quantifying read depth of all samples in VCF.
+#' Quantifying read depth of all samples in VCF
 #' Inspired by https://grunwaldlab.github.io/Population_Genetics_in_R/qc.html
 #'
 #' @author Tomas Hrbek April 2026
@@ -22,6 +22,8 @@
 #' assess_vcf_coverage(vcf_arrow = my_vcf, res_path = my_res_path, species = species_name, project = project_name)
 #' assess_vcf_coverage(my_vcf, my_res_path, species_name, project_name, details = TRUE, max_points_per_sample = 5000L)
 #' assess_vcf_coverage(my_vcf, my_res_path, species_name, project_name)
+#'
+#' @export
 #'
 
 assess_vcf_coverage <- function(vcf_arrow, res_path, species, project,

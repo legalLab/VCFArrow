@@ -22,6 +22,8 @@
 #' vcf_filter_oneSNV(my_vcf, 10000)
 #' vcf_filter_oneSNV(my_vcf)
 #'
+#' @export
+#'
 
 vcf_filter_oneSNV <- function(vcf_arrow, block_size = 10000) {
 

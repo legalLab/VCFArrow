@@ -23,6 +23,8 @@
 #' vcf_stats(vcf_arrow = my_vcf, res_path = my_res_path, project = my_project)
 #' vcf_stats(my_vcf, my_res_path, my_project)
 #'
+#' @export
+#'
 
 vcf_stats <- function(vcf_arrow, res_path, project) {
 

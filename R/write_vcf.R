@@ -25,6 +25,8 @@
 #' write_vcf(my_vcf, "output.vcf", FALSE)
 #' write_vcf(my_vcf)
 #'
+#' @export
+#'
 
 write_vcf <- function(vcf_arrow, out_file = "output.vcf", gzip = FALSE) {
 

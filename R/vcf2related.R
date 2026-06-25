@@ -22,15 +22,22 @@
 #' vcf2related(vcf_arrow, my_groups, out_file = "related_infile.txt")
 #' vcf2related(vcf_arrow)
 #'
+#' @export
+#'
 
 vcf2related <- function(vcf_arrow, keep_groups = NULL,
                         out_file = "related_infile.txt") {
+
   setup <- .vcf_export_setup(vcf_arrow, keep_groups)
-  acc   <- .accumulate_individuals(setup, "Related")
+  acc <- .accumulate_individuals(setup, "Related")
+
   cli::cli_alert_info("Writing Related file...")
+
   write_related_cpp(acc$a1, acc$a2,
                     setup$variants$REF, setup$variants$ALT,
                     setup$samples, out_file)
+
   cli::cli_alert_success("Related file written to {.file {out_file}}")
+
   invisible(vcf_arrow)
 }

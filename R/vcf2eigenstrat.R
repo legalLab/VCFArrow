@@ -24,6 +24,8 @@
 #' vcf2eigenstrat(vcf_arrow, my_groups, out_file = "eigenstrat_infile")
 #' vcf2eigenstrat(vcf_arrow)
 #'
+#' @export
+#'
 
 vcf2eigenstrat <- function(vcf_arrow, keep_groups = NULL,
                            out_file = "eigenstrat_infile",

@@ -22,6 +22,8 @@
 #' vcf2treemix(vcf_arrow, my_groups, out_file = "treemix_infile.txt")
 #' vcf2treemix(vcf_arrow)
 #'
+#' @export
+#'
 
 vcf2treemix <- function(vcf_arrow, keep_groups = NULL,
                         out_file = "treemix_infile.txt") {

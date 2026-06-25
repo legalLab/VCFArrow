@@ -1,7 +1,7 @@
 #' @title set_vcf_groups
 #'
 #' @description
-#' Associate samples with group info based on "strt" file.
+#' Associate samples with group info based on "strt" file
 #'
 #' @author Tomas Hrbek April 2026
 #'
@@ -22,6 +22,8 @@
 #' get_vcf_group_info(vcf = my_vcf, data_path = my_data_path, strt = "strata")
 #' get_vcf_group_info(my_vcf, my_data_path, "strata")
 #' get_vcf_group_info(my_vcf, my_data_path)
+#'
+#' @export
 #'
 
 set_vcf_groups <- function(vcf_arrow, data_path, strt = "strata") {

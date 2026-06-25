@@ -22,6 +22,8 @@
 #' vcf2bayescan(vcf_arrow, my_groups, out_file = "bayescan_infile.txt")
 #' vcf2bayescan(vcf_arrow)
 #'
+#' @export
+#'
 
 vcf2bayescan <- function(vcf_arrow, keep_groups = NULL,
                          out_file = "bayescan_infile.txt") {

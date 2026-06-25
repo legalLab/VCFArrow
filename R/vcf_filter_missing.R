@@ -25,36 +25,46 @@
 #' vcf_filter_missing(my_vcf, my_threshold)
 #' vcf_filter_missing(my_vcf)
 #'
+#' @export
+#'
 
 vcf_filter_missing <- function(vcf_arrow, threshold = 0.5,
                                f_invar = TRUE, verbose = TRUE) {
 
-  if (!inherits(vcf_arrow, "VCFArrow")) {
+  if (!inherits(vcf_arrow, "VCFArrow"))
     cli::cli_abort("Expecting a VCFArrow object")
+
+  idx <- .vcf_filter_index(vcf_arrow)
+  samples <- idx$samples
+  miss_n <- stats::setNames(integer(length(samples)), samples)
+  total_n <- stats::setNames(integer(length(samples)), samples)
+  ffiles <- .get_sorted_feather_files(vcf_arrow@path)
+
+  cli::cli_progress_bar("Scanning chunk (sample missingness)", total = length(ffiles))
+  for (fpath in ffiles) {
+    chunk <- arrow::read_feather(fpath, col_select = c(".row_id", "sample", "a1"))
+    chunk <- chunk[idx$lv[chunk$.row_id] & chunk$sample %in% samples, , drop = FALSE]
+    if (nrow(chunk) > 0L) {
+      tt <- table(chunk$sample)
+      total_n[names(tt)] <- total_n[names(tt)] + as.integer(tt)
+      na_samp <- chunk$sample[is.na(chunk$a1)]
+      if (length(na_samp) > 0L) {
+        nt <- table(na_samp)
+        miss_n[names(nt)] <- miss_n[names(nt)] + as.integer(nt)
+      }
+    }
+    chunk <- NULL; gc(verbose = FALSE, full = FALSE)
+    cli::cli_progress_update()
   }
+  cli::cli_progress_done()
 
-  # compute missingness per sample
-  samp_tbl <- vcf_arrow@gt |>
-    dplyr::group_by(sample) |>
-    dplyr::summarise(
-      p_miss = mean(is.na(a1)),
-      .groups = "drop"
-    ) |>
-    dplyr::collect()
+  p_miss <- ifelse(total_n > 0L, miss_n / total_n, 1)
+  keep <- samples[p_miss < threshold]
 
-  # samples to keep
-  keep_samples <- samp_tbl$sample[samp_tbl$p_miss < threshold]
+  if (length(keep) == 0L)
+    cli::cli_abort("All samples removed by vcf_filter_missing(threshold = {threshold})")
 
-  if (length(keep_samples) == 0) {
-    cli::cli_abort("All samples removed by filter")
-  }
-
-  # apply filter using unified API
-  if (length(keep_samples) > 1) {
-    vcf_arrow <- vcf_filter_columns(vcf_arrow, keep_samples, f_invar, verbose)
-  } else {
-    vcf_arrow <- vcf_filter_columns(vcf_arrow, keep_samples, f_invar = FALSE, verbose)
-  }
+  vcf_arrow <- vcf_filter_columns(vcf_arrow, keep, f_invar, verbose)
 
   return(vcf_arrow)
 }

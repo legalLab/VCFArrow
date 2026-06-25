@@ -22,6 +22,8 @@
 #' vcf2smartsnp(vcf_arrow, my_groups, out_file = "bayesass3_infile.immanc")
 #' vcf2smartsnp(vcf_arrow)
 #'
+#' @export
+#'
 
 vcf2bayesass <- function(vcf_arrow, keep_groups = NULL,
                          out_file = "bayesass3_infile.immanc") {

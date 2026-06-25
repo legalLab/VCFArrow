@@ -22,6 +22,8 @@
 #' vcf2fineradstructure(vcf_arrow, my_groups, out_file = "fineradstructure_infile.txt")
 #' vcf2fineradstructure(vcf_arrow)
 #'
+#' @export
+#'
 
 vcf2fineradstructure <- function(vcf_arrow, keep_groups = NULL,
                                  out_file = "fineradstructure_infile.txt") {

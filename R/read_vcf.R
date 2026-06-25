@@ -19,12 +19,14 @@
 #' GT slot content stored in a TEMP directory for lazy loading.
 #'
 #' @examples
-#' vcf_filter_rank(vcf_file = my_vcf, chunk_size = 100000)
-#' vcf_filter_rank(my_vcf, 100000)
+#' vcf_filter_rank(vcf_file = my_vcf, chunk_size = 50000)
+#' vcf_filter_rank(my_vcf, 50000)
 #' vcf_filter_rank(my_vcf)
 #'
+#' @export
+#'
 
-read_vcf <- function(vcf_file, chunk_size = 100000) {
+read_vcf <- function(vcf_file, chunk_size = 50000) {
 
   # helper function
   parse_format_header <- function(header) {

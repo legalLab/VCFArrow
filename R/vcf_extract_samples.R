@@ -27,6 +27,8 @@
 #' vcf_extract_samples(my_vcf, my_samples, TRUE, TRUE, TRUE)
 #' vcf_extract_samples(my_vcf, my_samples)
 #'
+#' @export
+#'
 
 vcf_extract_samples <- function(vcf_arrow, samples, keep = TRUE, f_invar = TRUE, verbose = TRUE) {
 
@@ -41,7 +43,7 @@ vcf_extract_samples <- function(vcf_arrow, samples, keep = TRUE, f_invar = TRUE,
     cli::cli_alert_info("Some samples do not exits in VCF")
   }
 
-  # if empty → keep all
+  # if empty → keep all - "keep everything" sentinel
   if (any(samples == "") || length(samples) == 0) {
     cli::cli_alert_info("No samples to keep or remove - keeping all samples")
     return(vcf_arrow)
@@ -51,16 +53,22 @@ vcf_extract_samples <- function(vcf_arrow, samples, keep = TRUE, f_invar = TRUE,
   samples <- samples[samples %in% all_samples]
 
   # determine samples to keep
-  if (keep) {
-    keep_samples <- samples
-  } else {
-    keep_samples <- setdiff(all_samples, samples)
-  }
+  keep_samples <- if (keep) samples else setdiff(all_samples, samples)
+
+  # guard against silently producing a zero-sample VCFArrow.
+  if (length(keep_samples) == 0L)
+    cli::cli_abort(
+      "All samples removed by vcf_extract_samples() — check {.arg samples} \\
+       and {.arg keep}."
+    )
 
   # apply filter using unified API
   if (length(keep_samples) > 1) {
     vcf_arrow <- vcf_filter_columns(vcf_arrow, keep_samples, f_invar, verbose)
   } else {
+    # f_invar forced FALSE with 1 sample: with a single individual, every
+    # locus trivially has exactly one observed genotype state, so invariant
+    # filtering would remove everything.
     vcf_arrow <- vcf_filter_columns(vcf_arrow, keep_samples, f_invar = FALSE, verbose)
   }
 

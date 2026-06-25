@@ -22,6 +22,8 @@
 #' vcf2snapp(vcf_arrow, my_groups, out_file = "snapp_infile.nex")
 #' vcf2snapp(vcf_arrow)
 #'
+#' @export
+#'
 
 vcf2snapp <- function(vcf_arrow, keep_groups = NULL,
                       out_file = "snapp_infile.nex") {

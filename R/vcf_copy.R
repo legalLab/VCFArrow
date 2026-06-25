@@ -17,6 +17,8 @@
 #' vcf_copy(vcf_arrow = my_vcf)
 #' vcf_copy(my_vcf)
 #'
+#' @export
+#'
 
 vcf_copy <- function(vcf_arrow) {
 
@@ -48,14 +50,16 @@ vcf_copy <- function(vcf_arrow) {
   # the note on this same pattern in vcf_bind_sparse().
   gt_arrow <- suppressWarnings(arrow::open_dataset(new_path, format = "feather"))
 
-  .new_vcfarrow(
-    vcf_arrow@header,
-    vcf_arrow@info,
-    vcf_arrow@format,
-    vcf_arrow@variants,
-    gt_arrow,
-    vcf_arrow@samples,
-    vcf_arrow@groups,
-    new_path
+  new_vcfarrow <- .new_vcfarrow(
+    header = vcf_arrow@header,
+    info = vcf_arrow@info,
+    format = vcf_arrow@format,
+    variants = vcf_arrow@variants,
+    gt = gt_arrow,
+    samples = vcf_arrow@samples,
+    groups = vcf_arrow@groups,
+    path = new_path
   )
+
+  return(new_vcfarrow)
 }

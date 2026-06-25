@@ -27,50 +27,64 @@
 #' vcf_filter_adr(my_vcf, "correct", my_threshold, TRUE)
 #' vcf_filter_adr(my_vcf, "correct")
 #'
+#' @export
+#'
 
-vcf_filter_adr <- function(vcf_arrow, mode = c("correct", "remove"), threshold = 0.1, f_invar = TRUE) {
-
+vcf_filter_adr <- function(vcf_arrow, mode = c("correct", "remove"),
+                           threshold = 0.1, f_invar = TRUE) {
   mode <- match.arg(mode)
-
-  if (!inherits(vcf_arrow, "VCFArrow")) {
+  if (!inherits(vcf_arrow, "VCFArrow"))
     cli::cli_abort("Expecting a VCFArrow object")
+  if (threshold <= 0 || threshold >= 0.5)
+    cli::cli_abort("{.arg threshold} must be strictly between 0 and 0.5")
+
+  ffiles <- .get_sorted_feather_files(vcf_arrow@path)
+  tmp_dir <- tempfile("arrow_vcf_adr_")
+  dir.create(tmp_dir)
+
+  cli::cli_alert_info(
+    "Applying ADR {mode} (threshold = {threshold}) across {length(ffiles)} chunk(s)..."
+  )
+  cli::cli_progress_bar("Rewriting chunk", total = length(ffiles))
+
+  for (i in seq_along(ffiles)) {
+    chunk <- arrow::read_feather(ffiles[[i]])   # full columns, full rows
+
+    # adr_flag: TRUE only where ADR is actually observed AND outside bounds.
+    # NA ADR → FALSE (genotype passes through untouched) — this is the fix.
+    adr_flag <- !is.na(chunk$ADR) &
+      (chunk$ADR < threshold | chunk$ADR > (1 - threshold))
+    adr_dir  <- ifelse(chunk$ADR <= threshold, 0L,
+                       ifelse(chunk$ADR >= (1 - threshold), 1L, NA_integer_))
+
+    if (mode == "correct") {
+      chunk$a1[adr_flag] <- adr_dir[adr_flag]
+      chunk$a2[adr_flag] <- adr_dir[adr_flag]
+    } else {   # mode == "remove"
+      chunk$a1[adr_flag] <- NA_integer_
+      chunk$a2[adr_flag] <- NA_integer_
+    }
+
+    arrow::write_feather(chunk, file.path(tmp_dir, paste0("chunk_", i, ".arrow")))
+    chunk <- NULL; gc(verbose = FALSE, full = FALSE)
+    cli::cli_progress_update()
   }
+  cli::cli_progress_done()
 
-  gt <- vcf_arrow@gt
+  gt_arrow <- suppressWarnings(arrow::open_dataset(tmp_dir, format = "feather"))
 
-  # set allele ratio imbalance flag and precompute direction
-  gt <- gt |>
-    dplyr::mutate(
-      adr_flag = ADR < threshold | ADR > (1 - threshold),
-      adr_dir = dplyr::case_when(
-        ADR <= threshold ~ 0L,
-        ADR >= (1 - threshold) ~ 1L,
-        TRUE ~ NA_integer_
-      )
-    )
+  new_vcfarrow <- .new_vcfarrow(
+    vcf_arrow@header,
+    vcf_arrow@info,
+    vcf_arrow@format,
+    vcf_arrow@variants,
+    gt_arrow,
+    vcf_arrow@samples,
+    vcf_arrow@groups,
+    tmp_dir
+  )
 
-  # apply genotype correction based on direction of bias
-  if (mode == "correct") {
-    vcf_arrow@gt <- gt |>
-      dplyr::mutate(
-        a1 = dplyr::if_else(adr_flag, adr_dir, a1),
-        a2 = dplyr::if_else(adr_flag, adr_dir, a2)
-      )
-  }
+  if (f_invar) new_vcfarrow <- vcf_filter_invariant(new_vcfarrow)
 
-  # apply 'missing' mask
-  if (mode == "remove") {
-    vcf_arrow@gt <- gt |>
-      dplyr::mutate(
-        a1 = dplyr::if_else(adr_flag, NA_integer_, a1),
-        a2 = dplyr::if_else(adr_flag, NA_integer_, a2)
-      )
-  }
-
-  # remove invariant loci
-  if (f_invar) {
-    vcf_arrow <- vcf_filter_invariant(vcf_arrow)
-  }
-
-  return(vcf_arrow)
+  return(new_vcfarrow)
 }

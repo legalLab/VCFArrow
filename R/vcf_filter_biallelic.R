@@ -17,15 +17,22 @@
 #' vcf_filter_biallelic(vcf_arrow = my_vcf)
 #' vcf_filter_biallelic(my_vcf)
 #'
+#' @export
+#'
 
 vcf_filter_biallelic <- function(vcf_arrow) {
 
-  if (!inherits(vcf_arrow, "VCFArrow")) {
+  if (!inherits(vcf_arrow, "VCFArrow"))
     cli::cli_abort("Expecting a VCFArrow object")
-  }
+
+  idx <- .vcf_filter_index(vcf_arrow)
 
   # select passing variants
   keep <- vcf_arrow@variants$is_biallelic
+
+  cli::cli_alert_info(
+    "Retained {length(keep)} / {idx$n_var} variants (biallelic SNVs)"
+  )
 
   # apply filter using unified API
   vcf_arrow <- vcf_filter_rows(vcf_arrow, keep)

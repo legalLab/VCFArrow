@@ -24,13 +24,15 @@
 #' vcf_filter_quality(my_vcf, 30)
 #' vcf_filter_quality(my_vcf)
 #'
+#' @export
+#'
 
 vcf_filter_quality <- function(vcf_arrow, threshold = 30) {
 
-  if (!inherits(vcf_arrow, "VCFArrow")) {
+  if (!inherits(vcf_arrow, "VCFArrow"))
     cli::cli_abort("Expecting a VCFArrow object")
-  }
 
+  idx <- .vcf_filter_index(vcf_arrow)
   qual <- suppressWarnings(as.numeric(vcf_arrow@variants$QUAL))
 
   # select passing variants
@@ -40,6 +42,10 @@ vcf_filter_quality <- function(vcf_arrow, threshold = 30) {
   }
 
   keep <- qual >= threshold
+
+  cli::cli_alert_info(
+    "Retained {length(keep)} / {idx$n_var} variants (QUAL >= {threshold})"
+  )
 
   # apply filter using unified API
   vcf_arrow <- vcf_filter_rows(vcf_arrow, keep)

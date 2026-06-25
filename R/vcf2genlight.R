@@ -27,6 +27,8 @@
 #' vcf2genlight(vcf_arrow, my_groups)
 #' vcf2genlight(vcf_arrow)
 #'
+#' @export
+#'
 
 vcf2genlight <- function(vcf_arrow, keep_groups = NULL,
                          out_file = "genlight.rds",

@@ -22,6 +22,8 @@
 #' vcf_sub_SNVs(my_vcf, n_SNVs, 42)
 #' vcf_sub_SNVs(my_vcf)
 #'
+#' @export
+#'
 
 vcf_sub_SNVs <- function(vcf_arrow, n_SNVs = 10000, seed = NULL) {
 

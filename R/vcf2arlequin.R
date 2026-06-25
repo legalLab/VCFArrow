@@ -22,6 +22,8 @@
 #' vcf2smartsnp(vcf_arrow, my_groups, out_file = "arlequin_infile.arp")
 #' vcf2smartsnp(vcf_arrow)
 #'
+#' @export
+#'
 
 vcf2arlequin <- function(vcf_arrow, keep_groups = NULL,
                          out_file = "arlequin_infile.arp") {
