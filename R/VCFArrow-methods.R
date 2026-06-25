@@ -169,8 +169,7 @@ setMethod(
       gt = new_gt,
       samples = new_samples,
       groups = x@groups,
-      path = x@path,  # shared dataset
-      finalizer_env = x@finalizer_env
+      path = x@path  # shared dataset
     )
 
     return(new_obj)
