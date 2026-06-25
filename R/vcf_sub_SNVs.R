@@ -47,7 +47,8 @@ vcf_sub_SNVs <- function(vcf_arrow, n_SNVs = 10000, seed = NULL) {
 
   keep <- sort(sample(variants$.row_id, n_SNVs))
 
-  vcf_arrow <- vcf_filter_rows(vcf_arrow, keep)
+  # apply filter using unified API
+  vcf_arrow <- .vcf_filter_rows(vcf_arrow, keep)
 
   return(vcf_arrow)
 }

@@ -35,7 +35,7 @@ vcf_filter_biallelic <- function(vcf_arrow) {
   )
 
   # apply filter using unified API
-  vcf_arrow <- vcf_filter_rows(vcf_arrow, keep)
+  vcf_arrow <- .vcf_filter_rows(vcf_arrow, keep)
 
   return(vcf_arrow)
 }

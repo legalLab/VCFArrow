@@ -21,7 +21,7 @@
 #' @export
 #'
 
-vcf_filter_rows <- function(vcf_arrow, keep) {
+.vcf_filter_rows <- function(vcf_arrow, keep) {
 
   if (!inherits(vcf_arrow, "VCFArrow"))
     cli::cli_abort("Expecting a VCFArrow object")

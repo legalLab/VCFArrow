@@ -64,7 +64,7 @@ vcf_filter_hets <- function(vcf_arrow, threshold = 0.5) {
      (heterozygosity rate < {threshold})"
   )
   # apply filter using unified API
-  vcf_arrow <- vcf_filter_rows(vcf_arrow, keep)
+  vcf_arrow <- .vcf_filter_rows(vcf_arrow, keep)
 
   return(vcf_arrow)
 }

@@ -48,7 +48,7 @@ vcf_filter_quality <- function(vcf_arrow, threshold = 30) {
   )
 
   # apply filter using unified API
-  vcf_arrow <- vcf_filter_rows(vcf_arrow, keep)
+  vcf_arrow <- .vcf_filter_rows(vcf_arrow, keep)
 
   return(vcf_arrow)
 }

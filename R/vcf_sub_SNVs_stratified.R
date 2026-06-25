@@ -53,7 +53,8 @@ vcf_sub_SNVs_stratified <- function(vcf_arrow, n_SNVs = 1000, seed = NULL) {
     dplyr::pull(.row_id) |>
     sort()
 
-  vcf_arrow <- vcf_filter_rows(vcf_arrow, keep)
+  # apply filter using unified API
+  vcf_arrow <- .vcf_filter_rows(vcf_arrow, keep)
 
   return(vcf_arrow)
 }

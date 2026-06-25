@@ -43,7 +43,7 @@ vcf_filter_oneSNV <- function(vcf_arrow, block_size = 10000) {
     dplyr::pull(.row_id)
 
   # apply filter using unified API
-  vcf_arrow <- vcf_filter_rows(vcf_arrow, keep)
+  vcf_arrow <- .vcf_filter_rows(vcf_arrow, keep)
 
   return(vcf_arrow)
 }

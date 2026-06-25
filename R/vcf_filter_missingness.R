@@ -54,7 +54,9 @@ vcf_filter_missingness <- function(vcf_arrow, threshold = 0.1, verbose = TRUE) {
   p_miss <- ifelse(total_n > 0L, miss_n / total_n, 1)
   keep_pos <- which(p_miss <= threshold)
   keep <- vcf_arrow@variants$.row_id[keep_pos]
-  vcf_arrow <- vcf_filter_rows(vcf_arrow, keep)
+
+  # apply filter using unified API
+  vcf_arrow <- .vcf_filter_rows(vcf_arrow, keep)
 
   if (verbose)
     cli::cli_alert_info(
