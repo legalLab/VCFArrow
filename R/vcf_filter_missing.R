@@ -64,7 +64,7 @@ vcf_filter_missing <- function(vcf_arrow, threshold = 0.5,
   if (length(keep) == 0L)
     cli::cli_abort("All samples removed by vcf_filter_missing(threshold = {threshold})")
 
-  vcf_arrow <- vcf_filter_columns(vcf_arrow, keep, f_invar, verbose)
+  vcf_arrow <- .vcf_filter_columns(vcf_arrow, keep, f_invar, verbose)
 
   return(vcf_arrow)
 }

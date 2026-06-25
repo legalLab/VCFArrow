@@ -1,4 +1,4 @@
-#' @title vcf_filter_rows
+#' @title vcf_filter_columns
 #'
 #' @description
 #' Unified API for filtering VCFArrow objects by row IDs.
@@ -27,7 +27,7 @@
 #' @export
 #'
 
-vcf_filter_columns <- function(vcf_arrow, keep, f_invar = TRUE, verbose = TRUE) {
+.vcf_filter_columns <- function(vcf_arrow, keep, f_invar = TRUE, verbose = TRUE) {
 
   if (!inherits(vcf_arrow, "VCFArrow"))
     cli::cli_abort("Expecting a VCFArrow object")

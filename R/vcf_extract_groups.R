@@ -68,12 +68,12 @@ vcf_extract_groups <- function(vcf_arrow, groups, keep = TRUE, f_invar = TRUE, v
 
   # apply filter using unified API
   if (length(keep_samples) > 1) {
-    vcf_arrow <- vcf_filter_columns(vcf_arrow, keep_samples, f_invar, verbose)
+    vcf_arrow <- .vcf_filter_columns(vcf_arrow, keep_samples, f_invar, verbose)
   } else {
     # f_invar forced FALSE with 1 sample: with a single individual, every
     # locus trivially has exactly one observed genotype state, so invariant
     # filtering would remove everything.
-    vcf_arrow <- vcf_filter_columns(vcf_arrow, keep_samples, f_invar = FALSE, verbose)
+    vcf_arrow <- .vcf_filter_columns(vcf_arrow, keep_samples, f_invar = FALSE, verbose)
   }
 
   return(vcf_arrow)
