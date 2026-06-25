@@ -382,7 +382,16 @@ void write_bayesass_cpp(const IntegerMatrix& a1_mat,
 // XI.  Migrate-N
 // ═══════════════════════════════════════════════════════════════════════════════
 
-//' Write a Migrate-N allele-count input file
+// ── XIa.  Count format (method "C") ──────────────────────────────────────────
+ 
+//' Write a Migrate-N allele-count input file (method "C")
+//'
+//' ref_mat / alt_mat / n_obs_mat: integer matrices (n_pops x n_var).
+//' n_obs_mat[p, v] = total chromosomes sampled for pop p at variant v.
+//' Format:
+//'   n_pops n_loci
+//'   max_obs_chromosomes pop_name   (one header per pop)
+//'   ref_count alt_count            (one line per variant)
 // [[Rcpp::export]]
 void write_migrate_cpp(const IntegerMatrix& ref_mat,
                        const IntegerMatrix& alt_mat,
@@ -400,6 +409,90 @@ void write_migrate_cpp(const IntegerMatrix& ref_mat,
     for (int v = 0; v < nv; ++v) {
       wf_int(w,ref_mat(p,v)); wf(w,' '); wf_int(w,alt_mat(p,v)); wf(w,'\n');
     }
+  }
+}
+
+// ── XIb.  Sequence format (methods "S" and "N") ──────────────────────────────
+ 
+//' Write a Migrate-N nucleotide-sequence input file (methods "S" or "N")
+//'
+//' File structure:
+//'   Global header:  " \t n_pops \t n_loci"
+//'   Block header:   "(s100)\t(s100)\t(n76)"   [one label per block, tab-sep]
+//'   Per population: "n_haplotypes \t pop_name"
+//'   Per individual: two lines (haplotype 1, haplotype 2) of the form
+//'                   "ind_name_1 \t ACGT..."
+//'                   nucleotides are concatenated with NO separator between
+//'                   positions — the string is treated as a sequence.
+//'
+//' block_labels: pre-computed CharacterVector of "(s{n})" or "(n{n})" strings,
+//'   one per block.  Computed in R from block_size (method S) or from
+//'   chromosome position intervals (method N).
+//'
+//' Missing allele (NA_integer_): written as '?', the Migrate-N missing marker.
+//'
+//' a1_mat / a2_mat: integer matrices (n_samples x n_var), group-ordered rows.
+// [[Rcpp::export]]
+void write_migrate_seq_cpp(const IntegerMatrix& a1_mat,
+                           const IntegerMatrix& a2_mat,
+                           const CharacterVector& REF,
+                           const CharacterVector& ALT,
+                           const CharacterVector& samples,
+                           const CharacterVector& group_names,
+                           const IntegerVector& group_sizes,
+                           const CharacterVector& block_labels,
+                           const std::string& out_file) {
+  const int nv = a1_mat.ncol();
+  const int np = group_names.size(), nb = block_labels.size();
+  WFile w(out_file, false);
+ 
+  // Cache allele first-character pointers (REF/ALT are SNPs, so first char suffices)
+  std::vector<char> ref_c(nv), alt_c(nv);
+  for (int v = 0; v < nv; ++v) {
+    ref_c[v] = CHAR(STRING_ELT(REF, v))[0];
+    alt_c[v] = CHAR(STRING_ELT(ALT, v))[0];
+  }
+ 
+  // ── Global header: " \t n_pops \t n_loci" ─────────────────────────────────
+  wf(w, " \t"); wf_int(w, np); wf(w, '\t'); wf_int(w, nv); wf(w, '\n');
+ 
+  // ── Block header: "(s100)\t(s100)\t...\t(n76)" ────────────────────────────
+  for (int b = 0; b < nb; ++b) {
+    if (b) wf(w, '\t');
+    wf(w, CHAR(STRING_ELT(block_labels, b)));
+  }
+  wf(w, '\n');
+ 
+  // ── Per-population sequence data ──────────────────────────────────────────
+  int off = 0;
+  for (int g = 0; g < np; ++g) {
+    const int gsz = group_sizes[g];
+ 
+    // Population header: "n_haplotypes \t pop_name"
+    wf_int(w, 2 * gsz); wf(w, '\t');
+    wf(w, CHAR(STRING_ELT(group_names, g))); wf(w, '\n');
+ 
+    for (int i = 0; i < gsz; ++i) {
+      const int s = off + i;
+      const char* sname = CHAR(STRING_ELT(samples, s));
+ 
+      // Haplotype 1: "ind_name_1\tACGT..."
+      wf(w, sname); wf(w, "_1\t");
+      for (int v = 0; v < nv; ++v) {
+        const int a = a1_mat(s, v);
+        wf(w, (a == NA_INTEGER) ? '?' : (a == 0) ? ref_c[v] : alt_c[v]);
+      }
+      wf(w, '\n');
+ 
+      // Haplotype 2: "ind_name_2\tACGT..."
+      wf(w, sname); wf(w, "_2\t");
+      for (int v = 0; v < nv; ++v) {
+        const int a = a2_mat(s, v);
+        wf(w, (a == NA_INTEGER) ? '?' : (a == 0) ? ref_c[v] : alt_c[v]);
+      }
+      wf(w, '\n');
+    }
+    off += gsz;
   }
 }
 
