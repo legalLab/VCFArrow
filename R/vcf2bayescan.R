@@ -27,7 +27,7 @@ vcf2bayescan <- function(vcf_arrow, keep_groups = NULL,
                          out_file = "bayescan_infile.txt") {
 
   setup <- .vcf_export_setup(vcf_arrow, keep_groups)
-  acc <- .accumulate_pops(setup, "BayesScan")
+  acc <- .accumulate_pops_lowmem(setup, "BayesScan")
 
   cli::cli_alert_info("Writing BayesScan file...")
 
