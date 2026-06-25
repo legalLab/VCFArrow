@@ -161,7 +161,7 @@ setMethod(
       dplyr::mutate(variant_index = new_index)
 
     # --- Create new object (SAFE) ---
-    new_obj <- .new_vcfarrow(
+    new_vcfarrow <- .new_vcfarrow(
       header = x@header,
       info = new_info,
       format = x@format,
@@ -172,6 +172,6 @@ setMethod(
       path = x@path  # shared dataset
     )
 
-    return(new_obj)
+    return(new_vcfarrow)
   }
 )
