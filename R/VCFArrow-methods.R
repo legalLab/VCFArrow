@@ -1,3 +1,5 @@
+#' @noRd
+#'
 #' @description helper VCFArrow class functions
 #'
 #' @author Tomas Hrbek April 2026
