@@ -13,173 +13,82 @@ parse_vcf_cpp <- function(lines, nsamples) {
     .Call(`_VCFArrow_parse_vcf_cpp`, lines, nsamples)
 }
 
-#' Write the sample-names header for a SmartSNP file (creates / truncates)
 write_smartsnp_header_cpp <- function(samples, out_file) {
     invisible(.Call(`_VCFArrow_write_smartsnp_header_cpp`, samples, out_file))
 }
 
-#' Encode (0/1/2/9) and append one chunk of variants to a SmartSNP file
-#' a1_mat / a2_mat: integer matrices (n_samples x n_chunk_var)
 write_smartsnp_chunk_cpp <- function(a1_mat, a2_mat, out_file) {
     invisible(.Call(`_VCFArrow_write_smartsnp_chunk_cpp`, a1_mat, a2_mat, out_file))
 }
 
-#' Write a STRUCTURE input file from full-dataset integer matrices
-#' method_int: 0 = Simple (S), 1 = FastStructure (F)
 write_structure_cpp <- function(a1_mat, a2_mat, samples, group_ids, method_int, out_file) {
     invisible(.Call(`_VCFArrow_write_structure_cpp`, a1_mat, a2_mat, samples, group_ids, method_int, out_file))
 }
 
-#' Write an Arlequin (.arp) input file
 write_arlequin_cpp <- function(a1_mat, a2_mat, REF, ALT, samples, group_names, group_sizes, out_file) {
     invisible(.Call(`_VCFArrow_write_arlequin_cpp`, a1_mat, a2_mat, REF, ALT, samples, group_names, group_sizes, out_file))
 }
 
-#' Write a Genepop input file
 write_genepop_cpp <- function(a1_mat, a2_mat, REF, ALT, samples, group_names, group_sizes, loci, out_file) {
     invisible(.Call(`_VCFArrow_write_genepop_cpp`, a1_mat, a2_mat, REF, ALT, samples, group_names, group_sizes, loci, out_file))
 }
 
-#' Write the sample-names header for a fineRADstructure file (creates / truncates)
 write_fineradstructure_header_cpp <- function(samples, out_file) {
     invisible(.Call(`_VCFArrow_write_fineradstructure_header_cpp`, samples, out_file))
 }
 
-#' Encode and append one chunk to a fineRADstructure file
-#' REF and ALT here are per-chunk (length n_chunk_var).
 write_fineradstructure_chunk_cpp <- function(a1_mat, a2_mat, REF, ALT, out_file) {
     invisible(.Call(`_VCFArrow_write_fineradstructure_chunk_cpp`, a1_mat, a2_mat, REF, ALT, out_file))
 }
 
-#' Write the population-names header for a Treemix file (creates / truncates)
 write_treemix_header_cpp <- function(pop_names, out_file) {
     invisible(.Call(`_VCFArrow_write_treemix_header_cpp`, pop_names, out_file))
 }
 
-#' Append one chunk of population allele counts to a Treemix file
-#' ref_mat / alt_mat: integer matrices (n_pops x n_chunk_var)
 write_treemix_chunk_cpp <- function(ref_mat, alt_mat, out_file) {
     invisible(.Call(`_VCFArrow_write_treemix_chunk_cpp`, ref_mat, alt_mat, out_file))
 }
 
-#' Write a BayesScan input file
-#' ref_mat / alt_mat / n_obs_mat: integer matrices (n_pops x n_var)
 write_bayescan_cpp <- function(ref_mat, alt_mat, n_obs_mat, pop_names, out_file) {
     invisible(.Call(`_VCFArrow_write_bayescan_cpp`, ref_mat, alt_mat, n_obs_mat, pop_names, out_file))
 }
 
-#' Write a BayesAss3 (.immanc) input file
 write_bayesass_cpp <- function(a1_mat, a2_mat, REF, ALT, samples, group_names, group_sizes, loci, out_file) {
     invisible(.Call(`_VCFArrow_write_bayesass_cpp`, a1_mat, a2_mat, REF, ALT, samples, group_names, group_sizes, loci, out_file))
 }
 
-#' Write a Migrate-N allele-count input file (method "C")
-#'
-#' ref_mat / alt_mat / n_obs_mat: integer matrices (n_pops x n_var).
-#' n_obs_mat[p, v] = total chromosomes sampled for pop p at variant v.
-#' Format:
-#'   n_pops n_loci
-#'   max_obs_chromosomes pop_name   (one header per pop)
-#'   ref_count alt_count            (one line per variant)
 write_migrate_cpp <- function(ref_mat, alt_mat, n_obs_mat, pop_names, loci, out_file) {
     invisible(.Call(`_VCFArrow_write_migrate_cpp`, ref_mat, alt_mat, n_obs_mat, pop_names, loci, out_file))
 }
 
-#' Write a Migrate-N nucleotide-sequence input file (methods "S" or "N")
-#'
-#' File structure:
-#'   Global header:  " \t n_pops \t n_loci"
-#'   Block header:   "(s100)\t(s100)\t(n76)"   [one label per block, tab-sep]
-#'   Per population: "n_haplotypes \t pop_name"
-#'   Per individual: two lines (haplotype 1, haplotype 2) of the form
-#'                   "ind_name_1 \t ACGT..."
-#'                   nucleotides are concatenated with NO separator between
-#'                   positions — the string is treated as a sequence.
-#'
-#' block_labels: pre-computed CharacterVector of "(s{n})" or "(n{n})" strings,
-#'   one per block.  Computed in R from block_size (method S) or from
-#'   chromosome position intervals (method N).
-#'
-#' Missing allele (NA_integer_): written as '?', the Migrate-N missing marker.
-#'
-#' a1_mat / a2_mat: integer matrices (n_samples x n_var), group-ordered rows.
 write_migrate_seq_cpp <- function(a1_mat, a2_mat, REF, ALT, samples, group_names, group_sizes, block_labels, out_file) {
     invisible(.Call(`_VCFArrow_write_migrate_seq_cpp`, a1_mat, a2_mat, REF, ALT, samples, group_names, group_sizes, block_labels, out_file))
 }
 
-#' Write a Related input file
-#'
-#' One tab-delimited line per sample.  Each locus contributes two adjacent
-#' tab-separated columns (allele1 code, allele2 code), interleaved across all
-#' loci:  a1_L1 \\t a2_L1 \\t a1_L2 \\t a2_L2 ...
-#' Nucleotide codes: A=01 C=02 G=03 T=04, canonical order (lower first).
-#' Missing allele: NA.
 write_related_cpp <- function(a1_mat, a2_mat, REF, ALT, samples, out_file) {
     invisible(.Call(`_VCFArrow_write_related_cpp`, a1_mat, a2_mat, REF, ALT, samples, out_file))
 }
 
-#' Write an Apparent input file
-#'
-#' One tab-delimited line per sample.
-#' Format: key \\t locus1 \\t locus2 ...
-#' Each locus cell: "allele1/allele2" nucleotide strings, canonical
-#' (alphabetically lower allele first).  Missing: "?/?".
 write_apparent_cpp <- function(a1_mat, a2_mat, REF, ALT, samples, key, out_file) {
     invisible(.Call(`_VCFArrow_write_apparent_cpp`, a1_mat, a2_mat, REF, ALT, samples, key, out_file))
 }
 
-#' Write a FASTA file (one line per sequence, IUPAC nucleotide codes)
-#'
-#' hom-ref → REF nucleotide
-#' hom-alt → ALT nucleotide
-#' het     → IUPAC ambiguity code
-#' missing → ?
 write_fasta_cpp <- function(a1_mat, a2_mat, REF, ALT, samples, out_file) {
     invisible(.Call(`_VCFArrow_write_fasta_cpp`, a1_mat, a2_mat, REF, ALT, samples, out_file))
 }
 
-#' Write a NEXUS file (Nexus DNA or SNAPP encoding)
-#'
-#' format_int:
-#'   0 = Nexus DNA — IUPAC nucleotide codes (same sequence content as FASTA)
-#'   1 = SNAPP     — 0 (hom-ref) / 1 (het) / 2 (hom-alt) / ? (missing)
-#'
-#' Sample names are left-padded to align sequences in the MATRIX block.
 write_nexus_cpp <- function(a1_mat, a2_mat, REF, ALT, samples, format_int, out_file) {
     invisible(.Call(`_VCFArrow_write_nexus_cpp`, a1_mat, a2_mat, REF, ALT, samples, format_int, out_file))
 }
 
-#' Write the sample-names header for an EIGENSTRAT .geno file (creates / truncates)
-#'
-#' EIGENSTRAT .geno is variant-major: one line per variant, samples as a
-#' concatenated string of digits (no delimiter) in the same order as the .ind
-#' file.  Encoding: 0 = hom-ref, 1 = het, 2 = hom-alt, 9 = missing.
-#' This function creates (or truncates) the file; subsequent calls to
-#' write_eigenstrat_chunk_cpp() append to it.
 write_eigenstrat_geno_header_cpp <- function(out_file) {
     invisible(.Call(`_VCFArrow_write_eigenstrat_geno_header_cpp`, out_file))
 }
 
-#' Encode and append one chunk of variants to an EIGENSTRAT .geno file
-#'
-#' a1_mat / a2_mat: integer matrices (n_samples x n_chunk_var), rows = samples,
-#' cols = variants.  Writes one line per variant: all samples concatenated
-#' without any separator.
 write_eigenstrat_chunk_cpp <- function(a1_mat, a2_mat, out_file) {
     invisible(.Call(`_VCFArrow_write_eigenstrat_chunk_cpp`, a1_mat, a2_mat, out_file))
 }
 
-#' Append one chunk of variants to an sNMF .geno file
-#'
-#' Opens \code{out_file} in append mode and writes one line per variant.
-#' Sample genotype codes are concatenated with NO separator, e.g. "01120".
-#' Encoding: 0 = hom-ref, 1 = het, 2 = hom-alt, 9 = missing.
-#' No header line (sNMF format).
-#'
-#' The caller is responsible for creating / truncating the file before the
-#' first chunk call (e.g. via \code{file.create(out_file)} in R).
-#'
-#' a1_mat / a2_mat: integer matrices (n_samples x n_chunk_var).
 write_snmf_cpp <- function(a1_mat, a2_mat, out_file) {
     invisible(.Call(`_VCFArrow_write_snmf_cpp`, a1_mat, a2_mat, out_file))
 }
