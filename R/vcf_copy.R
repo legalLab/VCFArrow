@@ -20,10 +20,42 @@
 
 vcf_copy <- function(vcf_arrow) {
 
-  .register_vcfarrow(vcf_arrow@path)
+  if (!inherits(vcf_arrow, "VCFArrow"))
+    cli::cli_abort("Expecting a VCFArrow object")
 
-  vcf_arrow2 <- vcf_arrow
-  vcf_arrow2 <- .attach_finalizer(vcf_arrow2)
+  old_files <- list.files(vcf_arrow@path, pattern = "\\.arrow$", full.names = TRUE)
+  if (length(old_files) == 0L)
+    cli::cli_abort("No .arrow files found in {vcf_arrow@path}")
 
-  return(vcf_arrow2)
+  new_path <- tempfile("arrow_vcf_copy_")
+  dir.create(new_path)
+
+  new_files <- file.path(new_path, basename(old_files))
+  ok <- file.copy(old_files, new_files)
+
+  if (!all(ok)) {
+    # Clean up the partially-copied directory before erroring, so a failed
+    # vcf_copy() doesn't leave an orphaned, unregistered temp directory.
+    unlink(new_path, recursive = TRUE, force = TRUE)
+    cli::cli_abort(
+      "Failed to copy {sum(!ok)} of {length(old_files)} feather file(s) \\
+       to {.path {new_path}} — check disk space and permissions."
+    )
+  }
+
+  # suppressWarnings: Arrow's "Invalid metadata$r" warning when re-parsing
+  # R-specific IPC schema annotations on freshly copied files — benign, see
+  # the note on this same pattern in vcf_bind_sparse().
+  gt_arrow <- suppressWarnings(arrow::open_dataset(new_path, format = "feather"))
+
+  .new_vcfarrow(
+    vcf_arrow@header,
+    vcf_arrow@info,
+    vcf_arrow@format,
+    vcf_arrow@variants,
+    gt_arrow,
+    vcf_arrow@samples,
+    vcf_arrow@groups,
+    new_path
+  )
 }
