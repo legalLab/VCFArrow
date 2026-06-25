@@ -35,7 +35,7 @@ vcf_filter_multiSNV <- function(vcf_arrow, block_size = 10000,
     cli::cli_abort("Expecting a VCFArrow object")
   }
 
-  cli::cli_alert_info("Applying multi SNV filter")
+  cli::cli_alert_info("Applying linked SNV filter")
 
   # select variants
   keep <- vcf_arrow@variants |>

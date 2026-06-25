@@ -31,7 +31,7 @@ vcf_filter_oneSNV <- function(vcf_arrow, block_size = 10000) {
     cli::cli_abort("Expecting a VCFArrow object")
   }
 
-  cli::cli_alert_info("Applying one SNV filter")
+  cli::cli_alert_info("Applying unlinked SNV filter")
 
   # select variants
   keep <- vcf_arrow@variants |>
