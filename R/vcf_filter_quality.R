@@ -35,6 +35,8 @@ vcf_filter_quality <- function(vcf_arrow, threshold = 30) {
   idx <- .vcf_filter_index(vcf_arrow)
   qual <- suppressWarnings(as.numeric(vcf_arrow@variants$QUAL))
 
+  cli::cli_alert_info("Applying QUALITY filter")
+
   # select passing variants
   if (any(is.na(qual))) {
     qual[is.na(qual)] <- threshold

@@ -34,7 +34,9 @@ vcf_filter_missingness <- function(vcf_arrow, threshold = 0.1, verbose = TRUE) {
   total_n <- integer(idx$n_var)  # row count per variant position
   ffiles <- .get_sorted_feather_files(vcf_arrow@path)
 
-  cli::cli_progress_bar("Scanning chunk (missingness)", total = length(ffiles))
+  cli::cli_alert_info("Applying locus missingness filter")
+
+  cli::cli_progress_bar("Scanning chunk", total = length(ffiles))
   for (fpath in ffiles) {
     chunk <- arrow::read_feather(fpath, col_select = c(".row_id", "sample", "a1"))
     chunk <- chunk[idx$lv[chunk$.row_id] & chunk$sample %in% idx$samples, , drop = FALSE]

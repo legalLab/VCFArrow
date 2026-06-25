@@ -32,7 +32,9 @@
 
 vcf_filter_adr <- function(vcf_arrow, mode = c("correct", "remove"),
                            threshold = 0.1, f_invar = TRUE) {
+
   mode <- match.arg(mode)
+
   if (!inherits(vcf_arrow, "VCFArrow"))
     cli::cli_abort("Expecting a VCFArrow object")
   if (threshold <= 0 || threshold >= 0.5)
@@ -41,6 +43,8 @@ vcf_filter_adr <- function(vcf_arrow, mode = c("correct", "remove"),
   ffiles <- .get_sorted_feather_files(vcf_arrow@path)
   tmp_dir <- tempfile("arrow_vcf_adr_")
   dir.create(tmp_dir)
+
+  cli::cli_alert_info("Applying ADR filter")
 
   cli::cli_alert_info(
     "Applying ADR {mode} (threshold = {threshold}) across {length(ffiles)} chunk(s)..."

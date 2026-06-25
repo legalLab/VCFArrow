@@ -33,7 +33,9 @@ vcf_filter_coverage <- function(vcf_arrow, threshold = 10) {
   dp_pass <- integer(idx$n_var)   # count of DP-passing called genotypes
   ffiles <- .get_sorted_feather_files(vcf_arrow@path)
 
-  cli::cli_progress_bar("Scanning chunk (coverage)", total = length(ffiles))
+  cli::cli_alert_info("Applying read coverage filter")
+
+  cli::cli_progress_bar("Scanning chunk", total = length(ffiles))
   for (fpath in ffiles) {
     chunk <- arrow::read_feather(fpath,
                                  col_select = c(".row_id", "sample", "a1", "a2", "DP"))

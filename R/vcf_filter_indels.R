@@ -30,6 +30,8 @@ vcf_filter_indels <- function(vcf_arrow) {
   # select passing variants
   keep <- !vcf_arrow@variants$is_indel
 
+  cli::cli_alert_info("Applying indel filter")
+
   cli::cli_alert_info(
     "Removed {length(keep)} / {idx$n_var} variants (Indels)"
   )

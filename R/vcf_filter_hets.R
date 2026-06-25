@@ -33,7 +33,9 @@ vcf_filter_hets <- function(vcf_arrow, threshold = 0.5) {
   n_called <- integer(idx$n_var)
   ffiles <- .get_sorted_feather_files(vcf_arrow@path)
 
-  cli::cli_progress_bar("Scanning chunk (heterozygosity)", total = length(ffiles))
+  cli::cli_alert_info("Applying heterozygosity filter")
+
+  cli::cli_progress_bar("Scanning chunk", total = length(ffiles))
   for (fpath in ffiles) {
     chunk <- arrow::read_feather(fpath, col_select = c(".row_id", "sample", "a1", "a2"))
     chunk <- chunk[idx$lv[chunk$.row_id] & chunk$sample %in% idx$samples, , drop = FALSE]

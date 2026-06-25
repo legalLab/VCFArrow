@@ -31,6 +31,8 @@ vcf_filter_pass <- function(vcf_arrow) {
 
   idx <- .vcf_filter_index(vcf_arrow)
 
+  cli::cli_alert_info("Applying PASS filter")
+
   # report if missing values in FILTER
   if (any(vcf_arrow@variants$FILTER == ".")) {
     cli::cli_alert_warning("Some FILTER values are NA. Defaulting to PASS")

@@ -35,6 +35,8 @@ vcf_filter_rank <- function(vcf_arrow, threshold = 0.4, keep_na = FALSE) {
   idx <- .vcf_filter_index(vcf_arrow)
   rk <- vcf_arrow@variants$Rk
 
+  cli::cli_alert_info("Applying RANK filter")
+
   # select passing variants
   if (all(is.na(rk))) {
     cli::cli_alert_warning("Rk field not present; returning unfiltered VCFArrow")

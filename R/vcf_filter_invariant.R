@@ -32,7 +32,9 @@ vcf_filter_invariant <- function(vcf_arrow) {
   n_pass <- integer(idx$n_var)  # called genotypes per variant
   ffiles <- .get_sorted_feather_files(vcf_arrow@path)
 
-  cli::cli_progress_bar("Scanning chunk (invariant filter)", total = length(ffiles))
+  cli::cli_alert_info("Applying invariant filter")
+
+  cli::cli_progress_bar("Scanning chunk", total = length(ffiles))
   for (fpath in ffiles) {
     chunk <- arrow::read_feather(fpath,
                                  col_select = c(".row_id", "sample", "a1", "a2"))
