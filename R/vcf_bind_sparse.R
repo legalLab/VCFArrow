@@ -93,7 +93,7 @@ vcf_bind_sparse <- function(...) {
   # remove any NULLs (VCFArrow had no data for common_ids; should not happen)
   gt_parts <- Filter(Negate(is.null), gt_parts)
   if (length(gt_parts) == 0L)
-    cli::cli_abort("No genotype data was recovered for the common variants.")
+    cli::cli_abort("No genotype data were recovered for the common variants.")
 
   # combine data.frames
   merged_gt <- do.call(rbind, gt_parts)
@@ -106,13 +106,16 @@ vcf_bind_sparse <- function(...) {
   rownames(merged_gt) <- NULL
 
   # remap .row_ids to 1 .. n_common
+  # unname() is essential here: id_map is a NAMED vector (setNames(...)), and
+  # indexing a named vector by character subscript preserves those names on
+  # the result.
   id_map <- setNames(seq_len(n_common), as.character(common_ids))
-  merged_gt$.row_id <- id_map[as.character(merged_gt$.row_id)]
+  merged_gt$.row_id <- unname(id_map[as.character(merged_gt$.row_id)])
 
   # write output feather chunks
   tmp_dir <- tempfile("arrow_vcf_bind_")
   dir.create(tmp_dir)
-  chunk_size <- 100000L
+  chunk_size <- 50000L
   n_chunks <- ceiling(n_common / chunk_size)
 
   cli::cli_progress_bar("Writing chunk", total = n_chunks)
@@ -127,7 +130,7 @@ vcf_bind_sparse <- function(...) {
     cli::cli_progress_update()
   }
   cli::cli_progress_done()
-  rm(merged_gt)   # free memory before building metadata
+  rm(merged_gt)  # free memory before building metadata
 
   # variant metadata
   # source: first object (most-filtered, authoritative variant set).
@@ -135,24 +138,30 @@ vcf_bind_sparse <- function(...) {
   in_cmn <- vars_src$.row_id %in% common_ids
   vars_out <- vars_src[in_cmn, ]
   vars_out <- vars_out[order(vars_out$.row_id), ]
-  vars_out$.row_id  <- id_map[as.character(vars_out$.row_id)]
+  vars_out$.row_id  <- unname(id_map[as.character(vars_out$.row_id)])
   rownames(vars_out) <- NULL
 
   # info vector
-  # @info is parallel to @variants (same length, same order).
+  # @info is parallel to @variants (same length, same order)
   info_src <- vcfs[[1]]@info
-  info_vec <- if (length(info_src) == nrow(vars_src)) {
-    # select entries for common variants, in the same sorted order as vars_out
-    info_src[in_cmn][order(vars_src$.row_id[in_cmn])]
-  } else {
-    character(n_common)  # fallback: empty info
-  }
+  if (length(info_src) != nrow(vars_src))
+    cli::cli_abort(c(
+      "@info length ({length(info_src)}) does not match @variants length \\
+       ({nrow(vars_src)}) for the first VCFArrow object.",
+      "i" = "@info appears to be misaligned with @variants — likely from \\
+             filtering performed before the @info alignment fix in \\
+             vcf_filter_rows() was applied.",
+      "i" = "One-time repair: vcf@info <- vcf@info[vcf@variants$.row_id], \\
+             then retry vcf_bind_sparse()."
+    ))
+
+  info_vec <- info_src[in_cmn][order(vars_src$.row_id[in_cmn])]
 
   # FORMAT lookup
   fmt_src <- as.data.frame(vcfs[[1]]@format)
   if (nrow(fmt_src) > 0L && ".row_id" %in% colnames(fmt_src)) {
     fmt_out <- fmt_src[fmt_src$.row_id %in% common_ids, , drop = FALSE]
-    fmt_out$.row_id <- id_map[as.character(fmt_out$.row_id)]
+    fmt_out$.row_id <- unname(id_map[as.character(fmt_out$.row_id)])
     fmt_out <- fmt_out[order(fmt_out$.row_id), ]
     rownames(fmt_out) <- NULL
   } else {
