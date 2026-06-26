@@ -39,7 +39,28 @@
 
   # Update variant metadata only.  @gt is NOT mutated — it stays as the
   # original open_dataset().  All read-time consumers filter via @variants$.row_id.
-  vcf_arrow@variants <- v[v$.row_id %in% keep, , drop = FALSE]
+  keep_mask <- v$.row_id %in% keep
+
+  vcf_arrow@variants <- v[keep_mask, , drop = FALSE]
+
+  # Keep @info positionally parallel to @variants going forward.
+  if (length(vcf_arrow@info) == nrow(v)) {
+    vcf_arrow@info <- vcf_arrow@info[keep_mask]
+  } else {
+    # @info was ALREADY misaligned coming into this call — almost certainly
+    # an object that was filtered before this fix existed. Subsetting it
+    # here with keep_mask would silently extract the WRONG entries (mask is
+    # sized for the current @variants, not whatever stale length @info is
+    # at). Leave @info untouched and warn loudly instead of corrupting it
+    # further. See the one-time repair snippet for how to fix such objects.
+    cli::cli_warn(c(
+      "@info length ({length(vcf_arrow@info)}) does not match @variants \\
+       length ({nrow(v)}) BEFORE filtering — @info is already misaligned \\
+       and was left untouched rather than risk corrupting it further.",
+      "i" = "This object was likely filtered before the @info alignment \\
+             fix was applied. See the one-time repair snippet."
+    ))
+  }
 
   return(vcf_arrow)
 }
