@@ -33,7 +33,7 @@ set_vcf_groups <- function(vcf_arrow, data_path, strt = "strata") {
   }
 
   # read sample to group assignment
-  strata_df <- read.table(paste0(data_path, strt), header = TRUE) |>
+  strata_df <- read.table(file.path(data_path, strt), header = TRUE) |>
     tibble::as_tibble() |>
     dplyr::mutate(id = as.character(id))
 
