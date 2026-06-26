@@ -42,12 +42,12 @@ library(VCFArrow)
 library(dplyr)
 
 # set path to example files and project name
-data_path <- paste0(system.file("extdata", package="VCFArrow"), "/")
+data_path <- system.file("extdata", package="VCFArrow")
 project <- "crocs_"
 postfix <- "discosnp_sub"
 
 # load vcf and assign individuals to groups based on 'strata'
-vcf <- read_vcf(paste0(data_path, project, postfix, ".vcf.gz")) |>
+vcf <- read_vcf(file.path(data_path, paste0(project, postfix, ".vcf.gz"))) |>
   set_vcf_groups(data_path)
 
 # visualize the VCFArrow object
@@ -55,7 +55,7 @@ vcf
 
 # read individuals to include
 # if indivs is blank, the default is to use all individuals
-indivs <- read.table(paste0(data_path, "indivs_b"), header = TRUE)$id
+indivs <- read.table(file.path(data_path, "indivs_b"), header = TRUE)$id
   
 # check if all samples are in VCF sample names
 if (any(!(indivs %in% vcf@samples))) stop(paste("Some individuals in list not in VCF"))
@@ -65,7 +65,7 @@ if (any(!(indivs %in% vcf@samples))) stop(paste("Some individuals in list not in
 
 ## Assessment of Missing Data
 
-The function `assess_vcf_missing_data()` is used to generate a table and graph of missing data for each sample in a VCFArrow object. It is useful for visualizing data before and after filtering to evaluate the effect of filtering. The function accepts parameters which form part of the name of the output file. The idea is that the output file name contains information on the name of the project (project), how the VCF was extracted (postfix), and how it was filtered (fltr). The "postfix" and "fltr" can be left blank if the VCF name does not contain this information. Samples are ordered and colored by group assignment. The 'details' flag is species whether or not filtering information is presented in the figure or if only the species name is reported. The default is to report species name only.
+The function `assess_vcf_missing_data()` is used to generate a table and graph of missing data for each sample in a VCFArrow object. It is useful for visualizing data before and after filtering to evaluate the effect of filtering. The function accepts parameters which form part of the name of the output file. The idea is that the output file name contains information on the name of the project (project), how the VCF was extracted (postfix), and how it was filtered (fltr). The 'postfix' and 'fltr' can be left blank if the VCF name does not contain this information. Samples are ordered and colored by group assignment. The 'details' flag specifies whether or not filtering information is presented in the figure or if only the species name is reported. The default is to report species name and details.
 
 ```{r} 
 # define results path
@@ -75,7 +75,8 @@ species <- "Paleosuchus/Caiman"
 # filter - filter parameters in file name
 fltr <- ""
 
-assess_vcf_missing_data(vcf, res_path, species, paste0(project, postfix, fltr), details = TRUE)
+assess_vcf_missing_data(vcf, res_path, species, paste0(project, postfix, fltr))
+assess_vcf_coverage(vcf, res_path, species, paste0(project, postfix, fltr))
 
 ```
 
@@ -125,7 +126,7 @@ Filtering consists of removing samples and variants based on specific properties
 vcf_oneSNP <- vcf_extract_samples(vcf, indivs) %>%
   vcf_filter_missing(.8) |>
   vcf_filter_maf(.03) |>
-  vcf_filter_coverage(6) |>
+  vcf_filter_coverage(10) |>
   vcf_filter_oneSNV() |>
   vcf_filter_missingness(.2) |>
   vcf_filter_missing(.3)
@@ -134,7 +135,7 @@ vcf_oneSNP <- vcf_extract_samples(vcf, indivs) %>%
 vcf_multiSNP <- vcf_extract_samples(vcf, indivs) |>
   vcf_filter_missing(.8) |>
   vcf_filter_maf(.03) |>
-  vcf_filter_coverage(6) |>
+  vcf_filter_coverage(10) |>
   vcf_filter_multiSNV() |>
   vcf_filter_missingness(.2) |>
   vcf_filter_missing(.3)
@@ -143,7 +144,7 @@ vcf_multiSNP <- vcf_extract_samples(vcf, indivs) |>
 
 ### Extracting, merging and adding
 
-The functions `vcf__merge_bind()`, `vcf_bind_sparse()`, `vcf_extract_samples()` and `vcf_extract_groups()` are used to merge two or more VCFArrow objects, and to extract samples/groups of samples from a VCFArrow objects storing them in a separate VCFArrow object. 
+The functions `vcf_merge_bind()`, `vcf_bind_sparse()`, `vcf_extract_samples()` and `vcf_extract_groups()` are used to merge two or more VCFArrow objects, and to extract samples/groups of samples from a VCFArrow objects storing them in a separate VCFArrow object. 
 
 ```{r} 
 # extract individuals from VCFArrow object (keep all loci)
@@ -163,7 +164,7 @@ vcf1 <- vcf_bind(vcf_ingrp, vcf_outgrp)
 
 ### Filtering with outgroup
 
-Outgroups, which tend to have many fewer individuals than ingroups, also have more missing data than ingroups due to phylogenetic effects. Filtering the entire dataset often results in the removal of the outgroup taxa when `vcf_filter_missing()` is used during filtering to remove individuals with % missing data above some threshold.The solution is to extract the outgroup taxa with `vcf_extract_samples()` or `vcf_extract_groups()`, filter the ingroup VCFArrow object, and add the outgroup taxa with `vcf_bind()`. It is important to NOT filter invariant loci during the filtering of the ingroup, and only filter invariants from the final datasets after the outgroups have been bound. 
+Outgroups, which tend to have many fewer individuals than ingroups, also have more missing data than ingroups due to phylogenetic effects. Filtering the entire dataset often results in the removal of the outgroup taxa when `vcf_filter_missing()` is used during filtering to remove individuals with % missing data above some threshold.The solution is to extract the outgroup taxa with `vcf_extract_samples()` or `vcf_extract_groups()`, filter the ingroup VCFArrow object, and add the outgroup taxa with `vcf_bind_sparse()`. It is important to NOT filter invariant loci during the filtering of the ingroup, and only filter invariants from the final datasets after the outgroups have been bound. 
 
 ```{r} 
 # extract outgroup from VCFArrow (keep all loci)
@@ -173,8 +174,7 @@ vcf_outgrp <- vcf_extract_groups(vcf, groups1, f_invar = FALSE)
 # filter ingroup VCFArrow for filtering then bind outgroups
 vcf1 <- vcf_extract_groups(vcf, groups1, keep = FALSE, f_invar = FALSE) |>
   vcf_filter_missing(.8, f_invar = FALSE) |>
-  vcf_filter_maf(.03) |>
-  vcf_filter_coverage(6) |>
+  vcf_filter_coverage(10) |>
   vcf_filter_oneSNV() |>
   vcf_filter_missingness(.2) |>
   vcf_filter_missing(.3, f_invar = FALSE) |>
@@ -201,42 +201,44 @@ vcf <- vcf_oneSNP
 ##########
 # export data formats
 # migrate-n https://peterbeerli.com/migrate-html5/
-vcf2migrate(vcf, out_file = paste0(res_path, project, postfix, fltr, '_migrate.txt'))
+vcf2migrate(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_migrate.txt')))
 # arlequin http://cmpg.unibe.ch/software/arlequin35/
-vcf2arlequin(vcf, out_file = paste0(res_path, project, postfix, fltr, '.arp'))
+vcf2arlequin(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.arp')))
 # structure https://web.stanford.edu/group/pritchardlab/structure.html
-vcf2structure(vcf, out_file = paste0(res_path, project, postfix, fltr, '.str'))
+vcf2structure(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.str')))
 # faststucture http://rajanil.github.io/fastStructure/
-vcf2structure(vcf, out_file = paste0(res_path, project, postfix, fltr, '.fstr'), method = "F")
+vcf2structure(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.fstr')), method = "F")
+# sNMF http://membres-timc.imag.fr/Olivier.Francois/snmf/index.htm
+vcf2snmf(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.geno')))
 # genepop https://gitlab.mbb.univ-montp2.fr/francois/genepop
-vcf2genepop(vcf, out_file = paste0(res_path, project, postfix, fltr, '.gen'))
+vcf2genepop(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.gen')))
 # smartsnp https://github.com/ChristianHuber/smartsnp
-vcf2smartsnp(vcf, out_file = paste0(res_path, project, postfix, fltr, '.smartsnp'))
+vcf2smartsnp(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.smartsnp')))
 # eigenstrat https://github.com/DReichLab/EIG/tree/master
-vcf2eigenstrat(vcf, out_file = paste0(res_path, project, postfix, fltr, '_eigenstrat'))
+vcf2eigenstrat(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_eigenstrat')))
 # bayescan https://github.com/mfoll/BayeScan
-vcf2bayescan(vcf, out_file = paste0(res_path, project, postfix, fltr, '.bayescan'))
+vcf2bayescan(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.bayescan')))
 # bayesass https://github.com/brannala/BA3
-vcf2bayesass(vcf, out_file = paste0(res_path, project, postfix, fltr, '.bayesass'))
+vcf2bayesass(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.bayesass')))
 # treemix https://bitbucket.org/nygcresearch/treemix/wiki/Home
-vcf2treemix(vcf, out_file = paste0(res_path, project, postfix, fltr, '.treemix'))
+vcf2treemix(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.treemix')))
 # apparent https://github.com/halelab/apparent/tree/master
-vcf2apparent(vcf, out_file = paste0(res_path, project, postfix, fltr, '.apparent'))
+vcf2apparent(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.apparent')))
 # related https://github.com/timothyfrasier/related
-vcf2related(vcf, out_file = paste0(res_path, project, postfix, fltr, '.related'))
+vcf2related(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.related')))
 # long tidy dataframe of genotypes
-vcf2gt_long(vcf, out_file = paste0(res_path, project, postfix, fltr, '.csv'), format = 'csv')
+vcf2gt_long(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.csv')), format = 'csv')
 # snapp https://www.beast2.org/snapp/
-vcf2snapp(vcf, out_file = paste0(res_path, project, postfix, fltr, '_snapp.nex'))
+vcf2snapp(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_snapp.nex')))
 # nexus - only SNPs, meant for SDVq analyses https://www.asc.ohio-state.edu/kubatko.2/software/SVDquartets/
-vcf2nexus(vcf, out_file = paste0(res_path, project, postfix, fltr, '_sdvq.nex'))
+vcf2nexus(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_sdvq.nex')))
 # fasta https://www.ncbi.nlm.nih.gov/genbank/fastaformat/
-vcf2fasta(vcf, out_file = paste0(res_path, project, postfix, fltr, '.fna'))
+vcf2fasta(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.fna')))
 
 # genlight object https://www.rdocumentation.org/packages/adegenet/versions/2.0.0/topics/genlight-class
 genlight <- vcf2genlight(vcf)
 # genlight object with an optional save
-genlight <- vcf2genlight(vcf, out_file = paste0(res_path, project, postfix, fltr, '_genlight.rds'), save = TRUE)
+genlight <- vcf2genlight(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_genlight.rds'), save = TRUE))
 
 ##########
 # datasets for analyses with linked SNPs
@@ -245,6 +247,6 @@ vcf <- vcf_multiSNP
 ##########
 # export data formats
 # fineRadStructure - expects VCF of linked SNPs
-vcf2fineradstructure(vcf, out_file = paste0(res_path, project, postfix, fltr, '.finerad'))
+vcf2fineradstructure(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.finerad')))
 
 ```

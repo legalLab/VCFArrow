@@ -43,12 +43,12 @@ library(VCFArrow)
 library(dplyr)
 
 # set path to example files and project name
-data_path <- paste0(system.file("extdata", package="VCFArrow"), "/")
+data_path <- system.file("extdata", package="VCFArrow")
 project <- "crocs_"
 postfix <- "discosnp_sub"
 
 # load vcf and assign individuals to groups based on 'strata'
-vcf <- read_vcf(paste0(data_path, project, postfix, ".vcf.gz")) |>
+vcf <- read_vcf(file.path(data_path, paste0(project, postfix, ".vcf.gz"))) |>
   set_vcf_groups(data_path)
 #> ℹ VCF is being read in chunks of 50000 variants
 #> ✔ VCF successfully read into a VCFArrow object
@@ -68,7 +68,7 @@ vcf
 #> Phased genotypes: FALSE 
 #> 
 #> Storage:
-#>   Path: /tmp/Rtmp486OmM/arrow_vcf_2e60338573d9d 
+#>   Path: /tmp/Rtmp486OmM/arrow_vcf_2e603315c993c 
 #> 
 #> Genotype storage (Arrow):
 #> FileSystemDataset with 1 Feather file
@@ -121,7 +121,7 @@ vcf
 
 # read individuals to include
 # if indivs is blank, the default is to use all individuals
-indivs <- read.table(paste0(data_path, "indivs_b"), header = TRUE)$id
+indivs <- read.table(file.path(data_path, "indivs_b"), header = TRUE)$id
   
 # check if all samples are in VCF sample names
 if (any(!(indivs %in% vcf@samples))) stop(paste("Some individuals in list not in VCF"))
@@ -135,12 +135,12 @@ for visualizing data before and after filtering to evaluate the effect
 of filtering. The function accepts parameters which form part of the
 name of the output file. The idea is that the output file name contains
 information on the name of the project (project), how the VCF was
-extracted (postfix), and how it was filtered (fltr). The “postfix” and
-“fltr” can be left blank if the VCF name does not contain this
+extracted (postfix), and how it was filtered (fltr). The ‘postfix’ and
+‘fltr’ can be left blank if the VCF name does not contain this
 information. Samples are ordered and colored by group assignment. The
-‘details’ flag is species whether or not filtering information is
+‘details’ flag specifies whether or not filtering information is
 presented in the figure or if only the species name is reported. The
-default is to report species name only.
+default is to report species name and details.
 
 ``` r
 # define results path
@@ -150,7 +150,8 @@ species <- "Paleosuchus/Caiman"
 # filter - filter parameters in file name
 fltr <- ""
 
-assess_vcf_missing_data(vcf, res_path, species, paste0(project, postfix, fltr), details = TRUE)
+assess_vcf_missing_data(vcf, res_path, species, paste0(project, postfix, fltr))
+assess_vcf_coverage(vcf, res_path, species, paste0(project, postfix, fltr))
 ```
 
 ## Basic stats for individuals in VCF
@@ -254,7 +255,7 @@ linked SNVs.
 vcf_oneSNP <- vcf_extract_samples(vcf, indivs) %>%
   vcf_filter_missing(.8) |>
   vcf_filter_maf(.03) |>
-  vcf_filter_coverage(6) |>
+  vcf_filter_coverage(10) |>
   vcf_filter_oneSNV() |>
   vcf_filter_missingness(.2) |>
   vcf_filter_missing(.3)
@@ -267,21 +268,20 @@ vcf_oneSNP <- vcf_extract_samples(vcf, indivs) %>%
 #> ℹ Applying MAF filter
 #> ℹ Retained 9927 / 9927 variants (MAF >= 0.03)
 #> ℹ Applying read coverage filter
-#> ℹ Retained 6548 / 9927 variants (polymorphic with DP >= 6)
+#> ℹ Retained 2923 / 9927 variants (polymorphic with DP >= 10)
 #> ℹ Applying unlinked SNV filter
 #> ℹ Applying locus missingness filter
-#> ℹ Retained 605 / 3833 variants (per-variant missingness <= 0.2)
+#> ℹ Retained 514 / 1683 variants (per-variant missingness <= 0.2)
 #> ℹ Applying sample missingness filter
 #> ℹ Applying invariant filter
-#> ℹ Removed 2 invariant variants; 603 retained.
-#> ℹ Removed samples: CTGA_H4667 and CTGA_H4647
-#> ℹ Variants retained: 603 | Samples retained: 13
+#> ℹ Removed samples: CTGA_H4667 and CTGA_H4669
+#> ℹ Variants retained: 514 | Samples retained: 13
 
 # filter VCF for analyses (linked SNPs)
 vcf_multiSNP <- vcf_extract_samples(vcf, indivs) |>
   vcf_filter_missing(.8) |>
   vcf_filter_maf(.03) |>
-  vcf_filter_coverage(6) |>
+  vcf_filter_coverage(10) |>
   vcf_filter_multiSNV() |>
   vcf_filter_missingness(.2) |>
   vcf_filter_missing(.3)
@@ -294,19 +294,19 @@ vcf_multiSNP <- vcf_extract_samples(vcf, indivs) |>
 #> ℹ Applying MAF filter
 #> ℹ Retained 9927 / 9927 variants (MAF >= 0.03)
 #> ℹ Applying read coverage filter
-#> ℹ Retained 6548 / 9927 variants (polymorphic with DP >= 6)
+#> ℹ Retained 2923 / 9927 variants (polymorphic with DP >= 10)
 #> ℹ Applying linked SNV filter
 #> ℹ Applying locus missingness filter
-#> ℹ Retained 642 / 4359 variants (per-variant missingness <= 0.2)
+#> ℹ Retained 548 / 1974 variants (per-variant missingness <= 0.2)
 #> ℹ Applying sample missingness filter
 #> ℹ Applying invariant filter
 #> ℹ Removed samples: CTGA_H4667 and CTGA_H4669
-#> ℹ Variants retained: 642 | Samples retained: 13
+#> ℹ Variants retained: 548 | Samples retained: 13
 ```
 
 ### Extracting, merging and adding
 
-The functions `vcf__merge_bind()`, `vcf_bind_sparse()`,
+The functions `vcf_merge_bind()`, `vcf_bind_sparse()`,
 `vcf_extract_samples()` and `vcf_extract_groups()` are used to merge two
 or more VCFArrow objects, and to extract samples/groups of samples from
 a VCFArrow objects storing them in a separate VCFArrow object.
@@ -343,9 +343,9 @@ outgroup taxa when `vcf_filter_missing()` is used during filtering to
 remove individuals with % missing data above some threshold.The solution
 is to extract the outgroup taxa with `vcf_extract_samples()` or
 `vcf_extract_groups()`, filter the ingroup VCFArrow object, and add the
-outgroup taxa with `vcf_bind()`. It is important to NOT filter invariant
-loci during the filtering of the ingroup, and only filter invariants
-from the final datasets after the outgroups have been bound.
+outgroup taxa with `vcf_bind_sparse()`. It is important to NOT filter
+invariant loci during the filtering of the ingroup, and only filter
+invariants from the final datasets after the outgroups have been bound.
 
 ``` r
 # extract outgroup from VCFArrow (keep all loci)
@@ -357,8 +357,7 @@ vcf_outgrp <- vcf_extract_groups(vcf, groups1, f_invar = FALSE)
 # filter ingroup VCFArrow for filtering then bind outgroups
 vcf1 <- vcf_extract_groups(vcf, groups1, keep = FALSE, f_invar = FALSE) |>
   vcf_filter_missing(.8, f_invar = FALSE) |>
-  vcf_filter_maf(.03) |>
-  vcf_filter_coverage(6) |>
+  vcf_filter_coverage(10) |>
   vcf_filter_oneSNV() |>
   vcf_filter_missingness(.2) |>
   vcf_filter_missing(.3, f_invar = FALSE) |>
@@ -369,19 +368,16 @@ vcf1 <- vcf_extract_groups(vcf, groups1, keep = FALSE, f_invar = FALSE) |>
 #> ℹ Applying sample missingness filter
 #> ℹ Removed samples: CTGA_H4663 and CTGA_H4668
 #> ℹ Variants retained: 10000 | Samples retained: 10
-#> ℹ Applying MAF filter
-#> ℹ Retained 328 / 10000 variants (MAF >= 0.03)
 #> ℹ Applying read coverage filter
-#> ℹ Retained 94 / 328 variants (polymorphic with DP >= 6)
+#> ℹ Retained 19 / 10000 variants (polymorphic with DP >= 10)
 #> ℹ Applying unlinked SNV filter
 #> ℹ Applying locus missingness filter
-#> ℹ Retained 8 / 86 variants (per-variant missingness <= 0.2)
+#> ℹ Retained 2 / 17 variants (per-variant missingness <= 0.2)
 #> ℹ Applying sample missingness filter
 #> ℹ Removed samples: CTGA_H4667
-#> ℹ Variants retained: 8 | Samples retained: 9
-#> ℹ Binding 2 VCFArrow objects: 8 common variants, 14 total samples.
+#> ℹ Variants retained: 2 | Samples retained: 9
+#> ℹ Binding 2 VCFArrow objects: 2 common variants, 14 total samples.
 #> ℹ Applying invariant filter
-#> Warning: Invalid metadata$r
 ```
 
 ## Converting a VCF file to other population genetic and phylogenetic formats
@@ -409,92 +405,95 @@ vcf <- vcf_oneSNP
 ##########
 # export data formats
 # migrate-n https://peterbeerli.com/migrate-html5/
-vcf2migrate(vcf, out_file = paste0(res_path, project, postfix, fltr, '_migrate.txt'))
-#> ℹ Accumulating Migrate-N (S): 603 variants x 13 samples (0 MiB raw storage)
-#> ℹ Writing Migrate-N (S): 603 variants x 13 samples, 7 blocks...
+vcf2migrate(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_migrate.txt')))
+#> ℹ Accumulating Migrate-N (S): 514 variants x 13 samples (0 MiB raw storage)
+#> ℹ Writing Migrate-N (S): 514 variants x 13 samples, 6 blocks...
 #> ✔ Migrate-N file written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/trigonatus_discosnp_sub_migrate.txt'
 # arlequin http://cmpg.unibe.ch/software/arlequin35/
-vcf2arlequin(vcf, out_file = paste0(res_path, project, postfix, fltr, '.arp'))
-#> ℹ Accumulating Arlequin: 603 variants x 13 samples (0 MiB raw storage)
+vcf2arlequin(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.arp')))
+#> ℹ Accumulating Arlequin: 514 variants x 13 samples (0 MiB raw storage)
 #> ℹ Writing Arlequin file...
 #> ✔ Arlequin file written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/trigonatus_discosnp_sub.arp'
 # structure https://web.stanford.edu/group/pritchardlab/structure.html
-vcf2structure(vcf, out_file = paste0(res_path, project, postfix, fltr, '.str'))
-#> ℹ Accumulating Structure: 603 variants x 13 samples (0 MiB raw storage)
+vcf2structure(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.str')))
+#> ℹ Accumulating Structure: 514 variants x 13 samples (0 MiB raw storage)
 #> ℹ Writing Structure file...
 #> ✔ Structure file written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/trigonatus_discosnp_sub.str'
 # faststucture http://rajanil.github.io/fastStructure/
-vcf2structure(vcf, out_file = paste0(res_path, project, postfix, fltr, '.fstr'), method = "F")
-#> ℹ Accumulating Structure: 603 variants x 13 samples (0 MiB raw storage)
+vcf2structure(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.fstr')), method = "F")
+#> ℹ Accumulating Structure: 514 variants x 13 samples (0 MiB raw storage)
 #> ℹ Writing Structure file...
 #> ✔ Structure file written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/trigonatus_discosnp_sub.fstr'
+# sNMF http://membres-timc.imag.fr/Olivier.Francois/snmf/index.htm
+vcf2snmf(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.geno')))
+#> ℹ Writing sNMF .geno: 514 variants x 13 samples
+#> ✔ sNMF .geno file written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/trigonatus_discosnp_sub.geno'
 # genepop https://gitlab.mbb.univ-montp2.fr/francois/genepop
-vcf2genepop(vcf, out_file = paste0(res_path, project, postfix, fltr, '.gen'))
-#> ℹ Accumulating Genepop: 603 variants x 13 samples (0 MiB raw storage)
+vcf2genepop(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.gen')))
+#> ℹ Accumulating Genepop: 514 variants x 13 samples (0 MiB raw storage)
 #> ℹ Writing Genepop file...
 #> ✔ Genepop file written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/trigonatus_discosnp_sub.gen'
 # smartsnp https://github.com/ChristianHuber/smartsnp
-vcf2smartsnp(vcf, out_file = paste0(res_path, project, postfix, fltr, '.smartsnp'))
-#> ℹ Writing SmartSNP: 603 variants x 13 samples
+vcf2smartsnp(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.smartsnp')))
+#> ℹ Writing SmartSNP: 514 variants x 13 samples
 #> ✔ SmartSNP file written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/trigonatus_discosnp_sub.smartsnp'
 # eigenstrat https://github.com/DReichLab/EIG/tree/master
-vcf2eigenstrat(vcf, out_file = paste0(res_path, project, postfix, fltr, '_eigenstrat'))
-#> ℹ Writing EIGENSTRAT .geno: 603 variants x 13 samples...
+vcf2eigenstrat(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_eigenstrat')))
+#> ℹ Writing EIGENSTRAT .geno: 514 variants x 13 samples...
 #> ✔ EIGENSTRAT files written: '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/trigonatus_discosnp_sub_eigenstrat.geno', '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/trigonatus_discosnp_sub_eigenstrat.ind', '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/trigonatus_discosnp_sub_eigenstrat.snp'
 # bayescan https://github.com/mfoll/BayeScan
-vcf2bayescan(vcf, out_file = paste0(res_path, project, postfix, fltr, '.bayescan'))
-#> ℹ Accumulating BayesScan: 603 variants x 3 pops (0 MiB raw storage, vs 0 MiB with integer matrices)
+vcf2bayescan(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.bayescan')))
+#> ℹ Accumulating BayesScan: 514 variants x 3 pops (0 MiB raw storage, vs 0 MiB with integer matrices)
 #> ℹ Writing BayesScan file...
 #> ✔ BayesScan file written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/trigonatus_discosnp_sub.bayescan'
 # bayesass https://github.com/brannala/BA3
-vcf2bayesass(vcf, out_file = paste0(res_path, project, postfix, fltr, '.bayesass'))
-#> ℹ Accumulating BayesAss: 603 variants x 13 samples (0 MiB raw storage)
+vcf2bayesass(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.bayesass')))
+#> ℹ Accumulating BayesAss: 514 variants x 13 samples (0 MiB raw storage)
 #> ℹ Writing BayesAss file...
 #> ✔ BayesAss file written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/trigonatus_discosnp_sub.bayesass'
 # treemix https://bitbucket.org/nygcresearch/treemix/wiki/Home
-vcf2treemix(vcf, out_file = paste0(res_path, project, postfix, fltr, '.treemix'))
-#> ℹ Writing Treemix: 603 variants x 3 pops
+vcf2treemix(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.treemix')))
+#> ℹ Writing Treemix: 514 variants x 3 pops
 #> ✔ Treemix file written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/trigonatus_discosnp_sub.treemix'
 # apparent https://github.com/halelab/apparent/tree/master
-vcf2apparent(vcf, out_file = paste0(res_path, project, postfix, fltr, '.apparent'))
-#> ℹ Accumulating Apparent: 603 variants x 13 samples (0 MiB raw storage)
+vcf2apparent(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.apparent')))
+#> ℹ Accumulating Apparent: 514 variants x 13 samples (0 MiB raw storage)
 #> ℹ Writing Apparent file...
 #> ✔ Apparent file written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/trigonatus_discosnp_sub.apparent'
 # related https://github.com/timothyfrasier/related
-vcf2related(vcf, out_file = paste0(res_path, project, postfix, fltr, '.related'))
-#> ℹ Accumulating Related: 603 variants x 13 samples (0 MiB raw storage)
+vcf2related(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.related')))
+#> ℹ Accumulating Related: 514 variants x 13 samples (0 MiB raw storage)
 #> ℹ Writing Related file...
 #> ✔ Related file written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/trigonatus_discosnp_sub.related'
 # long tidy dataframe of genotypes
-vcf2gt_long(vcf, out_file = paste0(res_path, project, postfix, fltr, '.csv'), format = 'csv')
-#> ℹ Exporting gt_long: 603 variants x 13 samples -> '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/trigonatus_discosnp_sub.csv' (csv)
+vcf2gt_long(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.csv')), format = 'csv')
+#> ℹ Exporting gt_long: 514 variants x 13 samples -> '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/trigonatus_discosnp_sub.csv' (csv)
 #> ℹ Combining and writing...
 #> ✔ gt_long table written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/trigonatus_discosnp_sub.csv'
 # snapp https://www.beast2.org/snapp/
-vcf2snapp(vcf, out_file = paste0(res_path, project, postfix, fltr, '_snapp.nex'))
-#> ℹ Accumulating SNAPP: 603 variants x 13 samples (0 MiB raw storage)
+vcf2snapp(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_snapp.nex')))
+#> ℹ Accumulating SNAPP: 514 variants x 13 samples (0 MiB raw storage)
 #> ℹ Writing SNAPP file...
 #> ✔ SNAPP file written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/trigonatus_discosnp_sub_snapp.nex'
 # nexus - only SNPs, meant for SDVq analyses https://www.asc.ohio-state.edu/kubatko.2/software/SVDquartets/
-vcf2nexus(vcf, out_file = paste0(res_path, project, postfix, fltr, '_sdvq.nex'))
-#> ℹ Accumulating Nexus: 603 variants x 13 samples (0 MiB raw storage)
+vcf2nexus(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_sdvq.nex')))
+#> ℹ Accumulating Nexus: 514 variants x 13 samples (0 MiB raw storage)
 #> ℹ Writing Nexus file...
 #> ✔ Nexus file written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/trigonatus_discosnp_sub_sdvq.nex'
 # fasta https://www.ncbi.nlm.nih.gov/genbank/fastaformat/
-vcf2fasta(vcf, out_file = paste0(res_path, project, postfix, fltr, '.fna'))
-#> ℹ Accumulating FASTA: 603 variants x 13 samples (0 MiB raw storage)
+vcf2fasta(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.fna')))
+#> ℹ Accumulating FASTA: 514 variants x 13 samples (0 MiB raw storage)
 #> ℹ Writing FASTA file...
 #> ✔ FASTA file written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/trigonatus_discosnp_sub.fna'
 
 # genlight object https://www.rdocumentation.org/packages/adegenet/versions/2.0.0/topics/genlight-class
 genlight <- vcf2genlight(vcf)
-#> ℹ Accumulating Genlight: 603 variants x 13 samples (0 MiB raw storage)
+#> ℹ Accumulating Genlight: 514 variants x 13 samples (0 MiB raw storage)
 #> ℹ Building genlight object...
 # genlight object with an optional save
-genlight <- vcf2genlight(vcf, out_file = paste0(res_path, project, postfix, fltr, '_genlight.rds'), save = TRUE)
-#> ℹ Accumulating Genlight: 603 variants x 13 samples (0 MiB raw storage)
+genlight <- vcf2genlight(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_genlight.rds'), save = TRUE))
+#> ℹ Accumulating Genlight: 514 variants x 13 samples (0 MiB raw storage)
 #> ℹ Building genlight object...
-#> ✔ Genlight object saved to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/trigonatus_discosnp_sub_genlight.rds'
 
 ##########
 # datasets for analyses with linked SNPs
@@ -503,7 +502,7 @@ vcf <- vcf_multiSNP
 ##########
 # export data formats
 # fineRadStructure - expects VCF of linked SNPs
-vcf2fineradstructure(vcf, out_file = paste0(res_path, project, postfix, fltr, '.finerad'))
-#> ℹ Writing fineRADstructure: 642 variants x 13 samples
+vcf2fineradstructure(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.finerad')))
+#> ℹ Writing fineRADstructure: 548 variants x 13 samples
 #> ✔ fineRADstructure file written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/trigonatus_discosnp_sub.finerad'
 ```
