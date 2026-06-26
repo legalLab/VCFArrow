@@ -1,0 +1,35 @@
+Package: VCFArrow
+Title: VCFArrow: a fast and efficient R package for VCF manipulation and transformation
+Version: 0.2.0
+Date: 2026-06-25
+Authors@R: 
+    person("Tomas", "Hrbek", , "hrbek@evoamazon.net", role = c("aut", "cre", "cph"),
+           comment = c(ORCID = "0000-0003-3239-7068"))
+Maintainer: Tomas Hrbek <hrbek@evoamazon.net>
+Description: This package has six main functionalities: (1) reading in and writing out VCF data files, including precalculation of diverse metrics used in the filtering functions; (2) data filtering functions; (3) merging VCFs; (4) subsetting VCFs; (5) generation of summary statistics and graphs; and (6) data transformation and writing out of other data formats for posterior analyses.
+URL: https://legalLab.github.io/VCFArrow/
+BugReports: https://github.com/legalLab/VCFArrow/issues
+Language: en-US
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+LinkingTo: 
+    arrow,
+    Rcpp
+Imports: 
+    Rcpp,
+    arrow,
+    cli,
+    dplyr,
+    stringr,
+    ggplot2,
+    tibble,
+    adegenet
+SystemRequirements:
+    libarrow-dev (>= 10.0.0), libparquet-dev
+Config/roxygen2/version: 8.0.0
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
+RoxygenNote: 7.3.3
