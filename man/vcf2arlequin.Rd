@@ -23,9 +23,9 @@ Larger chunks result in faster writing speeds.
 If no groups are defined, the default behavior is to use all groups.
 }
 \examples{
-vcf2smartsnp(vcf_arrow = my_vcf, keep_groups = my_groups, out_file = "arlequin_infile.arp")
-vcf2smartsnp(vcf_arrow, my_groups, out_file = "arlequin_infile.arp")
-vcf2smartsnp(vcf_arrow)
+vcf2arlequin(vcf_arrow = my_vcf, keep_groups = my_groups, out_file = "arlequin_infile.arp")
+vcf2arlequin(vcf_arrow, my_groups, out_file = "arlequin_infile.arp")
+vcf2arlequin(vcf_arrow)
 
 }
 \author{

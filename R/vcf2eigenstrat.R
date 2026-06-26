@@ -9,7 +9,6 @@
 #' @param keep_groups -> groups to retain, default NULL (character)
 #' @param out_file -> name of file to output, default 'eigenstrat_infile' (character)
 #' @param sex -> sex of the individual, default = U (undefined) (character)
-#' @param rel_pos -> relative position along the chromosome in cM or similar, default = 0 (integer)
 #'
 #' @return NULL
 #'

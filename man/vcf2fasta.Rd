@@ -23,9 +23,9 @@ Larger chunks result in faster writing speeds.
 If no groups are defined, the default behavior is to use all groups.
 }
 \examples{
-vcf2nexus(vcf_arrow = my_vcf, keep_groups = my_groups, out_file = "fasta_infile.fas")
-vcf2nexus(vcf_arrow, my_groups, out_file = "fasta_infile.fas")
-vcf2nexus(vcf_arrow)
+vcf2fasta(vcf_arrow = my_vcf, keep_groups = my_groups, out_file = "fasta_infile.fas")
+vcf2fasta(vcf_arrow, my_groups, out_file = "fasta_infile.fas")
+vcf2fasta(vcf_arrow)
 
 }
 \author{

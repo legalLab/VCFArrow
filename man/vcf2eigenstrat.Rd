@@ -19,8 +19,6 @@ vcf2eigenstrat(
 \item{out_file}{-> name of file to output, default 'eigenstrat_infile' (character)}
 
 \item{sex}{-> sex of the individual, default = U (undefined) (character)}
-
-\item{rel_pos}{-> relative position along the chromosome in cM or similar, default = 0 (integer)}
 }
 \description{
 Converts a VCFArrow object to Eigenstrat format infile

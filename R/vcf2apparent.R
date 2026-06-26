@@ -30,12 +30,17 @@
 vcf2apparent <- function(vcf_arrow, keep_groups = NULL,
                          key = "All",
                          out_file = "apparent_infile.txt") {
+
   setup <- .vcf_export_setup(vcf_arrow, keep_groups)
-  acc   <- .accumulate_individuals(setup, "Apparent")
+  acc <- .accumulate_individuals(setup, "Apparent")
+
   cli::cli_alert_info("Writing Apparent file...")
+
   write_apparent_cpp(acc$a1, acc$a2,
                      setup$variants$REF, setup$variants$ALT,
                      setup$samples, key, out_file)
+
   cli::cli_alert_success("Apparent file written to {.file {out_file}}")
+
   invisible(vcf_arrow)
 }

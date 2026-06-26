@@ -27,9 +27,9 @@ Larger chunks result in faster writing speeds.
 If no groups are defined, the default behavior is to use all groups.
 }
 \examples{
-vcf2smartsnp(vcf_arrow = my_vcf, keep_groups = my_groups, out_file = "bayesass3_infile.immanc")
-vcf2smartsnp(vcf_arrow, my_groups, out_file = "bayesass3_infile.immanc")
-vcf2smartsnp(vcf_arrow)
+vcf2bayesass(vcf_arrow = my_vcf, keep_groups = my_groups, out_file = "bayesass3_infile.immanc")
+vcf2bayesass(vcf_arrow, my_groups, out_file = "bayesass3_infile.immanc")
+vcf2bayesass(vcf_arrow)
 
 }
 \author{

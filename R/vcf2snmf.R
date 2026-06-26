@@ -1,28 +1,26 @@
-#' @title vcf2apparent
+#' @title vcf2snmf
 #'
 #' @description
-#' Converts a VCFArrow object to an Apparent format infile
+#' Converts a VCFArrow object to an sNMF format infile
 #'
 #' @author Tomas Hrbek May 2026
 #'
 #' @param vcf_arrow -> VCFArrow object
 #' @param keep_groups -> groups to retain, default NULL (character)
-#' @param key -> relationship type (All, Pa, Mo, Fa, Off), default All (character)
-#' @param out_file -> name of file to output, default 'apparent_infile.txt' (character)
+#' @param out_file -> name of file to output, default 'snmf_infile.geno' (character)
 #'
 #' @return NULL
 #'
 #' @details
-#' This function converts a VCFArrow object to an external SmartSNP formatted file.
+#' This function converts a VCFArrow object to an external sNMF formatted file.
 #' Writing occurs in chunks whose size is determined by the read_vcf() function.
 #' Larger chunks result in faster writing speeds.
 #' If no groups are defined, the default behavior is to use all groups.
-#' Possible relationships defined by the parameter 'kee' are All, Pa, Mo, Fa, Off.
 #'
 #' @examples
-#' vcf2apparent(vcf_arrow = my_vcf, keep_groups = my_groups, key = my_key, out_file = "apparent_infile.txt")
-#' vcf2apparent(vcf_arrow, my_groups, my_key, out_file = "apparent_infile.txt")
-#' vcf2apparent(vcf_arrow)
+#' vcf2snmf(vcf_arrow = my_vcf, keep_groups = my_groups, out_file = "snmf_infile.geno")
+#' vcf2snmf(vcf_arrow, my_groups, out_file = "snmf_infile.geno")
+#' vcf2snmf(vcf_arrow)
 #'
 #' @export
 #'
