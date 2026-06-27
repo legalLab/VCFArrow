@@ -68,7 +68,7 @@ vcf
 #> Phased genotypes: FALSE 
 #> 
 #> Storage:
-#>   Path: /tmp/Rtmp486OmM/arrow_vcf_2e603315c993c 
+#>   Path: /tmp/Rtmp486OmM/arrow_vcf_2e6035e75384c 
 #> 
 #> Genotype storage (Arrow):
 #> FileSystemDataset with 1 Feather file
@@ -407,7 +407,7 @@ vcf <- vcf_oneSNP
 # migrate-n https://peterbeerli.com/migrate-html5/
 vcf2migrate(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_migrate.txt')))
 #> ℹ Accumulating Migrate-N (S): 514 variants x 13 samples (0 MiB raw storage)
-#> ℹ Writing Migrate-N (S): 514 variants x 13 samples, 6 blocks...
+#> ℹ Writing Migrate-N (S) file...
 #> ✔ Migrate-N file written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/trigonatus_discosnp_sub_migrate.txt'
 # arlequin http://cmpg.unibe.ch/software/arlequin35/
 vcf2arlequin(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.arp')))
@@ -426,8 +426,9 @@ vcf2structure(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr,
 #> ✔ Structure file written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/trigonatus_discosnp_sub.fstr'
 # sNMF http://membres-timc.imag.fr/Olivier.Francois/snmf/index.htm
 vcf2snmf(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.geno')))
-#> ℹ Writing sNMF .geno: 514 variants x 13 samples
-#> ✔ sNMF .geno file written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/trigonatus_discosnp_sub.geno'
+#> ℹ Formatting sNMF: 514 variants x 13 samples (0 MiB raw storage)
+#> ℹ Writing sNMF file...
+#> ✔ sNMF file written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/trigonatus_discosnp_sub.geno'
 # genepop https://gitlab.mbb.univ-montp2.fr/francois/genepop
 vcf2genepop(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.gen')))
 #> ℹ Accumulating Genepop: 514 variants x 13 samples (0 MiB raw storage)
@@ -435,12 +436,14 @@ vcf2genepop(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '
 #> ✔ Genepop file written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/trigonatus_discosnp_sub.gen'
 # smartsnp https://github.com/ChristianHuber/smartsnp
 vcf2smartsnp(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.smartsnp')))
-#> ℹ Writing SmartSNP: 514 variants x 13 samples
+#> ℹ Building SmartSNP: 514 variants x 13 samples (0 MiB raw storage)
+#> ℹ Writing SmartSNP file...
 #> ✔ SmartSNP file written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/trigonatus_discosnp_sub.smartsnp'
 # eigenstrat https://github.com/DReichLab/EIG/tree/master
 vcf2eigenstrat(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_eigenstrat')))
-#> ℹ Writing EIGENSTRAT .geno: 514 variants x 13 samples...
-#> ✔ EIGENSTRAT files written: '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/trigonatus_discosnp_sub_eigenstrat.geno', '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/trigonatus_discosnp_sub_eigenstrat.ind', '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/trigonatus_discosnp_sub_eigenstrat.snp'
+#> ℹ Building EIGENSTRAT: 514 variants x 13  (0 MiB raw storage)
+#> ℹ Writing EIGENSTRAT files...
+#> ✔ EIGENSTRAT files written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/trigonatus_discosnp_sub_eigenstrat.geno', '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/trigonatus_discosnp_sub_eigenstrat.ind', '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/trigonatus_discosnp_sub_eigenstrat.snp'
 # bayescan https://github.com/mfoll/BayeScan
 vcf2bayescan(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.bayescan')))
 #> ℹ Accumulating BayesScan: 514 variants x 3 pops (0 MiB raw storage, vs 0 MiB with integer matrices)
@@ -453,7 +456,8 @@ vcf2bayesass(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, 
 #> ✔ BayesAss file written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/trigonatus_discosnp_sub.bayesass'
 # treemix https://bitbucket.org/nygcresearch/treemix/wiki/Home
 vcf2treemix(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.treemix')))
-#> ℹ Writing Treemix: 514 variants x 3 pops
+#> ℹ Building Treemix: 514 variants x 3 pops (0 MiB raw storage)
+#> ℹ Writing Treemix file...
 #> ✔ Treemix file written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/trigonatus_discosnp_sub.treemix'
 # apparent https://github.com/halelab/apparent/tree/master
 vcf2apparent(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.apparent')))
@@ -467,15 +471,15 @@ vcf2related(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '
 #> ✔ Related file written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/trigonatus_discosnp_sub.related'
 # long tidy dataframe of genotypes
 vcf2gt_long(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.csv')), format = 'csv')
-#> ℹ Exporting gt_long: 514 variants x 13 samples -> '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/trigonatus_discosnp_sub.csv' (csv)
-#> ℹ Combining and writing...
+#> ℹ Building gt_long: 514 variants x 13 samples (0 MiB raw storage)
+#> ℹ Combining and writing GT long table...
 #> ✔ gt_long table written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/trigonatus_discosnp_sub.csv'
 # snapp https://www.beast2.org/snapp/
 vcf2snapp(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_snapp.nex')))
 #> ℹ Accumulating SNAPP: 514 variants x 13 samples (0 MiB raw storage)
 #> ℹ Writing SNAPP file...
 #> ✔ SNAPP file written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/trigonatus_discosnp_sub_snapp.nex'
-# nexus - only SNPs, meant for SDVq analyses https://www.asc.ohio-state.edu/kubatko.2/software/SVDquartets/
+# nexus - only SNPs, meant for SVDq analyses https://www.asc.ohio-state.edu/kubatko.2/software/SVDquartets/
 vcf2nexus(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_sdvq.nex')))
 #> ℹ Accumulating Nexus: 514 variants x 13 samples (0 MiB raw storage)
 #> ℹ Writing Nexus file...
@@ -489,11 +493,13 @@ vcf2fasta(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.f
 # genlight object https://www.rdocumentation.org/packages/adegenet/versions/2.0.0/topics/genlight-class
 genlight <- vcf2genlight(vcf)
 #> ℹ Accumulating Genlight: 514 variants x 13 samples (0 MiB raw storage)
-#> ℹ Building genlight object...
+#> ℹ Building Genlight object...
 # genlight object with an optional save
-genlight <- vcf2genlight(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_genlight.rds'), save = TRUE))
+genlight <- vcf2genlight(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_genlight.rds')), save = TRUE)
 #> ℹ Accumulating Genlight: 514 variants x 13 samples (0 MiB raw storage)
-#> ℹ Building genlight object...
+#> ℹ Building Genlight object...
+#> ℹ Writing Genlight object...
+#> ✔ Genlight object written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/trigonatus_discosnp_sub_genlight.rds'
 
 ##########
 # datasets for analyses with linked SNPs
