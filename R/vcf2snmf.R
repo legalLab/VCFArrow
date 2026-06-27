@@ -34,7 +34,9 @@ vcf2snmf <- function(vcf_arrow, keep_groups = NULL,
   # before the first chunk call
   file.create(out_file)
 
-  cli::cli_alert_info("Writing sNMF .geno: {setup$n_var} variant{?s} x {setup$n_samples} sample{?s}")
+  cli::cli_alert_info("Formatting sNMF: {setup$n_var} variants x {setup$n_samples} samples \\
+    ({.strong {format(round(2 * setup$n_var * setup$n_samples / 1024^2), big.mark=',')}} MiB raw storage)")
+  cli::cli_alert_info("Writing sNMF file...")
   cli::cli_progress_bar("Writing chunk", total = length(setup$feather_files))
 
   for (fpath in setup$feather_files) {
@@ -48,7 +50,7 @@ vcf2snmf <- function(vcf_arrow, keep_groups = NULL,
   }
 
   cli::cli_progress_done()
-  cli::cli_alert_success("sNMF .geno file written to {.file {out_file}}")
+  cli::cli_alert_success("sNMF file written to {.file {out_file}}")
 
   invisible(vcf_arrow)
 }

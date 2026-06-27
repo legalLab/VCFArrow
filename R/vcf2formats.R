@@ -378,7 +378,9 @@
   alt <- matrix(0L, nrow = setup$n_pops, ncol = setup$n_var)
   nobs <- matrix(0L, nrow = setup$n_pops, ncol = setup$n_var)
   cli::cli_alert_info(
-    "Accumulating {label}: {setup$n_var} variants x {setup$n_pops} pops"
+    "Accumulating {label}: {setup$n_var} variants x {setup$n_pops} pops \\
+     ({.strong {format(round(12 * n_pops * n_var / 1024^2), big.mark=',')}} MiB \\
+     raw storage)"
   )
   cli::cli_progress_bar("Reading chunk", total = length(setup$feather_files))
   for (fpath in setup$feather_files) {

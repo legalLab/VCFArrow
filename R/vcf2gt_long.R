@@ -47,8 +47,8 @@ vcf2gt_long <- function(vcf_arrow, keep_groups = NULL,
   }
 
   cli::cli_alert_info(
-    "Exporting gt_long: {setup$n_var} variants x {setup$n_samples} samples \\
-     -> {.file {out_file}} ({format})"
+    "Building gt_long: {setup$n_var} variants x {setup$n_samples} samples \\
+    ({.strong {format(round(2 * setup$n_var * setup$n_samples / 1024^2), big.mark=',')}} MiB raw storage)"
   )
   cli::cli_progress_bar("Reading chunk", total = length(setup$feather_files))
 
@@ -72,7 +72,7 @@ vcf2gt_long <- function(vcf_arrow, keep_groups = NULL,
   }
 
   cli::cli_progress_done()
-  cli::cli_alert_info("Combining and writing...")
+  cli::cli_alert_info("Combining and writing GT long table...")
 
   combined <- do.call(rbind, chunks)
 

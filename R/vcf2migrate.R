@@ -62,7 +62,7 @@ vcf2migrate <- function(vcf_arrow, keep_groups = NULL,
     acc <- .accumulate_pops_lowmem(setup, "Migrate-N (C)")
     loci <- setup$loci
 
-    cli::cli_alert_info("Writing Migrate-N (C) file ({setup$n_var} variants)...")
+    cli::cli_alert_info("Writing Migrate-N ({method}) file...")
 
     write_migrate_cpp(acc$ref, acc$alt, acc$nobs,
                       setup$group_names, loci, out_file)
@@ -107,8 +107,7 @@ vcf2migrate <- function(vcf_arrow, keep_groups = NULL,
     }
 
     cli::cli_alert_info(
-      "Writing Migrate-N ({method}): {n_var} variant{?s} x \\
-       {setup$n_samples} sample{?s}, {length(block_labels)} block{?s}..."
+      "Writing Migrate-N ({method}) file..."
     )
 
     write_migrate_seq_cpp(

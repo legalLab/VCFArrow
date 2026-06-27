@@ -37,7 +37,7 @@ vcf2genlight <- function(vcf_arrow, keep_groups = NULL,
   setup <- .vcf_export_setup(vcf_arrow, keep_groups)
   acc <- .accumulate_individuals(setup, "Genlight")
 
-  cli::cli_alert_info("Building genlight object...")
+  cli::cli_alert_info("Building Genlight object...")
 
   # 0+0=0 hom-ref, 0+1 or 1+0=1 het, 1+1=2 hom-alt; NA propagates naturally
   geno_mat <- acc$a1 + acc$a2
@@ -57,8 +57,9 @@ vcf2genlight <- function(vcf_arrow, keep_groups = NULL,
   adegenet::strata(x) <- data.frame(pop = adegenet::pop(x))
 
   if (save) {
+    cli::cli_alert_info("Writing Genlight object...")
     saveRDS(x, file = out_file)
-    cli::cli_alert_success("Genlight object saved to {.file {out_file}}")
+    cli::cli_alert_success("Genlight object written to {.file {out_file}}")
   }
 
   return(x)
