@@ -138,7 +138,7 @@ vcf2eigenstrat <- function(vcf_arrow, keep_groups = NULL,
   )
 
   cli::cli_alert_success(
-    "EIGENSTRAT files written to \\
+    "EIGENSTRAT fileset written to \\
      {.file {geno_file}}, {.file {ind_file}}, {.file {snp_file}}"
   )
 
