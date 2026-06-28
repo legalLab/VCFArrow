@@ -4,7 +4,11 @@
 \alias{vcf_bind_sparse}
 \title{vcf_bind_sparse}
 \usage{
-vcf_bind_sparse(...)
+vcf_bind_sparse(
+  ...,
+  mode = c("intersect", "union"),
+  absent_as = c("missing", "hom_ref")
+)
 }
 \arguments{
 \item{...}{-> a collection of VCFArrow objects}
