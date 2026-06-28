@@ -19,104 +19,6 @@
 #' @export
 #'
 
-# ── Shared helper: read one object's data, filling gaps for union mode ────────
-.collect_gt_union <- function(vcf_obj, target_ids, absent_as) {
-
-  ffiles <- list.files(vcf_obj@path, pattern = "\\.arrow$", full.names = TRUE)
-  chunk_idx <- as.integer(stringr::str_extract(basename(ffiles), "\\d+"))
-  ffiles <- ffiles[order(chunk_idx)]
-  samp_keep <- vcf_obj@samples
-
-  parts <- vector("list", length(ffiles))
-  for (i in seq_along(ffiles)) {
-    df <- arrow::read_feather(
-      ffiles[[i]],
-      col_select = c(".row_id", "sample", "a1", "a2",
-                     "phased", "fmt", "DP", "GQ", "ADR")
-    )
-    df <- df[df$.row_id %in% target_ids & df$sample %in% samp_keep, , drop = FALSE]
-    if (nrow(df) > 0L) parts[[i]] <- df
-  }
-
-  non_null <- Filter(Negate(is.null), parts)
-  real <- if (length(non_null) == 0L) {
-    data.frame(.row_id = integer(0),
-               sample = character(0),
-               a1 = integer(0),
-               a2 = integer(0),
-               phased = logical(0),
-               fmt = character(0),
-               DP = integer(0),
-               GQ = integer(0),
-               ADR = numeric(0),
-               stringsAsFactors = FALSE)
-  } else {
-    do.call(rbind, non_null)
-  }
-
-  # ── Complete the grid ──────────────────────────────────────────────────────
-  # Every (target_id, sample) pair for this object's samples should appear
-  # exactly once. This single mechanism covers BOTH cases: a variant this
-  # object's source VCF never called at all (every sample missing for that
-  # id), and the defensive edge case of a partially-compacted object missing
-  # only some samples at an id it otherwise has. Either way, the gap gets
-  # filled according to absent_as.
-  expected_n <- length(target_ids) * length(samp_keep)
-  if (nrow(real) < expected_n) {
-    have_key <- paste(real$.row_id, real$sample, sep = "\r")
-    full_grid <- expand.grid(.row_id = target_ids,
-                             sample = samp_keep,
-                             KEEP.OUT.ATTRS = FALSE)
-    want_key <- paste(full_grid$.row_id, full_grid$sample, sep = "\r")
-    gap_mask <- !(want_key %in% have_key)
-
-    if (any(gap_mask)) {
-      fill_a <- if (absent_as == "hom_ref") 0L else NA_integer_
-      synth <- data.frame(
-        .row_id = full_grid$.row_id[gap_mask],
-        sample = full_grid$sample[gap_mask],
-        a1 = fill_a,
-        a2 = fill_a,
-        phased = NA,
-        fmt = NA_character_,
-        DP = NA_integer_,
-        GQ = NA_integer_,
-        ADR = NA_real_,
-        stringsAsFactors = FALSE
-      )
-      real <- rbind(real, synth)
-    }
-  }
-
-  real
-}
-
-# ── Helper: read one VCFArrow's feather files, filter to target row_ids ───────
-# for mode = "intersect"
-
-.collect_gt <- function(vcf_obj, target_ids) {
-  ffiles <- list.files(vcf_obj@path, pattern = "\\.arrow$", full.names = TRUE)
-  chunk_idx <- as.integer(stringr::str_extract(basename(ffiles), "\\d+"))
-  ffiles <- ffiles[order(chunk_idx)]
-  samp_keep <- vcf_obj@samples
-
-  parts <- vector("list", length(ffiles))
-  for (i in seq_along(ffiles)) {
-    # Read only the four columns needed for genotype assembly
-    df <- arrow::read_feather(
-      ffiles[[i]],
-      col_select = c(".row_id", "sample", "a1", "a2",
-                     "phased", "fmt", "DP", "GQ", "ADR")
-    )
-    df <- df[df$.row_id %in% target_ids & df$sample %in% samp_keep, , drop = FALSE]
-    if (nrow(df) > 0L) parts[[i]] <- df
-  }
-  non_null <- Filter(Negate(is.null), parts)
-  if (length(non_null) == 0L) return(NULL)
-  do.call(rbind, non_null)
-}
-
-
 vcf_bind_sparse <- function(...,
                             mode = c("intersect", "union"),
                             absent_as = c("missing", "hom_ref")) {
@@ -314,4 +216,100 @@ vcf_bind_sparse <- function(...,
   )
 
   return(new_vcfarrow)
+}
+
+# ── Shared helper: read one object's data, filling gaps for union mode ────────
+.collect_gt_union <- function(vcf_obj, target_ids, absent_as) {
+
+  ffiles <- list.files(vcf_obj@path, pattern = "\\.arrow$", full.names = TRUE)
+  chunk_idx <- as.integer(stringr::str_extract(basename(ffiles), "\\d+"))
+  ffiles <- ffiles[order(chunk_idx)]
+  samp_keep <- vcf_obj@samples
+
+  parts <- vector("list", length(ffiles))
+  for (i in seq_along(ffiles)) {
+    df <- arrow::read_feather(
+      ffiles[[i]],
+      col_select = c(".row_id", "sample", "a1", "a2",
+                     "phased", "fmt", "DP", "GQ", "ADR")
+    )
+    df <- df[df$.row_id %in% target_ids & df$sample %in% samp_keep, , drop = FALSE]
+    if (nrow(df) > 0L) parts[[i]] <- df
+  }
+
+  non_null <- Filter(Negate(is.null), parts)
+  real <- if (length(non_null) == 0L) {
+    data.frame(.row_id = integer(0),
+               sample = character(0),
+               a1 = integer(0),
+               a2 = integer(0),
+               phased = logical(0),
+               fmt = character(0),
+               DP = integer(0),
+               GQ = integer(0),
+               ADR = numeric(0),
+               stringsAsFactors = FALSE)
+  } else {
+    do.call(rbind, non_null)
+  }
+
+  # ── Complete the grid ──────────────────────────────────────────────────────
+  # Every (target_id, sample) pair for this object's samples should appear
+  # exactly once. This single mechanism covers BOTH cases: a variant this
+  # object's source VCF never called at all (every sample missing for that
+  # id), and the defensive edge case of a partially-compacted object missing
+  # only some samples at an id it otherwise has. Either way, the gap gets
+  # filled according to absent_as.
+  expected_n <- length(target_ids) * length(samp_keep)
+  if (nrow(real) < expected_n) {
+    have_key <- paste(real$.row_id, real$sample, sep = "\r")
+    full_grid <- expand.grid(.row_id = target_ids,
+                             sample = samp_keep,
+                             KEEP.OUT.ATTRS = FALSE)
+    want_key <- paste(full_grid$.row_id, full_grid$sample, sep = "\r")
+    gap_mask <- !(want_key %in% have_key)
+
+    if (any(gap_mask)) {
+      fill_a <- if (absent_as == "hom_ref") 0L else NA_integer_
+      synth <- data.frame(
+        .row_id = full_grid$.row_id[gap_mask],
+        sample = full_grid$sample[gap_mask],
+        a1 = fill_a,
+        a2 = fill_a,
+        phased = NA,
+        fmt = NA_character_,
+        DP = NA_integer_,
+        GQ = NA_integer_,
+        ADR = NA_real_,
+        stringsAsFactors = FALSE
+      )
+      real <- rbind(real, synth)
+    }
+  }
+
+  real
+}
+
+# ── Helper: read one VCFArrow's feather files, filter to target row_ids ───────
+# for mode = "intersect"
+.collect_gt <- function(vcf_obj, target_ids) {
+  ffiles <- list.files(vcf_obj@path, pattern = "\\.arrow$", full.names = TRUE)
+  chunk_idx <- as.integer(stringr::str_extract(basename(ffiles), "\\d+"))
+  ffiles <- ffiles[order(chunk_idx)]
+  samp_keep <- vcf_obj@samples
+
+  parts <- vector("list", length(ffiles))
+  for (i in seq_along(ffiles)) {
+    # Read only the four columns needed for genotype assembly
+    df <- arrow::read_feather(
+      ffiles[[i]],
+      col_select = c(".row_id", "sample", "a1", "a2",
+                     "phased", "fmt", "DP", "GQ", "ADR")
+    )
+    df <- df[df$.row_id %in% target_ids & df$sample %in% samp_keep, , drop = FALSE]
+    if (nrow(df) > 0L) parts[[i]] <- df
+  }
+  non_null <- Filter(Negate(is.null), parts)
+  if (length(non_null) == 0L) return(NULL)
+  do.call(rbind, non_null)
 }
