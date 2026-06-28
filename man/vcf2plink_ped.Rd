@@ -31,7 +31,7 @@ This function converts a VCFArrow object to an external PLINK .ped formatted fil
 Writing occurs in chunks whose size is determined by the read_vcf() function.
 Larger chunks result in faster writing speeds.
 If no groups are defined, the default behavior is to use all groups.
-Sex and phenotype vectors are optional. If not defined
+Sex and phenotype vectors are optional. If not defined sex = 0, pheno = -9.
 }
 \examples{
 vcf2plink_ped(vcf_arrow = my_vcf, keep_groups = my_groups, out_file = "plink_out", sex = sex, pheno = pheno)
