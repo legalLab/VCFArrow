@@ -1,26 +1,29 @@
-#' @title vcf2fasta
+#' @title vcf2plink_ped
 #'
 #' @description
-#' Converts a VCFArrow object to a FASTA format infile
+#' Converts a VCFArrow object to a PLINK .ped format infile
 #'
 #' @author Tomas Hrbek May 2026
 #'
 #' @param vcf_arrow -> VCFArrow object
 #' @param keep_groups -> groups to retain, default NULL (character)
-#' @param out_file -> name of file to output, default 'fasta_infile.fas' (character)
+#' @param out_file -> name of file to output, default 'plink_out' (character)
+#' @param sex -> vector of sexes of samples, default NULL (character)
+#' @param pheno -> vector of phenotypes of samples, default NULL (character)
 #'
 #' @return NULL
 #'
 #' @details
-#' This function converts a VCFArrow object to an external NEXUS formatted file.
+#' This function converts a VCFArrow object to an external PLINK .ped formatted file.
 #' Writing occurs in chunks whose size is determined by the read_vcf() function.
 #' Larger chunks result in faster writing speeds.
 #' If no groups are defined, the default behavior is to use all groups.
+#' Sex and phenotype vectors are optional. If not defined sex = 0, pheno = -9.
 #'
 #' @examples
-#' vcf2fasta(vcf_arrow = my_vcf, keep_groups = my_groups, out_file = "fasta_infile.fas")
-#' vcf2fasta(vcf_arrow, my_groups, out_file = "fasta_infile.fas")
-#' vcf2fasta(vcf_arrow)
+#' vcf2plink_ped(vcf_arrow = my_vcf, keep_groups = my_groups, out_file = "plink_out", sex = sex, pheno = pheno)
+#' vcf2plink_ped(vcf_arrow, my_groups, out_file = "plink_out")
+#' vcf2plink_ped(vcf_arrow)
 #'
 #' @export
 #'
