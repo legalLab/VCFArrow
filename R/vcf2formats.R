@@ -398,3 +398,37 @@
   cli::cli_progress_done()
   list(ref = ref, alt = alt, nobs = nobs)
 }
+
+# =============================================================================
+# Shared PLINK helper: build FID/PAT/MAT/SEX/PHENOTYPE fields
+# =============================================================================
+#
+# FID (family ID) uses the sample's group label — a common convention when
+# population structure is the only grouping available (no pedigree data).
+# PAT/MAT default to "0" (unknown) throughout, since this package tracks no
+# pedigree information. SEX and PHENOTYPE follow the same NULL/scalar/vector
+# pattern established in vcf2eigenstrat(): NULL -> default for everyone,
+# scalar -> recycled, full-length vector -> used as-is.
+
+.plink_fam_fields <- function(setup, sex, pheno) {
+  n <- setup$n_samples
+
+  resolve <- function(x, default, label) {
+    if (is.null(x)) return(rep(default, n))
+    x <- as.character(x)
+    if (length(x) == 1L) return(rep(x, n))
+    if (length(x) == n) return(x)
+    cli::cli_abort(
+      "{.arg {label}} must be NULL, a single value, or a vector whose \\
+       length equals the number of retained samples ({n})."
+    )
+  }
+
+  list(
+    fid = setup$samples_groups,
+    pat = rep("0", n),
+    mat = rep("0", n),
+    sex = resolve(sex, "0", "sex"),  # "0" = unknown
+    pheno = resolve(pheno, "-9", "pheno")  # "-9" = missing
+  )
+}

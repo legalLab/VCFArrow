@@ -749,7 +749,6 @@ void write_eigenstrat_chunk_cpp(const IntegerMatrix& a1_mat,
 }
 
 
- 
 // ═══════════════════════════════════════════════════════════════════════════════
 // XVII.  sNMF  .geno writer
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -779,6 +778,128 @@ void write_snmf_cpp(const IntegerMatrix& a1_mat,
       else if (v1 == 0 && v2 == 0) wf(w, '0');
       else if (v1 == 1 && v2 == 1) wf(w, '2');
       else wf(w, '1');
+    }
+    wf(w, '\n');
+  }
+}
+
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// XVIII.  PLINK .bed  (binary biallelic genotype table, SNP-major)
+// ═══════════════════════════════════════════════════════════════════════════════
+//
+// Format (https://www.cog-genomics.org/plink/1.9/formats#bed):
+//   3 magic bytes: 0x6c 0x1b 0x01 (SNP-major mode)
+//   Then V blocks of ceil(N/4) bytes, one block per variant, in .bim order.
+//   Within a block, the low-order 2 bits of the first byte store the first
+//   sample's genotype code (sample order = .fam file order); the next 2 bits
+//   the second sample's, etc. Byte 2 covers samples 5-8, and so on.
+//   Codes: 00 = hom allele1 (REF here), 01 = missing, 10 = het,
+//          11 = hom allele2 (ALT here).
+//   Unused high bits in the last byte of a block (when N is not a multiple
+//   of 4) are zero.
+//
+// Allele1/allele2 mapping note: PLINK's docs say allele1 is "usually minor"
+// but this is a convention, not a requirement — what matters is consistency
+// between .bed and .bim. Here allele1 = REF (a=0, clear bits) and
+// allele2 = ALT (a=1, set bits), which is the natural mapping given this
+// package's existing a1/a2 encoding.
+ 
+// 2-bit genotype code for one (a1, a2) pair.
+static inline unsigned char plink_geno_code(int a1, int a2) {
+  if (a1 == NA_INTEGER || a2 == NA_INTEGER) return 1;  // 01 = missing
+  if (a1 == 0 && a2 == 0) return 0;  // 00 = hom REF
+  if (a1 == 1 && a2 == 1) return 3;  // 11 = hom ALT
+  return 2;  // 10 = het
+}
+ 
+// Write the 3-byte magic header for a PLINK .bed file (creates / truncates)
+// [[Rcpp::export]]
+void write_plink_bed_header_cpp(const std::string& out_file) {
+  WFile w(out_file, false);
+  unsigned char magic[3] = {0x6c, 0x1b, 0x01};
+  for (int i = 0; i < 3; ++i) wf(w, static_cast<char>(magic[i]));
+}
+ 
+// Append one chunk of variant blocks to a PLINK .bed file
+//
+// a1_mat / a2_mat: integer matrices (n_samples x n_chunk_var), rows in the
+// SAME order as the .fam file. Encodes and appends one ceil(n_samples/4)
+// byte block per variant column, in column order — so columns must already
+// be in the same order as the corresponding .bim rows.
+// [[Rcpp::export]]
+void write_plink_bed_chunk_cpp(const IntegerMatrix& a1_mat,
+                               const IntegerMatrix& a2_mat,
+                               const std::string& out_file) {
+  const int ns = a1_mat.nrow(), nv = a1_mat.ncol();
+  const int n_bytes = (ns + 3) / 4;  // ceil(ns / 4)
+  WFile w(out_file, true);  // append
+ 
+  for (int v = 0; v < nv; ++v) {
+    for (int b = 0; b < n_bytes; ++b) {
+      unsigned char byte = 0;
+      for (int k = 0; k < 4; ++k) {
+        const int s = b * 4 + k;
+        if (s >= ns) break;  // remaining high bits stay 0
+        unsigned char code = plink_geno_code(a1_mat(s, v), a2_mat(s, v));
+        byte |= static_cast<unsigned char>(code << (k * 2));
+      }
+      wf(w, static_cast<char>(byte));
+    }
+  }
+}
+ 
+ 
+// ═══════════════════════════════════════════════════════════════════════════════
+// XIX.  PLINK .ped  (text pedigree + genotype table, individual-major)
+// ═══════════════════════════════════════════════════════════════════════════════
+//
+// Format (https://www.cog-genomics.org/plink/1.9/formats#ped):
+//   No header. One line per sample, 2V+6 space-separated fields.
+//   First 6 fields match a .fam row: FID, IID, PAT, MAT, SEX, PHENOTYPE.
+//   Remaining fields: pairs of allele calls (nucleotide letters here),
+//   one pair per variant, in the SAME order as the .map file. '0' = no call.
+ 
+// Write a PLINK .ped file from full-dataset accumulated integer matrices
+//
+// a1_mat / a2_mat: integer matrices (n_samples x n_var).
+// fid / pat / mat / sex / pheno: character vectors, length n_samples,
+// supplying the first six fields of each line (IID comes from samples).
+// [[Rcpp::export]]
+void write_plink_ped_cpp(const IntegerMatrix& a1_mat,
+                         const IntegerMatrix& a2_mat,
+                         const CharacterVector& REF,
+                         const CharacterVector& ALT,
+                         const CharacterVector& samples,
+                         const CharacterVector& fid,
+                         const CharacterVector& pat,
+                         const CharacterVector& mat,
+                         const CharacterVector& sex,
+                         const CharacterVector& pheno,
+                         const std::string& out_file) {
+  const int ns = a1_mat.nrow(), nv = a1_mat.ncol();
+  WFile w(out_file, false);
+ 
+  std::vector<const char*> ref_p(nv), alt_p(nv);
+  for (int v = 0; v < nv; ++v) {
+    ref_p[v] = CHAR(STRING_ELT(REF, v));
+    alt_p[v] = CHAR(STRING_ELT(ALT, v));
+  }
+ 
+  for (int s = 0; s < ns; ++s) {
+    wf(w, CHAR(STRING_ELT(fid, s))); wf(w, ' ');
+    wf(w, CHAR(STRING_ELT(samples, s))); wf(w, ' ');
+    wf(w, CHAR(STRING_ELT(pat, s))); wf(w, ' ');
+    wf(w, CHAR(STRING_ELT(mat, s))); wf(w, ' ');
+    wf(w, CHAR(STRING_ELT(sex, s))); wf(w, ' ');
+    wf(w, CHAR(STRING_ELT(pheno, s)));
+ 
+    for (int v = 0; v < nv; ++v) {
+      const int a1v = a1_mat(s, v), a2v = a2_mat(s, v);
+      wf(w, ' ');
+      wf(w, (a1v == NA_INTEGER) ? '0' : ((a1v == 0) ? ref_p[v][0] : alt_p[v][0]));
+      wf(w, ' ');
+      wf(w, (a2v == NA_INTEGER) ? '0' : ((a2v == 0) ? ref_p[v][0] : alt_p[v][0]));
     }
     wf(w, '\n');
   }
