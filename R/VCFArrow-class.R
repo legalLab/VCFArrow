@@ -21,6 +21,7 @@ setClass(
     samples = "character", # sample names from gt columns
     groups = "character", # sample group names
     path = "character", # dataset location - lazy loading
-    finalizer_env = "environment" # slot for maintaining info for GC
+    finalizer_env = "environment", # slot for maintaining info for GC
+    invariant_removed = "data.frame" # for maintaining removed variants and their metadata
   )
 )

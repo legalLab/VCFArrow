@@ -155,8 +155,16 @@
 # in its setClass() representation.
 
 .new_vcfarrow <- function(header, info, format, variants, gt,
-                          samples, groups, path) {
+                          samples, groups, path,
+                          invariant_removed = NULL) {
   .register_vcfarrow(path)
+  if (is.null(invariant_removed)) {
+    # Zero-row slice of `variants` preserves exact column types; add the
+    # extra .info_str column to match what vcf_filter_invariant() will
+    # later append to.
+    invariant_removed <- variants[0, , drop = FALSE]
+    invariant_removed$.info_str <- character(0)
+  }
   new("VCFArrow",
       header = header,
       info = info,
@@ -166,7 +174,8 @@
       samples = samples,
       groups = groups,
       path = path,
-      finalizer_env = .make_finalizer_env(path)
+      finalizer_env = .make_finalizer_env(path),
+      invariant_removed = invariant_removed
   )
 }
 
