@@ -126,6 +126,7 @@ vcf_theta <- function(vcf_arrow, keep_groups = NULL) {
   grp_match <- match(groups_out, setup$group_names)
 
   theta_g <- data.frame(
+    sample = samples_out,
     group = groups_out,
     n_ind = setup$group_sizes[grp_match],
     theta_w = theta_w_g[grp_match],
