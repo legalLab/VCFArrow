@@ -4,7 +4,7 @@
 \alias{vcf_stats}
 \title{vcf_stats}
 \usage{
-vcf_stats(vcf_arrow, res_path, project)
+vcf_stats(vcf_arrow, res_path, project, theta = FALSE)
 }
 \arguments{
 \item{vcf_arrow}{-> VCFArrow object}
@@ -12,6 +12,8 @@ vcf_stats(vcf_arrow, res_path, project)
 \item{res_path}{-> directory where to write results}
 
 \item{project}{-> base name of the project file}
+
+\item{theta}{-> flag to perform theta and pi calculation, default FALSE (Boolean)}
 }
 \value{
 table of statistics
@@ -25,10 +27,11 @@ Watterson's theta and pi.
 This function calculates average read depth, heterozygosity
 number of heterozygotes, number of reference and alternative homozygotes,
 missing data and total number SNPs of each sample in an VCFArrow object.
-It calls vcf_theta() to get total and group Watterson's theta and pi.
+Optionally calls vcf_theta() to get total and group Watterson's theta and pi.
 }
 \examples{
-vcf_stats(vcf_arrow = my_vcf, res_path = my_res_path, project = my_project)
+vcf_stats(vcf_arrow = my_vcf, res_path = my_res_path, project = my_project, theta = FALSE)
+vcf_stats(my_vcf, my_res_path, my_project, FALSE)
 vcf_stats(my_vcf, my_res_path, my_project)
 
 }
