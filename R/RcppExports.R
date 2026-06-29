@@ -93,6 +93,18 @@ write_snmf_cpp <- function(a1_mat, a2_mat, out_file) {
     invisible(.Call(`_VCFArrow_write_snmf_cpp`, a1_mat, a2_mat, out_file))
 }
 
+write_plink_bed_header_cpp <- function(out_file) {
+    invisible(.Call(`_VCFArrow_write_plink_bed_header_cpp`, out_file))
+}
+
+write_plink_bed_chunk_cpp <- function(a1_mat, a2_mat, out_file) {
+    invisible(.Call(`_VCFArrow_write_plink_bed_chunk_cpp`, a1_mat, a2_mat, out_file))
+}
+
+write_plink_ped_cpp <- function(a1_mat, a2_mat, REF, ALT, samples, fid, pat, mat, sex, pheno, out_file) {
+    invisible(.Call(`_VCFArrow_write_plink_ped_cpp`, a1_mat, a2_mat, REF, ALT, samples, fid, pat, mat, sex, pheno, out_file))
+}
+
 write_vcf_chunk_cpp <- function(output_file, chrom, pos, id, ref, alt, qual, filter_col, info, format_col, fmt_vec, n_samples, gzip = FALSE) {
     invisible(.Call(`_VCFArrow_write_vcf_chunk_cpp`, output_file, chrom, pos, id, ref, alt, qual, filter_col, info, format_col, fmt_vec, n_samples, gzip))
 }

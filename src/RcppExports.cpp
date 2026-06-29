@@ -330,6 +330,48 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// write_plink_bed_header_cpp
+void write_plink_bed_header_cpp(const std::string& out_file);
+RcppExport SEXP _VCFArrow_write_plink_bed_header_cpp(SEXP out_fileSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const std::string& >::type out_file(out_fileSEXP);
+    write_plink_bed_header_cpp(out_file);
+    return R_NilValue;
+END_RCPP
+}
+// write_plink_bed_chunk_cpp
+void write_plink_bed_chunk_cpp(const IntegerMatrix& a1_mat, const IntegerMatrix& a2_mat, const std::string& out_file);
+RcppExport SEXP _VCFArrow_write_plink_bed_chunk_cpp(SEXP a1_matSEXP, SEXP a2_matSEXP, SEXP out_fileSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const IntegerMatrix& >::type a1_mat(a1_matSEXP);
+    Rcpp::traits::input_parameter< const IntegerMatrix& >::type a2_mat(a2_matSEXP);
+    Rcpp::traits::input_parameter< const std::string& >::type out_file(out_fileSEXP);
+    write_plink_bed_chunk_cpp(a1_mat, a2_mat, out_file);
+    return R_NilValue;
+END_RCPP
+}
+// write_plink_ped_cpp
+void write_plink_ped_cpp(const IntegerMatrix& a1_mat, const IntegerMatrix& a2_mat, const CharacterVector& REF, const CharacterVector& ALT, const CharacterVector& samples, const CharacterVector& fid, const CharacterVector& pat, const CharacterVector& mat, const CharacterVector& sex, const CharacterVector& pheno, const std::string& out_file);
+RcppExport SEXP _VCFArrow_write_plink_ped_cpp(SEXP a1_matSEXP, SEXP a2_matSEXP, SEXP REFSEXP, SEXP ALTSEXP, SEXP samplesSEXP, SEXP fidSEXP, SEXP patSEXP, SEXP matSEXP, SEXP sexSEXP, SEXP phenoSEXP, SEXP out_fileSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const IntegerMatrix& >::type a1_mat(a1_matSEXP);
+    Rcpp::traits::input_parameter< const IntegerMatrix& >::type a2_mat(a2_matSEXP);
+    Rcpp::traits::input_parameter< const CharacterVector& >::type REF(REFSEXP);
+    Rcpp::traits::input_parameter< const CharacterVector& >::type ALT(ALTSEXP);
+    Rcpp::traits::input_parameter< const CharacterVector& >::type samples(samplesSEXP);
+    Rcpp::traits::input_parameter< const CharacterVector& >::type fid(fidSEXP);
+    Rcpp::traits::input_parameter< const CharacterVector& >::type pat(patSEXP);
+    Rcpp::traits::input_parameter< const CharacterVector& >::type mat(matSEXP);
+    Rcpp::traits::input_parameter< const CharacterVector& >::type sex(sexSEXP);
+    Rcpp::traits::input_parameter< const CharacterVector& >::type pheno(phenoSEXP);
+    Rcpp::traits::input_parameter< const std::string& >::type out_file(out_fileSEXP);
+    write_plink_ped_cpp(a1_mat, a2_mat, REF, ALT, samples, fid, pat, mat, sex, pheno, out_file);
+    return R_NilValue;
+END_RCPP
+}
 // write_vcf_chunk_cpp
 void write_vcf_chunk_cpp(std::string output_file, CharacterVector chrom, IntegerVector pos, CharacterVector id, CharacterVector ref, CharacterVector alt, CharacterVector qual, CharacterVector filter_col, CharacterVector info, CharacterVector format_col, CharacterVector fmt_vec, int n_samples, bool gzip);
 RcppExport SEXP _VCFArrow_write_vcf_chunk_cpp(SEXP output_fileSEXP, SEXP chromSEXP, SEXP posSEXP, SEXP idSEXP, SEXP refSEXP, SEXP altSEXP, SEXP qualSEXP, SEXP filter_colSEXP, SEXP infoSEXP, SEXP format_colSEXP, SEXP fmt_vecSEXP, SEXP n_samplesSEXP, SEXP gzipSEXP) {
@@ -377,6 +419,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_VCFArrow_write_eigenstrat_geno_header_cpp", (DL_FUNC) &_VCFArrow_write_eigenstrat_geno_header_cpp, 1},
     {"_VCFArrow_write_eigenstrat_chunk_cpp", (DL_FUNC) &_VCFArrow_write_eigenstrat_chunk_cpp, 3},
     {"_VCFArrow_write_snmf_cpp", (DL_FUNC) &_VCFArrow_write_snmf_cpp, 3},
+    {"_VCFArrow_write_plink_bed_header_cpp", (DL_FUNC) &_VCFArrow_write_plink_bed_header_cpp, 1},
+    {"_VCFArrow_write_plink_bed_chunk_cpp", (DL_FUNC) &_VCFArrow_write_plink_bed_chunk_cpp, 3},
+    {"_VCFArrow_write_plink_ped_cpp", (DL_FUNC) &_VCFArrow_write_plink_ped_cpp, 11},
     {"_VCFArrow_write_vcf_chunk_cpp", (DL_FUNC) &_VCFArrow_write_vcf_chunk_cpp, 13},
     {NULL, NULL, 0}
 };
