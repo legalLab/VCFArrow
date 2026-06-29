@@ -2,7 +2,7 @@
 % Please edit documentation in R/vcf_filter_indels.R
 \name{vcf_filter_indels}
 \alias{vcf_filter_indels}
-\title{vcf_filter_rank}
+\title{vcf_filter_indels}
 \usage{
 vcf_filter_indels(vcf_arrow)
 }
@@ -13,15 +13,15 @@ vcf_filter_indels(vcf_arrow)
 subsetted VCFArrow object
 }
 \description{
-Remove indels from a VCFArrow object
+Remove non-indels from a VCFArrow object
 }
 \details{
-This function removes indels from a VCFArrow object,
+This function removes non-indel loci from a VCFArrow object,
 returning a new VCFArrow object.
 }
 \examples{
-vcf_filter_quality(vcf_arrow = my_vcf)
-vcf_filter_quality(my_vcf)
+vcf_filter_indels(vcf_arrow = my_vcf)
+vcf_filter_indels(my_vcf)
 
 }
 \author{
