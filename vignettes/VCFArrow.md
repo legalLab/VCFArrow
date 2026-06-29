@@ -1,7 +1,11 @@
 # Installation
 
 This package needs to be installed from GitHub.
-`devtools::install_github("legalLab/VCFArrow")`
+`devtools::install_github("legalLab/VCFArrow")` The package is build
+around Apache Arrow (<https://arrow.apache.org/>). The Apache Arrow
+libarrow-dev, libparquet-dev, libarrow-dataset-dev, and
+libarrow-acero-dev libraries need to be installed. Installation
+instruction are found here (<https://arrow.apache.org/install/>).
 
 # Introduction
 
@@ -74,7 +78,7 @@ vcf
 #> Phased genotypes: FALSE 
 #> 
 #> Storage:
-#>   Path: /tmp/Rtmp486OmM/arrow_vcf_2e60321df1ec1 
+#>   Path: /tmp/Rtmp486OmM/arrow_vcf_2e6033d5dcbbb 
 #> 
 #> Genotype storage (Arrow):
 #> FileSystemDataset with 1 Feather file

@@ -21,6 +21,9 @@ knitr::opts_chunk$set(
 
 This package needs to be installed from GitHub.
 `devtools::install_github("legalLab/VCFArrow")`
+The package is build around Apache Arrow (https://arrow.apache.org/).
+The Apache Arrow libarrow-dev, libparquet-dev, libarrow-dataset-dev, and libarrow-acero-dev libraries need to be installed.
+Installation instruction are found here (https://arrow.apache.org/install/).
 
 
 # Introduction
