@@ -1,7 +1,7 @@
-#' @title vcf_filter_rank
+#' @title vcf_filter_indels
 #'
 #' @description
-#' Remove indels from a VCFArrow object
+#' Remove non-indels from a VCFArrow object
 #'
 #' @author Tomas Hrbek April 2026
 #'
@@ -10,12 +10,12 @@
 #' @return subsetted VCFArrow object
 #'
 #' @details
-#' This function removes indels from a VCFArrow object,
+#' This function removes non-indel loci from a VCFArrow object,
 #' returning a new VCFArrow object.
 #'
 #' @examples
-#' vcf_filter_quality(vcf_arrow = my_vcf)
-#' vcf_filter_quality(my_vcf)
+#' vcf_filter_indels(vcf_arrow = my_vcf)
+#' vcf_filter_indels(my_vcf)
 #'
 #' @export
 #'
@@ -33,7 +33,7 @@ vcf_filter_indels <- function(vcf_arrow) {
   cli::cli_alert_info("Applying indel filter")
 
   cli::cli_alert_info(
-    "Removed {length(keep)} / {idx$n_var} variants (Indels)"
+    "Retained {length(keep)} / {idx$n_var} variants (non-Indels)"
   )
 
   # apply filter using unified API
