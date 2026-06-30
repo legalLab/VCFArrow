@@ -1,16 +1,17 @@
 
 <!-- README.md is generated from vignettes/VCFArrow.Rmd. Please edit that file -->
 
-# VCFArrow <img src="man/VCFArrow_logo.png" align="right" height="138"  />
+# VCFArrow <img src="man/figures/VCFArrow_logo.png" align="right" height="138"  />
 
 <!-- badges: start -->
 
 # Installation
 
 This package needs to be installed from GitHub.
-`devtools::install_github("legalLab/VCFArrow")` The package is build
-around Apache Arrow (<https://arrow.apache.org/>). The Apache Arrow
-libarrow-dev, libparquet-dev, libarrow-dataset-dev, and
+`devtools::install_github("legalLab/VCFArrow")`
+
+The package is build around Apache Arrow (<https://arrow.apache.org/>).
+The Apache Arrow libarrow-dev, libparquet-dev, libarrow-dataset-dev, and
 libarrow-acero-dev libraries need to be installed. Installation
 instruction are found here (<https://arrow.apache.org/install/>).
 
@@ -35,6 +36,14 @@ extremely fast data filtering, manipulation and transformation. It is
 possible to process VCFs comprising tens of millions of SNVs and
 hundreds of individuals in matter minutes with minimal RAM overhead.
 
+## Meta
+
+- Please [report here any issues or bugs or
+  suggestions](https://github.com/legalLab/VCFArrow/issues).
+- License: MIT.
+- Get citation information for `VCFArrow` in R by running
+  `citation(package='VCFArrow')`.
+
 # How to use the functions of this package
 
 Following are examples of the usage of the functions of this package.
@@ -47,13 +56,15 @@ object. This grouping information is stored in a ‘strata’ file (a
 tab-separated text file with two columns with an ‘id’ and ‘pop’
 headers). The grouping of individuals can be used in filtering steps,
 and it is necessary for transformation of the VCFArrow object to other
-population genetic formats, many of which require it. The data used in
-this example are from Mota et al. (2026)—a population genomic analysis
-of the *Phyllomedusa vaillantii* species complex. The original dataset
-has 18579683 SNVs by 56 samples. For the purpose of this tutorial, the
-dataset was randomly subsampled to 10000 SNVs by 18 samples (five
-samples by three main lineages of *Phyllomedusa vaillantii* as ingroups,
-plus three samples of *Phyllomedusa bicolor* included as outgroups).
+population genetic formats, many of which require it.
+
+The data used in this example are from Mota et al. (2026)—a population
+genomic analysis of the *Phyllomedusa vaillantii* species complex. The
+original dataset has 18579683 SNVs by 56 samples. For the purpose of
+this tutorial, the dataset was randomly subsampled to 10000 SNVs by 18
+samples (five samples by three main lineages of *Phyllomedusa
+vaillantii* as ingroups, plus three samples of *Phyllomedusa bicolor*
+included as outgroups).
 
 ``` r
 library(VCFArrow)
@@ -85,7 +96,7 @@ vcf
 #> Phased genotypes: FALSE 
 #> 
 #> Storage:
-#>   Path: /tmp/Rtmp486OmM/arrow_vcf_2e603349befed 
+#>   Path: /tmp/Rtmp486OmM/arrow_vcf_2e60323efd2ad 
 #> 
 #> Genotype storage (Arrow):
 #> FileSystemDataset with 1 Feather file
@@ -103,18 +114,18 @@ vcf
 #> See $metadata for additional Schema metadata
 #> 
 #> Variants (first 5 rows):
-#>                     CHROM POS        ID REF ALT QUAL FILTER Rk n_alt is_biallelic
-#> 1 SNP_higher_path_9994239  41 9994239_1   C   G    .      .  1     1         TRUE
-#> 2 SNP_higher_path_9984432 105   9984432   C   T    .      .  1     1         TRUE
-#> 3 SNP_higher_path_9967574  50   9967574   A   C    .      .  1     1         TRUE
-#> 4  SNP_higher_path_993510  88  993510_4   A   G    .      .  1     1         TRUE
-#> 5 SNP_higher_path_9803974  33   9803974   A   G    .      .  1     1         TRUE
-#>   is_indel .row_id
-#> 1    FALSE       1
-#> 2    FALSE       2
-#> 3    FALSE       3
-#> 4    FALSE       4
-#> 5    FALSE       5
+#>                     CHROM POS        ID REF ALT QUAL FILTER Rk n_alt is_biallelic is_indel
+#> 1 SNP_higher_path_9994239  41 9994239_1   C   G    .      .  1     1         TRUE    FALSE
+#> 2 SNP_higher_path_9984432 105   9984432   C   T    .      .  1     1         TRUE    FALSE
+#> 3 SNP_higher_path_9967574  50   9967574   A   C    .      .  1     1         TRUE    FALSE
+#> 4  SNP_higher_path_993510  88  993510_4   A   G    .      .  1     1         TRUE    FALSE
+#> 5 SNP_higher_path_9803974  33   9803974   A   G    .      .  1     1         TRUE    FALSE
+#>   .row_id
+#> 1       1
+#> 2       2
+#> 3       3
+#> 4       4
+#> 5       5
 #>   ... 9995 more
 #> 
 #> INFO (first 5):
@@ -144,20 +155,21 @@ indivs <- read.table(file.path(data_path, "indivs_b"), header = TRUE)$id
 if (any(!(indivs %in% vcf@samples))) stop(paste("Some individuals in list not in VCF"))
 ```
 
-## Assessment of Missing Data
+## Assessment of missing data
 
 The function `assess_vcf_missing_data()` is used to generate a table and
-graph of missing data for each sample in a VCFArrow object. It is useful
-for visualizing data before and after filtering to evaluate the effect
-of filtering. The function accepts parameters which form part of the
-name of the output file. The idea is that the output file name contains
-information on the name of the project (project), how the VCF was
-extracted (postfix), and how it was filtered (fltr). The ‘postfix’ and
-‘fltr’ can be left blank if the VCF name does not contain this
-information. Samples are ordered and colored by group assignment. The
-‘details’ flag specifies whether or not filtering information is
-presented in the figure or if only the species name is reported. The
-default is to report species name and details.
+graph of missing data for each sample in a VCFArrow object, while the
+`assess_vcf_coverage()` generates a violin plot of read depths of each
+sample. Both are useful for visualizing data before and after filtering
+to evaluate the effect of filtering. The functions accept parameters
+which form part of the name of the output file. The idea is that the
+output file name contains information on the name of the project
+(project), how the VCF was extracted (postfix), and how it was filtered
+(fltr). The ‘postfix’ and ‘fltr’ can be left blank if the VCF name does
+not contain this information. Samples are ordered and colored by group
+assignment. The ‘details’ flag specifies whether or not filtering
+information is presented in the figure or if only the species name is
+reported. The default is to report species name and details.
 
 ``` r
 # define results path
@@ -179,7 +191,9 @@ average read depth, heterozygosity, number of heterozygotes,
 homozygotes, REF homozygotes and ALT homogygotes, percent missing SNVs,
 total missing SNVs, total non-missing SNVs and total SNVs, Watterson’s
 Theta and Pi for the entire dataset, and per group Watterson’s Theta and
-Pi, plus the number of individuals in each group.
+Pi, plus the number of individuals in each group. The calculation of
+Watterson’s Theta and Pi can be included or excluded based on the
+‘theta’ flag.
 
 ``` r
 # get a table of basic sample stats, including Watterson's Theta and Pi
@@ -192,8 +206,8 @@ vcf_stats(vcf, res_path, paste0(project, postfix, fltr), theta = TRUE)
 ## Filtering, subsetting, merging and otherwise wrangling VCF files
 
 Most but not all functions can be used by the user directly on the
-`VCFArrow` object. Some functions, such as `vcf_filter_rows()` and
-`vcf_filter_columns()` are common APIs used by other functions to
+`VCFArrow` object. Some functions, such as `.vcf_filter_rows()` and
+`.vcf_filter_columns()` are common APIs used by other functions to
 perform filtering. Other functions, such as `vcf_filter_invariant()`
 will remove invariant SNPs from a VCFArrow object; however, VCF by
 definition should not have invariant SNPs. So this function is primarily
@@ -328,7 +342,7 @@ nrow(vcf_multiSNP@variants)
 #> [1] 0
 ```
 
-### Extracting, merging and adding
+### Extracting and binding
 
 The functions `vcf_merge_bind()`, `vcf_bind_sparse()`,
 `vcf_extract_samples()` and `vcf_extract_groups()` are used to merge two
@@ -457,6 +471,26 @@ vcf1 <- vcf |>
 # see how many variants remained
 nrow(vcf1@variants)
 #> [1] 1951
+```
+
+## Saving and copying VCFArrow objects
+
+The filtering steps never actually remove any sample or SNVs from the GT
+matrix which is a design decision. If you want a new VCFArrow object
+that only has the post filtering samples and SNVs, you can use the
+function `vcf_copy()` which creates a new object and removes any
+filtered samples and SNVs. After filtering the VCFArrow object you will
+also want to save it as a VCF. This is accomplished using the function
+`write_vcf()`, which, by default will save an uncompressed VCF, but
+setting the ‘gzip’ flag to TRUE will gzip compress the VCF. With large
+VCFArrow objects this has a large overhead, so it is more efficient to
+save an uncompressed VCF and then compress it later.
+
+``` r
+# write the VCFArrow object as a VCF (and compress it using gzip)
+write_vcf(vcf1, out_file = file.path(res_path, paste0(project, postfix, "_filtered.vcf.gz")), gzip = TRUE)
+#> ℹ VCF is being written in 1 chunks
+#> ✔ VCFArrow object successfully written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/vaillantii_discosnp_sub_filtered.vcf.gz'
 ```
 
 ## Converting a VCF file to other population genetic and phylogenetic formats
