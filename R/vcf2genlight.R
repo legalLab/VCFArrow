@@ -11,6 +11,8 @@
 #' @param ploidy -> ploidy level, default = 2 (integer)
 #' @param save ->  save as R data object, default = FALSE (Boolean)
 #'
+#' @importClassesFrom adegenet genlight
+#'
 #' @return NULL
 #'
 #' @details
