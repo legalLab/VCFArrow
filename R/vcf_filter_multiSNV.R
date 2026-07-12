@@ -31,9 +31,10 @@
 vcf_filter_multiSNV <- function(vcf_arrow, block_size = 10000,
                                 minSNV = 2, maxSNV = 5) {
 
-  if (!inherits(vcf_arrow, "VCFArrow")) {
+  if (!inherits(vcf_arrow, "VCFArrow"))
     cli::cli_abort("Expecting a VCFArrow object")
-  }
+
+  idx <- .vcf_filter_index(vcf_arrow)
 
   cli::cli_alert_info("Applying linked SNV filter")
 
@@ -61,6 +62,10 @@ vcf_filter_multiSNV <- function(vcf_arrow, block_size = 10000,
 
   # apply filter using unified API
   vcf_arrow <- .vcf_filter_rows(vcf_arrow, keep)
+
+  cli::cli_alert_info(
+    "Retained {length(keep)} / {idx$n_var} variants (unlinked SNVs)"
+  )
 
   return(vcf_arrow)
 }
