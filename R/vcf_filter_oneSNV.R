@@ -45,12 +45,12 @@ vcf_filter_oneSNV <- function(vcf_arrow, block_size = 10000) {
     dplyr::distinct(CHROM, block, .keep_all = TRUE) |>
     dplyr::pull(.row_id)
 
-  # apply filter using unified API
-  vcf_arrow <- .vcf_filter_rows(vcf_arrow, keep)
-
   cli::cli_alert_info(
     "Retained {length(keep)} / {idx$n_var} variants (unlinked SNVs)"
   )
+
+  # apply filter using unified API
+  vcf_arrow <- .vcf_filter_rows(vcf_arrow, keep)
 
   return(vcf_arrow)
 }
