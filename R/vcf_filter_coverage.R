@@ -69,6 +69,7 @@ vcf_filter_coverage <- function(vcf_arrow, threshold = 10) {
     "Retained {length(keep)} / {idx$n_var} variants \\
      (polymorphic with DP >= {threshold})"
   )
+
   # apply filter using unified API
   vcf_arrow <- .vcf_filter_rows(vcf_arrow, keep)
 
