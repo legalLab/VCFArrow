@@ -156,12 +156,25 @@ vcf_stats <- function(vcf_arrow, res_path, project, theta = FALSE) {
     )
     # explicit group join instead of relying on theta_$theta_g implicitly
     out <- dplyr::left_join(out, theta_$theta_g, by = "sample")
-  }
-
-  # if calculation of theta is skipped, add group information
-  if (!"group" %in% names(out)) {
+  } else {
+    # final table
+    out <- data.frame(
+      sample = samples,
+      read_depth = sample_stats$read_depth,
+      heterozygosity = sample_stats$heterozygosity,
+      heterozygotes = sample_stats$hetero,
+      homozygotes = sample_stats$homo_ref + sample_stats$homo_alt,
+      homozygotes_ref = sample_stats$homo_ref,
+      homozygotes_alt = sample_stats$homo_alt,
+      missing_p = sample_stats$missing_p,
+      missing_n = sample_stats$missing,
+      non_missing = sample_stats$non_missing,
+      total_loci = sample_stats$total_loci
+    )
+    # since calculation of theta is skipped, add group information
     out <- dplyr::left_join(out, group_df, by = "sample")
   }
+
   out <- dplyr::arrange(out, group, sample)
 
   utils::write.table(
