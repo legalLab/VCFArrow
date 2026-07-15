@@ -49,7 +49,7 @@ First we need to read in the VCF. If one has information on the grouping of indi
 
 The data used in this example are from ([Mota et al., 2026](https://dx.doi.org/10.1080/14772000.2026.2692965))---a population genomic analysis of the *Phyllomedusa vaillantii* species complex. The original dataset has 18579683 SNVs by 56 samples. For the purpose of this tutorial, the dataset was randomly subsampled to 10000 SNVs by 18 samples (five samples by three main lineages of *Phyllomedusa vaillantii* as ingroups, plus three samples of *Phyllomedusa bicolor* included as outgroups).
 
-![white-lined leaf frog _Phyllomedusa vaillantii_](https://github.com/legalLab/VCFArrow/blob/main/man/figures/P_vaillantii.jpeg)
+![white-lined leaf frog _Phyllomedusa vaillantii_ Photo: Albertina Lima](https://github.com/legalLab/VCFArrow/blob/main/man/figures/P_vaillantii.jpeg)
 
 ```{r setup} 
 library(VCFArrow)

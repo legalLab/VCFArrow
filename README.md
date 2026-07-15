@@ -70,10 +70,11 @@ included as outgroups).
 <figure>
 <img
 src="https://github.com/legalLab/VCFArrow/blob/main/man/figures/P_vaillantii.jpeg"
-alt="white-lined leaf frog Phyllomedusa vaillantii" />
+alt="white-lined leaf frog Phyllomedusa vaillantii Photo: Albertina Lima" />
 <figcaption aria-hidden="true">white-lined leaf frog <em>Phyllomedusa
-vaillantii</em></figcaption>
+vaillantii</em> Photo: Albertina Lima</figcaption>
 </figure>
+
 
 ``` r
 library(VCFArrow)

@@ -63,9 +63,9 @@ included as outgroups).
 <figure>
 <img
 src="https://github.com/legalLab/VCFArrow/blob/main/man/figures/P_vaillantii.jpeg"
-alt="white-lined leaf frog Phyllomedusa vaillantii" />
+alt="white-lined leaf frog Phyllomedusa vaillantii Photo: Albertina Lima" />
 <figcaption aria-hidden="true">white-lined leaf frog <em>Phyllomedusa
-vaillantii</em></figcaption>
+vaillantii</em> Photo: Albertina Lima</figcaption>
 </figure>
 
 ``` r
@@ -98,7 +98,7 @@ vcf
 #> Phased genotypes: FALSE 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpV42HaQ/arrow_vcf_14e45fc951f3 
+#>   Path: /tmp/RtmpV42HaQ/arrow_vcf_14e43f548a4e 
 #> 
 #> Genotype storage (Arrow):
 #> FileSystemDataset with 1 Feather file
