@@ -47,7 +47,9 @@ Following are examples of the usage of the functions of this package.
 
 First we need to read in the VCF. If one has information on the grouping of individuals, this information can also be put into the VCFArrow object. This grouping information is stored in a 'strata' file (a tab-separated text file with two columns with an 'id' and 'pop' headers). The grouping of individuals can be used in filtering steps, and it is necessary for transformation of the VCFArrow object to other population genetic formats, many of which require it.
 
-The data used in this example are from Mota et al. (2026)---a population genomic analysis of the *Phyllomedusa vaillantii* species complex. The original dataset has 18579683 SNVs by 56 samples. For the purpose of this tutorial, the dataset was randomly subsampled to 10000 SNVs by 18 samples (five samples by three main lineages of *Phyllomedusa vaillantii* as ingroups, plus three samples of *Phyllomedusa bicolor* included as outgroups).
+The data used in this example are from ([Mota et al., 2026](https://dx.doi.org/10.1080/14772000.2026.2692965))---a population genomic analysis of the *Phyllomedusa vaillantii* species complex. The original dataset has 18579683 SNVs by 56 samples. For the purpose of this tutorial, the dataset was randomly subsampled to 10000 SNVs by 18 samples (five samples by three main lineages of *Phyllomedusa vaillantii* as ingroups, plus three samples of *Phyllomedusa bicolor* included as outgroups).
+
+![white-lined leaf frog _Phyllomedusa vaillantii_](https://github.com/legalLab/VCFArrow/blob/main/man/figures/P_vaillantii.jpeg)
 
 ```{r setup} 
 library(VCFArrow)
@@ -271,6 +273,8 @@ vcf2structure(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr,
 vcf2snmf(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.geno')))
 # Admixture https://dalexander.github.io/admixture/index.html
 # takes as input binary PLINK (.bed), ordinary PLINK (.ped), or EIGENSTRAT (.geno) formatted files
+# so a thin wrapper around vcf2plink_bed() plus optional generation of known-ancestry reference populations
+vcf2admixture(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_admixture')))
 # PLINK .bed https://www.cog-genomics.org/plink/1.9/formats#bed
 vcf2plink_bed(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_plink')))
 # PLINK .ped https://www.cog-genomics.org/plink/1.9/formats#ped

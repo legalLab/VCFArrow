@@ -58,13 +58,22 @@ headers). The grouping of individuals can be used in filtering steps,
 and it is necessary for transformation of the VCFArrow object to other
 population genetic formats, many of which require it.
 
-The data used in this example are from Mota et al. (2026)—a population
+The data used in this example are from ([Mota et al.,
+2026](https://dx.doi.org/10.1080/14772000.2026.2692965))—a population
 genomic analysis of the *Phyllomedusa vaillantii* species complex. The
 original dataset has 18579683 SNVs by 56 samples. For the purpose of
 this tutorial, the dataset was randomly subsampled to 10000 SNVs by 18
 samples (five samples by three main lineages of *Phyllomedusa
 vaillantii* as ingroups, plus three samples of *Phyllomedusa bicolor*
 included as outgroups).
+
+<figure>
+<img
+src="https://github.com/legalLab/VCFArrow/blob/main/man/figures/P_vaillantii.jpeg"
+alt="white-lined leaf frog Phyllomedusa vaillantii" />
+<figcaption aria-hidden="true">white-lined leaf frog <em>Phyllomedusa
+vaillantii</em></figcaption>
+</figure>
 
 ``` r
 library(VCFArrow)
@@ -96,7 +105,7 @@ vcf
 #> Phased genotypes: FALSE 
 #> 
 #> Storage:
-#>   Path: /tmp/Rtmp486OmM/arrow_vcf_2e60323efd2ad 
+#>   Path: /tmp/RtmpV42HaQ/arrow_vcf_14e434dc9095 
 #> 
 #> Genotype storage (Arrow):
 #> FileSystemDataset with 1 Feather file
@@ -114,18 +123,12 @@ vcf
 #> See $metadata for additional Schema metadata
 #> 
 #> Variants (first 5 rows):
-#>                     CHROM POS        ID REF ALT QUAL FILTER Rk n_alt is_biallelic is_indel
-#> 1 SNP_higher_path_9994239  41 9994239_1   C   G    .      .  1     1         TRUE    FALSE
-#> 2 SNP_higher_path_9984432 105   9984432   C   T    .      .  1     1         TRUE    FALSE
-#> 3 SNP_higher_path_9967574  50   9967574   A   C    .      .  1     1         TRUE    FALSE
-#> 4  SNP_higher_path_993510  88  993510_4   A   G    .      .  1     1         TRUE    FALSE
-#> 5 SNP_higher_path_9803974  33   9803974   A   G    .      .  1     1         TRUE    FALSE
-#>   .row_id
-#> 1       1
-#> 2       2
-#> 3       3
-#> 4       4
-#> 5       5
+#>                     CHROM POS        ID REF ALT QUAL FILTER Rk n_alt is_biallelic is_indel .row_id
+#> 1 SNP_higher_path_9994239  41 9994239_1   C   G    .      .  1     1         TRUE    FALSE       1
+#> 2 SNP_higher_path_9984432 105   9984432   C   T    .      .  1     1         TRUE    FALSE       2
+#> 3 SNP_higher_path_9967574  50   9967574   A   C    .      .  1     1         TRUE    FALSE       3
+#> 4  SNP_higher_path_993510  88  993510_4   A   G    .      .  1     1         TRUE    FALSE       4
+#> 5 SNP_higher_path_9803974  33   9803974   A   G    .      .  1     1         TRUE    FALSE       5
 #>   ... 9995 more
 #> 
 #> INFO (first 5):
@@ -233,6 +236,7 @@ VCF. The subsetting is done either across the entire VCF
 # subset VCF by individuals (default keep = TRUE, remove invariants f_invar = TRUE)
 indivs1 <- c("Pv14", "Pv27", "Pv28", "Pv78", "Pv126")
 vcf1 <- vcf_extract_samples(vcf, indivs1)
+#> ℹ Compacting GT: 18 -> 5 samples across 1 chunk
 #> ℹ Applying invariant filter
 #> ℹ Removed 7220 invariant variants; 2780 retained.
 #> ℹ Removed samples: Pv120, Pv13, Pv2, Pv31, Pv56, Pv62, Pv68, Pv73, Pv79, Pv93, Pb2Jp, Pb2Scx, and Pb1Rd
@@ -241,6 +245,7 @@ vcf1 <- vcf_extract_samples(vcf, indivs1)
 # subset VCF by groups (default keep = TRUE, remove invariants f_invar = TRUE)
 groups1 <- c("GS", "BS", "WA")
 vcf1 <- vcf_extract_groups(vcf, groups1)
+#> ℹ Compacting GT: 18 -> 15 samples across 1 chunk
 #> ℹ Applying invariant filter
 #> ℹ Removed 1705 invariant variants; 8295 retained.
 #> ℹ Removed samples: Pb2Jp, Pb2Scx, and Pb1Rd
@@ -304,9 +309,9 @@ vcf_oneSNP <- vcf_extract_samples(vcf, indivs) |>
 #> ℹ Applying locus missingness filter
 #> ℹ Retained 1734 / 5171 variants (per-variant missingness <= 0.2)
 #> ℹ Applying sample missingness filter
-#> ℹ Applying invariant filter
 #> ℹ Variants retained: 1734 | Samples retained: 18
 #> ℹ Applying unlinked SNV filter
+#> ℹ Retained 1734 / 1734 variants (unlinked SNVs)
 
 # see how many variants remained
 nrow(vcf_oneSNP@variants)
@@ -333,9 +338,9 @@ vcf_multiSNP <- vcf_extract_samples(vcf, indivs) |>
 #> ℹ Applying locus missingness filter
 #> ℹ Retained 1734 / 5171 variants (per-variant missingness <= 0.2)
 #> ℹ Applying sample missingness filter
-#> ℹ Applying invariant filter
 #> ℹ Variants retained: 1734 | Samples retained: 18
 #> ℹ Applying linked SNV filter
+#> ℹ Retained 0 / 1734 variants (unlinked SNVs)
 
 # see how many variants remained
 nrow(vcf_multiSNP@variants)
@@ -353,18 +358,22 @@ a VCFArrow objects storing them in a separate VCFArrow object.
 # extract individuals from VCFArrow object (keep all loci)
 indivs1 <- c("Pb2Jp", "Pb2Scx", "Pb1Rd")
 vcf_outgrp <- vcf_extract_samples(vcf, indivs1, f_invar = FALSE)
+#> ℹ Compacting GT: 18 -> 3 samples across 1 chunk
 #> ℹ Removed samples: Pv120, Pv126, Pv13, Pv14, Pv27, Pv28, Pv2, Pv31, Pv56, Pv62, Pv68, Pv73, Pv78, Pv79, and Pv93
 #> ℹ Variants retained: 10000 | Samples retained: 3
 vcf_ingrp <- vcf_extract_samples(vcf, indivs1, keep = FALSE, f_invar = FALSE)
+#> ℹ Compacting GT: 18 -> 15 samples across 1 chunk
 #> ℹ Removed samples: Pb2Jp, Pb2Scx, and Pb1Rd
 #> ℹ Variants retained: 10000 | Samples retained: 15
 
 # extract groups of individuals from VCFArrow object (keep all loci)
 groups1 <- c("GS", "BS", "WA")
 vcf_outgrp <- vcf_extract_groups(vcf, groups1, keep = FALSE, f_invar = FALSE)
+#> ℹ Compacting GT: 18 -> 3 samples across 1 chunk
 #> ℹ Removed samples: Pv120, Pv126, Pv13, Pv14, Pv27, Pv28, Pv2, Pv31, Pv56, Pv62, Pv68, Pv73, Pv78, Pv79, and Pv93
 #> ℹ Variants retained: 10000 | Samples retained: 3
 vcf_ingrp <- vcf_extract_groups(vcf, groups1, f_invar = FALSE)
+#> ℹ Compacting GT: 18 -> 15 samples across 1 chunk
 #> ℹ Removed samples: Pb2Jp, Pb2Scx, and Pb1Rd
 #> ℹ Variants retained: 10000 | Samples retained: 15
 
@@ -374,11 +383,13 @@ vcf1 <- vcf_bind(vcf_ingrp, vcf_outgrp)
 # extract groups of individuals from VCFArrow object (remove invariant loci)
 groups1 <- c("GS", "BS", "WA")
 vcf_outgrp <- vcf_extract_groups(vcf, groups1, keep = FALSE)
+#> ℹ Compacting GT: 18 -> 3 samples across 1 chunk
 #> ℹ Applying invariant filter
 #> ℹ Removed 8904 invariant variants; 1096 retained.
 #> ℹ Removed samples: Pv120, Pv126, Pv13, Pv14, Pv27, Pv28, Pv2, Pv31, Pv56, Pv62, Pv68, Pv73, Pv78, Pv79, and Pv93
 #> ℹ Variants retained: 1096 | Samples retained: 3
 vcf_ingrp <- vcf_extract_groups(vcf, groups1)
+#> ℹ Compacting GT: 18 -> 15 samples across 1 chunk
 #> ℹ Applying invariant filter
 #> ℹ Removed 1705 invariant variants; 8295 retained.
 #> ℹ Removed samples: Pb2Jp, Pb2Scx, and Pb1Rd
@@ -410,6 +421,7 @@ outgroup taxa with `vcf_bind_sparse()` using the ‘union’ binding option.
 # extract outgroup from VCFArrow
 groups1 <- "OG"
 vcf_outgrp <- vcf_extract_groups(vcf, groups1)
+#> ℹ Compacting GT: 18 -> 3 samples across 1 chunk
 #> ℹ Applying invariant filter
 #> ℹ Removed 8904 invariant variants; 1096 retained.
 #> ℹ Removed samples: Pv120, Pv126, Pv13, Pv14, Pv27, Pv28, Pv2, Pv31, Pv56, Pv62, Pv68, Pv73, Pv78, Pv79, and Pv93
@@ -424,6 +436,7 @@ vcf1 <- vcf_extract_groups(vcf, groups1, keep = FALSE) |>
   vcf_filter_missing(.3) |>
   vcf_filter_oneSNV() |>
   vcf_bind_sparse(vcf_outgrp, mode = "union", absent_as = "missing")
+#> ℹ Compacting GT: 18 -> 15 samples across 1 chunk
 #> ℹ Applying invariant filter
 #> ℹ Removed 1705 invariant variants; 8295 retained.
 #> ℹ Removed samples: Pb2Jp, Pb2Scx, and Pb1Rd
@@ -437,9 +450,9 @@ vcf1 <- vcf_extract_groups(vcf, groups1, keep = FALSE) |>
 #> ℹ Applying locus missingness filter
 #> ℹ Retained 2409 / 4483 variants (per-variant missingness <= 0.2)
 #> ℹ Applying sample missingness filter
-#> ℹ Applying invariant filter
 #> ℹ Variants retained: 2409 | Samples retained: 15
 #> ℹ Applying unlinked SNV filter
+#> ℹ Retained 2409 / 2409 variants (unlinked SNVs)
 #> ℹ Binding 2 VCFArrow objects (union): 3304 variants, 18 total samples.
 #> ℹ Absent genotypes will be filled as: missing
 
@@ -464,9 +477,9 @@ vcf1 <- vcf |>
 #> ℹ Applying locus missingness filter
 #> ℹ Retained 1951 / 5388 variants (per-variant missingness <= 0.2)
 #> ℹ Applying sample missingness filter
-#> ℹ Applying invariant filter
 #> ℹ Variants retained: 1951 | Samples retained: 18
 #> ℹ Applying unlinked SNV filter
+#> ℹ Retained 1951 / 1951 variants (unlinked SNVs)
 
 # see how many variants remained
 nrow(vcf1@variants)
@@ -544,6 +557,11 @@ vcf2snmf(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.ge
 #> ✔ sNMF file written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/vaillantii_discosnp_sub.geno'
 # Admixture https://dalexander.github.io/admixture/index.html
 # takes as input binary PLINK (.bed), ordinary PLINK (.ped), or EIGENSTRAT (.geno) formatted files
+# so a thin wrapper around vcf2plink_bed() plus optional generation of known-ancestry reference populations
+vcf2admixture(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_admixture')))
+#> ℹ Building PLINK: 1734 variants x 18 samples (0 MiB raw storage)
+#> ℹ Writing PLINK files...
+#> ✔ PLINK binary fileset written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/vaillantii_discosnp_sub_admixture.bed', '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/vaillantii_discosnp_sub_admixture.bim', '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/vaillantii_discosnp_sub_admixture.fam'
 # PLINK .bed https://www.cog-genomics.org/plink/1.9/formats#bed
 vcf2plink_bed(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_plink')))
 #> ℹ Building PLINK: 1734 variants x 18 samples (0 MiB raw storage)
