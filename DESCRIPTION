@@ -1,7 +1,7 @@
 Package: VCFArrow
 Title: VCFArrow: a fast and efficient R package for VCF manipulation and transformation
-Version: 0.2.0
-Date: 2026-06-25
+Version: 0.3.1
+Date: 2026-08-27
 Authors@R: 
     person("Tomas", "Hrbek", , "hrbek@evoamazon.net", role = c("aut", "cre", "cph"),
            comment = c(ORCID = "0000-0003-3239-7068"))
@@ -27,7 +27,7 @@ Imports:
     tibble,
     adegenet
 SystemRequirements:
-    libarrow-dev (>= 10.0.0), libparquet-dev
+    libarrow-dev (>= 10.0.0), libparquet-dev, zlib
 Config/roxygen2/version: 8.0.0
 Suggests: 
     knitr,
