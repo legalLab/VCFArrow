@@ -147,7 +147,7 @@ vcf_bind_sparse <- function(...,
   if (mode == "intersect") {
 
     vars_src <- as.data.frame(vcfs[[1]]@variants)
-    in_cmn   <- vars_src$.row_id %in% target_ids
+    in_cmn <- vars_src$.row_id %in% target_ids
     vars_out <- vars_src[in_cmn, ]
     vars_out <- vars_out[order(vars_out$.row_id), ]
     vars_out$.row_id <- unname(id_map[as.character(vars_out$.row_id)])
@@ -169,7 +169,7 @@ vcf_bind_sparse <- function(...,
     # present in more than one, consistent with intersect mode's convention.
     gather_meta <- function(v) {
       live <- v@variants
-      live$.info_str <- v@info   # positionally parallel, per the @info fix
+      live$.info_str <- v@info  # positionally parallel, per the @info fix
       removed <- v@invariant_removed
       if (!is.null(removed) && nrow(removed) > 0L) rbind(live, removed) else live
     }
@@ -218,6 +218,7 @@ vcf_bind_sparse <- function(...,
   return(new_vcfarrow)
 }
 
+##################
 # ── Shared helper: read one object's data, filling gaps for union mode ────────
 .collect_gt_union <- function(vcf_obj, target_ids, absent_as) {
 

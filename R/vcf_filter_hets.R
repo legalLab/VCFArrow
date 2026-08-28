@@ -62,7 +62,7 @@ vcf_filter_hets <- function(vcf_arrow, threshold = 0.5) {
   keep <- vcf_arrow@variants$.row_id[pass]
 
   cli::cli_alert_info(
-    "Retained {length(keep)} / {idx$n_var} variants \\
+    "Retained {length(keep)} / {idx$n_var} variant{?s} \\
      (heterozygosity rate < {threshold})"
   )
   # apply filter using unified API

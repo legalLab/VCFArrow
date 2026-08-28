@@ -34,7 +34,7 @@ vcf2snmf <- function(vcf_arrow, keep_groups = NULL,
   # before the first chunk call
   file.create(out_file)
 
-  cli::cli_alert_info("Formatting sNMF: {setup$n_var} variants x {setup$n_samples} samples \\
+  cli::cli_alert_info("Formatting sNMF: {setup$n_var} variant{?s} x {setup$n_samples} sample{?s} \\
     ({.strong {format(round(2 * setup$n_var * setup$n_samples / 1024^2), big.mark=',')}} MiB raw storage)")
   cli::cli_alert_info("Writing sNMF file...")
   cli::cli_progress_bar("Writing chunk", total = length(setup$feather_files))

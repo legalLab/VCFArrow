@@ -62,7 +62,7 @@ vcf_filter_missingness <- function(vcf_arrow, threshold = 0.1, verbose = TRUE) {
 
   if (verbose)
     cli::cli_alert_info(
-      "Retained {length(keep)} / {idx$n_var} variants \\
+      "Retained {length(keep)} / {idx$n_var} variant{?s} \\
        (per-variant missingness <= {threshold})"
     )
 

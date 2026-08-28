@@ -52,7 +52,7 @@ vcf2plink_bed <- function(vcf_arrow, keep_groups = NULL,
   bed_file <- paste0(out_file, ".bed")
   write_plink_bed_header_cpp(bed_file)
 
-  cli::cli_alert_info("Building PLINK: {setup$n_var} variants x {setup$n_samples} samples \\
+  cli::cli_alert_info("Building PLINK: {setup$n_var} variant{?s} x {setup$n_samples} sample{?s} \\
     ({.strong {format(round(2 * setup$n_var * setup$n_samples / 1024^2), big.mark=',')}} MiB raw storage)")
   cli::cli_alert_info("Writing PLINK files...")
   cli::cli_progress_bar("Writing chunk", total = length(setup$feather_files))

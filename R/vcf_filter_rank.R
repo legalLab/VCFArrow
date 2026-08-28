@@ -49,7 +49,7 @@ vcf_filter_rank <- function(vcf_arrow, threshold = 0.4, keep_na = FALSE) {
   }
 
   cli::cli_alert_info(
-    "Retained {length(keep)} / {idx$n_var} variants (Rank >= {threshold})"
+    "Retained {length(keep)} / {idx$n_var} variant{?s} (Rank >= {threshold})"
   )
 
   # apply filter using unified API

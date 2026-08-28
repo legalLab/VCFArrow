@@ -32,7 +32,7 @@ vcf2treemix <- function(vcf_arrow, keep_groups = NULL,
 
   write_treemix_header_cpp(setup$group_names, out_file)
 
-  cli::cli_alert_info("Building Treemix: {setup$n_var} variants x {setup$n_pops} pops \\
+  cli::cli_alert_info("Building Treemix: {setup$n_var} variant{?s} x {setup$n_pops} pop{?s} \\
     ({.strong {format(round(2 * setup$n_var * setup$n_samples / 1024^2), big.mark=',')}} MiB raw storage)")
   cli::cli_alert_info("Writing Treemix file...")
   cli::cli_progress_bar("Writing chunk", total = length(setup$feather_files))

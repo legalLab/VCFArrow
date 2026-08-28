@@ -60,7 +60,7 @@ vcf_filter_maf <- function(vcf_arrow, threshold = 0.05) {
   keep <- vcf_arrow@variants$.row_id[pass]
 
   cli::cli_alert_info(
-    "Retained {length(keep)} / {idx$n_var} variants (MAF >= {threshold})"
+    "Retained {length(keep)} / {idx$n_var} variant{?s} (MAF >= {threshold})"
   )
 
   # apply filter using unified API

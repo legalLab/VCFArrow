@@ -33,7 +33,7 @@ vcf_filter_indels <- function(vcf_arrow) {
   cli::cli_alert_info("Applying indel filter")
 
   cli::cli_alert_info(
-    "Retained {length(keep)} / {idx$n_var} variants (non-Indels)"
+    "Retained {length(keep)} / {idx$n_var} variant{?s} (non-Indels)"
   )
 
   # apply filter using unified API

@@ -40,7 +40,7 @@ vcf_copy <- function(vcf_arrow) {
     # vcf_copy() doesn't leave an orphaned, unregistered temp directory.
     unlink(new_path, recursive = TRUE, force = TRUE)
     cli::cli_abort(
-      "Failed to copy {sum(!ok)} of {length(old_files)} feather file(s) \\
+      "Failed to copy {sum(!ok)} of {length(old_files)} feather file{?s} \\
        to {.path {new_path}} — check disk space and permissions."
     )
   }

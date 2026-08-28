@@ -180,8 +180,8 @@
 
 .alloc_raw_matrix <- function(nrow, ncol) {
   # rawMatrix is not a base type; use a raw vector and track dims ourselves.
-  m <- raw(nrow * ncol)          # all 0x00 by default
-  m[seq_len(nrow * ncol)] <- as.raw(0xFF)   # initialise to NA marker (0xFF)
+  m <- raw(nrow * ncol)  # all 0x00 by default
+  m[seq_len(nrow * ncol)] <- as.raw(0xFF)  # initialise to NA marker (0xFF)
   attr(m, "dim") <- c(nrow, ncol)
   m
 }
@@ -191,7 +191,7 @@
 
 .fill_raw_matrix <- function(raw_mat, int_mat, col_idx, nrow) {
   # int_mat is nrow × n_chunk_var integer matrix.
-  # Map:  0L → 0x00, 1L → 0x01, NA → 0xFF
+  # Map: 0L → 0x00, 1L → 0x01, NA → 0xFF
   encoded <- int_mat
   encoded[is.na(encoded)] <- 0xFFL
   storage.mode(encoded) <- "integer"
@@ -200,7 +200,7 @@
     base <- (col_idx[k] - 1L) * nrow
     raw_mat[base + seq_len(nrow)] <- as.raw(encoded[, k])
   }
-  raw_mat   # returned (modified copy; R semantics)
+  raw_mat  # returned (modified copy; R semantics)
 }
 
 # Decode a raw accumulation matrix to an integer matrix for a C++ writer.
@@ -229,7 +229,7 @@
   a2_raw <- .alloc_raw_matrix(nrow, ncol)
 
   cli::cli_alert_info(
-    "Accumulating {label}: {ncol} variants x {nrow} samples \\
+    "Accumulating {label}: {ncol} variant{?s} x {nrow} sample{?s} \\
      ({.strong {format(round(2 * nrow * ncol / 1024^2), big.mark=',')}} MiB raw storage)"
   )
   cli::cli_progress_bar("Reading chunk", total = length(setup$feather_files))
@@ -238,8 +238,8 @@
     chunk <- arrow::read_feather(fpath,
                                  col_select = c(".row_id", "sample", "a1", "a2"))
     rc <- .reshape_chunk(chunk, setup)
-    chunk <- NULL          # drop Arrow Table reference before gc()
-    gc(verbose = FALSE, full = FALSE)   # with system allocator: pages returned to OS
+    chunk <- NULL  # drop Arrow Table reference before gc()
+    gc(verbose = FALSE, full = FALSE)  # with system allocator: pages returned to OS
 
     if (!is.null(rc)) {
       a1_raw <- .fill_raw_matrix(a1_raw, rc$a1, rc$col_idx, nrow)
@@ -249,7 +249,7 @@
   }
   cli::cli_progress_done()
 
-  # Decode raw → integer only when handing off to C++.
+  # Decode raw to integer only when handing off to C++.
   # Both matrices are decoded at the same time, so peak overhead is
   # 2 × nrow × ncol × 4 bytes = the same as before, but only briefly.
   list(a1 = .raw_to_int_mat(a1_raw),
@@ -284,7 +284,7 @@
 # since silent wraparound would corrupt downstream allele-frequency math.
 
 .alloc_u16_pair <- function(n) {
-  list(lo = raw(n), hi = raw(n))   # both zero-initialised; counts start at 0
+  list(lo = raw(n), hi = raw(n))  # both zero-initialised; counts start at 0
 }
 
 .encode_u16 <- function(int_vec) {
@@ -338,7 +338,7 @@
   nobs_pair <- .alloc_u16_pair(n_pops * n_var)
 
   cli::cli_alert_info(
-    "Accumulating {label}: {n_var} variants x {n_pops} pops \\
+    "Accumulating {label}: {n_var} variant{?s} x {n_pops} pop{?s} \\
      ({.strong {format(round(6 * n_pops * n_var / 1024^2), big.mark=',')}} MiB \\
      raw storage, vs {format(round(12 * n_pops * n_var / 1024^2), big.mark=',')} \\
      MiB with integer matrices)"
@@ -354,8 +354,8 @@
 
     if (!is.null(rc)) {
       pc <- .pop_counts_from_chunk(rc, setup)
-      ref_pair  <- .add_u16_columns(ref_pair,  pc$ref,  rc$col_idx, n_pops)
-      alt_pair  <- .add_u16_columns(alt_pair,  pc$alt,  rc$col_idx, n_pops)
+      ref_pair <- .add_u16_columns(ref_pair, pc$ref, rc$col_idx, n_pops)
+      alt_pair <- .add_u16_columns(alt_pair, pc$alt, rc$col_idx, n_pops)
       nobs_pair <- .add_u16_columns(nobs_pair, pc$nobs, rc$col_idx, n_pops)
     }
     cli::cli_progress_update()
@@ -363,8 +363,8 @@
   cli::cli_progress_done()
 
   # Decode to integer matrices for the C++ writers.
-  ref  <- matrix(.decode_u16(ref_pair$lo,  ref_pair$hi),  nrow = n_pops, ncol = n_var)
-  alt  <- matrix(.decode_u16(alt_pair$lo,  alt_pair$hi),  nrow = n_pops, ncol = n_var)
+  ref <- matrix(.decode_u16(ref_pair$lo, ref_pair$hi), nrow = n_pops, ncol = n_var)
+  alt <- matrix(.decode_u16(alt_pair$lo, alt_pair$hi), nrow = n_pops, ncol = n_var)
   nobs <- matrix(.decode_u16(nobs_pair$lo, nobs_pair$hi), nrow = n_pops, ncol = n_var)
 
   list(ref = ref, alt = alt, nobs = nobs)
@@ -378,7 +378,7 @@
   alt <- matrix(0L, nrow = setup$n_pops, ncol = setup$n_var)
   nobs <- matrix(0L, nrow = setup$n_pops, ncol = setup$n_var)
   cli::cli_alert_info(
-    "Accumulating {label}: {setup$n_var} variants x {setup$n_pops} pops \\
+    "Accumulating {label}: {setup$n_var} variant{?s} x {setup$n_pops} pop{?s} \\
      ({.strong {format(round(12 * n_pops * n_var / 1024^2), big.mark=',')}} MiB \\
      raw storage)"
   )

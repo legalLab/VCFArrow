@@ -47,7 +47,7 @@ vcf_filter_adr <- function(vcf_arrow, mode = c("correct", "remove"),
   cli::cli_alert_info("Applying ADR filter")
 
   cli::cli_alert_info(
-    "Applying ADR {mode} (threshold = {threshold}) across {length(ffiles)} chunk(s)..."
+    "Applying ADR {mode} (threshold = {threshold}) across {length(ffiles)} chunk{?s}..."
   )
   cli::cli_progress_bar("Rewriting chunk", total = length(ffiles))
 
@@ -64,7 +64,7 @@ vcf_filter_adr <- function(vcf_arrow, mode = c("correct", "remove"),
     if (mode == "correct") {
       chunk$a1[adr_flag] <- adr_dir[adr_flag]
       chunk$a2[adr_flag] <- adr_dir[adr_flag]
-    } else {   # mode == "remove"
+    } else {  # mode == "remove"
       chunk$a1[adr_flag] <- NA_integer_
       chunk$a2[adr_flag] <- NA_integer_
     }
@@ -78,14 +78,14 @@ vcf_filter_adr <- function(vcf_arrow, mode = c("correct", "remove"),
   gt_arrow <- suppressWarnings(arrow::open_dataset(tmp_dir, format = "feather"))
 
   new_vcfarrow <- .new_vcfarrow(
-    vcf_arrow@header,
-    vcf_arrow@info,
-    vcf_arrow@format,
-    vcf_arrow@variants,
-    gt_arrow,
-    vcf_arrow@samples,
-    vcf_arrow@groups,
-    tmp_dir
+    header = vcf_arrow@header,
+    info = vcf_arrow@info,
+    format = vcf_arrow@format,
+    variants = vcf_arrow@variants,
+    gt = gt_arrow,
+    samples = vcf_arrow@samples,
+    groups = vcf_arrow@groups,
+    path = tmp_dir
   )
 
   if (f_invar) new_vcfarrow <- vcf_filter_invariant(new_vcfarrow)

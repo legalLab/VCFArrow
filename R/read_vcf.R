@@ -81,7 +81,7 @@ read_vcf <- function(vcf_file, chunk_size = 50000) {
   chunk_id <- 1
 
   # chunk size message
-  cli::cli_alert_info("VCF is being read in chunks of {chunk_size} variants")
+  cli::cli_alert_info("VCF is being read in chunks of {chunk_size} variant{?s}")
 
   # set up progress bar
   cli::cli_progress_bar("Reading in VCF chunk", total = NA)

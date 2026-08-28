@@ -47,7 +47,7 @@ vcf2gt_long <- function(vcf_arrow, keep_groups = NULL,
   }
 
   cli::cli_alert_info(
-    "Building gt_long: {setup$n_var} variants x {setup$n_samples} samples \\
+    "Building gt_long: {setup$n_var} variant{?s} x {setup$n_samples} sample{?s} \\
     ({.strong {format(round(2 * setup$n_var * setup$n_samples / 1024^2), big.mark=',')}} MiB raw storage)"
   )
   cli::cli_progress_bar("Reading chunk", total = length(setup$feather_files))

@@ -35,7 +35,7 @@ vcf2snapp <- function(vcf_arrow, keep_groups = NULL,
 
   write_nexus_cpp(acc$a1, acc$a2,
                   setup$variants$REF, setup$variants$ALT,
-                  setup$samples, 1L, out_file)   # 1 = SNAPP 0/1/2
+                  setup$samples, 1L, out_file)  # 1 = SNAPP 0/1/2
 
   cli::cli_alert_success("SNAPP file written to {.file {out_file}}")
 

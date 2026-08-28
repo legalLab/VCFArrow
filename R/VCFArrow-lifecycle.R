@@ -52,15 +52,15 @@
 
 # ── Package-level registries (overwritten by .onLoad; defined here for R CMD check) ──
 .vcfarrow_registry <- new.env(parent = emptyenv())
-.vcfarrow_pending  <- new.env(parent = emptyenv())
+.vcfarrow_pending <- new.env(parent = emptyenv())
 
 
 # ── Single .onLoad ────────────────────────────────────────────────────────────
 
 .onLoad <- function(libname, pkgname) {
-  ns <- environment()   # the package namespace
+  ns <- environment()  # the package namespace
   assign(".vcfarrow_registry", new.env(parent = emptyenv()), envir = ns)
-  assign(".vcfarrow_pending",  new.env(parent = emptyenv()), envir = ns)
+  assign(".vcfarrow_pending", new.env(parent = emptyenv()), envir = ns)
 
   # Remove stale directories left by a previous crashed/hard-killed session.
   # Normal shutdown fires onexit finalizers, but a hard crash skips them.
@@ -91,7 +91,7 @@
 # Process everything in .vcfarrow_pending.
 .flush_pending <- function(verbose = TRUE) {
   paths <- ls(.vcfarrow_pending)
-  n_ok  <- 0L
+  n_ok <- 0L
   for (path in paths) {
     if (.try_unlink(path)) {
       rm(list = path, envir = .vcfarrow_pending)
@@ -183,8 +183,8 @@
 # ── Startup cleanup ───────────────────────────────────────────────────────────
 
 .cleanup_old_vcfarrow <- function() {
-  tmp   <- tempdir()
-  dirs  <- list.dirs(tmp, recursive = FALSE, full.names = TRUE)
+  tmp <- tempdir()
+  dirs <- list.dirs(tmp, recursive = FALSE, full.names = TRUE)
   stale <- dirs[grepl("arrow_vcf_", basename(dirs))]
   for (d in stale) try(.try_unlink(d), silent = TRUE)
 }
@@ -211,6 +211,7 @@
 #'   vcf_gc()              # usually sufficient
 #'   vcf_gc(force = TRUE)  # if directories are still present after rm()
 #' }
+
 vcf_gc <- function(force = FALSE, verbose = TRUE) {
 
   # Three full GC passes:
@@ -242,7 +243,7 @@ vcf_gc <- function(force = FALSE, verbose = TRUE) {
   }
 
   if (verbose) {
-    n_live    <- length(ls(.vcfarrow_registry))
+    n_live <- length(ls(.vcfarrow_registry))
     n_pending <- length(ls(.vcfarrow_pending))
 
     if (n_live == 0L && n_pending == 0L) {
@@ -289,15 +290,16 @@ vcf_gc <- function(force = FALSE, verbose = TRUE) {
 #' @param chunk_size Feather chunk size used at read_vcf() time.
 #' @param lowmem     If TRUE, estimate uses raw-byte matrices (vcf2*() lowmem
 #'                   variants); otherwise integer matrices.
+
 vcf_memory_estimate <- function(vcf_arrow,
                                 keep_groups = NULL,
-                                format      = c("individual", "pop", "chunk"),
-                                chunk_size  = 100000L,
-                                lowmem      = FALSE) {
+                                format = c("individual", "pop", "chunk"),
+                                chunk_size = 100000L,
+                                lowmem = FALSE) {
   format <- match.arg(format)
 
   all_samples <- vcf_arrow@samples
-  all_groups  <- vcf_arrow@groups
+  all_groups <- vcf_arrow@groups
   if (is.null(keep_groups)) keep_groups <- unique(all_groups)
   n_samples <- sum(all_groups %in% keep_groups)
 
@@ -305,7 +307,7 @@ vcf_memory_estimate <- function(vcf_arrow,
     dplyr::filter(is_biallelic, !is_indel) |>
     nrow()
 
-  n_pops       <- length(keep_groups)
+  n_pops <- length(keep_groups)
   bytes_per_el <- if (lowmem) 1L else 4L
 
   mb <- function(x) paste0(round(x / 1024^2, 1), " MiB")
@@ -314,13 +316,13 @@ vcf_memory_estimate <- function(vcf_arrow,
   # ~5 columns (row_id, sample, a1, a2, phased) × 4 bytes each.
   chunk_arrow_mb <- chunk_size * n_samples * 5L * 4L
   # Accumulation matrix (a1 + a2)
-  mat_bytes <- 2L * n_samples * n_var * bytes_per_el   # individual
-  pop_bytes <- 2L * n_pops   * n_var * 4L              # pop-level (always int)
+  mat_bytes <- 2L * n_samples * n_var * bytes_per_el  # individual
+  pop_bytes <- 2L * n_pops * n_var * 4L  # pop-level (always int)
 
   total <- switch(format,
                   individual = mat_bytes + chunk_arrow_mb,
-                  pop        = pop_bytes + chunk_arrow_mb,
-                  chunk      = chunk_arrow_mb * 2L   # double-buffer for reshape
+                  pop = pop_bytes + chunk_arrow_mb,
+                  chunk = chunk_arrow_mb * 2L  # double-buffer for reshape
   )
 
   cli::cli_h2("VCFArrow memory estimate")
@@ -346,12 +348,12 @@ vcf_memory_estimate <- function(vcf_arrow,
     ))
 
   invisible(list(
-    n_var             = n_var,
-    n_samples         = n_samples,
-    n_pops            = n_pops,
+    n_var = n_var,
+    n_samples = n_samples,
+    n_pops = n_pops,
     chunk_arrow_bytes = chunk_arrow_mb,
-    matrix_bytes      = if (format == "individual") mat_bytes else pop_bytes,
-    peak_bytes        = total
+    matrix_bytes = if (format == "individual") mat_bytes else pop_bytes,
+    peak_bytes = total
   ))
 }
 
@@ -364,6 +366,7 @@ vcf_memory_estimate <- function(vcf_arrow,
 #' @param n_samples    Number of samples.
 #' @param n_columns    Number of columns per gt row (default 5: row_id, sample,
 #'                     a1, a2, phased).
+
 vcf_suggest_chunk_size <- function(available_gb, n_samples, n_columns = 5L) {
   # Leave half for OS + R overhead + accumulation matrices
   arrow_budget <- available_gb * 1024^3 / 2
@@ -371,9 +374,10 @@ vcf_suggest_chunk_size <- function(available_gb, n_samples, n_columns = 5L) {
   chunk <- floor(arrow_budget / bytes_per_variant)
   chunk <- max(1000L, min(chunk, 500000L))
   cli::cli_alert_info(
-    "For {available_gb} GB RAM and {n_samples} samples, \\
+    "For {available_gb} GB RAM and {n_samples} sample{?s}, \\
      recommended chunk_size = {format(chunk, big.mark=',')}
      (use: read_vcf(vcf_file, chunk_size = {format(chunk, big.mark=',')}))"
   )
+  
   invisible(chunk)
 }

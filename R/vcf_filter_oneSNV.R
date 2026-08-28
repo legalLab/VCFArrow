@@ -46,7 +46,7 @@ vcf_filter_oneSNV <- function(vcf_arrow, block_size = 10000) {
     dplyr::pull(.row_id)
 
   cli::cli_alert_info(
-    "Retained {length(keep)} / {idx$n_var} variants (unlinked SNVs)"
+    "Retained {length(keep)} / {idx$n_var} variant{?s} (unlinked SNVs)"
   )
 
   # apply filter using unified API

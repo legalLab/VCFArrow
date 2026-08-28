@@ -61,8 +61,8 @@ vcf_theta <- function(vcf_arrow, keep_groups = NULL) {
 
   n_pops <- setup$n_pops
   n_var <- setup$n_var
-  alt <- counts$alt    # n_pops x n_var: ALT allele count per group per variant
-  nobs <- counts$nobs   # n_pops x n_var: total observed alleles (= 2 * n_called)
+  alt <- counts$alt  # n_pops x n_var: ALT allele count per group per variant
+  nobs <- counts$nobs  # n_pops x n_var: total observed alleles (= 2 * n_called)
 
   # Per-(group, variant) statistics — fully vectorised ─────────────────────────
   n_called <- nobs / 2

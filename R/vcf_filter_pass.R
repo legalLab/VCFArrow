@@ -43,7 +43,7 @@ vcf_filter_pass <- function(vcf_arrow) {
     vcf_arrow@variants$FILTER == "."
 
   cli::cli_alert_info(
-    "Retained {length(keep)} / {idx$n_var} variants (PASS)"
+    "Retained {length(keep)} / {idx$n_var} variant{?s} (PASS)"
   )
 
   # apply filter using unified API

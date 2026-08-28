@@ -61,8 +61,8 @@ vcf_stats <- function(vcf_arrow, res_path, project, theta = FALSE) {
   dp_sum <- stats::setNames(numeric(n_samples), samples)
 
   cli::cli_alert_info(
-    "Computing per-sample stats: {length(valid_row_ids)} variants x \\
-     {n_samples} samples, reading {length(ffiles)} chunk(s) directly"
+    "Computing per-sample stats: {length(valid_row_ids)} variant{?s} x \\
+     {n_samples} sample{?s}, reading {length(ffiles)} chunk{?s} directly"
   )
   cli::cli_progress_bar("Scanning chunk", total = length(ffiles))
 

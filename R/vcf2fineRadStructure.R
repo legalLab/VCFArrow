@@ -32,7 +32,7 @@ vcf2fineradstructure <- function(vcf_arrow, keep_groups = NULL,
 
   write_fineradstructure_header_cpp(setup$samples, out_file)
 
-  cli::cli_alert_info("Building fineRADstructure: {setup$n_var} variants x {setup$n_samples} samples \\
+  cli::cli_alert_info("Building fineRADstructure: {setup$n_var} variant{?s} x {setup$n_samples} sample{?s} \\
     ({.strong {format(round(2 * setup$n_var * setup$n_samples / 1024^2), big.mark=',')}} MiB raw storage)")
   cli::cli_alert_info("Writing fineRADstructure file...")
   cli::cli_progress_bar("Writing chunk", total = length(setup$feather_files))

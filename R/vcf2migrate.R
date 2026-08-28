@@ -86,10 +86,10 @@ vcf2migrate <- function(vcf_arrow, keep_groups = NULL,
         block_labels <- c(rep(paste0("(s", block_size, ")"), n_full),
                           paste0("(n", remainder, ")"))
       }
-    } else {   # method == "N"
+    } else {  # method == "N"
       # Compute SNP count per (CHROM, position-interval) pair.
       # Intervals are defined as floor((POS - min_POS_for_chrom) / block_size).
-      # dense_rank() is applied within chromosome to ensure sequential labelling
+      # dense_rank() is applied within chromosome to ensure sequential labeling
       # when the position arithmetic produces gaps.
       interval_counts <- setup$variants |>
         dplyr::group_by(CHROM) |>

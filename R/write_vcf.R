@@ -57,7 +57,7 @@ write_vcf <- function(vcf_arrow, out_file = "output.vcf", gzip = FALSE) {
   fmt_lookup <- vcf_arrow@format
 
   # chunk size message
-  cli::cli_alert_info("VCF is being written in {length(feather_files)} chunks")
+  cli::cli_alert_info("VCF is being written in {length(feather_files)} chunk{?s}")
 
   # set up progress bar
   cli::cli_progress_bar("Writing VCF chunk", total = length(feather_files))

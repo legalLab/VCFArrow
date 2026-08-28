@@ -66,7 +66,7 @@ vcf_filter_coverage <- function(vcf_arrow, threshold = 10) {
   keep <- vcf_arrow@variants$.row_id[pass]
 
   cli::cli_alert_info(
-    "Retained {length(keep)} / {idx$n_var} variants \\
+    "Retained {length(keep)} / {idx$n_var} variant{?s} \\
      (polymorphic with DP >= {threshold})"
   )
 

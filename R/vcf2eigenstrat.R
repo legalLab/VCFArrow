@@ -77,7 +77,7 @@ vcf2eigenstrat <- function(vcf_arrow, keep_groups = NULL,
   write_eigenstrat_geno_header_cpp(geno_file)   # create / truncate
 
   cli::cli_alert_info(
-    "Building EIGENSTRAT: {setup$n_var} variants x {setup$n_samples}  \\
+    "Building EIGENSTRAT: {setup$n_var} variant{?s} x {setup$n_samples} sample{?s} \\
     ({.strong {format(round(2 * setup$n_var * setup$n_samples / 1024^2), big.mark=',')}} MiB raw storage)"
   )
   cli::cli_alert_info(
