@@ -1,0 +1,116 @@
+# Package index
+
+## All functions
+
+- [`assess_vcf_coverage()`](https://legallab.github.io/VCFArrow/reference/assess_vcf_coverage.md)
+  : assess_vcf_coverage
+- [`assess_vcf_missing_data()`](https://legallab.github.io/VCFArrow/reference/assess_vcf_missing_data.md)
+  : assess_vcf_missing_data
+- [`.vcf_filter_columns()`](https://legallab.github.io/VCFArrow/reference/dot-vcf_filter_columns.md)
+  : vcf_filter_columns
+- [`.vcf_filter_rows()`](https://legallab.github.io/VCFArrow/reference/dot-vcf_filter_rows.md)
+  : vcf_filter_rows
+- [`read_vcf()`](https://legallab.github.io/VCFArrow/reference/read_vcf.md)
+  : read_vcf
+- [`set_vcf_groups()`](https://legallab.github.io/VCFArrow/reference/set_vcf_groups.md)
+  : set_vcf_groups
+- [`show(`*`<VCFArrow>`*`)`](https://legallab.github.io/VCFArrow/reference/show-VCFArrow-method.md)
+  : Show method for VCFArrow
+- [`` `[`( ``*`<VCFArrow>`*`,`*`<ANY>`*`,`*`<ANY>`*`,`*`<ANY>`*`)`](https://legallab.github.io/VCFArrow/reference/sub-VCFArrow-ANY-ANY-ANY-method.md)
+  : Subset method for VCFArrow
+- [`vcf2admixture()`](https://legallab.github.io/VCFArrow/reference/vcf2admixture.md)
+  : vcf2admixture
+- [`vcf2apparent()`](https://legallab.github.io/VCFArrow/reference/vcf2apparent.md)
+  : vcf2apparent
+- [`vcf2arlequin()`](https://legallab.github.io/VCFArrow/reference/vcf2arlequin.md)
+  : vcf2arlequin
+- [`vcf2bayesass()`](https://legallab.github.io/VCFArrow/reference/vcf2bayesass.md)
+  : vcf2bayesass
+- [`vcf2bayescan()`](https://legallab.github.io/VCFArrow/reference/vcf2bayescan.md)
+  : vcf2bayescan
+- [`vcf2eigenstrat()`](https://legallab.github.io/VCFArrow/reference/vcf2eigenstrat.md)
+  : vcf2eigenstrat
+- [`vcf2fasta()`](https://legallab.github.io/VCFArrow/reference/vcf2fasta.md)
+  : vcf2fasta
+- [`vcf2fineradstructure()`](https://legallab.github.io/VCFArrow/reference/vcf2fineradstructure.md)
+  : vcf2fineradstructure
+- [`vcf2genepop()`](https://legallab.github.io/VCFArrow/reference/vcf2genepop.md)
+  : vcf2genepop
+- [`vcf2genlight()`](https://legallab.github.io/VCFArrow/reference/vcf2genlight.md)
+  : vcf2genlight
+- [`vcf2gt_long()`](https://legallab.github.io/VCFArrow/reference/vcf2gt_long.md)
+  : vcf2gt_long
+- [`vcf2migrate()`](https://legallab.github.io/VCFArrow/reference/vcf2migrate.md)
+  : vcf2migrate
+- [`vcf2nexus()`](https://legallab.github.io/VCFArrow/reference/vcf2nexus.md)
+  : vcf2nexus
+- [`vcf2plink_bed()`](https://legallab.github.io/VCFArrow/reference/vcf2plink_bed.md)
+  : vcf2plink_bed
+- [`vcf2plink_ped()`](https://legallab.github.io/VCFArrow/reference/vcf2plink_ped.md)
+  : vcf2plink_ped
+- [`vcf2related()`](https://legallab.github.io/VCFArrow/reference/vcf2related.md)
+  : vcf2related
+- [`vcf2smartsnp()`](https://legallab.github.io/VCFArrow/reference/vcf2smartsnp.md)
+  : vcf2smartsnp
+- [`vcf2snapp()`](https://legallab.github.io/VCFArrow/reference/vcf2snapp.md)
+  : vcf2snapp
+- [`vcf2snmf()`](https://legallab.github.io/VCFArrow/reference/vcf2snmf.md)
+  : vcf2snmf
+- [`vcf2structure()`](https://legallab.github.io/VCFArrow/reference/vcf2structure.md)
+  : vcf2structure
+- [`vcf2treemix()`](https://legallab.github.io/VCFArrow/reference/vcf2treemix.md)
+  : vcf2treemix
+- [`vcf_bind()`](https://legallab.github.io/VCFArrow/reference/vcf_bind.md)
+  : vcf_bind
+- [`vcf_bind_sparse()`](https://legallab.github.io/VCFArrow/reference/vcf_bind_sparse.md)
+  : vcf_bind_sparse
+- [`vcf_copy()`](https://legallab.github.io/VCFArrow/reference/vcf_copy.md)
+  : vcf_copy
+- [`vcf_extract_groups()`](https://legallab.github.io/VCFArrow/reference/vcf_extract_groups.md)
+  : vcf_extract_groups
+- [`vcf_extract_samples()`](https://legallab.github.io/VCFArrow/reference/vcf_extract_samples.md)
+  : vcf_extract_samples
+- [`vcf_filter_adr()`](https://legallab.github.io/VCFArrow/reference/vcf_filter_adr.md)
+  : vcf_filter_adr
+- [`vcf_filter_biallelic()`](https://legallab.github.io/VCFArrow/reference/vcf_filter_biallelic.md)
+  : vcf_filter_biallelic
+- [`vcf_filter_coverage()`](https://legallab.github.io/VCFArrow/reference/vcf_filter_coverage.md)
+  : vcf_filter_coverage
+- [`vcf_filter_hets()`](https://legallab.github.io/VCFArrow/reference/vcf_filter_hets.md)
+  : vcf_filter_hets
+- [`vcf_filter_indels()`](https://legallab.github.io/VCFArrow/reference/vcf_filter_indels.md)
+  : vcf_filter_indels
+- [`vcf_filter_invariant()`](https://legallab.github.io/VCFArrow/reference/vcf_filter_invariant.md)
+  : vcf_filter_invariant
+- [`vcf_filter_maf()`](https://legallab.github.io/VCFArrow/reference/vcf_filter_maf.md)
+  : vcf_filter_maf
+- [`vcf_filter_missing()`](https://legallab.github.io/VCFArrow/reference/vcf_filter_missing.md)
+  : vcf_filter_missing
+- [`vcf_filter_missingness()`](https://legallab.github.io/VCFArrow/reference/vcf_filter_missingness.md)
+  : vcf_filter_missingness
+- [`vcf_filter_multiSNV()`](https://legallab.github.io/VCFArrow/reference/vcf_filter_multiSNV.md)
+  : vcf_filter_multiSNV
+- [`vcf_filter_oneSNV()`](https://legallab.github.io/VCFArrow/reference/vcf_filter_oneSNV.md)
+  : vcf_filter_oneSNV
+- [`vcf_filter_pass()`](https://legallab.github.io/VCFArrow/reference/vcf_filter_pass.md)
+  : vcf_filter_pass
+- [`vcf_filter_quality()`](https://legallab.github.io/VCFArrow/reference/vcf_filter_quality.md)
+  : vcf_filter_quality
+- [`vcf_filter_rank()`](https://legallab.github.io/VCFArrow/reference/vcf_filter_rank.md)
+  : vcf_filter_rank
+- [`vcf_gc()`](https://legallab.github.io/VCFArrow/reference/vcf_gc.md)
+  : Garbage-collect VCFArrow temp directories
+- [`vcf_memory_estimate()`](https://legallab.github.io/VCFArrow/reference/vcf_memory_estimate.md)
+  : Estimate RAM required for a VCFArrow export operation
+- [`vcf_stats()`](https://legallab.github.io/VCFArrow/reference/vcf_stats.md)
+  : vcf_stats
+- [`vcf_sub_SNVs()`](https://legallab.github.io/VCFArrow/reference/vcf_sub_SNVs.md)
+  : vcf_sub_loci
+- [`vcf_sub_SNVs_stratified()`](https://legallab.github.io/VCFArrow/reference/vcf_sub_SNVs_stratified.md)
+  : vcf_sub_loci_stratified
+- [`vcf_suggest_chunk_size()`](https://legallab.github.io/VCFArrow/reference/vcf_suggest_chunk_size.md)
+  : Suggest a chunk_size for read_vcf() given available RAM
+- [`vcf_theta()`](https://legallab.github.io/VCFArrow/reference/vcf_theta.md)
+  : vcf_theta
+- [`write_vcf()`](https://legallab.github.io/VCFArrow/reference/write_vcf.md)
+  : write_vcf
