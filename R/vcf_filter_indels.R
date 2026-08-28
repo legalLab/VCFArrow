@@ -1,7 +1,7 @@
 #' @title vcf_filter_indels
 #'
 #' @description
-#' Remove non-indels from a VCFArrow object
+#' Remove indels from a VCFArrow object
 #'
 #' @author Tomas Hrbek April 2026
 #'
@@ -10,7 +10,7 @@
 #' @return subsetted VCFArrow object
 #'
 #' @details
-#' This function removes non-indel loci from a VCFArrow object,
+#' This function removes indel loci from a VCFArrow object,
 #' returning a new VCFArrow object.
 #'
 #' @examples
