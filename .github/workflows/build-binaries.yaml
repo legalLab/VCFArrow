@@ -1,0 +1,357 @@
+name: Build package binaries
+
+# VCFArrow LinkingTo: arrow, Rcpp and its src/Makevars link against Arrow C++
+# via pkg-config (arrow-dataset, which pulls in libarrow + libparquet).
+# There is no src/Makevars.win, so Windows falls back to the same Makevars,
+# which means pkg-config and the Arrow .pc files must be reachable there too.
+#
+# Runs on: tag pushes (v*) and manual dispatch. Binaries are always uploaded
+# as build artifacts; on a tag push they're also attached to a GitHub Release.
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+env:
+  R_KEEP_PKG_SOURCE: yes
+  ARROW_VERSION_MIN: "10.0.0" # matches SystemRequirements in DESCRIPTION
+
+jobs:
+  # ---------------------------------------------------------------------
+  # macOS binary (.tgz)
+  # ---------------------------------------------------------------------
+  macos-binary:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: "release"
+          use-public-rspm: true
+
+      - name: Set up pandoc
+        uses: r-lib/actions/setup-pandoc@v2
+
+      - name: Install Apache Arrow C++ (libarrow, libarrow-dataset, libparquet)
+        env:
+          # apache-arrow's bottle depends on aws-sdk-cpp (for its optional
+          # S3 filesystem support), which Homebrew ships from the aws/tap
+          # tap. Newer Homebrew refuses to auto-install from a tap it
+          # hasn't been told to trust and otherwise just warns/skips it;
+          # VCFArrow never touches S3, so we don't need that formula --
+          # this just silences the warning rather than changing behavior.
+          HOMEBREW_NO_REQUIRE_TAP_TRUST: "1"
+        run: |
+          brew install apache-arrow pkg-config zstd
+          # Homebrew's prefix (and its lib/pkgconfig) isn't always on
+          # PKG_CONFIG_PATH by default on the hosted runners, so add it
+          # explicitly rather than assume `brew shellenv` already ran.
+          echo "PKG_CONFIG_PATH=$(brew --prefix apache-arrow)/lib/pkgconfig:${PKG_CONFIG_PATH}" >> "$GITHUB_ENV"
+
+      - name: Verify pkg-config sees Arrow Dataset + Parquet
+        run: |
+          pkg-config --print-errors --exists "arrow-dataset >= ${ARROW_VERSION_MIN}"
+          pkg-config --modversion arrow-dataset
+          pkg-config --modversion parquet
+
+      - name: Install R package dependencies
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          # Rcpp, arrow, cli, dplyr, stringr, ggplot2, tibble, adegenet
+          # (everything under Imports/LinkingTo in DESCRIPTION)
+          needs: check
+          extra-packages: any::rcmdcheck
+
+      - name: Build macOS binary package
+        run: R CMD INSTALL --build --no-multiarch .
+        shell: bash
+
+      - name: Bundle Homebrew Arrow dylibs into the package
+        shell: bash
+        run: |
+          set -euo pipefail
+          set -x   # trace every command -- if this step fails again, the
+                   # log will show exactly which command/args did it,
+                   # instead of just a bare "exit code N".
+
+          pkg_tgz=$(ls VCFArrow_*.tgz)
+          workdir=$(mktemp -d)
+          tar -xf "$pkg_tgz" -C "$workdir"
+
+          so_dir="$workdir/VCFArrow/libs"
+          target_so="$so_dir/VCFArrow.so"
+          brew_prefix=$(brew --prefix)
+
+          if [ ! -f "$target_so" ]; then
+            echo "::error::expected $target_so, found instead:"
+            find "$workdir/VCFArrow" -maxdepth 3
+            exit 1
+          fi
+
+          # NOTE: macOS's default `bash` on the PATH for `shell: bash`
+          # steps is still Apple's ancient bash 3.2 (Homebrew's newer
+          # bash isn't preinstalled on the runner), which doesn't have
+          # `declare -A` (associative arrays, bash 4+ only). Track the
+          # dependency walk with a plain queue file instead, which works
+          # the same on any bash/sh.
+          queue_file="$workdir/queue.txt"
+          echo "$target_so" > "$queue_file"
+
+          # A dependency can show up in `otool -L` either as the absolute
+          # Homebrew path, or (increasingly common for Arrow's own C++
+          # sub-libraries) as "@rpath/libfoo.dylib". Homebrew symlinks
+          # every installed shared library into its shared lib/ dir, so
+          # @rpath entries resolve the same way absolute ones do.
+          resolve_dep() {
+            case "$1" in
+              "$brew_prefix"/*) echo "$1"; return 0 ;;
+              @rpath/*|@loader_path/*|@executable_path/*)
+                hit=$(find "$brew_prefix/lib" -maxdepth 1 -name "${1##*/}" 2>/dev/null | head -n 1)
+                [ -n "$hit" ] && { echo "$hit"; return 0; }
+                return 1 ;;
+              *) return 1 ;;
+            esac
+          }
+
+          line_num=1
+          while true; do
+            current=$(sed -n "${line_num}p" "$queue_file")
+            [ -z "$current" ] && break
+            line_num=$((line_num + 1))
+
+            dep_list=$(otool -L "$current" | tail -n +2 | awk '{print $1}') \
+              || { echo "::error::otool -L failed on $current"; exit 1; }
+
+            for raw_dep in $dep_list; do
+              resolved=$(resolve_dep "$raw_dep") || continue   # system/R lib, nothing to bundle
+              base=$(basename "$resolved")
+
+              # Homebrew exposes the same library under more than one
+              # absolute path -- e.g. the flat "$brew_prefix/lib/foo.dylib"
+              # symlink AND "$brew_prefix/opt/<formula>/lib/foo.dylib".
+              # Two callers can reference the same file by different
+              # strings, so dedupe on the destination *basename* (what
+              # actually can't collide in the flat libs/ dir), not on
+              # $resolved. Only bundle + walk it the first time we see
+              # that basename; a repeat is still repointed below.
+              if [ ! -f "$so_dir/$base" ]; then
+                cp "$resolved" "$so_dir/$base" \
+                  || { echo "::error::cp failed: $resolved -> $so_dir/$base"; exit 1; }
+                chmod u+w "$so_dir/$base"
+
+                # Point the copy at itself with a relative (@loader_path)
+                # id. Re-sign afterwards: on Apple Silicon, editing Mach-O
+                # load commands invalidates any existing signature, and an
+                # ad-hoc signature keeps the dylib loadable.
+                install_name_tool -id "@loader_path/$base" "$so_dir/$base" \
+                  || { echo "::error::install_name_tool -id failed on $so_dir/$base"; exit 1; }
+                codesign --force --sign - "$so_dir/$base" 2>/dev/null || true
+
+                echo "$so_dir/$base" >> "$queue_file"
+              fi
+
+              # Always repoint *this caller's* reference, regardless of
+              # whether it was the first or a repeat encounter of $base.
+              install_name_tool -change "$raw_dep" "@loader_path/$base" "$current" \
+                || { echo "::error::install_name_tool -change failed: $raw_dep in $current"; exit 1; }
+              codesign --force --sign - "$current" 2>/dev/null || true
+            done
+          done
+
+          # Every bundled dylib must also point at its *sibling* copies
+          # with @loader_path, not the original Homebrew/@rpath reference.
+          for lib in "$so_dir"/*.dylib; do
+            [ "$lib" = "$target_so" ] && continue
+            dep_list=$(otool -L "$lib" | tail -n +2 | awk '{print $1}') || continue
+            for raw_dep in $dep_list; do
+              resolved=$(resolve_dep "$raw_dep") || continue
+              base=$(basename "$resolved")
+              if [ -f "$so_dir/$base" ]; then
+                install_name_tool -change "$raw_dep" "@loader_path/$base" "$lib"
+                codesign --force --sign - "$lib" 2>/dev/null || true
+              fi
+            done
+          done
+
+          set +x
+          echo "Bundled libraries:"
+          ls -la "$so_dir"
+
+          # Verification: nothing left in the package should still point
+          # at a Homebrew path or an unresolved @rpath/@loader_path entry.
+          leftover=0
+          for lib in "$so_dir"/*.dylib "$target_so"; do
+            [ -f "$lib" ] || continue
+            # @loader_path is our own successful fix-up -- only an
+            # absolute Homebrew path or an unresolved @rpath/
+            # @executable_path reference counts as "still broken".
+            if otool -L "$lib" | tail -n +2 | awk '{print $1}' | grep -qE "^($brew_prefix|@rpath|@executable_path)"; then
+              echo "::error::$lib still references an un-bundled library:"
+              otool -L "$lib"
+              leftover=1
+            fi
+          done
+          if [ "$leftover" -ne 0 ]; then
+            exit 1
+          fi
+
+          rm -f "$pkg_tgz"
+          (cd "$workdir" && tar -czf "$OLDPWD/$pkg_tgz" VCFArrow)
+
+      - name: Upload macOS binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: VCFArrow-macOS-binary
+          path: VCFArrow_*.tgz
+          if-no-files-found: error
+
+  # ---------------------------------------------------------------------
+  # Windows binary (.zip)
+  # ---------------------------------------------------------------------
+  windows-binary:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up R and Rtools45
+        uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: "release"
+          rtools-version: "45"
+          use-public-rspm: true
+
+      - name: Set up pandoc
+        uses: r-lib/actions/setup-pandoc@v2
+
+      - name: Install Apache Arrow C++ via Rtools' MSYS2 pacman
+        shell: cmd
+        run: |
+          C:\rtools45\usr\bin\bash.exe -lc "pacman -Sy --noconfirm"
+          C:\rtools45\usr\bin\bash.exe -lc "pacman -S --needed --noconfirm mingw-w64-x86_64-arrow mingw-w64-x86_64-pkg-config mingw-w64-x86_64-zlib"
+
+      - name: Expose Arrow's pkg-config + DLLs to R CMD INSTALL
+        shell: bash
+        run: |
+          set -euo pipefail
+          pc_file=$(find /c/rtools45 -maxdepth 4 -name "arrow-dataset.pc" | head -n 1)
+          if [ -z "$pc_file" ]; then
+            echo "::error::arrow-dataset.pc not found after installing mingw-w64-x86_64-arrow"
+            exit 1
+          fi
+          pc_dir=$(dirname "$pc_file")
+          mingw_root=$(dirname "$(dirname "$pc_dir")")   # .../mingw64
+
+          echo "PKG_CONFIG_PATH=${pc_dir}" >> "$GITHUB_ENV"
+          echo "MINGW_BIN=${mingw_root}/bin" >> "$GITHUB_ENV"
+          echo "${mingw_root}/bin" >> "$GITHUB_PATH"
+
+      - name: Verify pkg-config sees Arrow Dataset + Parquet
+        shell: bash
+        run: |
+          pkg-config --print-errors --exists "arrow-dataset >= ${ARROW_VERSION_MIN}"
+          pkg-config --modversion arrow-dataset
+          pkg-config --modversion parquet
+
+      - name: Install R package dependencies
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          needs: check
+          extra-packages: any::rcmdcheck
+
+      - name: Build Windows binary package
+        shell: bash
+        run: R CMD INSTALL --build --no-multiarch .
+
+      - name: Extract the built .zip
+        # zip/unzip aren't guaranteed to be on the Windows runner, so use
+        # PowerShell's built-in Archive cmdlets instead for pack/unpack.
+        shell: pwsh
+        run: |
+          $zip = Get-ChildItem -Filter "VCFArrow_*.zip" | Select-Object -First 1
+          echo "PKG_ZIP_NAME=$($zip.Name)" >> $env:GITHUB_ENV
+          Expand-Archive -Path $zip.FullName -DestinationPath "$env:RUNNER_TEMP\pkgextract" -Force
+
+      - name: Bundle mingw-w64 Arrow DLLs into the package
+        shell: bash
+        run: |
+          set -euo pipefail
+          dll_dir="$(cygpath -u "$RUNNER_TEMP")/pkgextract/VCFArrow/libs/x64"
+          target_dll="$dll_dir/VCFArrow.dll"
+
+          # Same dependency-walk approach as the macOS job: a plain
+          # queue file + a "seen" file instead of `declare -A`, so this
+          # doesn't depend on which bash version answers `shell: bash`.
+          queue_file="$(mktemp)"
+          seen_file="$(mktemp)"
+          echo "$target_dll" > "$queue_file"
+
+          line_num=1
+          while true; do
+            current=$(sed -n "${line_num}p" "$queue_file")
+            [ -z "$current" ] && break
+            line_num=$((line_num + 1))
+
+            for dep in $(objdump -p "$current" 2>/dev/null | awk '/DLL Name/ {print $3}'); do
+              # Skip Windows system DLLs and R's own runtime DLLs; only
+              # bundle the mingw-w64 Arrow/Parquet dependency chain. This
+              # is a documentation aid, not the real safety check -- the
+              # `[ -f "$src" ]` test below is what actually decides
+              # whether a DLL gets copied (system DLLs simply won't be
+              # found under $MINGW_BIN).
+              case "$dep" in
+                KERNEL32.dll|msvcrt.dll|ntdll.dll|USER32.dll|ADVAPI32.dll|WS2_32.dll|SHELL32.dll|ole32.dll|GDI32.dll|R.dll|Rblas.dll|Rlapack.dll|Riconv.dll|api-ms-*)
+                  continue ;;
+              esac
+
+              grep -qxF "$dep" "$seen_file" && continue
+              echo "$dep" >> "$seen_file"
+
+              src="${MINGW_BIN}/${dep}"
+              if [ -f "$src" ]; then
+                cp -n "$src" "$dll_dir/"
+                echo "$dll_dir/$dep" >> "$queue_file"
+              fi
+            done
+          done
+
+      - name: Repack the .zip with bundled DLLs
+        shell: pwsh
+        run: |
+          Remove-Item $env:PKG_ZIP_NAME -Force
+          Compress-Archive -Path "$env:RUNNER_TEMP\pkgextract\VCFArrow" -DestinationPath $env:PKG_ZIP_NAME
+
+      - name: Upload Windows binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: VCFArrow-windows-binary
+          path: VCFArrow_*.zip
+          if-no-files-found: error
+
+  # ---------------------------------------------------------------------
+  # Attach both binaries to the GitHub Release for this tag
+  # ---------------------------------------------------------------------
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [macos-binary, windows-binary]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download binaries
+        uses: actions/download-artifact@v4
+        with:
+          path: binaries
+          merge-multiple: true
+
+      - name: Upload to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: binaries/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
