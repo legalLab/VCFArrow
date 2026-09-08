@@ -38,13 +38,25 @@
 #
 # Alleles written as REF/ALT nucleotide letters; missing: "0".
 # Memory: O(n_samples x n_var), same pattern as vcf2structure()/vcf2arlequin().
+#
+# The .map shares columns 1-4 with vcf2plink_bed()'s .bim and is built by the
+# same .plink_variant_fields() helper, which is what enforces integer
+# chromosome codes.  A contig name in column 1 does not produce a helpful
+# message on this input path — ADMIXTURE reports only "PLINK Input file error".
 
 vcf2plink_ped <- function(vcf_arrow, keep_groups = NULL,
                           out_file = "plink_out",
-                          sex = NULL, pheno = NULL) {
+                          sex = NULL, pheno = NULL,
+                          chrom_code = c("auto", "index", "zero", "keep")) {
 
+  chrom_code <- match.arg(chrom_code)
+  
+  if (!inherits(vcf_arrow, "VCFArrow"))
+    cli::cli_abort("Expecting a VCFArrow object")
+  
   setup <- .vcf_export_setup(vcf_arrow, keep_groups)
   fields <- .plink_fam_fields(setup, sex, pheno)
+  vfields <- .plink_variant_fields(setup, chrom_code)
   acc <- .accumulate_individuals(setup, "PLINK .ped")
 
   cli::cli_alert_info("Writing PLINK file...")
@@ -56,25 +68,13 @@ vcf2plink_ped <- function(vcf_arrow, keep_groups = NULL,
     paste0(out_file, ".ped")
   )
 
-  # ── genetic position ───────────────────────────────────────────────────────
-  #
-  # PLINKS's .bim column 3 is the genetic position in Morgans.
-  # Without a recombination map, dividing physical position (bp) by 1 000 000
-  # yields position in Mb, which is a standard proxy for Morgans and is
-  # accepted by all major EIGENSTRAT-compatible tools (ADMIXTOOLS, smartpca).
-  #
-  # setup$variants$POS is the physical position for every retained, filtered
-  # variant, already arranged in .row_id order by .vcf_export_setup().
-
-  rel_pos_vec <- setup$variants$POS / 1e6
-
   # ── .map ─────────────────────────────────────────────────────────────────
   # Four fields, no header: CHROM, ID, genetic distance (dummy 0), POS.
   utils::write.table(
-    data.frame(CHROM = setup$variants$CHROM,
-               ID = setup$loci,
-               cM = rel_pos_vec,
-               POS = setup$variants$POS,
+    data.frame(CHROM = vfields$chrom,
+               ID = vfields$id,
+               cM = vfields$cm,
+               POS = vfields$pos,
                stringsAsFactors = FALSE),
     file = paste0(out_file, ".map"),
     quote = FALSE,
@@ -82,6 +82,9 @@ vcf2plink_ped <- function(vcf_arrow, keep_groups = NULL,
     col.names = FALSE,
     row.names = FALSE
   )
+  
+  # ── .chrommap ────────────────────────────────────────────────────────────
+  .write_chrom_map(vfields, out_file)
 
   cli::cli_alert_success(
     "PLINK text fileset written to \\

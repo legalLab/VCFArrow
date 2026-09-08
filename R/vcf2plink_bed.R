@@ -40,13 +40,25 @@
 # allele1 = REF (clear bits in .bed), allele2 = ALT (set bits) — see the
 # mapping note in write_plink_bed_chunk_cpp()'s header comment.
 # Memory: O(chunk), identical pattern to vcf2smartsnp().
+#
+# Columns 1-4 of the .bim are built by .plink_variant_fields(), shared with
+# vcf2plink_ped()'s .map writer.  That helper is also what enforces integer
+# chromosome codes; writing CHROM verbatim is what makes every ADMIXTURE
+# run abort with "Invalid chromosome code! Use integers."
 
 vcf2plink_bed <- function(vcf_arrow, keep_groups = NULL,
                           out_file = "plink_out",
-                          sex = NULL, pheno = NULL) {
+                          sex = NULL, pheno = NULL,
+                          chrom_code = c("auto", "index", "zero", "keep")) {
 
+  chrom_code <- match.arg(chrom_code)
+  
+  if (!inherits(vcf_arrow, "VCFArrow"))
+    cli::cli_abort("Expecting a VCFArrow object")
+  
   setup <- .vcf_export_setup(vcf_arrow, keep_groups)
   fields <- .plink_fam_fields(setup, sex, pheno)
+  vfields <- .plink_variant_fields(setup, chrom_code)
 
   # ── .bed ─────────────────────────────────────────────────────────────────
   bed_file <- paste0(out_file, ".bed")
@@ -66,26 +78,14 @@ vcf2plink_bed <- function(vcf_arrow, keep_groups = NULL,
   }
   cli::cli_progress_done()
 
-  # ── genetic position ───────────────────────────────────────────────────────
-  #
-  # PLINKS's .bim column 3 is the genetic position in Morgans.
-  # Without a recombination map, dividing physical position (bp) by 1 000 000
-  # yields position in Mb, which is a standard proxy for Morgans and is
-  # accepted by all major EIGENSTRAT-compatible tools (ADMIXTOOLS, smartpca).
-  #
-  # setup$variants$POS is the physical position for every retained, filtered
-  # variant, already arranged in .row_id order by .vcf_export_setup().
-
-  rel_pos_vec <- setup$variants$POS / 1e6
-
   # ── .bim ─────────────────────────────────────────────────────────────────
   # Six fields, no header: CHROM, ID, genetic distance (dummy 0), POS,
   # allele1 (REF, clear bits), allele2 (ALT, set bits).
   utils::write.table(
-    data.frame(CHROM = setup$variants$CHROM,
-               ID = setup$loci,
-               cM = rel_pos_vec,
-               POS = setup$variants$POS,
+    data.frame(CHROM = vfields$chrom,
+               ID = vfields$id,
+               cM = vfields$cm,
+               POS = vfields$pos,
                allele1 = setup$variants$REF,
                allele2 = setup$variants$ALT,
                stringsAsFactors = FALSE),
@@ -112,6 +112,9 @@ vcf2plink_bed <- function(vcf_arrow, keep_groups = NULL,
     col.names = FALSE,
     row.names = FALSE
   )
+  
+  # ── .chrommap ────────────────────────────────────────────────────────────
+  .write_chrom_map(vfields, out_file)
 
   cli::cli_alert_success(
     "PLINK binary fileset written to \\
