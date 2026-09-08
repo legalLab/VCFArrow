@@ -11,13 +11,13 @@ Source:
 [`DESCRIPTION`](https://github.com/legalLab/VCFArrow/blob/main/DESCRIPTION)
 
 Hrbek T (2026). *VCFArrow: VCFArrow: a fast and efficient R package for
-VCF manipulation and transformation*. R package version 0.3.1,
+VCF manipulation and transformation*. R package version 0.3.2,
 <https://legallab.github.io/VCFArrow/>.
 
     @Manual{,
       title = {VCFArrow: VCFArrow: a fast and efficient R package for VCF manipulation and transformation},
       author = {Tomas Hrbek},
       year = {2026},
-      note = {R package version 0.3.1},
+      note = {R package version 0.3.2},
       url = {https://legallab.github.io/VCFArrow/},
     }

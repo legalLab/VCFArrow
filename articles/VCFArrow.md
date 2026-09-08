@@ -106,7 +106,7 @@ vcf
 #> Phased genotypes: FALSE 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpxzCkwa/arrow_vcf_24bb446417d5 
+#>   Path: /tmp/RtmpF6KrD4/arrow_vcf_230479d24792 
 #> 
 #> Genotype storage (Arrow):
 #> FileSystemDataset with 1 Feather file
@@ -616,16 +616,19 @@ vcf2snmf(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.ge
 vcf2admixture(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_admixture')))
 #> ℹ Building PLINK: 1734 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing PLINK files...
+#> ℹ Chromosome names were recoded as integers for PLINK compatibility; mapping written to /home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub_admixture.chrommap
 #> ✔ PLINK binary fileset written to /home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub_admixture.bed, /home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub_admixture.bim, /home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub_admixture.fam
 # PLINK .bed https://www.cog-genomics.org/plink/1.9/formats#bed
 vcf2plink_bed(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_plink')))
 #> ℹ Building PLINK: 1734 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing PLINK files...
+#> ℹ Chromosome names were recoded as integers for PLINK compatibility; mapping written to /home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub_plink.chrommap
 #> ✔ PLINK binary fileset written to /home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub_plink.bed, /home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub_plink.bim, /home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub_plink.fam
 # PLINK .ped https://www.cog-genomics.org/plink/1.9/formats#ped
 vcf2plink_ped(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_plink')))
 #> ℹ Accumulating PLINK .ped: 1734 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing PLINK file...
+#> ℹ Chromosome names were recoded as integers for PLINK compatibility; mapping written to /home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub_plink.chrommap
 #> ✔ PLINK text fileset written to /home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub_plink.ped, /home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub_plink.map
 # eigenstrat https://github.com/DReichLab/EIG/tree/master
 vcf2eigenstrat(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_eigenstrat')))

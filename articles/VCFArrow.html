@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">VCFArrow</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -171,7 +171,7 @@ vaillantii</em> Photo: Albertina Lima</div>
 <span><span class="co">#&gt; Phased genotypes: FALSE </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Storage:</span></span>
-<span><span class="co">#&gt;   Path: /tmp/RtmpxzCkwa/arrow_vcf_24bb446417d5 </span></span>
+<span><span class="co">#&gt;   Path: /tmp/RtmpF6KrD4/arrow_vcf_230479d24792 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Genotype storage (Arrow):</span></span>
 <span><span class="co">#&gt; FileSystemDataset with 1 Feather file</span></span>
@@ -637,16 +637,19 @@ object.</p>
 <span><span class="fu"><a href="../reference/vcf2admixture.html">vcf2admixture</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'_admixture'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Building PLINK: 1734 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing PLINK files...</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Chromosome names were recoded as integers for PLINK compatibility; mapping written to <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub_admixture.chrommap</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> PLINK binary fileset written to <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub_admixture.bed</span>, <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub_admixture.bim</span>, <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub_admixture.fam</span></span></span>
 <span><span class="co"># PLINK .bed https://www.cog-genomics.org/plink/1.9/formats#bed</span></span>
 <span><span class="fu"><a href="../reference/vcf2plink_bed.html">vcf2plink_bed</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'_plink'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Building PLINK: 1734 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing PLINK files...</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Chromosome names were recoded as integers for PLINK compatibility; mapping written to <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub_plink.chrommap</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> PLINK binary fileset written to <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub_plink.bed</span>, <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub_plink.bim</span>, <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub_plink.fam</span></span></span>
 <span><span class="co"># PLINK .ped https://www.cog-genomics.org/plink/1.9/formats#ped</span></span>
 <span><span class="fu"><a href="../reference/vcf2plink_ped.html">vcf2plink_ped</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'_plink'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Accumulating PLINK .ped: 1734 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing PLINK file...</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Chromosome names were recoded as integers for PLINK compatibility; mapping written to <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub_plink.chrommap</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> PLINK text fileset written to <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub_plink.ped</span>, <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub_plink.map</span></span></span>
 <span><span class="co"># eigenstrat https://github.com/DReichLab/EIG/tree/master</span></span>
 <span><span class="fu"><a href="../reference/vcf2eigenstrat.html">vcf2eigenstrat</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'_eigenstrat'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
