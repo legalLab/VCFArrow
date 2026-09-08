@@ -70,9 +70,12 @@
 vcf2admixture <- function(vcf_arrow, keep_groups = NULL,
                           out_file = "admixture_in",
                           sex = NULL, pheno = NULL,
+                          chrom_code = c("zero", "auto", "index", "keep"),
                           supervised = FALSE,
                           reference_groups = NULL) {
 
+  chrom_code <- match.arg(chrom_code)
+  
   if (!inherits(vcf_arrow, "VCFArrow"))
     cli::cli_abort("Expecting a VCFArrow object")
 
@@ -91,7 +94,8 @@ vcf2admixture <- function(vcf_arrow, keep_groups = NULL,
     keep_groups = keep_groups,
     out_file = out_file,
     sex = sex,
-    pheno = pheno
+    pheno = pheno,
+    chrom_code = chrom_code
   )
 
   # ── .pop file for supervised mode ─────────────────────────────────────────
