@@ -424,11 +424,193 @@
     )
   }
 
-  list(
+  fields <- list(
     fid = setup$samples_groups,
     pat = rep("0", n),
     mat = rep("0", n),
     sex = resolve(sex, "0", "sex"),  # "0" = unknown
     pheno = resolve(pheno, "-9", "pheno")  # "-9" = missing
   )
+  
+  # PLINK-derived readers are whitespace-delimited with no quoting.  A space
+  # inside a family ID or sample name silently shifts every subsequent field,
+  # which surfaces downstream as an opaque "PLINK Input file error" rather
+  # than as a field-count complaint.  Catch it here instead.
+  .plink_check_tokens(fields$fid, "group labels (used as FID)")
+  .plink_check_tokens(setup$samples, "sample names (used as IID)")
+  
+  fields
+}
+
+# ── Whitespace guard for PLINK text fields ────────────────────────────────────
+#
+# PLINK .bim/.fam/.map/.ped are whitespace-delimited with no quoting mechanism,
+# so no field may itself contain whitespace.  Aborts with the offending values
+# rather than writing a file that fails to parse later.
+
+.plink_check_tokens <- function(x, label) {
+  bad <- grepl("[[:space:]]", x)
+  if (any(bad))
+    cli::cli_abort(c(
+      "PLINK fields cannot contain whitespace, but some {label} do.",
+      "x" = "Offending value{?s}: {.val {unique(x[bad])}}",
+      "i" = "Rename with {.fn set_vcf_groups} / {.fn vcf_rename_samples}, \\
+             or substitute underscores."
+    ))
+  
+  invisible(TRUE)
+}
+
+# =============================================================================
+# Shared PLINK helper: chromosome recoding
+# =============================================================================
+#
+# Why this exists
+# ──────────────────────────────────────────────────────────────────────────────
+# Column 1 of .bim/.map is the chromosome code.  PLINK-derived readers —
+# ADMIXTURE, EIGENSOFT/smartpca, plink 1.07 — require it to parse as an
+# integer and reject anything else outright ("Invalid chromosome code! Use
+# integers."). De novo assemblies (DiscoSNP, Stacks, ipyrad) carry contig or
+# path names in CHROM, so writing CHROM verbatim produces a fileset that no
+# ADMIXTURE run can read.
+#
+# ADMIXTURE never uses the chromosome column for anything — it only validates
+# it — so recoding is lossless with respect to the analysis.  The original
+# CHROM <-> code correspondence is returned so callers can write it out as a
+# sidecar and trace a locus back to its contig afterwards.
+#
+# mode
+# ──────────────────────────────────────────────────────────────────────────────
+#   "auto"   Keep the existing numbering when CHROM is already numeric (an
+#            optional chr/Chr/CHR prefix is stripped first) and no code exceeds
+#            .plink_max_chrom; otherwise fall back to "zero".  Default.
+#   "index"  Map each distinct CHROM to 1..n in order of first appearance.
+#            Use when a downstream tool needs contigs kept apart (LD pruning,
+#            per-chromosome windowing) and can cope with many codes.
+#   "zero"   Emit 0 for every variant — the equivalent of plink's
+#            `--allow-extra-chr 0`, and the safest choice for ADMIXTURE.
+#   "keep"   Write CHROM verbatim.  Breaks ADMIXTURE; provided for round-trips
+#            to tools that do accept contig names.
+#
+# Returns list($code: character vector parallel to `chrom`,
+#              $map: data.frame(CHROM, code) — one row per distinct CHROM,
+#              $recoded: logical — TRUE when $code differs from CHROM)
+
+.plink_max_chrom <- 95L  # plink's ceiling for a non-human chromosome set
+
+.vcf_chrom_code <- function(chrom, mode = c("auto", "index", "zero", "keep")) {
+  mode <- match.arg(mode)
+  chrom <- as.character(chrom)
+  chrom[is.na(chrom)] <- "0"
+  levels_chrom <- unique(chrom)
+  
+  if (mode == "keep") {
+    return(list(code = chrom,
+                map = data.frame(CHROM = levels_chrom, code = levels_chrom,
+                                 stringsAsFactors = FALSE),
+                recoded = FALSE))
+  }
+  
+  if (mode == "auto") {
+    stripped <- sub("^(chr|Chr|CHR)[_.-]?", "", levels_chrom)
+    numeric_ok <- all(grepl("^[0-9]+$", stripped)) &&
+      max(suppressWarnings(as.integer(stripped)), 0L) <= .plink_max_chrom
+    mode <- if (numeric_ok) "numeric" else "zero"
+  }
+  
+  lut <- switch(mode,
+                numeric = setNames(as.integer(sub("^(chr|Chr|CHR)[_.-]?", "", levels_chrom)),
+                                   levels_chrom),
+                index = setNames(seq_along(levels_chrom), levels_chrom),
+                zero = setNames(rep(0L, length(levels_chrom)), levels_chrom))
+  
+  code <- as.character(unname(lut[chrom]))
+  
+  list(code = code,
+       map = data.frame(CHROM = levels_chrom,
+                        code = as.character(unname(lut[levels_chrom])),
+                        stringsAsFactors = FALSE),
+       recoded = !identical(code, chrom))
+}
+
+# =============================================================================
+# Shared PLINK helper: build .bim / .map columns 1-4
+# =============================================================================
+#
+# .bim and .map share their first four fields (CHROM, ID, genetic distance,
+# POS); .bim simply appends allele1/allele2.  Building them once here keeps the
+# two exporters from drifting apart.
+#
+# Everything is returned as character, deliberately.  utils::write.table()
+# coerces numeric columns with as.character(), which switches to scientific
+# notation for both very small and round-numbered values — as.character(1e5)
+# is "1e+05" and as.character(3e-05) is "3e-05".  A genomic position or a
+# genetic distance written that way is unparseable by PLINK-derived readers,
+# and it bites exactly the datasets this package targets: de novo contigs with
+# small POS values, and reference assemblies with positions on round Mb
+# boundaries.  Formatting here with sprintf() removes that class of bug.
+#
+# Returns list($chrom, $id, $cm, $pos: character vectors of length n_var,
+#              $chrom_map: data.frame, $recoded: logical)
+
+.plink_variant_fields <- function(setup, chrom_code = "auto") {
+  
+  cc <- .vcf_chrom_code(setup$variants$CHROM, chrom_code)
+  
+  # ── genetic position ───────────────────────────────────────────────────────
+  #
+  # PLINK's .bim/.map column 3 is the genetic position in Morgans.
+  # Without a recombination map, dividing physical position (bp) by 1 000 000
+  # yields position in Mb, which is a standard proxy for Morgans and is
+  # accepted by all major EIGENSTRAT-compatible tools (ADMIXTOOLS, smartpca).
+  #
+  # setup$variants$POS is the physical position for every retained, filtered
+  # variant, already arranged in .row_id order by .vcf_export_setup().
+  
+  pos <- as.numeric(setup$variants$POS)
+  pos_chr <- sprintf("%.0f", pos)
+  
+  # Variant IDs.  .vcf_export_setup() falls back to CHROM_POS only when *every*
+  # ID is NA; a partially populated ID column would otherwise put the literal
+  # "NA" into the file.  Patch the gaps per element (using the already-formatted
+  # position, never the raw numeric) and enforce the uniqueness PLINK requires.
+  ids <- as.character(setup$loci)
+  gaps <- is.na(ids) | ids == "" | ids == "."
+  if (any(gaps))
+    ids[gaps] <- paste0(setup$variants$CHROM[gaps], "_", pos_chr[gaps])
+  ids <- make.unique(ids, sep = "_")
+  .plink_check_tokens(ids, "variant IDs")
+  
+  list(
+    chrom = cc$code,
+    id = ids,
+    cm = sprintf("%.8f", pos / 1e6),
+    pos = pos_chr,
+    chrom_map = cc$map,
+    recoded = cc$recoded
+  )
+}
+
+# ── Chromosome recoding sidecar ───────────────────────────────────────────────
+#
+# Writes <out_file>.chrommap (two columns: original CHROM, integer code) when
+# recoding actually changed something, so the mapping stays recoverable.
+
+.write_chrom_map <- function(vf, out_file) {
+  if (!vf$recoded) return(invisible(NULL))
+  map_file <- paste0(out_file, ".chrommap")
+  utils::write.table(
+    vf$chrom_map,
+    file = map_file,
+    quote = FALSE,
+    sep = "\t",
+    col.names = FALSE,
+    row.names = FALSE
+  )
+  cli::cli_alert_info(
+    "Chromosome names were recoded as integers for PLINK compatibility; \\
+     mapping written to {.file {map_file}}"
+  )
+  
+  invisible(map_file)
 }
