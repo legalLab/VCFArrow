@@ -14,7 +14,8 @@
 #' Method to show object content summary
 #'
 #' @examples
-#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
+#'                  package = "VCFArrow")
 #' vcf <- read_vcf(f)
 #' show(vcf)
 #'
@@ -105,7 +106,8 @@ setMethod(
 #' Method to subset by row and column of GT
 #'
 #' @examples
-#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
+#'                  package = "VCFArrow")
 #' vcf <- read_vcf(f)
 #' vcf[1:100, 1:5]
 #'

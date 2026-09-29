@@ -23,7 +23,8 @@
 #' result of the change/removal of genotypes
 #'
 #' @examples
-#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
+#'                  package = "VCFArrow")
 #' vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 #' vcf_filter_adr(vcf, mode = "correct")
 #'

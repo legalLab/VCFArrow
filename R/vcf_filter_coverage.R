@@ -15,7 +15,8 @@
 #' returning a new VCFArrow object.
 #'
 #' @examples
-#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
+#'                  package = "VCFArrow")
 #' vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 #' vcf_filter_coverage(vcf, threshold = 10)
 #'

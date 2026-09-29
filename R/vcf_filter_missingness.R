@@ -17,7 +17,8 @@
 #' Missingness is a locus focused metric, i.e. missing data per locus.
 #'
 #' @examples
-#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
+#'                  package = "VCFArrow")
 #' vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 #' vcf_filter_missingness(vcf, threshold = 0.2)
 #'

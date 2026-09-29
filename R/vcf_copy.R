@@ -14,7 +14,8 @@
 #' It makes an actual physical copy of the object.
 #'
 #' @examples
-#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
+#'                  package = "VCFArrow")
 #' vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 #' vcf_copy(vcf_filter_maf(vcf, 0.05))
 #'

@@ -21,10 +21,12 @@
 #' and then compress with GZIP or PIGZ.
 #'
 #' @examples
-#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
+#'                  package = "VCFArrow")
 #' vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 #' write_vcf(vcf, out_file = tempfile(fileext = ".vcf"))
-#' write_vcf(vcf, out_file = tempfile(fileext = ".vcf.gz"), gzip = TRUE)
+#' write_vcf(vcf, out_file = tempfile(fileext = ".vcf.gz"),
+#'           gzip = TRUE)
 #'
 #' @export
 #'

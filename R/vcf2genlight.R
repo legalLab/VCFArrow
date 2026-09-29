@@ -27,11 +27,13 @@
 #' unless save = TRUE.
 #'
 #' @examples
-#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
+#'                  package = "VCFArrow")
 #' vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 #' gl <- vcf2genlight(vcf)
 #' gl
-#' gl <- vcf2genlight(vcf, out_file = tempfile(fileext = ".rds"), save = TRUE)
+#' gl <- vcf2genlight(vcf, out_file = tempfile(fileext = ".rds"),
+#'                    save = TRUE)
 #'
 #' @export
 #'

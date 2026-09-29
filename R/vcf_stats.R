@@ -21,9 +21,11 @@
 #' Optionally calls vcf_theta() to get total and group Watterson's theta and pi.
 #'
 #' @examples
-#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
+#'                  package = "VCFArrow")
 #' vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
-#' vcf_stats(vcf, res_path = tempdir(), project = "vaillantii", theta = TRUE)
+#' vcf_stats(vcf, res_path = tempdir(), project = "vaillantii",
+#'           theta = TRUE)
 #'
 #' @export
 #'

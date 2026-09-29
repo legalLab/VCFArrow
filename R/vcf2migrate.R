@@ -28,10 +28,11 @@
 #' The N format extracts all SNPs within a chromosome, within the block size and treats them as linked;
 #' this is appropriate if SNPs are mapped against a reference.
 #' The size of the linked block is determined by the block_size parameter.
-#' See https://peterbeerli.com/programs/migrate/distribution_4.x/migratedoc4.x.pdf for format detail.
+#' See <https://peterbeerli.com/programs/migrate/distribution_4.x/migratedoc4.x.pdf> for format detail.
 #'
 #' @examples
-#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
+#'                  package = "VCFArrow")
 #' vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 #' vcf2migrate(vcf, out_file = tempfile(fileext = ".txt"))
 #'

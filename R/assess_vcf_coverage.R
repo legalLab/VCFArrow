@@ -2,7 +2,7 @@
 #'
 #' @description
 #' Quantifying read depth of all samples in VCF
-#' Inspired by https://grunwaldlab.github.io/Population_Genetics_in_R/qc.html
+#' Inspired by <https://grunwaldlab.github.io/Population_Genetics_in_R/qc.html>
 #'
 #' @author Tomas Hrbek April 2026
 #'
@@ -19,10 +19,12 @@
 #' This function generates a violin plot of read depths per sample.
 #'
 #' @examples
-#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
+#'                  package = "VCFArrow")
 #' vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 #' assess_vcf_coverage(vcf, res_path = tempdir(),
-#'                     species = "Phyllomedusa vaillantii", project = "vaillantii")
+#'                     species = "Phyllomedusa vaillantii",
+#'                     project = "vaillantii")
 #'
 #' @export
 #'

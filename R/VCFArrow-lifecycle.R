@@ -212,11 +212,12 @@
 #' \preformatted{
 #'   rm(vcf1, vcf2, vcf3)
 #'   vcf_gc()              # usually sufficient
-#'   vcf_gc(force = TRUE)  # if directories are still present after rm()
+#'   vcf_gc(force = TRUE)  # if directories remain after rm()
 #' }
 #'
 #' @examples
-#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
+#'                  package = "VCFArrow")
 #' vcf <- read_vcf(f)
 #' rm(vcf)
 #' vcf_gc()
@@ -302,11 +303,17 @@ vcf_gc <- function(force = FALSE, verbose = TRUE) {
 #' @param lowmem     If TRUE, estimate uses raw-byte matrices (vcf2*() lowmem
 #'                   variants); otherwise integer matrices.
 #'
-#' @return Invisibly, a list with elements `n_var`, `n_samples`, `n_pops`,
-#'   `chunk_arrow_bytes`, `matrix_bytes` and `peak_bytes`.
+#' @return Invisibly, a list with elements:
+#'   * `n_var`: number of variants
+#'   * `n_samples`: number of samples retained
+#'   * `n_pops`: number of populations
+#'   * `chunk_arrow_bytes`: Arrow memory per chunk read
+#'   * `matrix_bytes`: size of the accumulation matrices
+#'   * `peak_bytes`: estimated peak memory
 #'
 #' @examples
-#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
+#'                  package = "VCFArrow")
 #' vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 #' vcf_memory_estimate(vcf, format = "individual")
 #'
