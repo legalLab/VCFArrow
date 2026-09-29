@@ -25,9 +25,9 @@ returning a new VCFArrow object.
 Missingness is a locus focused metric, i.e. missing data per locus.
 }
 \examples{
-vcf_filter_missingness(vcf_arrow = my_vcf, threshold = p_miss)
-vcf_filter_missingness(my_vcf, p_miss, verbose = FALSE)
-vcf_filter_missingness(my_vcf, p_miss)
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+vcf_filter_missingness(vcf, threshold = 0.2)
 
 }
 \author{

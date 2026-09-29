@@ -20,6 +20,9 @@ vcf2structure(
 
 \item{method}{-> flag for Structure/FastStructure formats, default 'S' (character)}
 }
+\value{
+Invisibly returns the input VCFArrow object; called for its side effect of writing \code{out_file}.
+}
 \description{
 Converts a VCFArrow object to a Structure or FastStructure infile
 }
@@ -33,9 +36,10 @@ The flag parameter controls whether Structure (flag = 'S') or
 FastStructure (flag = 'F') formatted output is written out.
 }
 \examples{
-vcf2structure(vcf_arrow = my_vcf, keep_groups = NULL, out_file = "structure.str", method = "S")
-vcf2structure(my_vcf, keep_groups, out_file = "structure.str")
-vcf2structure(my_vcf)
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+vcf2structure(vcf, out_file = tempfile(fileext = ".str"))
+vcf2structure(vcf, out_file = tempfile(fileext = ".fstr"), method = "F")
 
 }
 \author{

@@ -13,6 +13,9 @@ vcf2nexus(vcf_arrow, keep_groups = NULL, out_file = "nexus_infile.nex")
 
 \item{out_file}{-> name of file to output, default 'nexus_infile.nex' (character)}
 }
+\value{
+Invisibly returns the input VCFArrow object; called for its side effect of writing \code{out_file}.
+}
 \description{
 Converts a VCFArrow object to a NEXUS format infile
 }
@@ -23,9 +26,9 @@ Larger chunks result in faster writing speeds.
 If no groups are defined, the default behavior is to use all groups.
 }
 \examples{
-vcf2nexus(vcf_arrow = my_vcf, keep_groups = my_groups, out_file = "nexus_infile.nex")
-vcf2nexus(vcf_arrow, my_groups, out_file = "nexus_infile.nex")
-vcf2nexus(vcf_arrow)
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+vcf2nexus(vcf, out_file = tempfile(fileext = ".nex"))
 
 }
 \author{

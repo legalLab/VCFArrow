@@ -12,6 +12,12 @@ vcf_bind_sparse(
 }
 \arguments{
 \item{...}{-> a collection of VCFArrow objects}
+
+\item{mode}{-> "intersect" keeps variants present in all objects, "union"
+keeps variants present in any object, default "intersect" (character)}
+
+\item{absent_as}{-> for mode = "union", how genotypes absent from a source
+object are coded, "missing" or "hom_ref", default "missing" (character)}
 }
 \value{
 VCFArrow object
@@ -24,7 +30,12 @@ This function binds two or more VCFArrow objects, returning new VCFArrow object.
 The VCFArrow objects need not have the same SNPs, and must have unique individuals.
 }
 \examples{
-vcf_bind_sparse(my_vcf1, my_vcf2, other_vcf, ...)
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+ingroup <- vcf_extract_groups(vcf, c("GS", "BS", "WA"))
+outgroup <- vcf_extract_groups(vcf, "OG")
+vcf_bind_sparse(ingroup, outgroup, mode = "intersect")
+vcf_bind_sparse(ingroup, outgroup, mode = "union", absent_as = "missing")
 
 }
 \author{

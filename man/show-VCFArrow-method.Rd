@@ -9,13 +9,22 @@
 \arguments{
 \item{object}{A VCFArrow object}
 }
+\value{
+Invisibly returns \code{object}; called for its side effect of printing
+a summary.
+}
 \description{
 Print a summary of a VCFArrow object
 }
 \details{
 This function is a method of the VCFArrow S4 class
 Method to show object content summary
-Method to subset by row and column of GT
+}
+\examples{
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+vcf <- read_vcf(f)
+show(vcf)
+
 }
 \author{
 Tomas Hrbek April 2026

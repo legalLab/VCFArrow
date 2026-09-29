@@ -14,6 +14,13 @@ vcf_suggest_chunk_size(available_gb, n_samples, n_columns = 5L)
 \item{n_columns}{Number of columns per gt row (default 5: row_id, sample,
 a1, a2, phased).}
 }
+\value{
+Invisibly, the suggested chunk size (numeric).
+}
 \description{
 Suggest a chunk_size for read_vcf() given available RAM
+}
+\examples{
+vcf_suggest_chunk_size(available_gb = 8, n_samples = 100)
+
 }

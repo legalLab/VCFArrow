@@ -23,6 +23,9 @@ vcf2genlight(
 
 \item{save}{->  save as R data object, default = FALSE (Boolean)}
 }
+\value{
+An adegenet \code{genlight} object.
+}
 \description{
 Converts a VCFArrow object to Genlight format infile
 }
@@ -36,9 +39,10 @@ Genlight objects are in memory S4 objects, thus are returned as such, but
 but optionally may be saved as R data objects.
 }
 \examples{
-vcf2genlight(vcf_arrow = my_vcf, keep_groups = my_groups, out_file = "genlight.rds")
-vcf2genlight(vcf_arrow, my_groups)
-vcf2genlight(vcf_arrow)
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+gl <- vcf2genlight(vcf)
+gl
 
 }
 \author{

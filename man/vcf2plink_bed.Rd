@@ -9,7 +9,8 @@ vcf2plink_bed(
   keep_groups = NULL,
   out_file = "plink_out",
   sex = NULL,
-  pheno = NULL
+  pheno = NULL,
+  chrom_code = c("auto", "index", "zero", "keep")
 )
 }
 \arguments{
@@ -22,6 +23,13 @@ vcf2plink_bed(
 \item{sex}{-> vector of sexes of samples, default NULL (character)}
 
 \item{pheno}{-> vector of phenotypes of samples, default NULL (character)}
+
+\item{chrom_code}{-> how CHROM is written: "auto" (keep numeric CHROM,
+otherwise 0), "index" (1..n by first appearance), "zero" (all 0) or
+"keep" (verbatim), default "auto" (character)}
+}
+\value{
+Invisibly returns the input VCFArrow object; called for its side effect of writing \code{out_file}.
 }
 \description{
 Converts a VCFArrow object to a PLINK .bed format infile
@@ -34,9 +42,9 @@ If no groups are defined, the default behavior is to use all groups.
 Sex and phenotype vectors are optional. If not defined sex = 0, pheno = -9.
 }
 \examples{
-vcf2plink_bed(vcf_arrow = my_vcf, keep_groups = my_groups, out_file = "plink_out", sex = sex, pheno = pheno)
-vcf2plink_bed(vcf_arrow, my_groups, out_file = "plink_out")
-vcf2plink_bed(vcf_arrow)
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+vcf2plink_bed(vcf, out_file = file.path(tempdir(), "plink_out"))
 
 }
 \author{

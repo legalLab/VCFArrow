@@ -22,8 +22,9 @@ This function removes all rows in the 'keep' parameter from a VCFArrow object,
 returning a new VCFArrow object.
 }
 \examples{
-vcf_filter_rank(vcf_arrow = my_vcf, keep = rows_to_keep)
-vcf_filter_rank(my_vcf, rows_to_keep)
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+.vcf_filter_rows(vcf, keep = vcf@variants$is_biallelic)
 
 }
 \author{

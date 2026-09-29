@@ -15,9 +15,13 @@ display references that delay GC).}
 
 \item{verbose}{Logical.  Print a status message.}
 }
+\value{
+Invisibly returns \code{NULL}; called for its side effect of deleting
+temporary directories.
+}
 \description{
 Triggers R's garbage collector (three full passes to handle the
-finalizer → pending-queue → unlink chain), then flushes any directories
+finalizer -> pending-queue -> unlink chain), then flushes any directories
 whose reference count has already reached zero.
 }
 \section{Typical workflow}{
@@ -29,3 +33,10 @@ whose reference count has already reached zero.
 }
 }
 
+\examples{
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+vcf <- read_vcf(f)
+rm(vcf)
+vcf_gc()
+
+}

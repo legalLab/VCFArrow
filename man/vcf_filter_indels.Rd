@@ -13,15 +13,16 @@ vcf_filter_indels(vcf_arrow)
 subsetted VCFArrow object
 }
 \description{
-Remove non-indels from a VCFArrow object
+Remove indels from a VCFArrow object
 }
 \details{
-This function removes non-indel loci from a VCFArrow object,
+This function removes indel loci from a VCFArrow object,
 returning a new VCFArrow object.
 }
 \examples{
-vcf_filter_indels(vcf_arrow = my_vcf)
-vcf_filter_indels(my_vcf)
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+vcf_filter_indels(vcf)
 
 }
 \author{

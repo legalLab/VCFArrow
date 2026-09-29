@@ -10,6 +10,8 @@ vcf_filter_rank(vcf_arrow, threshold = 0.4, keep_na = FALSE)
 \item{vcf_arrow}{-> VCFArrow object}
 
 \item{threshold}{-> decimal rank threshold, default 0.4 (numeric)}
+
+\item{keep_na}{-> retain loci without a rank value, default FALSE (Boolean)}
 }
 \value{
 subsetted VCFArrow object
@@ -27,9 +29,9 @@ used for paralog detection -> very low rank values (<0.4) are
 indicative of paralogs.
 }
 \examples{
-vcf_filter_rank(vcf_arrow = my_vcf, rank = 0.4)
-vcf_filter_rank(my_vcf, 0.4)
-vcf_filter_rank(my_vcf)
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+vcf_filter_rank(vcf, threshold = 0.5)
 
 }
 \author{

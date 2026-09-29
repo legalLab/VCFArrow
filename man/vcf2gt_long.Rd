@@ -23,6 +23,9 @@ vcf2gt_long(
 
 \item{col_select}{-> optional selection of columns to save, default ALL}
 }
+\value{
+Invisibly returns the path of the written file.
+}
 \description{
 Converts a VCFArrow object to tidy long format infile
 }
@@ -37,9 +40,9 @@ Optionally, specific columns can be saved, by default all columns are saved.
 The gt long slot contains pre-calculated metrics in addition to just genotypes.
 }
 \examples{
-vcf2gt_long(vcf_arrow = my_vcf, keep_groups = my_groups, out_file = "gt_long", format = "csv")
-vcf2gt_long(vcf_arrow, my_groups, format = "csv")
-vcf2gt_long(vcf_arrow, format = "csv")
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+vcf2gt_long(vcf, out_file = tempfile(), format = "csv")
 
 }
 \author{

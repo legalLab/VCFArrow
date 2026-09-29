@@ -9,9 +9,11 @@
 \arguments{
 \item{x}{A VCFArrow object}
 
-\item{i}{Row indices (numeric or logical)}
+\item{i}{Variant (row) positions, numeric or logical}
 
 \item{j}{Column indices: numeric, logical, or sample name character vector}
+
+\item{...}{Ignored}
 
 \item{drop}{Ignored; kept for S4 compatibility}
 }
@@ -24,6 +26,12 @@ Subset a VCFArrow object by variants (rows) and samples (columns)
 \details{
 This function is a method of the VCFArrow S4 class
 Method to subset by row and column of GT
+}
+\examples{
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+vcf <- read_vcf(f)
+vcf[1:100, 1:5]
+
 }
 \author{
 Tomas Hrbek April 2026

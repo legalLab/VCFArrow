@@ -20,6 +20,9 @@ vcf2apparent(
 
 \item{out_file}{-> name of file to output, default 'apparent_infile.txt' (character)}
 }
+\value{
+Invisibly returns the input VCFArrow object; called for its side effect of writing \code{out_file}.
+}
 \description{
 Converts a VCFArrow object to an Apparent format infile
 }
@@ -31,9 +34,9 @@ If no groups are defined, the default behavior is to use all groups.
 Possible relationships defined by the parameter 'kee' are All, Pa, Mo, Fa, Off.
 }
 \examples{
-vcf2apparent(vcf_arrow = my_vcf, keep_groups = my_groups, key = my_key, out_file = "apparent_infile.txt")
-vcf2apparent(vcf_arrow, my_groups, my_key, out_file = "apparent_infile.txt")
-vcf2apparent(vcf_arrow)
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+vcf2apparent(vcf, out_file = tempfile(fileext = ".txt"))
 
 }
 \author{

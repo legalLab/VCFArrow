@@ -20,6 +20,9 @@ vcf2eigenstrat(
 
 \item{sex}{-> sex of the individual, default = U (undefined) (character)}
 }
+\value{
+Invisibly returns the input VCFArrow object; called for its side effect of writing \code{out_file}.
+}
 \description{
 Converts a VCFArrow object to Eigenstrat format infile
 }
@@ -30,9 +33,9 @@ Larger chunks result in faster writing speeds.
 If no groups are defined, the default behavior is to use all groups.
 }
 \examples{
-vcf2eigenstrat(vcf_arrow = my_vcf, keep_groups = my_groups, out_file = "eigenstrat_infile")
-vcf2eigenstrat(vcf_arrow, my_groups, out_file = "eigenstrat_infile")
-vcf2eigenstrat(vcf_arrow)
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+vcf2eigenstrat(vcf, out_file = file.path(tempdir(), "eigenstrat_in"))
 
 }
 \author{

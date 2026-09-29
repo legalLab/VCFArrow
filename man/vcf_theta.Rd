@@ -7,11 +7,9 @@
 vcf_theta(vcf_arrow, keep_groups = NULL)
 }
 \arguments{
-\item{gt}{-> VCFArrow gt in long format}
+\item{vcf_arrow}{-> VCFArrow object}
 
-\item{sample}{-> samples to be included in analysis}
-
-\item{grps}{-> assignment of individuals to groups}
+\item{keep_groups}{-> groups to retain, default NULL (character)}
 }
 \value{
 list of statistics
@@ -26,8 +24,9 @@ object, and for groups of individuals whose grouping is indicated by
 the groups slot in the VCFArrow object.
 }
 \examples{
-vcf_theta(gt_matrix = my_gt_matrix, samples = vcf_arrow@samples, grps = vcf_arrow@groups)
-vcf_theta(my_gt_matrix, vcf_arrow@samples, vcf_arrow@groups)
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+vcf_theta(vcf)
 
 }
 \author{

@@ -37,9 +37,10 @@ Inspired by https://grunwaldlab.github.io/Population_Genetics_in_R/qc.html
 This function generates a violin plot of read depths per sample.
 }
 \examples{
-assess_vcf_coverage(vcf_arrow = my_vcf, res_path = my_res_path, species = species_name, project = project_name)
-assess_vcf_coverage(my_vcf, my_res_path, species_name, project_name, details = TRUE, max_points_per_sample = 5000L)
-assess_vcf_coverage(my_vcf, my_res_path, species_name, project_name)
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+assess_vcf_coverage(vcf, res_path = tempdir(),
+                    species = "Phyllomedusa vaillantii", project = "vaillantii")
 
 }
 \author{

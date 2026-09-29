@@ -30,9 +30,9 @@ Locus is defined as a different chromosome or a block of the
 'block_size' parameter value within a chromosome.
 }
 \examples{
-vcf_filter_multiSNV(vcf_arrow = my_vcf, block_size = 10000, minSNV = 2, maxSNV = 5)
-vcf_filter_multiSNV(my_vcf, 10000, 2, 5)
-vcf_filter_multiSNV(my_vcf)
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+vcf_filter_multiSNV(vcf, block_size = 10000, minSNV = 2, maxSNV = 5)
 
 }
 \author{

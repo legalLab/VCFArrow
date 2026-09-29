@@ -13,6 +13,9 @@ vcf2snapp(vcf_arrow, keep_groups = NULL, out_file = "snapp_infile.nex")
 
 \item{out_file}{-> name of file to output, default 'snapp_infile.nex' (character)}
 }
+\value{
+Invisibly returns the input VCFArrow object; called for its side effect of writing \code{out_file}.
+}
 \description{
 Converts a VCFArrow object to a SNAPP encoded NEXUS format infile
 }
@@ -23,9 +26,9 @@ Larger chunks result in faster writing speeds.
 If no groups are defined, the default behavior is to use all groups.
 }
 \examples{
-vcf2snapp(vcf_arrow = my_vcf, keep_groups = my_groups, out_file = "snapp_infile.nex")
-vcf2snapp(vcf_arrow, my_groups, out_file = "snapp_infile.nex")
-vcf2snapp(vcf_arrow)
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+vcf2snapp(vcf, out_file = tempfile(fileext = ".nex"))
 
 }
 \author{

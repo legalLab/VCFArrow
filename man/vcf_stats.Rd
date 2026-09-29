@@ -30,9 +30,9 @@ missing data and total number SNPs of each sample in an VCFArrow object.
 Optionally calls vcf_theta() to get total and group Watterson's theta and pi.
 }
 \examples{
-vcf_stats(vcf_arrow = my_vcf, res_path = my_res_path, project = my_project, theta = FALSE)
-vcf_stats(my_vcf, my_res_path, my_project, FALSE)
-vcf_stats(my_vcf, my_res_path, my_project)
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+vcf_stats(vcf, res_path = tempdir(), project = "vaillantii", theta = TRUE)
 
 }
 \author{

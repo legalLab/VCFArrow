@@ -10,6 +10,7 @@ vcf2admixture(
   out_file = "admixture_in",
   sex = NULL,
   pheno = NULL,
+  chrom_code = c("zero", "auto", "index", "keep"),
   supervised = FALSE,
   reference_groups = NULL
 )
@@ -25,9 +26,16 @@ vcf2admixture(
 
 \item{pheno}{-> vector of phenotypes of samples, default NULL (character)}
 
+\item{chrom_code}{-> how CHROM is written: "auto" (keep numeric CHROM,
+otherwise 0), "index" (1..n by first appearance), "zero" (all 0) or
+"keep" (verbatim), default "zero" (character)}
+
 \item{supervised}{-> flag to generate .pop for use in ADMIXTURE's supervised mode, default FALSE (Boolean)}
 
 \item{reference_groups}{-> vector of ancestry group labels, default NULL (character)}
+}
+\value{
+Invisibly returns the input VCFArrow object; called for its side effect of writing \code{out_file}.
 }
 \description{
 Converts a VCFArrow object to a PLINK .bed format infile plus ADMIXTURE-specific .pop file
@@ -44,11 +52,11 @@ The reference_groups vector specifies ancestral information of individuals.
 When NULL, or for any missing individual, ancestry is inferred.
 }
 \examples{
-vcf2admixture(vcf_arrow = my_vcf, keep_groups = my_groups, out_file = "admix_out", sex = sex, pheno = pheno, supervised = TRUE, reference_groups = reference_groups)
-vcf2admixture(vcf_arrow, my_groups, out_file = "admix_out", supervised = TRUE, reference_groups = c("XXX", "YYY"))
-vcf2admixture(vcf_arrow, my_groups, out_file = "admix_out", supervised = TRUE)
-vcf2admixture(vcf_arrow, my_groups, out_file = "admix_out")
-vcf2admixture(vcf_arrow)
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+vcf2admixture(vcf, out_file = file.path(tempdir(), "admixture_in"))
+vcf2admixture(vcf, out_file = file.path(tempdir(), "admixture_sup"),
+              supervised = TRUE, reference_groups = c("GS", "BS", "WA"))
 
 }
 \author{

@@ -9,9 +9,9 @@ vcf_sub_SNVs_stratified(vcf_arrow, n_SNVs = 1000, seed = NULL)
 \arguments{
 \item{vcf_arrow}{-> VCFArrow object}
 
-\item{seed}{-> random number generator seed, default NULL (Boolean)}
+\item{n_SNVs}{-> number of SNVs to subset, default 1000 (integer)}
 
-\item{n_loci}{-> number of SNVs to subset, default 10000 (integer)}
+\item{seed}{-> random number generator seed, default NULL (integer)}
 }
 \value{
 VCFArrow object
@@ -27,9 +27,9 @@ The seed for random number generator is automatically generated unless
 specified.
 }
 \examples{
-vcf_sub_SNVs_stratified(vcf_arrow = my_vcf, n_SNVs = n_SNVs, seed = my_seed)
-vcf_sub_SNVs_stratified(my_vcf, n_SNVs, 42)
-vcf_sub_SNVs_stratified(my_vcf)
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+vcf_sub_SNVs_stratified(vcf, n_SNVs = 1000, seed = 42)
 
 }
 \author{

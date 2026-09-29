@@ -21,8 +21,9 @@ returning a new VCFArrow object.
 This might be desirable after subsetting a VCFArrow object by individuals.
 }
 \examples{
-vcf_filter_invariant(vcf_arrow = my_vcf)
-vcf_filter_invariant(my_vcf)
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+vcf_filter_invariant(vcf)
 
 }
 \author{

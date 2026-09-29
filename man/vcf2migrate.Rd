@@ -18,6 +18,15 @@ vcf2migrate(
 \item{keep_groups}{-> groups to retain, default NULL (character)}
 
 \item{out_file}{-> name of file to output, default 'migrateN_infile.txt' (character)}
+
+\item{block_size}{-> number of SNPs (method S) or base pairs (method N) per
+linked block, default 100 (integer)}
+
+\item{method}{-> "C" (allele counts), "S" (sequences, fixed blocks) or
+"N" (sequences, chromosome intervals), default "S" (character)}
+}
+\value{
+Invisibly returns the input VCFArrow object; called for its side effect of writing \code{out_file}.
 }
 \description{
 Converts a VCFArrow object to a MIGRATE-N format infile
@@ -38,9 +47,9 @@ The size of the linked block is determined by the block_size parameter.
 See https://peterbeerli.com/programs/migrate/distribution_4.x/migratedoc4.x.pdf for format detail.
 }
 \examples{
-vcf2migrate(vcf_arrow = my_vcf, keep_groups = my_groups, out_file = "migrateN_infile.txt")
-vcf2migrate(vcf_arrow, my_groups, out_file = "migrateN_infile.txt")
-vcf2migrate(vcf_arrow)
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+vcf2migrate(vcf, out_file = tempfile(fileext = ".txt"))
 
 }
 \author{

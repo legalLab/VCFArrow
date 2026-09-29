@@ -17,6 +17,9 @@ vcf2bayesass(
 
 \item{out_file}{-> name of file to output, default 'bayesass3_infile.immanc' (character)}
 }
+\value{
+Invisibly returns the input VCFArrow object; called for its side effect of writing \code{out_file}.
+}
 \description{
 Converts a VCFArrow object to BayesAss format infile
 }
@@ -27,9 +30,9 @@ Larger chunks result in faster writing speeds.
 If no groups are defined, the default behavior is to use all groups.
 }
 \examples{
-vcf2bayesass(vcf_arrow = my_vcf, keep_groups = my_groups, out_file = "bayesass3_infile.immanc")
-vcf2bayesass(vcf_arrow, my_groups, out_file = "bayesass3_infile.immanc")
-vcf2bayesass(vcf_arrow)
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+vcf2bayesass(vcf, out_file = tempfile(fileext = ".immanc"))
 
 }
 \author{

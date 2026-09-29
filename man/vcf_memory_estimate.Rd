@@ -17,15 +17,25 @@ vcf_memory_estimate(
 
 \item{keep_groups}{Groups to export (NULL = all).}
 
-\item{format}{One of "individual" (Structure, Arlequin, FASTA, …) or
-"pop" (BayesScan, Treemix, Migrate-N C, …) or
-"chunk" (SmartSNP, fineRADstructure, sNMF, EIGENSTRAT, …).}
+\item{format}{One of "individual" (Structure, Arlequin, FASTA, ...) or
+"pop" (BayesScan, Treemix, Migrate-N C, ...) or
+"chunk" (SmartSNP, fineRADstructure, sNMF, EIGENSTRAT, ...).}
 
 \item{chunk_size}{Feather chunk size used at read_vcf() time.}
 
 \item{lowmem}{If TRUE, estimate uses raw-byte matrices (vcf2*() lowmem
 variants); otherwise integer matrices.}
 }
+\value{
+Invisibly, a list with elements \code{n_var}, \code{n_samples}, \code{n_pops},
+\code{chunk_arrow_bytes}, \code{matrix_bytes} and \code{peak_bytes}.
+}
 \description{
 Estimate RAM required for a VCFArrow export operation
+}
+\examples{
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+vcf_memory_estimate(vcf, format = "individual")
+
 }
