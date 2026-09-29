@@ -9,7 +9,7 @@
 #' @param keep_groups -> groups to retain, default NULL (character)
 #' @param out_file -> name of file to output, default 'fineradstructure_infile.txt' (character)
 #'
-#' @return NULL
+#' @return Invisibly returns the input VCFArrow object; called for its side effect of writing `out_file`.
 #'
 #' @details
 #' This function converts a VCFArrow object to an external Treemix formatted file.
@@ -18,9 +18,10 @@
 #' If no groups are defined, the default behavior is to use all groups.
 #'
 #' @examples
-#' vcf2fineradstructure(vcf_arrow = my_vcf, keep_groups = my_groups, out_file = "fineradstructure_infile.txt")
-#' vcf2fineradstructure(vcf_arrow, my_groups, out_file = "fineradstructure_infile.txt")
-#' vcf2fineradstructure(vcf_arrow)
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+#' vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+#' vcf_linked <- vcf_filter_multiSNV(vcf)
+#' vcf2fineradstructure(vcf_linked, out_file = tempfile(fileext = ".txt"))
 #'
 #' @export
 #'

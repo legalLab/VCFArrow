@@ -21,8 +21,9 @@
 #' retained samples after sample filtering.
 #'
 #' @examples
-#' vcf_filter_rank(vcf_arrow = my_vcf, keep = rows_to_keep)
-#' vcf_filter_rank(my_vcf, rows_to_keep)
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+#' vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+#' .vcf_filter_columns(vcf, keep = vcf@groups != "OG")
 #'
 #' @export
 #'

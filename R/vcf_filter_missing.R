@@ -21,9 +21,9 @@
 #' retained samples after sample filtering.
 #'
 #' @examples
-#' vcf_filter_missing(vcf_arrow = my_vcf, threshold = my_threshold)
-#' vcf_filter_missing(my_vcf, my_threshold)
-#' vcf_filter_missing(my_vcf)
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+#' vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+#' vcf |> vcf_filter_missingness(threshold = 0.2) |> vcf_filter_missing(threshold = 0.3)
 #'
 #' @export
 #'

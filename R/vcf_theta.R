@@ -6,9 +6,8 @@
 #'
 #' @author Tomas Hrbek April 2026
 #'
-#' @param gt -> VCFArrow gt in long format
-#' @param sample -> samples to be included in analysis
-#' @param grps -> assignment of individuals to groups
+#' @param vcf_arrow -> VCFArrow object
+#' @param keep_groups -> groups to retain, default NULL (character)
 #'
 #' @return list of statistics
 #'
@@ -18,8 +17,9 @@
 #' the groups slot in the VCFArrow object.
 #'
 #' @examples
-#' vcf_theta(gt_matrix = my_gt_matrix, samples = vcf_arrow@samples, grps = vcf_arrow@groups)
-#' vcf_theta(my_gt_matrix, vcf_arrow@samples, vcf_arrow@groups)
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+#' vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+#' vcf_theta(vcf)
 #'
 #' @export
 #'
@@ -38,7 +38,7 @@ vcf_theta <- function(vcf_arrow, keep_groups = NULL) {
   if (setup$n_var == 0L) {
     cli::cli_warn(c(
       "vcf_theta(): zero variants passed the is_biallelic & !is_indel filter \\
-       — theta_w/pi will be NaN (written as \"NA\").",
+       - theta_w/pi will be NaN (written as \"NA\").",
       "i" = "vcf_arrow@variants has {nrow(vcf_arrow@variants)} total rows, but \\
              none satisfy is_biallelic == TRUE & is_indel == FALSE.",
       "i" = "Check: table(vcf_arrow@variants$is_biallelic, useNA = 'always')",
@@ -51,7 +51,7 @@ vcf_theta <- function(vcf_arrow, keep_groups = NULL) {
   if (setup$n_var > 0L && sum(counts$nobs) == 0L) {
     cli::cli_warn(c(
       "vcf_theta(): {setup$n_var} variants passed the filter, but zero \\
-       genotype rows matched during accumulation — theta_w/pi will be NaN \\
+       genotype rows matched during accumulation - theta_w/pi will be NaN \\
        (written as \"NA\").",
       "i" = "This usually indicates a sample-name mismatch. Check:",
       "i" = "  f <- list.files(vcf_arrow@path, pattern = '[.]arrow$', full.names = TRUE)[1]",

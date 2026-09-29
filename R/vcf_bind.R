@@ -19,8 +19,11 @@
 #' use vcf_bind_sparse().
 #'
 #' @examples
-#' vcf_bind(my_vcf1, my_vcf2, other_vcf, ..., check = TRUE)
-#' vcf_bind(my_vcf1, my_vcf2, other_vcf)
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+#' vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+#' ingroup <- vcf_extract_groups(vcf, c("GS", "BS", "WA"), f_invar = FALSE)
+#' outgroup <- vcf_extract_groups(vcf, "OG", f_invar = FALSE)
+#' vcf_bind(ingroup, outgroup)
 #'
 #' @export
 #'

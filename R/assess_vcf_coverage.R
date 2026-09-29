@@ -19,9 +19,10 @@
 #' This function generates a violin plot of read depths per sample.
 #'
 #' @examples
-#' assess_vcf_coverage(vcf_arrow = my_vcf, res_path = my_res_path, species = species_name, project = project_name)
-#' assess_vcf_coverage(my_vcf, my_res_path, species_name, project_name, details = TRUE, max_points_per_sample = 5000L)
-#' assess_vcf_coverage(my_vcf, my_res_path, species_name, project_name)
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+#' vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+#' assess_vcf_coverage(vcf, res_path = tempdir(),
+#'                     species = "Phyllomedusa vaillantii", project = "vaillantii")
 #'
 #' @export
 #'
@@ -42,7 +43,7 @@ assess_vcf_coverage <- function(vcf_arrow, res_path, species, project,
   dp_df <- scan$dp_df
 
   if (is.null(dp_df) || nrow(dp_df) == 0L)
-    cli::cli_abort("No non-missing DP values found — cannot build coverage plot.")
+    cli::cli_abort("No non-missing DP values found - cannot build coverage plot.")
 
   dp_df <- dp_df |>
     dplyr::left_join(group_df, by = "sample")

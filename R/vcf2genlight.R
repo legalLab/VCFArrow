@@ -13,7 +13,7 @@
 #'
 #' @importClassesFrom adegenet genlight
 #'
-#' @return NULL
+#' @return An adegenet `genlight` object.
 #'
 #' @details
 #' This function converts a VCFArrow object to an external Genlight formatted file.
@@ -25,9 +25,10 @@
 #' but optionally may be saved as R data objects.
 #'
 #' @examples
-#' vcf2genlight(vcf_arrow = my_vcf, keep_groups = my_groups, out_file = "genlight.rds")
-#' vcf2genlight(vcf_arrow, my_groups)
-#' vcf2genlight(vcf_arrow)
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+#' vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+#' gl <- vcf2genlight(vcf)
+#' gl
 #'
 #' @export
 #'

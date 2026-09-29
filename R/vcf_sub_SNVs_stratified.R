@@ -6,8 +6,8 @@
 #' @author Tomas Hrbek April 2026
 #'
 #' @param vcf_arrow -> VCFArrow object
-#' @param n_loci -> number of SNVs to subset, default 10000 (integer)
-#' @param seed -> random number generator seed, default NULL (Boolean)
+#' @param n_SNVs -> number of SNVs to subset, default 1000 (integer)
+#' @param seed -> random number generator seed, default NULL (integer)
 #'
 #' @return VCFArrow object
 #'
@@ -19,9 +19,9 @@
 #' specified.
 #'
 #' @examples
-#' vcf_sub_SNVs_stratified(vcf_arrow = my_vcf, n_SNVs = n_SNVs, seed = my_seed)
-#' vcf_sub_SNVs_stratified(my_vcf, n_SNVs, 42)
-#' vcf_sub_SNVs_stratified(my_vcf)
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+#' vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+#' vcf_sub_SNVs_stratified(vcf, n_SNVs = 1000, seed = 42)
 #'
 #' @export
 #'
@@ -39,7 +39,6 @@ vcf_sub_SNVs_stratified <- function(vcf_arrow, n_SNVs = 1000, seed = NULL) {
     cli::cli_alert_warning("Number of SNVs to subsample ({n_SNVs}) is greater than number of variants available ({n_vars});
                            returning original VCFArrow object")
     return(vcf_arrow)
-    break
   }
 
   if (!is.null(seed)) {

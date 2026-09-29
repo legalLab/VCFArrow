@@ -9,7 +9,7 @@
 #' @param out_file -> name of the VCF file to be written to, default 'output.vcf' (character)
 #' @param gzip -> a flag to GZIP VCF when writing, default FALSE (Boolean)
 #'
-#' @return NULL
+#' @return Invisibly returns the path of the written file.
 #'
 #' @details
 #' This function writes a VCFArrow object to an external VCF file.
@@ -21,9 +21,10 @@
 #' and then compress with GZIP or PIGZ.
 #'
 #' @examples
-#' write_vcf(vcf = my_vcf, out_file = "output.vcf", gzip = FALSE)
-#' write_vcf(my_vcf, "output.vcf", FALSE)
-#' write_vcf(my_vcf)
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+#' vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+#' write_vcf(vcf, out_file = tempfile(fileext = ".vcf"))
+#' write_vcf(vcf, out_file = tempfile(fileext = ".vcf.gz"), gzip = TRUE)
 #'
 #' @export
 #'

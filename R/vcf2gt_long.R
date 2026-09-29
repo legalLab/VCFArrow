@@ -11,7 +11,7 @@
 #' @param format -> one of three output formats (arrow, parquet, CSV) (character)
 #' @param col_select -> optional selection of columns to save, default ALL
 #'
-#' @return NULL
+#' @return Invisibly returns the path of the written file.
 #'
 #' @details
 #' This function converts a VCFArrow object to an external SmartSNP formatted file.
@@ -24,9 +24,9 @@
 #' The gt long slot contains pre-calculated metrics in addition to just genotypes.
 #'
 #' @examples
-#' vcf2gt_long(vcf_arrow = my_vcf, keep_groups = my_groups, out_file = "gt_long", format = "csv")
-#' vcf2gt_long(vcf_arrow, my_groups, format = "csv")
-#' vcf2gt_long(vcf_arrow, format = "csv")
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+#' vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+#' vcf2gt_long(vcf, out_file = tempfile(), format = "csv")
 #'
 #' @export
 #'

@@ -14,8 +14,9 @@
 #' It makes an actual physical copy of the object.
 #'
 #' @examples
-#' vcf_copy(vcf_arrow = my_vcf)
-#' vcf_copy(my_vcf)
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+#' vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+#' vcf_copy(vcf_filter_maf(vcf, 0.05))
 #'
 #' @export
 #'
@@ -41,7 +42,7 @@ vcf_copy <- function(vcf_arrow) {
     unlink(new_path, recursive = TRUE, force = TRUE)
     cli::cli_abort(
       "Failed to copy {sum(!ok)} of {length(old_files)} feather file{?s} \\
-       to {.path {new_path}} — check disk space and permissions."
+       to {.path {new_path}} - check disk space and permissions."
     )
   }
 

@@ -19,9 +19,9 @@
 #' GT slot content stored in a TEMP directory for lazy loading.
 #'
 #' @examples
-#' vcf_filter_rank(vcf_file = my_vcf, chunk_size = 50000)
-#' vcf_filter_rank(my_vcf, 50000)
-#' vcf_filter_rank(my_vcf)
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+#' vcf <- read_vcf(f)
+#' vcf
 #'
 #' @export
 #'

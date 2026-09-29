@@ -15,8 +15,9 @@
 #' returning a new VCFArrow object.
 #'
 #' @examples
-#' vcf_filter_rank(vcf_arrow = my_vcf, keep = rows_to_keep)
-#' vcf_filter_rank(my_vcf, rows_to_keep)
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+#' vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+#' .vcf_filter_rows(vcf, keep = vcf@variants$is_biallelic)
 #'
 #' @export
 #'
@@ -55,7 +56,7 @@
     # further. See the one-time repair snippet for how to fix such objects.
     cli::cli_warn(c(
       "@info length ({length(vcf_arrow@info)}) does not match @variants \\
-       length ({nrow(v)}) BEFORE filtering — @info is already misaligned \\
+       length ({nrow(v)}) BEFORE filtering - @info is already misaligned \\
        and was left untouched rather than risk corrupting it further.",
       "i" = "This object was likely filtered before the @info alignment \\
              fix was applied. See the one-time repair snippet."

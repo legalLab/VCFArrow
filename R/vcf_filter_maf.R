@@ -15,9 +15,9 @@
 #' returning a new VCFArrow object.
 #'
 #' @examples
-#' vcf_filter_maf(vcf_arrow = my_vcf, threshold = 0.05)
-#' vcf_filter_maf(my_vcf, 0.05)
-#' vcf_filter_maf(my_vcf)
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+#' vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+#' vcf_filter_maf(vcf, threshold = 0.05)
 #'
 #' @export
 #'

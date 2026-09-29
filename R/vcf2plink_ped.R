@@ -10,8 +10,11 @@
 #' @param out_file -> name of file to output, default 'plink_out' (character)
 #' @param sex -> vector of sexes of samples, default NULL (character)
 #' @param pheno -> vector of phenotypes of samples, default NULL (character)
+#' @param chrom_code -> how CHROM is written: "auto" (keep numeric CHROM,
+#'   otherwise 0), "index" (1..n by first appearance), "zero" (all 0) or
+#'   "keep" (verbatim), default "auto" (character)
 #'
-#' @return NULL
+#' @return Invisibly returns the input VCFArrow object; called for its side effect of writing `out_file`.
 #'
 #' @details
 #' This function converts a VCFArrow object to an external PLINK .ped formatted file.
@@ -21,9 +24,9 @@
 #' Sex and phenotype vectors are optional. If not defined sex = 0, pheno = -9.
 #'
 #' @examples
-#' vcf2plink_ped(vcf_arrow = my_vcf, keep_groups = my_groups, out_file = "plink_out", sex = sex, pheno = pheno)
-#' vcf2plink_ped(vcf_arrow, my_groups, out_file = "plink_out")
-#' vcf2plink_ped(vcf_arrow)
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+#' vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+#' vcf2plink_ped(vcf, out_file = file.path(tempdir(), "plink_out"))
 #'
 #' @export
 #'

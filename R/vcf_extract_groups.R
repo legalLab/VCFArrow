@@ -23,9 +23,10 @@
 #' retained samples after sample filtering.
 #'
 #' @examples
-#' vcf_extract_groups(vcf_arrow = my_vcf, groups = my_groups, keep = TRUE, f_invar = TRUE, verbose = TRUE)
-#' vcf_extract_groups(my_vcf, my_groups, TRUE, TRUE, TRUE)
-#' vcf_extract_groups(my_vcf, my_groups)
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+#' vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+#' vcf_extract_groups(vcf, groups = c("GS", "BS"))
+#' vcf_extract_groups(vcf, groups = "OG", keep = FALSE)
 #'
 #' @export
 #'
@@ -62,7 +63,7 @@ vcf_extract_groups <- function(vcf_arrow, groups, keep = TRUE, f_invar = TRUE, v
   # guard against silently producing a zero-sample VCFArrow.
   if (length(keep_samples) == 0L)
     cli::cli_abort(
-      "All samples removed by vcf_extract_groups() — check {.arg groups} \\
+      "All samples removed by vcf_extract_groups() - check {.arg groups} \\
        and {.arg keep}."
     )
 

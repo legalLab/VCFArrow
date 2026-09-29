@@ -16,9 +16,9 @@
 #' High heterozigosities are indicative of potential paralogs.
 #'
 #' @examples
-#' vcf_filter_hets(vcf_arrow = my_vcf, threshold = 0.5)
-#' vcf_filter_hets(my_vcf, 0.5)
-#' vcf_filter_hets(my_vcf)
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+#' vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+#' vcf_filter_hets(vcf, threshold = 0.5)
 #'
 #' @export
 #'

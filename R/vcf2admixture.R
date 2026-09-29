@@ -10,10 +10,13 @@
 #' @param out_file -> name of file to output, default 'plink_out' (character)
 #' @param sex -> vector of sexes of samples, default NULL (character)
 #' @param pheno -> vector of phenotypes of samples, default NULL (character)
+#' @param chrom_code -> how CHROM is written: "auto" (keep numeric CHROM,
+#'   otherwise 0), "index" (1..n by first appearance), "zero" (all 0) or
+#'   "keep" (verbatim), default "zero" (character)
 #' @param supervised -> flag to generate .pop for use in ADMIXTURE's supervised mode, default FALSE (Boolean)
 #' @param reference_groups -> vector of ancestry group labels, default NULL (character)
 #'
-#' @return NULL
+#' @return Invisibly returns the input VCFArrow object; called for its side effect of writing `out_file`.
 #'
 #' @details
 #' This function converts a VCFArrow object to an external PLINK .bed formatted file.
@@ -28,11 +31,11 @@
 #'
 #'
 #' @examples
-#' vcf2admixture(vcf_arrow = my_vcf, keep_groups = my_groups, out_file = "admix_out", sex = sex, pheno = pheno, supervised = TRUE, reference_groups = reference_groups)
-#' vcf2admixture(vcf_arrow, my_groups, out_file = "admix_out", supervised = TRUE, reference_groups = c("XXX", "YYY"))
-#' vcf2admixture(vcf_arrow, my_groups, out_file = "admix_out", supervised = TRUE)
-#' vcf2admixture(vcf_arrow, my_groups, out_file = "admix_out")
-#' vcf2admixture(vcf_arrow)
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+#' vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+#' vcf2admixture(vcf, out_file = file.path(tempdir(), "admixture_in"))
+#' vcf2admixture(vcf, out_file = file.path(tempdir(), "admixture_sup"),
+#'               supervised = TRUE, reference_groups = c("GS", "BS", "WA"))
 #'
 #' @export
 #'

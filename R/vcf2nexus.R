@@ -9,7 +9,7 @@
 #' @param keep_groups -> groups to retain, default NULL (character)
 #' @param out_file -> name of file to output, default 'nexus_infile.nex' (character)
 #'
-#' @return NULL
+#' @return Invisibly returns the input VCFArrow object; called for its side effect of writing `out_file`.
 #'
 #' @details
 #' This function converts a VCFArrow object to an external NEXUS formatted file.
@@ -18,9 +18,9 @@
 #' If no groups are defined, the default behavior is to use all groups.
 #'
 #' @examples
-#' vcf2nexus(vcf_arrow = my_vcf, keep_groups = my_groups, out_file = "nexus_infile.nex")
-#' vcf2nexus(vcf_arrow, my_groups, out_file = "nexus_infile.nex")
-#' vcf2nexus(vcf_arrow)
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+#' vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+#' vcf2nexus(vcf, out_file = tempfile(fileext = ".nex"))
 #'
 #' @export
 #'

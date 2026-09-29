@@ -6,10 +6,17 @@
 #'
 #' @param object A VCFArrow object
 #'
+#' @return Invisibly returns `object`; called for its side effect of printing
+#'   a summary.
+#'
 #' @details
 #' This function is a method of the VCFArrow S4 class
 #' Method to show object content summary
-#' Method to subset by row and column of GT
+#'
+#' @examples
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+#' vcf <- read_vcf(f)
+#' show(vcf)
 #'
 #' @export
 #'
@@ -86,8 +93,9 @@ setMethod(
 #' @author Tomas Hrbek April 2026
 #'
 #' @param x A VCFArrow object
-#' @param i Row indices (numeric or logical)
+#' @param i Variant (row) positions, numeric or logical
 #' @param j Column indices: numeric, logical, or sample name character vector
+#' @param ... Ignored
 #' @param drop Ignored; kept for S4 compatibility
 #'
 #' @return A new VCFArrow object containing the selected variants and samples
@@ -95,6 +103,11 @@ setMethod(
 #' @details
 #' This function is a method of the VCFArrow S4 class
 #' Method to subset by row and column of GT
+#'
+#' @examples
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+#' vcf <- read_vcf(f)
+#' vcf[1:100, 1:5]
 #'
 #' @export
 #'
@@ -104,74 +117,18 @@ setMethod(
   signature(x = "VCFArrow", i = "ANY", j = "ANY", drop = "ANY"),
   function(x, i, j, ..., drop = FALSE) {
 
-    # --- Handle missing indices ---
-    if (missing(i)) i <- seq_len(nrow(x@variants))
-    if (missing(j)) j <- seq_along(x@samples)
+    if (!missing(i)) {
+      if (is.character(i)) cli::cli_abort("Row subsetting by character is not supported")
+      x <- .vcf_filter_rows(x, x@variants$.row_id[i])
+    }
 
-    # --- Normalize row index ---
-    if (is.logical(i)) i <- which(i)
-    if (is.character(i)) stop("Row subsetting by character not supported")
-
-    # --- Normalize column index ---
-    if (is.logical(j)) j <- which(j)
-
-    if (is.character(j)) {
-      j <- match(j, x@samples)
-      if (any(is.na(j))) {
-        stop("Some sample names not found")
+    if (!missing(j)) {
+      if (is.character(j) && anyNA(match(j, x@samples))) {
+        cli::cli_abort("Some sample names not found")
       }
+      x <- .vcf_filter_columns(x, j, f_invar = FALSE, verbose = FALSE)
     }
 
-    # --- Subset samples ---
-    new_samples <- x@samples[j]
-
-    # --- Build Arrow column selection ---
-    col_names <- unlist(lapply(new_samples, function(s) {
-      c(
-        paste0(s, "_a1"),
-        paste0(s, "_a2"),
-        paste0(s, "_phased")
-      )
-    }))
-
-    # always keep variant_index
-    col_names <- c(col_names, "variant_index")
-
-    # --- Subset Arrow dataset ---
-    new_gt <- x@gt %>%
-      dplyr::select(dplyr::all_of(col_names))
-
-    # row filtering (lazy)
-    if (isTRUE(all(diff(i) == 1))) {
-      new_gt <- new_gt %>%
-        dplyr::filter(
-          variant_index >= min(i),
-          variant_index <= max(i)
-        )
-    }
-
-    # --- Subset metadata ---
-    new_variants <- x@variants[i, , drop = FALSE]
-    new_info <- x@info[i]
-
-    # --- IMPORTANT: reindex variant_index ---
-    new_index <- seq_along(i)
-
-    new_gt <- new_gt %>%
-      dplyr::mutate(variant_index = new_index)
-
-    # --- Create new object (SAFE) ---
-    new_vcfarrow <- .new_vcfarrow(
-      header = x@header,
-      info = new_info,
-      format = x@format,
-      variants = new_variants,
-      gt = new_gt,
-      samples = new_samples,
-      groups = x@groups,
-      path = x@path  # shared dataset
-    )
-
-    return(new_vcfarrow)
+    x
   }
 )

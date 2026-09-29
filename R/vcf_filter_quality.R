@@ -20,9 +20,9 @@
 #' When QUAL not reported '.' (Dot), QUAL is assumed to be above threshold.
 #'
 #' @examples
-#' vcf_filter_quality(vcf_arrow = my_vcf, threshold = 30)
-#' vcf_filter_quality(my_vcf, 30)
-#' vcf_filter_quality(my_vcf)
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+#' vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+#' vcf_filter_quality(vcf, threshold = 30)
 #'
 #' @export
 #'

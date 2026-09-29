@@ -195,7 +195,7 @@
 #' Garbage-collect VCFArrow temp directories
 #'
 #' Triggers R's garbage collector (three full passes to handle the
-#' finalizer → pending-queue → unlink chain), then flushes any directories
+#' finalizer -> pending-queue -> unlink chain), then flushes any directories
 #' whose reference count has already reached zero.
 #'
 #' @param force Logical.  If TRUE, also force-deregister and delete directories
@@ -205,12 +205,23 @@
 #'   display references that delay GC).
 #' @param verbose Logical.  Print a status message.
 #'
+#' @return Invisibly returns `NULL`; called for its side effect of deleting
+#'   temporary directories.
+#'
 #' @section Typical workflow:
 #' \preformatted{
 #'   rm(vcf1, vcf2, vcf3)
 #'   vcf_gc()              # usually sufficient
 #'   vcf_gc(force = TRUE)  # if directories are still present after rm()
 #' }
+#'
+#' @examples
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+#' vcf <- read_vcf(f)
+#' rm(vcf)
+#' vcf_gc()
+#'
+#' @export
 
 vcf_gc <- function(force = FALSE, verbose = TRUE) {
 
@@ -284,12 +295,22 @@ vcf_gc <- function(force = FALSE, verbose = TRUE) {
 #'
 #' @param vcf_arrow A VCFArrow object.
 #' @param keep_groups Groups to export (NULL = all).
-#' @param format     One of "individual" (Structure, Arlequin, FASTA, …) or
-#'                   "pop" (BayesScan, Treemix, Migrate-N C, …) or
-#'                   "chunk" (SmartSNP, fineRADstructure, sNMF, EIGENSTRAT, …).
+#' @param format     One of "individual" (Structure, Arlequin, FASTA, ...) or
+#'                   "pop" (BayesScan, Treemix, Migrate-N C, ...) or
+#'                   "chunk" (SmartSNP, fineRADstructure, sNMF, EIGENSTRAT, ...).
 #' @param chunk_size Feather chunk size used at read_vcf() time.
 #' @param lowmem     If TRUE, estimate uses raw-byte matrices (vcf2*() lowmem
 #'                   variants); otherwise integer matrices.
+#'
+#' @return Invisibly, a list with elements `n_var`, `n_samples`, `n_pops`,
+#'   `chunk_arrow_bytes`, `matrix_bytes` and `peak_bytes`.
+#'
+#' @examples
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+#' vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+#' vcf_memory_estimate(vcf, format = "individual")
+#'
+#' @export
 
 vcf_memory_estimate <- function(vcf_arrow,
                                 keep_groups = NULL,
@@ -366,6 +387,13 @@ vcf_memory_estimate <- function(vcf_arrow,
 #' @param n_samples    Number of samples.
 #' @param n_columns    Number of columns per gt row (default 5: row_id, sample,
 #'                     a1, a2, phased).
+#'
+#' @return Invisibly, the suggested chunk size (numeric).
+#'
+#' @examples
+#' vcf_suggest_chunk_size(available_gb = 8, n_samples = 100)
+#'
+#' @export
 
 vcf_suggest_chunk_size <- function(available_gb, n_samples, n_columns = 5L) {
   # Leave half for OS + R overhead + accumulation matrices

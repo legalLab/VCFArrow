@@ -18,8 +18,9 @@
 #' vcf_filter_pass() defaults to passing the locus.
 #'
 #' @examples
-#' vcf_filter_pass(vcf_arrow = my_vcf)
-#' vcf_filter_pass(my_vcf)
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+#' vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+#' vcf_filter_pass(vcf)
 #'
 #' @export
 #'

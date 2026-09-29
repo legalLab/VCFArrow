@@ -7,6 +7,7 @@
 #'
 #' @param vcf_arrow -> VCFArrow object
 #' @param threshold -> decimal rank threshold, default 0.4 (numeric)
+#' @param keep_na -> retain loci without a rank value, default FALSE (Boolean)
 #'
 #' @return subsetted VCFArrow object
 #'
@@ -20,9 +21,9 @@
 #' indicative of paralogs.
 #'
 #' @examples
-#' vcf_filter_rank(vcf_arrow = my_vcf, rank = 0.4)
-#' vcf_filter_rank(my_vcf, 0.4)
-#' vcf_filter_rank(my_vcf)
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+#' vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+#' vcf_filter_rank(vcf, threshold = 0.5)
 #'
 #' @export
 #'

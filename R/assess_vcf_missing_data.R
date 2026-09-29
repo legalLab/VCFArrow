@@ -19,9 +19,10 @@
 #' per sample, and a plot of relative missing data % per sample.
 #'
 #' @examples
-#' assess_vcf_missing_data(vcf_arrow = my_vcf, res_path = my_res_path, species = species_name, project = project_name)
-#' assess_vcf_missing_data(my_vcf, my_res_path, species_name, project_name, details = TRUE)
-#' assess_vcf_missing_data(my_vcf, my_res_path, species_name, project_name)
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+#' vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+#' assess_vcf_missing_data(vcf, res_path = tempdir(),
+#'                         species = "Phyllomedusa vaillantii", project = "vaillantii")
 #'
 #' @export
 #'

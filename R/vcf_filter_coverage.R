@@ -15,9 +15,9 @@
 #' returning a new VCFArrow object.
 #'
 #' @examples
-#' vcf_filter_coverage(vcf_arrow = my_vcf, threshold = 10)
-#' vcf_filter_coverage(my_vcf, 10)
-#' vcf_filter_coverage(my_vcf)
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+#' vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+#' vcf_filter_coverage(vcf, threshold = 10)
 #'
 #' @export
 #'

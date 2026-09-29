@@ -49,7 +49,7 @@
   if (is.null(keep_groups)) keep_groups <- unique(all_groups)
 
   if (any(is.na(all_groups)))
-    cli::cli_abort("Some samples have no group assignment – use set_vcf_groups()")
+    cli::cli_abort("Some samples have no group assignment - use set_vcf_groups()")
   if (any(!(keep_groups %in% all_groups)))
     cli::cli_abort("Some requested groups do not exist in the VCFArrow object")
 
@@ -292,7 +292,7 @@
     cli::cli_warn(
       "Population allele count exceeds 65,535 for at least one cell; \\
        clamping. This indicates an unusually large population \\
-       ({.code > 32,767} samples) — verify {.arg group_sizes}."
+       ({.code > 32,767} samples) - verify {.arg group_sizes}."
     )
     int_vec <- pmin(int_vec, 65535L)
   }

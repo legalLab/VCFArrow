@@ -19,9 +19,9 @@
 #' VCF file is found.
 #'
 #' @examples
-#' get_vcf_group_info(vcf = my_vcf, data_path = my_data_path, strt = "strata")
-#' get_vcf_group_info(my_vcf, my_data_path, "strata")
-#' get_vcf_group_info(my_vcf, my_data_path)
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+#' vcf <- set_vcf_groups(read_vcf(f), data_path = dirname(f), strt = "strata")
+#' table(vcf@groups)
 #'
 #' @export
 #'

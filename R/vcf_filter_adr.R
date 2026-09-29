@@ -23,9 +23,9 @@
 #' result of the change/removal of genotypes
 #'
 #' @examples
-#' vcf_filter_adr(vcf_arrow = my_vcf, mode = "correct", threshold = my_threshold, f_invar = TRUE)
-#' vcf_filter_adr(my_vcf, "correct", my_threshold, TRUE)
-#' vcf_filter_adr(my_vcf, "correct")
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+#' vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+#' vcf_filter_adr(vcf, mode = "correct")
 #'
 #' @export
 #'

@@ -14,8 +14,9 @@
 #' returning a new VCFArrow object.
 #'
 #' @examples
-#' vcf_filter_biallelic(vcf_arrow = my_vcf)
-#' vcf_filter_biallelic(my_vcf)
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+#' vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+#' vcf_filter_biallelic(vcf)
 #'
 #' @export
 #'
