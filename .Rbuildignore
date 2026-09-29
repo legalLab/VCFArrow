@@ -3,3 +3,11 @@
 ^LICENSE\.md$
 ^doc$
 ^Meta$
+^dev$
+^\.github$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^cran-comments\.md$
+^CRAN-SUBMISSION$
+^vignettes/VCFArrow\.md$
