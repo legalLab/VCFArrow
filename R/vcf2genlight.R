@@ -6,8 +6,9 @@
 #' @author Tomas Hrbek May 2026
 #'
 #' @param vcf_arrow -> VCFArrow object
+#' @param out_file -> name of .rds file to write, required when save = TRUE,
+#'   default NULL (character)
 #' @param keep_groups -> groups to retain, default NULL (character)
-#' @param out_file -> name of file to output, default 'genlight.rds' (character)
 #' @param ploidy -> ploidy level, default = 2 (integer)
 #' @param save ->  save as R data object, default = FALSE (Boolean)
 #'
@@ -16,26 +17,31 @@
 #' @return An adegenet `genlight` object.
 #'
 #' @details
-#' This function converts a VCFArrow object to an external Genlight formatted file.
-#' Writing occurs in chunks whose size is determined by the read_vcf() function.
-#' Larger chunks result in faster writing speeds.
+#' This function converts a VCFArrow object to an adegenet Genlight object.
+#' Genotypes are read in chunks whose size is determined by the read_vcf() function.
 #' If no groups are defined, the default behavior is to use all groups.
 #' Genlight objects can encode polyploid genomes, by default diploid genomes are assumed.
-#' Genlight objects are in memory S4 objects, thus are returned as such, but
-#' but optionally may be saved as R data objects.
+#' Genlight objects are in-memory S4 objects and are always returned; if
+#' save = TRUE, the object is also written to out_file with saveRDS().
+#' Unlike the other exporters, out_file is optional because nothing is written
+#' unless save = TRUE.
 #'
 #' @examples
 #' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
 #' vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 #' gl <- vcf2genlight(vcf)
 #' gl
+#' gl <- vcf2genlight(vcf, out_file = tempfile(fileext = ".rds"), save = TRUE)
 #'
 #' @export
 #'
 
-vcf2genlight <- function(vcf_arrow, keep_groups = NULL,
-                         out_file = "genlight.rds",
+vcf2genlight <- function(vcf_arrow, out_file = NULL, keep_groups = NULL,
                          ploidy = 2L, save = FALSE) {
+
+  if (save && is.null(out_file)) {
+    cli::cli_abort("{.arg out_file} must be supplied when {.code save = TRUE}.")
+  }
 
   setup <- .vcf_export_setup(vcf_arrow, keep_groups)
   acc <- .accumulate_individuals(setup, "Genlight")

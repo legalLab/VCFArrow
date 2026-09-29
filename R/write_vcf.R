@@ -6,7 +6,7 @@
 #' @author Tomas Hrbek April 2026
 #'
 #' @param vcf_arrow -> VCFArrow object
-#' @param out_file -> name of the VCF file to be written to, default 'output.vcf' (character)
+#' @param out_file -> name of the VCF file to be written to, no default (character)
 #' @param gzip -> a flag to GZIP VCF when writing, default FALSE (Boolean)
 #'
 #' @return Invisibly returns the path of the written file.
@@ -29,7 +29,9 @@
 #' @export
 #'
 
-write_vcf <- function(vcf_arrow, out_file = "output.vcf", gzip = FALSE) {
+write_vcf <- function(vcf_arrow, out_file, gzip = FALSE) {
+
+  if (missing(out_file)) cli::cli_abort("{.arg out_file} must be supplied.")
 
   # write header
   header <- vcf_arrow@header

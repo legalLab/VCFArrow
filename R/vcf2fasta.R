@@ -6,8 +6,8 @@
 #' @author Tomas Hrbek May 2026
 #'
 #' @param vcf_arrow -> VCFArrow object
+#' @param out_file -> name of file to output, no default (character)
 #' @param keep_groups -> groups to retain, default NULL (character)
-#' @param out_file -> name of file to output, default 'fasta_infile.fas' (character)
 #'
 #' @return Invisibly returns the input VCFArrow object; called for its side effect of writing `out_file`.
 #'
@@ -25,8 +25,9 @@
 #' @export
 #'
 
-vcf2fasta <- function(vcf_arrow, keep_groups = NULL,
-                      out_file = "fasta_infile.fas") {
+vcf2fasta <- function(vcf_arrow, out_file, keep_groups = NULL) {
+
+  if (missing(out_file)) cli::cli_abort("{.arg out_file} must be supplied.")
 
   setup <- .vcf_export_setup(vcf_arrow, keep_groups)
   acc <- .accumulate_individuals(setup, "FASTA")

@@ -6,8 +6,8 @@
 #' @author Tomas Hrbek May 2026
 #'
 #' @param vcf_arrow -> VCFArrow object
+#' @param out_file -> name of file to output, no default (character)
 #' @param keep_groups -> groups to retain, default NULL (character)
-#' @param out_file -> name of file to output, default 'structure.str' (character)
 #' @param method -> flag for Structure/FastStructure formats, default 'S' (character)
 #'
 #' @return Invisibly returns the input VCFArrow object; called for its side effect of writing `out_file`.
@@ -30,8 +30,10 @@
 #' @export
 #'
 
-vcf2structure <- function(vcf_arrow, keep_groups = NULL,
-                          out_file = "structure.str", method = "S") {
+vcf2structure <- function(vcf_arrow, out_file, keep_groups = NULL,
+                          method = "S") {
+
+  if (missing(out_file)) cli::cli_abort("{.arg out_file} must be supplied.")
 
   method <- match.arg(method, c("S", "F"))
 

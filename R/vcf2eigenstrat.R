@@ -6,8 +6,8 @@
 #' @author Tomas Hrbek May 2026
 #'
 #' @param vcf_arrow -> VCFArrow object
+#' @param out_file -> output file prefix; extensions are added automatically, no default (character)
 #' @param keep_groups -> groups to retain, default NULL (character)
-#' @param out_file -> name of file to output, default 'eigenstrat_infile' (character)
 #' @param sex -> sex of the individual, default = U (undefined) (character)
 #'
 #' @return Invisibly returns the input VCFArrow object; called for its side effect of writing `out_file`.
@@ -26,9 +26,10 @@
 #' @export
 #'
 
-vcf2eigenstrat <- function(vcf_arrow, keep_groups = NULL,
-                           out_file = "eigenstrat_infile",
+vcf2eigenstrat <- function(vcf_arrow, out_file, keep_groups = NULL,
                            sex = NULL) {
+
+  if (missing(out_file)) cli::cli_abort("{.arg out_file} must be supplied.")
 
   setup <- .vcf_export_setup(vcf_arrow, keep_groups)
 

@@ -6,8 +6,8 @@
 #' @author Tomas Hrbek May 2026
 #'
 #' @param vcf_arrow -> VCFArrow object
+#' @param out_file -> output file prefix; extensions are added automatically, no default (character)
 #' @param keep_groups -> groups to retain, default NULL (character)
-#' @param out_file -> name of file to output, default 'plink_out' (character)
 #' @param sex -> vector of sexes of samples, default NULL (character)
 #' @param pheno -> vector of phenotypes of samples, default NULL (character)
 #' @param chrom_code -> how CHROM is written: "auto" (keep numeric CHROM,
@@ -47,10 +47,11 @@
 # chromosome codes.  A contig name in column 1 does not produce a helpful
 # message on this input path — ADMIXTURE reports only "PLINK Input file error".
 
-vcf2plink_ped <- function(vcf_arrow, keep_groups = NULL,
-                          out_file = "plink_out",
+vcf2plink_ped <- function(vcf_arrow, out_file, keep_groups = NULL,
                           sex = NULL, pheno = NULL,
                           chrom_code = c("auto", "index", "zero", "keep")) {
+
+  if (missing(out_file)) cli::cli_abort("{.arg out_file} must be supplied.")
 
   chrom_code <- match.arg(chrom_code)
   

@@ -6,8 +6,8 @@
 #' @author Tomas Hrbek May 2026
 #'
 #' @param vcf_arrow -> VCFArrow object
+#' @param out_file -> name of file to output, no default (character)
 #' @param keep_groups -> groups to retain, default NULL (character)
-#' @param out_file -> name of file to output, default 'migrateN_infile.txt' (character)
 #' @param block_size -> number of SNPs (method S) or base pairs (method N) per
 #'   linked block, default 100 (integer)
 #' @param method -> "C" (allele counts), "S" (sequences, fixed blocks) or
@@ -55,9 +55,10 @@
 #   each block spans block_size bp within a chromosome.  All block labels
 #   use (s{count}) regardless of whether the last interval is partial.
 
-vcf2migrate <- function(vcf_arrow, keep_groups = NULL,
-                        out_file = "migrateN_infile.txt",
+vcf2migrate <- function(vcf_arrow, out_file, keep_groups = NULL,
                         block_size = 100L, method = "S") {
+
+  if (missing(out_file)) cli::cli_abort("{.arg out_file} must be supplied.")
 
   method <- match.arg(method, c("C", "S", "N"))
   setup <- .vcf_export_setup(vcf_arrow, keep_groups)

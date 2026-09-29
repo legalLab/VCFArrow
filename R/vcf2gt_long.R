@@ -6,8 +6,8 @@
 #' @author Tomas Hrbek May 2026
 #'
 #' @param vcf_arrow -> VCFArrow object
+#' @param out_file -> name of file to output, no default (character)
 #' @param keep_groups -> groups to retain, default NULL (character)
-#' @param out_file -> name of file to output, default 'gt_long' (character)
 #' @param format -> one of three output formats (arrow, parquet, CSV) (character)
 #' @param col_select -> optional selection of columns to save, default ALL
 #'
@@ -31,10 +31,11 @@
 #' @export
 #'
 
-vcf2gt_long <- function(vcf_arrow, keep_groups = NULL,
-                        out_file = "gt_long",
+vcf2gt_long <- function(vcf_arrow, out_file, keep_groups = NULL,
                         format = c("feather", "parquet", "csv"),
                         col_select = NULL) {
+
+  if (missing(out_file)) cli::cli_abort("{.arg out_file} must be supplied.")
 
   format <- match.arg(format)
   setup <-.vcf_export_setup(vcf_arrow, keep_groups)

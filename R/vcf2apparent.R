@@ -6,9 +6,9 @@
 #' @author Tomas Hrbek May 2026
 #'
 #' @param vcf_arrow -> VCFArrow object
+#' @param out_file -> name of file to output, no default (character)
 #' @param keep_groups -> groups to retain, default NULL (character)
 #' @param key -> relationship type (All, Pa, Mo, Fa, Off), default All (character)
-#' @param out_file -> name of file to output, default 'apparent_infile.txt' (character)
 #'
 #' @return Invisibly returns the input VCFArrow object; called for its side effect of writing `out_file`.
 #'
@@ -27,9 +27,10 @@
 #' @export
 #'
 
-vcf2apparent <- function(vcf_arrow, keep_groups = NULL,
-                         key = "All",
-                         out_file = "apparent_infile.txt") {
+vcf2apparent <- function(vcf_arrow, out_file, keep_groups = NULL,
+                         key = "All") {
+
+  if (missing(out_file)) cli::cli_abort("{.arg out_file} must be supplied.")
 
   setup <- .vcf_export_setup(vcf_arrow, keep_groups)
   acc <- .accumulate_individuals(setup, "Apparent")
