@@ -4,19 +4,14 @@
 \alias{vcf2eigenstrat}
 \title{vcf2eigenstrat}
 \usage{
-vcf2eigenstrat(
-  vcf_arrow,
-  keep_groups = NULL,
-  out_file = "eigenstrat_infile",
-  sex = NULL
-)
+vcf2eigenstrat(vcf_arrow, out_file, keep_groups = NULL, sex = NULL)
 }
 \arguments{
 \item{vcf_arrow}{-> VCFArrow object}
 
-\item{keep_groups}{-> groups to retain, default NULL (character)}
+\item{out_file}{-> output file prefix; extensions are added automatically, no default (character)}
 
-\item{out_file}{-> name of file to output, default 'eigenstrat_infile' (character)}
+\item{keep_groups}{-> groups to retain, default NULL (character)}
 
 \item{sex}{-> sex of the individual, default = U (undefined) (character)}
 }

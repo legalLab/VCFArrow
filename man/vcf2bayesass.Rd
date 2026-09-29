@@ -4,18 +4,14 @@
 \alias{vcf2bayesass}
 \title{vcf2bayesass}
 \usage{
-vcf2bayesass(
-  vcf_arrow,
-  keep_groups = NULL,
-  out_file = "bayesass3_infile.immanc"
-)
+vcf2bayesass(vcf_arrow, out_file, keep_groups = NULL)
 }
 \arguments{
 \item{vcf_arrow}{-> VCFArrow object}
 
-\item{keep_groups}{-> groups to retain, default NULL (character)}
+\item{out_file}{-> name of file to output, no default (character)}
 
-\item{out_file}{-> name of file to output, default 'bayesass3_infile.immanc' (character)}
+\item{keep_groups}{-> groups to retain, default NULL (character)}
 }
 \value{
 Invisibly returns the input VCFArrow object; called for its side effect of writing \code{out_file}.

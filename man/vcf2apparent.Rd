@@ -4,21 +4,16 @@
 \alias{vcf2apparent}
 \title{vcf2apparent}
 \usage{
-vcf2apparent(
-  vcf_arrow,
-  keep_groups = NULL,
-  key = "All",
-  out_file = "apparent_infile.txt"
-)
+vcf2apparent(vcf_arrow, out_file, keep_groups = NULL, key = "All")
 }
 \arguments{
 \item{vcf_arrow}{-> VCFArrow object}
 
+\item{out_file}{-> name of file to output, no default (character)}
+
 \item{keep_groups}{-> groups to retain, default NULL (character)}
 
 \item{key}{-> relationship type (All, Pa, Mo, Fa, Off), default All (character)}
-
-\item{out_file}{-> name of file to output, default 'apparent_infile.txt' (character)}
 }
 \value{
 Invisibly returns the input VCFArrow object; called for its side effect of writing \code{out_file}.

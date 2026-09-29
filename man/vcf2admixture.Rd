@@ -6,8 +6,8 @@
 \usage{
 vcf2admixture(
   vcf_arrow,
+  out_file,
   keep_groups = NULL,
-  out_file = "admixture_in",
   sex = NULL,
   pheno = NULL,
   chrom_code = c("zero", "auto", "index", "keep"),
@@ -18,9 +18,9 @@ vcf2admixture(
 \arguments{
 \item{vcf_arrow}{-> VCFArrow object}
 
-\item{keep_groups}{-> groups to retain, default NULL (character)}
+\item{out_file}{-> output file prefix; extensions are added automatically, no default (character)}
 
-\item{out_file}{-> name of file to output, default 'plink_out' (character)}
+\item{keep_groups}{-> groups to retain, default NULL (character)}
 
 \item{sex}{-> vector of sexes of samples, default NULL (character)}
 

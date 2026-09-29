@@ -4,12 +4,12 @@
 \alias{write_vcf}
 \title{write_vcf}
 \usage{
-write_vcf(vcf_arrow, out_file = "output.vcf", gzip = FALSE)
+write_vcf(vcf_arrow, out_file, gzip = FALSE)
 }
 \arguments{
 \item{vcf_arrow}{-> VCFArrow object}
 
-\item{out_file}{-> name of the VCF file to be written to, default 'output.vcf' (character)}
+\item{out_file}{-> name of the VCF file to be written to, no default (character)}
 
 \item{gzip}{-> a flag to GZIP VCF when writing, default FALSE (Boolean)}
 }

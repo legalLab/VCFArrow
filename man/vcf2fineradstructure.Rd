@@ -4,18 +4,14 @@
 \alias{vcf2fineradstructure}
 \title{vcf2fineradstructure}
 \usage{
-vcf2fineradstructure(
-  vcf_arrow,
-  keep_groups = NULL,
-  out_file = "fineradstructure_infile.txt"
-)
+vcf2fineradstructure(vcf_arrow, out_file, keep_groups = NULL)
 }
 \arguments{
 \item{vcf_arrow}{-> VCFArrow object}
 
-\item{keep_groups}{-> groups to retain, default NULL (character)}
+\item{out_file}{-> name of file to output, no default (character)}
 
-\item{out_file}{-> name of file to output, default 'fineradstructure_infile.txt' (character)}
+\item{keep_groups}{-> groups to retain, default NULL (character)}
 }
 \value{
 Invisibly returns the input VCFArrow object; called for its side effect of writing \code{out_file}.

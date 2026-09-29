@@ -4,19 +4,14 @@
 \alias{vcf2structure}
 \title{vcf2structure}
 \usage{
-vcf2structure(
-  vcf_arrow,
-  keep_groups = NULL,
-  out_file = "structure.str",
-  method = "S"
-)
+vcf2structure(vcf_arrow, out_file, keep_groups = NULL, method = "S")
 }
 \arguments{
 \item{vcf_arrow}{-> VCFArrow object}
 
-\item{keep_groups}{-> groups to retain, default NULL (character)}
+\item{out_file}{-> name of file to output, no default (character)}
 
-\item{out_file}{-> name of file to output, default 'structure.str' (character)}
+\item{keep_groups}{-> groups to retain, default NULL (character)}
 
 \item{method}{-> flag for Structure/FastStructure formats, default 'S' (character)}
 }

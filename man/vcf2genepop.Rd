@@ -4,14 +4,14 @@
 \alias{vcf2genepop}
 \title{vcf2genepop}
 \usage{
-vcf2genepop(vcf_arrow, keep_groups = NULL, out_file = "genepop_infile.gen")
+vcf2genepop(vcf_arrow, out_file, keep_groups = NULL)
 }
 \arguments{
 \item{vcf_arrow}{-> VCFArrow object}
 
-\item{keep_groups}{-> groups to retain, default NULL (character)}
+\item{out_file}{-> name of file to output, no default (character)}
 
-\item{out_file}{-> name of file to output, default 'genepop_infile.gen' (character)}
+\item{keep_groups}{-> groups to retain, default NULL (character)}
 }
 \value{
 Invisibly returns the input VCFArrow object; called for its side effect of writing \code{out_file}.

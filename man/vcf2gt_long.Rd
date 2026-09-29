@@ -6,8 +6,8 @@
 \usage{
 vcf2gt_long(
   vcf_arrow,
+  out_file,
   keep_groups = NULL,
-  out_file = "gt_long",
   format = c("feather", "parquet", "csv"),
   col_select = NULL
 )
@@ -15,9 +15,9 @@ vcf2gt_long(
 \arguments{
 \item{vcf_arrow}{-> VCFArrow object}
 
-\item{keep_groups}{-> groups to retain, default NULL (character)}
+\item{out_file}{-> name of file to output, no default (character)}
 
-\item{out_file}{-> name of file to output, default 'gt_long' (character)}
+\item{keep_groups}{-> groups to retain, default NULL (character)}
 
 \item{format}{-> one of three output formats (arrow, parquet, CSV) (character)}
 

@@ -6,8 +6,8 @@
 \usage{
 vcf2migrate(
   vcf_arrow,
+  out_file,
   keep_groups = NULL,
-  out_file = "migrateN_infile.txt",
   block_size = 100L,
   method = "S"
 )
@@ -15,9 +15,9 @@ vcf2migrate(
 \arguments{
 \item{vcf_arrow}{-> VCFArrow object}
 
-\item{keep_groups}{-> groups to retain, default NULL (character)}
+\item{out_file}{-> name of file to output, no default (character)}
 
-\item{out_file}{-> name of file to output, default 'migrateN_infile.txt' (character)}
+\item{keep_groups}{-> groups to retain, default NULL (character)}
 
 \item{block_size}{-> number of SNPs (method S) or base pairs (method N) per
 linked block, default 100 (integer)}

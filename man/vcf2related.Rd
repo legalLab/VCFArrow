@@ -4,14 +4,14 @@
 \alias{vcf2related}
 \title{vcf2related}
 \usage{
-vcf2related(vcf_arrow, keep_groups = NULL, out_file = "related_infile.txt")
+vcf2related(vcf_arrow, out_file, keep_groups = NULL)
 }
 \arguments{
 \item{vcf_arrow}{-> VCFArrow object}
 
-\item{keep_groups}{-> groups to retain, default NULL (character)}
+\item{out_file}{-> name of file to output, no default (character)}
 
-\item{out_file}{-> name of file to output, default 'related_infile.txt' (character)}
+\item{keep_groups}{-> groups to retain, default NULL (character)}
 }
 \value{
 Invisibly returns the input VCFArrow object; called for its side effect of writing \code{out_file}.

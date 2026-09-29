@@ -6,8 +6,8 @@
 \usage{
 vcf2genlight(
   vcf_arrow,
+  out_file = NULL,
   keep_groups = NULL,
-  out_file = "genlight.rds",
   ploidy = 2L,
   save = FALSE
 )
@@ -15,9 +15,10 @@ vcf2genlight(
 \arguments{
 \item{vcf_arrow}{-> VCFArrow object}
 
-\item{keep_groups}{-> groups to retain, default NULL (character)}
+\item{out_file}{-> name of .rds file to write, required when save = TRUE,
+default NULL (character)}
 
-\item{out_file}{-> name of file to output, default 'genlight.rds' (character)}
+\item{keep_groups}{-> groups to retain, default NULL (character)}
 
 \item{ploidy}{-> ploidy level, default = 2 (integer)}
 
@@ -30,19 +31,21 @@ An adegenet \code{genlight} object.
 Converts a VCFArrow object to Genlight format infile
 }
 \details{
-This function converts a VCFArrow object to an external Genlight formatted file.
-Writing occurs in chunks whose size is determined by the read_vcf() function.
-Larger chunks result in faster writing speeds.
+This function converts a VCFArrow object to an adegenet Genlight object.
+Genotypes are read in chunks whose size is determined by the read_vcf() function.
 If no groups are defined, the default behavior is to use all groups.
 Genlight objects can encode polyploid genomes, by default diploid genomes are assumed.
-Genlight objects are in memory S4 objects, thus are returned as such, but
-but optionally may be saved as R data objects.
+Genlight objects are in-memory S4 objects and are always returned; if
+save = TRUE, the object is also written to out_file with saveRDS().
+Unlike the other exporters, out_file is optional because nothing is written
+unless save = TRUE.
 }
 \examples{
 f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
 vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 gl <- vcf2genlight(vcf)
 gl
+gl <- vcf2genlight(vcf, out_file = tempfile(fileext = ".rds"), save = TRUE)
 
 }
 \author{
