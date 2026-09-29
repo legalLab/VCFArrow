@@ -27,14 +27,22 @@ vcf_memory_estimate(
 variants); otherwise integer matrices.}
 }
 \value{
-Invisibly, a list with elements \code{n_var}, \code{n_samples}, \code{n_pops},
-\code{chunk_arrow_bytes}, \code{matrix_bytes} and \code{peak_bytes}.
+Invisibly, a list with elements:
+\itemize{
+\item \code{n_var}: number of variants
+\item \code{n_samples}: number of samples retained
+\item \code{n_pops}: number of populations
+\item \code{chunk_arrow_bytes}: Arrow memory per chunk read
+\item \code{matrix_bytes}: size of the accumulation matrices
+\item \code{peak_bytes}: estimated peak memory
+}
 }
 \description{
 Estimate RAM required for a VCFArrow export operation
 }
 \examples{
-f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
+                 package = "VCFArrow")
 vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf_memory_estimate(vcf, format = "individual")
 

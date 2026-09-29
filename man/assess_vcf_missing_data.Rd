@@ -22,17 +22,19 @@ dataframe and plot of missing data for each sample in VCF
 }
 \description{
 Quantifying missing data of all samples in VCF
-Inspired by https://grunwaldlab.github.io/Population_Genetics_in_R/qc.html
+Inspired by \url{https://grunwaldlab.github.io/Population_Genetics_in_R/qc.html}
 }
 \details{
 This function generates a dataframe of absolute and relative missing data
 per sample, and a plot of relative missing data \% per sample.
 }
 \examples{
-f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
+                 package = "VCFArrow")
 vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 assess_vcf_missing_data(vcf, res_path = tempdir(),
-                        species = "Phyllomedusa vaillantii", project = "vaillantii")
+                        species = "Phyllomedusa vaillantii",
+                        project = "vaillantii")
 
 }
 \author{

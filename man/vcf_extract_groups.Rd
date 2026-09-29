@@ -39,7 +39,8 @@ By default will report removed samples, final \% missing data, and number of
 retained samples after sample filtering.
 }
 \examples{
-f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
+                 package = "VCFArrow")
 vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf_extract_groups(vcf, groups = c("GS", "BS"))
 vcf_extract_groups(vcf, groups = "OG", keep = FALSE)

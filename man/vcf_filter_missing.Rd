@@ -30,9 +30,12 @@ By default will report removed samples, final \% missing data, and number of
 retained samples after sample filtering.
 }
 \examples{
-f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
+                 package = "VCFArrow")
 vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
-vcf |> vcf_filter_missingness(threshold = 0.2) |> vcf_filter_missing(threshold = 0.3)
+vcf |>
+  vcf_filter_missingness(threshold = 0.2) |>
+  vcf_filter_missing(threshold = 0.3)
 
 }
 \author{

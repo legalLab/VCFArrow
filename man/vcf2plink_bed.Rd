@@ -42,7 +42,8 @@ If no groups are defined, the default behavior is to use all groups.
 Sex and phenotype vectors are optional. If not defined sex = 0, pheno = -9.
 }
 \examples{
-f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
+                 package = "VCFArrow")
 vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf2plink_bed(vcf, out_file = file.path(tempdir(), "plink_out"))
 

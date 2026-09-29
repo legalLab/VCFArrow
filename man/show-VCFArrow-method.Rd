@@ -21,7 +21,8 @@ This function is a method of the VCFArrow S4 class
 Method to show object content summary
 }
 \examples{
-f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
+                 package = "VCFArrow")
 vcf <- read_vcf(f)
 show(vcf)
 

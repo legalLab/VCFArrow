@@ -52,11 +52,13 @@ The reference_groups vector specifies ancestral information of individuals.
 When NULL, or for any missing individual, ancestry is inferred.
 }
 \examples{
-f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
+                 package = "VCFArrow")
 vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf2admixture(vcf, out_file = file.path(tempdir(), "admixture_in"))
 vcf2admixture(vcf, out_file = file.path(tempdir(), "admixture_sup"),
-              supervised = TRUE, reference_groups = c("GS", "BS", "WA"))
+              supervised = TRUE,
+              reference_groups = c("GS", "BS", "WA"))
 
 }
 \author{

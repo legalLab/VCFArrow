@@ -29,12 +29,13 @@ whose reference count has already reached zero.
 \preformatted{
   rm(vcf1, vcf2, vcf3)
   vcf_gc()              # usually sufficient
-  vcf_gc(force = TRUE)  # if directories are still present after rm()
+  vcf_gc(force = TRUE)  # if directories remain after rm()
 }
 }
 
 \examples{
-f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
+                 package = "VCFArrow")
 vcf <- read_vcf(f)
 rm(vcf)
 vcf_gc()

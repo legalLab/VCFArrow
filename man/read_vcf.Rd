@@ -26,7 +26,8 @@ Various metrics are precalculated for fast and easy filtering.
 GT slot content stored in a TEMP directory for lazy loading.
 }
 \examples{
-f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
+                 package = "VCFArrow")
 vcf <- read_vcf(f)
 vcf
 

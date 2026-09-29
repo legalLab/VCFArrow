@@ -30,12 +30,14 @@ This function binds two or more VCFArrow objects, returning new VCFArrow object.
 The VCFArrow objects need not have the same SNPs, and must have unique individuals.
 }
 \examples{
-f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
+                 package = "VCFArrow")
 vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 ingroup <- vcf_extract_groups(vcf, c("GS", "BS", "WA"))
 outgroup <- vcf_extract_groups(vcf, "OG")
 vcf_bind_sparse(ingroup, outgroup, mode = "intersect")
-vcf_bind_sparse(ingroup, outgroup, mode = "union", absent_as = "missing")
+vcf_bind_sparse(ingroup, outgroup, mode = "union",
+                absent_as = "missing")
 
 }
 \author{

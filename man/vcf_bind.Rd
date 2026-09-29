@@ -26,9 +26,11 @@ If VCFArrow objects are not compatible but need to be merged,
 use vcf_bind_sparse().
 }
 \examples{
-f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
+                 package = "VCFArrow")
 vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
-ingroup <- vcf_extract_groups(vcf, c("GS", "BS", "WA"), f_invar = FALSE)
+ingroup <- vcf_extract_groups(vcf, c("GS", "BS", "WA"),
+                              f_invar = FALSE)
 outgroup <- vcf_extract_groups(vcf, "OG", f_invar = FALSE)
 vcf_bind(ingroup, outgroup)
 

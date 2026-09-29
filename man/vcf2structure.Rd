@@ -31,10 +31,12 @@ The flag parameter controls whether Structure (flag = 'S') or
 FastStructure (flag = 'F') formatted output is written out.
 }
 \examples{
-f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
+                 package = "VCFArrow")
 vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf2structure(vcf, out_file = tempfile(fileext = ".str"))
-vcf2structure(vcf, out_file = tempfile(fileext = ".fstr"), method = "F")
+vcf2structure(vcf, out_file = tempfile(fileext = ".fstr"),
+              method = "F")
 
 }
 \author{

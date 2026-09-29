@@ -39,10 +39,12 @@ By default will report removed samples, final \% missing data, and number of
 retained samples after sample filtering.
 }
 \examples{
-f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
+                 package = "VCFArrow")
 vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf_extract_samples(vcf, samples = c("Pv14", "Pv27", "Pv28"))
-vcf_extract_samples(vcf, samples = c("Pb2Jp", "Pb2Scx", "Pb1Rd"), keep = FALSE)
+vcf_extract_samples(vcf, samples = c("Pb2Jp", "Pb2Scx", "Pb1Rd"),
+                    keep = FALSE)
 
 }
 \author{

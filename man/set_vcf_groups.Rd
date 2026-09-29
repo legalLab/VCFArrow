@@ -27,8 +27,10 @@ By default strt is named 'strata' and found in the datapath where the
 VCF file is found.
 }
 \examples{
-f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
-vcf <- set_vcf_groups(read_vcf(f), data_path = dirname(f), strt = "strata")
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
+                 package = "VCFArrow")
+vcf <- set_vcf_groups(read_vcf(f), data_path = dirname(f),
+                      strt = "strata")
 table(vcf@groups)
 
 }

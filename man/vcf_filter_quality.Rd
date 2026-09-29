@@ -27,7 +27,8 @@ genotype call of a specific sample.
 When QUAL not reported '.' (Dot), QUAL is assumed to be above threshold.
 }
 \examples{
-f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
+                 package = "VCFArrow")
 vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf_filter_quality(vcf, threshold = 30)
 

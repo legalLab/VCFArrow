@@ -40,7 +40,8 @@ Optionally, specific columns can be saved, by default all columns are saved.
 The gt long slot contains pre-calculated metrics in addition to just genotypes.
 }
 \examples{
-f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
+                 package = "VCFArrow")
 vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf2gt_long(vcf, out_file = tempfile(), format = "csv")
 

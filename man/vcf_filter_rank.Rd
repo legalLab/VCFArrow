@@ -29,7 +29,8 @@ used for paralog detection -> very low rank values (<0.4) are
 indicative of paralogs.
 }
 \examples{
-f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz", package = "VCFArrow")
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
+                 package = "VCFArrow")
 vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf_filter_rank(vcf, threshold = 0.5)
 
