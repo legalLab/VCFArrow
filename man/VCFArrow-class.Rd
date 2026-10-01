@@ -31,6 +31,11 @@ per-variant metrics (data.frame).}
 
 \item{\code{finalizer_env}}{Environment used to clean up \code{path} on garbage collection.}
 
+\item{\code{loci}}{CHROM, POS, REF and ALT of every variant of the source VCF, row
+i describing .row_id i; never filtered, so variants can be identified
+(e.g. by vcf_bind()) even after they were removed from \code{variants}
+(data.frame).}
+
 \item{\code{invariant_removed}}{Variants removed as invariant, with their metadata
 (data.frame).}
 }}
