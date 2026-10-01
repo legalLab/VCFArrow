@@ -1,8 +1,8 @@
 # Garbage-collect VCFArrow temp directories
 
 Triggers R's garbage collector (three full passes to handle the
-finalizer → pending-queue → unlink chain), then flushes any directories
-whose reference count has already reached zero.
+finalizer -\> pending-queue -\> unlink chain), then flushes any
+directories whose reference count has already reached zero.
 
 ## Usage
 
@@ -24,9 +24,27 @@ vcf_gc(force = FALSE, verbose = TRUE)
 
   Logical. Print a status message.
 
+## Value
+
+Invisibly returns `NULL`; called for its side effect of deleting
+temporary directories.
+
 ## Typical workflow
 
 
       rm(vcf1, vcf2, vcf3)
       vcf_gc()              # usually sufficient
-      vcf_gc(force = TRUE)  # if directories are still present after rm()
+      vcf_gc(force = TRUE)  # if directories remain after rm()
+
+## Examples
+
+``` r
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
+                 package = "VCFArrow")
+vcf <- read_vcf(f)
+#> ℹ VCF is being read in chunks of 50000 variants
+#> ✔ VCF successfully read into a VCFArrow object
+rm(vcf)
+vcf_gc()
+#> Error in vcf_gc(): could not find function "vcf_gc"
+```

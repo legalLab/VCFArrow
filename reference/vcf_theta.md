@@ -11,17 +11,13 @@ vcf_theta(vcf_arrow, keep_groups = NULL)
 
 ## Arguments
 
-- gt:
+- vcf_arrow:
 
-  -\> VCFArrow gt in long format
+  -\> VCFArrow object
 
-- sample:
+- keep_groups:
 
-  -\> samples to be included in analysis
-
-- grps:
-
-  -\> assignment of individuals to groups
+  -\> groups to retain, default NULL (character)
 
 ## Value
 
@@ -40,8 +36,38 @@ Tomas Hrbek April 2026
 ## Examples
 
 ``` r
-vcf_theta(gt_matrix = my_gt_matrix, samples = vcf_arrow@samples, grps = vcf_arrow@groups)
-#> Error in vcf_theta(gt_matrix = my_gt_matrix, samples = vcf_arrow@samples,     grps = vcf_arrow@groups): unused arguments (gt_matrix = my_gt_matrix, samples = vcf_arrow@samples, grps = vcf_arrow@groups)
-vcf_theta(my_gt_matrix, vcf_arrow@samples, vcf_arrow@groups)
-#> Error in vcf_theta(my_gt_matrix, vcf_arrow@samples, vcf_arrow@groups): unused argument (vcf_arrow@groups)
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
+                 package = "VCFArrow")
+vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+#> ℹ VCF is being read in chunks of 50000 variants
+#> ✔ VCF successfully read into a VCFArrow object
+vcf_theta(vcf)
+#> ℹ Accumulating theta/pi: 9313 variants x 4 pops (0 MiB raw storage, vs 0 MiB with integer matrices)
+#> $pi
+#> [1] 0.3065724
+#> 
+#> $theta_w
+#> [1] 0.3225428
+#> 
+#> $theta_g
+#>    sample group n_ind   theta_w        pi
+#> 1   Pv120    WA     5 0.2113146 0.1897392
+#> 2   Pv126    GS     5 0.1916500 0.1751468
+#> 3    Pv13    BS     5 0.1842761 0.1692308
+#> 4    Pv14    GS     5 0.1916500 0.1751468
+#> 5    Pv27    GS     5 0.1916500 0.1751468
+#> 6    Pv28    GS     5 0.1916500 0.1751468
+#> 7     Pv2    WA     5 0.2113146 0.1897392
+#> 8    Pv31    WA     5 0.2113146 0.1897392
+#> 9    Pv56    WA     5 0.2113146 0.1897392
+#> 10   Pv62    BS     5 0.1842761 0.1692308
+#> 11   Pv68    BS     5 0.1842761 0.1692308
+#> 12   Pv73    BS     5 0.1842761 0.1692308
+#> 13   Pv78    GS     5 0.1916500 0.1751468
+#> 14   Pv79    BS     5 0.1842761 0.1692308
+#> 15   Pv93    WA     5 0.2113146 0.1897392
+#> 16  Pb2Jp    OG     3 0.1712101 0.1498553
+#> 17 Pb2Scx    OG     3 0.1712101 0.1498553
+#> 18  Pb1Rd    OG     3 0.1712101 0.1498553
+#> 
 ```

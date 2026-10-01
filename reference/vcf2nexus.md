@@ -5,7 +5,7 @@ Converts a VCFArrow object to a NEXUS format infile
 ## Usage
 
 ``` r
-vcf2nexus(vcf_arrow, keep_groups = NULL, out_file = "nexus_infile.nex")
+vcf2nexus(vcf_arrow, out_file, keep_groups = NULL)
 ```
 
 ## Arguments
@@ -14,13 +14,18 @@ vcf2nexus(vcf_arrow, keep_groups = NULL, out_file = "nexus_infile.nex")
 
   -\> VCFArrow object
 
+- out_file:
+
+  -\> name of file to output, no default (character)
+
 - keep_groups:
 
   -\> groups to retain, default NULL (character)
 
-- out_file:
+## Value
 
-  -\> name of file to output, default 'nexus_infile.nex' (character)
+Invisibly returns the input VCFArrow object; called for its side effect
+of writing `out_file`.
 
 ## Details
 
@@ -36,10 +41,13 @@ Tomas Hrbek May 2026
 ## Examples
 
 ``` r
-vcf2nexus(vcf_arrow = my_vcf, keep_groups = my_groups, out_file = "nexus_infile.nex")
-#> Error: object 'my_vcf' not found
-vcf2nexus(vcf_arrow, my_groups, out_file = "nexus_infile.nex")
-#> Error: object 'vcf_arrow' not found
-vcf2nexus(vcf_arrow)
-#> Error: object 'vcf_arrow' not found
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
+                 package = "VCFArrow")
+vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+#> ℹ VCF is being read in chunks of 50000 variants
+#> ✔ VCF successfully read into a VCFArrow object
+vcf2nexus(vcf, out_file = tempfile(fileext = ".nex"))
+#> ℹ Accumulating Nexus: 9313 variants x 18 samples (0 MiB raw storage)
+#> ℹ Writing Nexus file...
+#> ✔ Nexus file written to /tmp/RtmpodaNXU/file1ffe47e5c99c.nex
 ```

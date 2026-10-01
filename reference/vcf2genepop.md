@@ -5,7 +5,7 @@ Converts a VCFArrow object to a Genepop format infile
 ## Usage
 
 ``` r
-vcf2genepop(vcf_arrow, keep_groups = NULL, out_file = "genepop_infile.gen")
+vcf2genepop(vcf_arrow, out_file, keep_groups = NULL)
 ```
 
 ## Arguments
@@ -14,13 +14,18 @@ vcf2genepop(vcf_arrow, keep_groups = NULL, out_file = "genepop_infile.gen")
 
   -\> VCFArrow object
 
+- out_file:
+
+  -\> name of file to output, no default (character)
+
 - keep_groups:
 
   -\> groups to retain, default NULL (character)
 
-- out_file:
+## Value
 
-  -\> name of file to output, default 'genepop_infile.gen' (character)
+Invisibly returns the input VCFArrow object; called for its side effect
+of writing `out_file`.
 
 ## Details
 
@@ -36,10 +41,13 @@ Tomas Hrbek May 2026
 ## Examples
 
 ``` r
-vcf2genepop(vcf_arrow = my_vcf, keep_groups = my_groups, out_file = "genepop_infile.gen")
-#> Error: object 'my_vcf' not found
-vcf2genepop(vcf_arrow, my_groups, out_file = "genepop_infile.gen")
-#> Error: object 'vcf_arrow' not found
-vcf2genepop(vcf_arrow)
-#> Error: object 'vcf_arrow' not found
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
+                 package = "VCFArrow")
+vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+#> ℹ VCF is being read in chunks of 50000 variants
+#> ✔ VCF successfully read into a VCFArrow object
+vcf2genepop(vcf, out_file = tempfile(fileext = ".gen"))
+#> ℹ Accumulating Genepop: 9313 variants x 18 samples (0 MiB raw storage)
+#> ℹ Writing Genepop file...
+#> ✔ Genepop file written to /tmp/RtmpodaNXU/file1ffef6cd84e.gen
 ```

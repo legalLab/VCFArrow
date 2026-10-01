@@ -50,12 +50,12 @@
 <dd><p>-&gt; VCFArrow object</p></dd>
 
 
+<dt id="arg-n-snvs">n_SNVs<a class="anchor" aria-label="anchor" href="#arg-n-snvs"></a></dt>
+<dd><p>-&gt; number of SNVs to subset, default 1000 (integer)</p></dd>
+
+
 <dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
-<dd><p>-&gt; random number generator seed, default NULL (Boolean)</p></dd>
-
-
-<dt id="arg-n-loci">n_loci<a class="anchor" aria-label="anchor" href="#arg-n-loci"></a></dt>
-<dd><p>-&gt; number of SNVs to subset, default 10000 (integer)</p></dd>
+<dd><p>-&gt; random number generator seed, default NULL (integer)</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -77,12 +77,47 @@ specified.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">vcf_sub_SNVs_stratified</span><span class="op">(</span>vcf_arrow <span class="op">=</span> <span class="va">my_vcf</span>, n_SNVs <span class="op">=</span> <span class="va">n_SNVs</span>, seed <span class="op">=</span> <span class="va">my_seed</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'my_vcf' not found</span>
-<span class="r-in"><span><span class="fu">vcf_sub_SNVs_stratified</span><span class="op">(</span><span class="va">my_vcf</span>, <span class="va">n_SNVs</span>, <span class="fl">42</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'my_vcf' not found</span>
-<span class="r-in"><span><span class="fu">vcf_sub_SNVs_stratified</span><span class="op">(</span><span class="va">my_vcf</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'my_vcf' not found</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"vaillantii_discosnp_sub.vcf.gz"</span>,</span></span>
+<span class="r-in"><span>                 package <span class="op">=</span> <span class="st">"VCFArrow"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">vcf</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_vcf.html">read_vcf</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="set_vcf_groups.html">set_vcf_groups</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">dirname</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> VCF is being read in chunks of 50000 variants</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> VCF successfully read into a VCFArrow object</span>
+<span class="r-in"><span><span class="fu">vcf_sub_SNVs_stratified</span><span class="op">(</span><span class="va">vcf</span>, n_SNVs <span class="op">=</span> <span class="fl">1000</span>, seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> An object of class "VCFArrow"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Dimensions:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Variants: 0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Samples:  18 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Quick stats:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Non-missing variants: 0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Phased genotypes: FALSE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Storage:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Path: /tmp/RtmpodaNXU/arrow_vcf_1ffe55cd2091 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Genotype storage (Arrow):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> FileSystemDataset with 1 Feather file</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9 columns</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> .row_id: int32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sample: string</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> a1: int32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> a2: int32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> phased: bool</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fmt: string</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> DP: double</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> GQ: double</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ADR: double</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> See $metadata for additional Schema metadata</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Variants: &lt;empty&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Samples (first 5):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Pv120" "Pv126" "Pv13"  "Pv14"  "Pv27" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ... 13 more</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

@@ -7,10 +7,11 @@ Converts a VCFArrow object to a PLINK .bed format infile
 ``` r
 vcf2plink_bed(
   vcf_arrow,
+  out_file,
   keep_groups = NULL,
-  out_file = "plink_out",
   sex = NULL,
-  pheno = NULL
+  pheno = NULL,
+  chrom_code = c("auto", "index", "zero", "keep")
 )
 ```
 
@@ -20,13 +21,14 @@ vcf2plink_bed(
 
   -\> VCFArrow object
 
+- out_file:
+
+  -\> output file prefix; extensions are added automatically, no default
+  (character)
+
 - keep_groups:
 
   -\> groups to retain, default NULL (character)
-
-- out_file:
-
-  -\> name of file to output, default 'plink_out' (character)
 
 - sex:
 
@@ -35,6 +37,17 @@ vcf2plink_bed(
 - pheno:
 
   -\> vector of phenotypes of samples, default NULL (character)
+
+- chrom_code:
+
+  -\> how CHROM is written: "auto" (keep numeric CHROM, otherwise 0),
+  "index" (1..n by first appearance), "zero" (all 0) or "keep"
+  (verbatim), default "auto" (character)
+
+## Value
+
+Invisibly returns the input VCFArrow object; called for its side effect
+of writing `out_file`.
 
 ## Details
 
@@ -51,10 +64,14 @@ Tomas Hrbek May 2026
 ## Examples
 
 ``` r
-vcf2plink_bed(vcf_arrow = my_vcf, keep_groups = my_groups, out_file = "plink_out", sex = sex, pheno = pheno)
-#> Error: object 'my_vcf' not found
-vcf2plink_bed(vcf_arrow, my_groups, out_file = "plink_out")
-#> Error: object 'vcf_arrow' not found
-vcf2plink_bed(vcf_arrow)
-#> Error: object 'vcf_arrow' not found
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
+                 package = "VCFArrow")
+vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+#> ℹ VCF is being read in chunks of 50000 variants
+#> ✔ VCF successfully read into a VCFArrow object
+vcf2plink_bed(vcf, out_file = file.path(tempdir(), "plink_out"))
+#> ℹ Building PLINK: 9313 variants x 18 samples (0 MiB raw storage)
+#> ℹ Writing PLINK files...
+#> ℹ Chromosome names were recoded as integers for PLINK compatibility; mapping written to /tmp/RtmpodaNXU/plink_out.chrommap
+#> ✔ PLINK binary fileset written to /tmp/RtmpodaNXU/plink_out.bed, /tmp/RtmpodaNXU/plink_out.bim, /tmp/RtmpodaNXU/plink_out.fam
 ```

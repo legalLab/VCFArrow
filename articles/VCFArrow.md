@@ -106,7 +106,7 @@ vcf
 #> Phased genotypes: FALSE 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpF6KrD4/arrow_vcf_230479d24792 
+#>   Path: /tmp/RtmpjinOnt/arrow_vcf_23ca73ced443 
 #> 
 #> Genotype storage (Arrow):
 #> FileSystemDataset with 1 Feather file
@@ -124,12 +124,12 @@ vcf
 #> See $metadata for additional Schema metadata
 #> 
 #> Variants (first 5 rows):
-#>                     CHROM POS        ID REF ALT QUAL FILTER Rk n_alt
-#> 1 SNP_higher_path_9994239  41 9994239_1   C   G    .      .  1     1
-#> 2 SNP_higher_path_9984432 105   9984432   C   T    .      .  1     1
-#> 3 SNP_higher_path_9967574  50   9967574   A   C    .      .  1     1
-#> 4  SNP_higher_path_993510  88  993510_4   A   G    .      .  1     1
-#> 5 SNP_higher_path_9803974  33   9803974   A   G    .      .  1     1
+#>                     CHROM POS        ID REF ALT QUAL FILTER Rk RPT n_alt
+#> 1 SNP_higher_path_9994239  41 9994239_1   C   G    .      .  1  NA     1
+#> 2 SNP_higher_path_9984432 105   9984432   C   T    .      .  1  NA     1
+#> 3 SNP_higher_path_9967574  50   9967574   A   C    .      .  1  NA     1
+#> 4  SNP_higher_path_993510  88  993510_4   A   G    .      .  1  NA     1
+#> 5 SNP_higher_path_9803974  33   9803974   A   G    .      .  1  NA     1
 #>   is_biallelic is_indel .row_id
 #> 1         TRUE    FALSE       1
 #> 2         TRUE    FALSE       2
@@ -336,7 +336,7 @@ vcf_oneSNP <- vcf_extract_samples(vcf, indivs) |>
   vcf_filter_oneSNV()
 #> ℹ No samples to keep or remove - keeping all samples
 #> ℹ Applying indel filter
-#> ℹ Retained 10000 / 10000 variants (non-Indels)
+#> ℹ Retained 9313 / 10000 variants (non-Indels)
 #> ℹ Applying biallelic filter
 #> ℹ Retained 9313 / 9313 variants (biallelic SNVs)
 #> ℹ Applying MAF filter
@@ -365,7 +365,7 @@ vcf_multiSNP <- vcf_extract_samples(vcf, indivs) |>
   vcf_filter_multiSNV()
 #> ℹ No samples to keep or remove - keeping all samples
 #> ℹ Applying indel filter
-#> ℹ Retained 10000 / 10000 variants (non-Indels)
+#> ℹ Retained 9313 / 10000 variants (non-Indels)
 #> ℹ Applying biallelic filter
 #> ℹ Retained 9313 / 9313 variants (biallelic SNVs)
 #> ℹ Applying MAF filter
@@ -377,7 +377,7 @@ vcf_multiSNP <- vcf_extract_samples(vcf, indivs) |>
 #> ℹ Applying sample missingness filter
 #> ℹ Variants retained: 1734 | Samples retained: 18
 #> ℹ Applying linked SNV filter
-#> ℹ Retained 0 / 1734 variants (unlinked SNVs)
+#> ℹ Retained 0 / 1734 variants (linked SNVs)
 
 # see how many variants remained
 nrow(vcf_multiSNP@variants)
@@ -421,6 +421,7 @@ vcf_ingrp <- vcf_extract_groups(vcf, groups1, f_invar = FALSE)
 
 # bind vcf_outgrp and vcf_ingrp (objects must share all variants)
 vcf1 <- vcf_bind(vcf_ingrp, vcf_outgrp)
+#> ℹ Binding 2 VCFArrow objects (intersect): 10000 variants, 18 total samples.
 
 # extract groups of individuals from VCFArrow object (remove invariant loci)
 groups1 <- c("GS", "BS", "WA")
@@ -439,11 +440,15 @@ vcf_ingrp <- vcf_extract_groups(vcf, groups1)
 
 # bind vcf_outgrp and vcf_ingrp (intersection - variable SNVs in all objects)
 vcf1 <- vcf_bind_sparse(vcf_ingrp, vcf_outgrp, mode = "intersect")
+#> Warning: `vcf_bind_sparse()` is deprecated; use `vcf_bind()` instead.
+#> ℹ `vcf_bind()` takes the same `mode` and `absent_as` arguments.
+#> This warning is displayed once every 8 hours.
+#> Warning: `recover_loci` is only used with `mode = "union"`.
 #> ℹ Binding 2 VCFArrow objects (intersect): 421 variants, 18 total samples.
 
 # bind vcf_outgrp and vcf_ingrp (intersection - variable SNVs in all objects)
 vcf1 <- vcf_bind_sparse(vcf_ingrp, vcf_outgrp, mode = "union", absent_as = "missing")
-#> ℹ Binding 2 VCFArrow objects (union): 8970 variants, 18 total samples.
+#> ℹ Binding 2 VCFArrow objects (union): 10000 variants, 18 total samples.
 #> ℹ Absent genotypes will be filled as: missing
 ```
 
@@ -490,7 +495,7 @@ vcf1 <- vcf_extract_groups(vcf, groups1, keep = FALSE) |>
 #> ℹ Removed samples: Pb2Jp, Pb2Scx, and Pb1Rd
 #> ℹ Variants retained: 8295 | Samples retained: 15
 #> ℹ Applying indel filter
-#> ℹ Retained 8295 / 8295 variants (non-Indels)
+#> ℹ Retained 7706 / 8295 variants (non-Indels)
 #> ℹ Applying biallelic filter
 #> ℹ Retained 7706 / 7706 variants (biallelic SNVs)
 #> ℹ Applying read coverage filter
@@ -501,12 +506,12 @@ vcf1 <- vcf_extract_groups(vcf, groups1, keep = FALSE) |>
 #> ℹ Variants retained: 2409 | Samples retained: 15
 #> ℹ Applying unlinked SNV filter
 #> ℹ Retained 2409 / 2409 variants (unlinked SNVs)
-#> ℹ Binding 2 VCFArrow objects (union): 3304 variants, 18 total samples.
+#> ℹ Binding 2 VCFArrow objects (union): 10000 variants, 18 total samples.
 #> ℹ Absent genotypes will be filled as: missing
 
 # see how many variants remained
 nrow(vcf1@variants)
-#> [1] 3304
+#> [1] 10000
 
 # apply the same filter to the full dataset (ingroup + outgroup)
 vcf1 <- vcf |>
@@ -517,7 +522,7 @@ vcf1 <- vcf |>
   vcf_filter_missing(.3) |>
   vcf_filter_oneSNV()
 #> ℹ Applying indel filter
-#> ℹ Retained 10000 / 10000 variants (non-Indels)
+#> ℹ Retained 9313 / 10000 variants (non-Indels)
 #> ℹ Applying biallelic filter
 #> ℹ Retained 9313 / 9313 variants (biallelic SNVs)
 #> ℹ Applying read coverage filter
@@ -672,8 +677,7 @@ vcf2related(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '
 #> ✔ Related file written to /home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub.related
 # long tidy dataframe of genotypes
 vcf2gt_long(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.csv')), format = 'csv')
-#> ℹ Building gt_long: 1734 variants x 18 samples (0 MiB raw storage)
-#> ℹ Combining and writing GT long table...
+#> ℹ Writing gt_long: 1734 variants x 18 samples
 #> ✔ gt_long table written to /home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub.csv
 # snapp https://www.beast2.org/snapp/
 vcf2snapp(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_snapp.nex')))

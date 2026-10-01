@@ -5,12 +5,7 @@ Converts a VCFArrow object to an Apparent format infile
 ## Usage
 
 ``` r
-vcf2apparent(
-  vcf_arrow,
-  keep_groups = NULL,
-  key = "All",
-  out_file = "apparent_infile.txt"
-)
+vcf2apparent(vcf_arrow, out_file, keep_groups = NULL, key = "All")
 ```
 
 ## Arguments
@@ -18,6 +13,10 @@ vcf2apparent(
 - vcf_arrow:
 
   -\> VCFArrow object
+
+- out_file:
+
+  -\> name of file to output, no default (character)
 
 - keep_groups:
 
@@ -27,9 +26,10 @@ vcf2apparent(
 
   -\> relationship type (All, Pa, Mo, Fa, Off), default All (character)
 
-- out_file:
+## Value
 
-  -\> name of file to output, default 'apparent_infile.txt' (character)
+Invisibly returns the input VCFArrow object; called for its side effect
+of writing `out_file`.
 
 ## Details
 
@@ -47,10 +47,13 @@ Tomas Hrbek May 2026
 ## Examples
 
 ``` r
-vcf2apparent(vcf_arrow = my_vcf, keep_groups = my_groups, key = my_key, out_file = "apparent_infile.txt")
-#> Error: object 'my_vcf' not found
-vcf2apparent(vcf_arrow, my_groups, my_key, out_file = "apparent_infile.txt")
-#> Error: object 'vcf_arrow' not found
-vcf2apparent(vcf_arrow)
-#> Error: object 'vcf_arrow' not found
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
+                 package = "VCFArrow")
+vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+#> ℹ VCF is being read in chunks of 50000 variants
+#> ✔ VCF successfully read into a VCFArrow object
+vcf2apparent(vcf, out_file = tempfile(fileext = ".txt"))
+#> ℹ Accumulating Apparent: 9313 variants x 18 samples (0 MiB raw storage)
+#> ℹ Writing Apparent file...
+#> ✔ Apparent file written to /tmp/RtmpodaNXU/file1ffe5c0df87c.txt
 ```

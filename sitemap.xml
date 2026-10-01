@@ -6,6 +6,8 @@
 <url><loc>https://legallab.github.io/VCFArrow/articles/index.html</loc></url>
 <url><loc>https://legallab.github.io/VCFArrow/authors.html</loc></url>
 <url><loc>https://legallab.github.io/VCFArrow/index.html</loc></url>
+<url><loc>https://legallab.github.io/VCFArrow/reference/VCFArrow-class.html</loc></url>
+<url><loc>https://legallab.github.io/VCFArrow/reference/VCFArrow-package.html</loc></url>
 <url><loc>https://legallab.github.io/VCFArrow/reference/assess_vcf_coverage.html</loc></url>
 <url><loc>https://legallab.github.io/VCFArrow/reference/assess_vcf_missing_data.html</loc></url>
 <url><loc>https://legallab.github.io/VCFArrow/reference/dot-vcf_filter_columns.html</loc></url>
@@ -52,11 +54,14 @@
 <url><loc>https://legallab.github.io/VCFArrow/reference/vcf_filter_missingness.html</loc></url>
 <url><loc>https://legallab.github.io/VCFArrow/reference/vcf_filter_multiSNV.html</loc></url>
 <url><loc>https://legallab.github.io/VCFArrow/reference/vcf_filter_oneSNV.html</loc></url>
+<url><loc>https://legallab.github.io/VCFArrow/reference/vcf_filter_paralogs.html</loc></url>
 <url><loc>https://legallab.github.io/VCFArrow/reference/vcf_filter_pass.html</loc></url>
 <url><loc>https://legallab.github.io/VCFArrow/reference/vcf_filter_quality.html</loc></url>
 <url><loc>https://legallab.github.io/VCFArrow/reference/vcf_filter_rank.html</loc></url>
+<url><loc>https://legallab.github.io/VCFArrow/reference/vcf_filter_rpt.html</loc></url>
 <url><loc>https://legallab.github.io/VCFArrow/reference/vcf_gc.html</loc></url>
 <url><loc>https://legallab.github.io/VCFArrow/reference/vcf_memory_estimate.html</loc></url>
+<url><loc>https://legallab.github.io/VCFArrow/reference/vcf_set_workers.html</loc></url>
 <url><loc>https://legallab.github.io/VCFArrow/reference/vcf_stats.html</loc></url>
 <url><loc>https://legallab.github.io/VCFArrow/reference/vcf_sub_SNVs.html</loc></url>
 <url><loc>https://legallab.github.io/VCFArrow/reference/vcf_sub_SNVs_stratified.html</loc></url>

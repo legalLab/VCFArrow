@@ -41,10 +41,14 @@ Tomas Hrbek April 2026
 ## Examples
 
 ``` r
-get_vcf_group_info(vcf = my_vcf, data_path = my_data_path, strt = "strata")
-#> Error in get_vcf_group_info(vcf = my_vcf, data_path = my_data_path, strt = "strata"): could not find function "get_vcf_group_info"
-get_vcf_group_info(my_vcf, my_data_path, "strata")
-#> Error in get_vcf_group_info(my_vcf, my_data_path, "strata"): could not find function "get_vcf_group_info"
-get_vcf_group_info(my_vcf, my_data_path)
-#> Error in get_vcf_group_info(my_vcf, my_data_path): could not find function "get_vcf_group_info"
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
+                 package = "VCFArrow")
+vcf <- set_vcf_groups(read_vcf(f), data_path = dirname(f),
+                      strt = "strata")
+#> ℹ VCF is being read in chunks of 50000 variants
+#> ✔ VCF successfully read into a VCFArrow object
+table(vcf@groups)
+#> 
+#> BS GS OG WA 
+#>  5  5  3  5 
 ```

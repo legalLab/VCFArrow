@@ -8,10 +8,11 @@ ADMIXTURE-specific .pop file
 ``` r
 vcf2admixture(
   vcf_arrow,
+  out_file,
   keep_groups = NULL,
-  out_file = "admixture_in",
   sex = NULL,
   pheno = NULL,
+  chrom_code = c("zero", "auto", "index", "keep"),
   supervised = FALSE,
   reference_groups = NULL
 )
@@ -23,13 +24,14 @@ vcf2admixture(
 
   -\> VCFArrow object
 
+- out_file:
+
+  -\> output file prefix; extensions are added automatically, no default
+  (character)
+
 - keep_groups:
 
   -\> groups to retain, default NULL (character)
-
-- out_file:
-
-  -\> name of file to output, default 'plink_out' (character)
 
 - sex:
 
@@ -39,6 +41,12 @@ vcf2admixture(
 
   -\> vector of phenotypes of samples, default NULL (character)
 
+- chrom_code:
+
+  -\> how CHROM is written: "auto" (keep numeric CHROM, otherwise 0),
+  "index" (1..n by first appearance), "zero" (all 0) or "keep"
+  (verbatim), default "zero" (character)
+
 - supervised:
 
   -\> flag to generate .pop for use in ADMIXTURE's supervised mode,
@@ -47,6 +55,11 @@ vcf2admixture(
 - reference_groups:
 
   -\> vector of ancestry group labels, default NULL (character)
+
+## Value
+
+Invisibly returns the input VCFArrow object; called for its side effect
+of writing `out_file`.
 
 ## Details
 
@@ -67,14 +80,23 @@ Tomas Hrbek May 2026
 ## Examples
 
 ``` r
-vcf2admixture(vcf_arrow = my_vcf, keep_groups = my_groups, out_file = "admix_out", sex = sex, pheno = pheno, supervised = TRUE, reference_groups = reference_groups)
-#> Error: object 'my_vcf' not found
-vcf2admixture(vcf_arrow, my_groups, out_file = "admix_out", supervised = TRUE, reference_groups = c("XXX", "YYY"))
-#> Error: object 'vcf_arrow' not found
-vcf2admixture(vcf_arrow, my_groups, out_file = "admix_out", supervised = TRUE)
-#> Error: object 'vcf_arrow' not found
-vcf2admixture(vcf_arrow, my_groups, out_file = "admix_out")
-#> Error: object 'vcf_arrow' not found
-vcf2admixture(vcf_arrow)
-#> Error: object 'vcf_arrow' not found
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
+                 package = "VCFArrow")
+vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+#> ℹ VCF is being read in chunks of 50000 variants
+#> ✔ VCF successfully read into a VCFArrow object
+vcf2admixture(vcf, out_file = file.path(tempdir(), "admixture_in"))
+#> ℹ Building PLINK: 9313 variants x 18 samples (0 MiB raw storage)
+#> ℹ Writing PLINK files...
+#> ℹ Chromosome names were recoded as integers for PLINK compatibility; mapping written to /tmp/RtmpodaNXU/admixture_in.chrommap
+#> ✔ PLINK binary fileset written to /tmp/RtmpodaNXU/admixture_in.bed, /tmp/RtmpodaNXU/admixture_in.bim, /tmp/RtmpodaNXU/admixture_in.fam
+vcf2admixture(vcf, out_file = file.path(tempdir(), "admixture_sup"),
+              supervised = TRUE,
+              reference_groups = c("GS", "BS", "WA"))
+#> ℹ Building PLINK: 9313 variants x 18 samples (0 MiB raw storage)
+#> ℹ Writing PLINK files...
+#> ℹ Chromosome names were recoded as integers for PLINK compatibility; mapping written to /tmp/RtmpodaNXU/admixture_sup.chrommap
+#> ✔ PLINK binary fileset written to /tmp/RtmpodaNXU/admixture_sup.bed, /tmp/RtmpodaNXU/admixture_sup.bim, /tmp/RtmpodaNXU/admixture_sup.fam
+#> ✔ ADMIXTURE .pop file written to /tmp/RtmpodaNXU/admixture_sup.pop
+#> ℹ Supervised mode: 15 reference samples, 3 samples with ancestry to be estimated.
 ```

@@ -47,10 +47,13 @@ Tomas Hrbek April 2026
 ## Examples
 
 ``` r
-vcf_stats(vcf_arrow = my_vcf, res_path = my_res_path, project = my_project, theta = FALSE)
-#> Error: object 'my_vcf' not found
-vcf_stats(my_vcf, my_res_path, my_project, FALSE)
-#> Error: object 'my_vcf' not found
-vcf_stats(my_vcf, my_res_path, my_project)
-#> Error: object 'my_vcf' not found
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
+                 package = "VCFArrow")
+vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+#> ℹ VCF is being read in chunks of 50000 variants
+#> ✔ VCF successfully read into a VCFArrow object
+vcf_stats(vcf, res_path = tempdir(), project = "vaillantii",
+          theta = TRUE)
+#> ℹ Computing per-sample stats: 10000 variants x 18 samples, reading 1 chunk directly
+#> ℹ Accumulating theta/pi: 9313 variants x 4 pops (0 MiB raw storage, vs 0 MiB with integer matrices)
 ```

@@ -171,7 +171,7 @@ vaillantii</em> Photo: Albertina Lima</div>
 <span><span class="co">#&gt; Phased genotypes: FALSE </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Storage:</span></span>
-<span><span class="co">#&gt;   Path: /tmp/RtmpF6KrD4/arrow_vcf_230479d24792 </span></span>
+<span><span class="co">#&gt;   Path: /tmp/RtmpjinOnt/arrow_vcf_23ca73ced443 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Genotype storage (Arrow):</span></span>
 <span><span class="co">#&gt; FileSystemDataset with 1 Feather file</span></span>
@@ -189,12 +189,12 @@ vaillantii</em> Photo: Albertina Lima</div>
 <span><span class="co">#&gt; See $metadata for additional Schema metadata</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Variants (first 5 rows):</span></span>
-<span><span class="co">#&gt;                     CHROM POS        ID REF ALT QUAL FILTER Rk n_alt</span></span>
-<span><span class="co">#&gt; 1 SNP_higher_path_9994239  41 9994239_1   C   G    .      .  1     1</span></span>
-<span><span class="co">#&gt; 2 SNP_higher_path_9984432 105   9984432   C   T    .      .  1     1</span></span>
-<span><span class="co">#&gt; 3 SNP_higher_path_9967574  50   9967574   A   C    .      .  1     1</span></span>
-<span><span class="co">#&gt; 4  SNP_higher_path_993510  88  993510_4   A   G    .      .  1     1</span></span>
-<span><span class="co">#&gt; 5 SNP_higher_path_9803974  33   9803974   A   G    .      .  1     1</span></span>
+<span><span class="co">#&gt;                     CHROM POS        ID REF ALT QUAL FILTER Rk RPT n_alt</span></span>
+<span><span class="co">#&gt; 1 SNP_higher_path_9994239  41 9994239_1   C   G    .      .  1  NA     1</span></span>
+<span><span class="co">#&gt; 2 SNP_higher_path_9984432 105   9984432   C   T    .      .  1  NA     1</span></span>
+<span><span class="co">#&gt; 3 SNP_higher_path_9967574  50   9967574   A   C    .      .  1  NA     1</span></span>
+<span><span class="co">#&gt; 4  SNP_higher_path_993510  88  993510_4   A   G    .      .  1  NA     1</span></span>
+<span><span class="co">#&gt; 5 SNP_higher_path_9803974  33   9803974   A   G    .      .  1  NA     1</span></span>
 <span><span class="co">#&gt;   is_biallelic is_indel .row_id</span></span>
 <span><span class="co">#&gt; 1         TRUE    FALSE       1</span></span>
 <span><span class="co">#&gt; 2         TRUE    FALSE       2</span></span>
@@ -373,7 +373,7 @@ work with linked SNVs.</p>
 <span>  <span class="fu"><a href="../reference/vcf_filter_oneSNV.html">vcf_filter_oneSNV</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> No samples to keep or remove - keeping all samples</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying indel filter</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retained 10000 / 10000 variants (non-Indels)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retained 9313 / 10000 variants (non-Indels)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying biallelic filter</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retained 9313 / 9313 variants (biallelic SNVs)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying MAF filter</span></span>
@@ -402,7 +402,7 @@ work with linked SNVs.</p>
 <span>  <span class="fu"><a href="../reference/vcf_filter_multiSNV.html">vcf_filter_multiSNV</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> No samples to keep or remove - keeping all samples</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying indel filter</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retained 10000 / 10000 variants (non-Indels)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retained 9313 / 10000 variants (non-Indels)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying biallelic filter</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retained 9313 / 9313 variants (biallelic SNVs)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying MAF filter</span></span>
@@ -414,7 +414,7 @@ work with linked SNVs.</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying sample missingness filter</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Variants retained: 1734 | Samples retained: 18</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying linked SNV filter</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retained 0 / 1734 variants (unlinked SNVs)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retained 0 / 1734 variants (linked SNVs)</span></span>
 <span></span>
 <span><span class="co"># see how many variants remained</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">vcf_multiSNP</span><span class="op">@</span><span class="va">variants</span><span class="op">)</span></span>
@@ -453,6 +453,7 @@ objects storing them in a separate VCFArrow object.</p>
 <span></span>
 <span><span class="co"># bind vcf_outgrp and vcf_ingrp (objects must share all variants)</span></span>
 <span><span class="va">vcf1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/vcf_bind.html">vcf_bind</a></span><span class="op">(</span><span class="va">vcf_ingrp</span>, <span class="va">vcf_outgrp</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Binding 2 VCFArrow objects (intersect): 10000 variants, 18 total samples.</span></span>
 <span></span>
 <span><span class="co"># extract groups of individuals from VCFArrow object (remove invariant loci)</span></span>
 <span><span class="va">groups1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GS"</span>, <span class="st">"BS"</span>, <span class="st">"WA"</span><span class="op">)</span></span>
@@ -471,11 +472,15 @@ objects storing them in a separate VCFArrow object.</p>
 <span></span>
 <span><span class="co"># bind vcf_outgrp and vcf_ingrp (intersection - variable SNVs in all objects)</span></span>
 <span><span class="va">vcf1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/vcf_bind_sparse.html">vcf_bind_sparse</a></span><span class="op">(</span><span class="va">vcf_ingrp</span>, <span class="va">vcf_outgrp</span>, mode <span class="op">=</span> <span class="st">"intersect"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: `vcf_bind_sparse()` is deprecated; use `vcf_bind()` instead.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> `vcf_bind()` takes the same `mode` and `absent_as` arguments.</span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">This warning is displayed once every 8 hours.</span></span></span>
+<span><span class="co">#&gt; Warning: `recover_loci` is only used with `mode = "union"`.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Binding 2 VCFArrow objects (intersect): 421 variants, 18 total samples.</span></span>
 <span></span>
 <span><span class="co"># bind vcf_outgrp and vcf_ingrp (intersection - variable SNVs in all objects)</span></span>
 <span><span class="va">vcf1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/vcf_bind_sparse.html">vcf_bind_sparse</a></span><span class="op">(</span><span class="va">vcf_ingrp</span>, <span class="va">vcf_outgrp</span>, mode <span class="op">=</span> <span class="st">"union"</span>, absent_as <span class="op">=</span> <span class="st">"missing"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Binding 2 VCFArrow objects (union): 8970 variants, 18 total samples.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Binding 2 VCFArrow objects (union): 10000 variants, 18 total samples.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Absent genotypes will be filled as: missing</span></span></code></pre></div>
 </div>
 <div class="section level4">
@@ -516,7 +521,7 @@ filter the ingroup VCFArrow object, and add the outgroup taxa with
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Removed samples: Pb2Jp, Pb2Scx, and Pb1Rd</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Variants retained: 8295 | Samples retained: 15</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying indel filter</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retained 8295 / 8295 variants (non-Indels)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retained 7706 / 8295 variants (non-Indels)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying biallelic filter</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retained 7706 / 7706 variants (biallelic SNVs)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying read coverage filter</span></span>
@@ -527,12 +532,12 @@ filter the ingroup VCFArrow object, and add the outgroup taxa with
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Variants retained: 2409 | Samples retained: 15</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying unlinked SNV filter</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retained 2409 / 2409 variants (unlinked SNVs)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Binding 2 VCFArrow objects (union): 3304 variants, 18 total samples.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Binding 2 VCFArrow objects (union): 10000 variants, 18 total samples.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Absent genotypes will be filled as: missing</span></span>
 <span></span>
 <span><span class="co"># see how many variants remained</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">vcf1</span><span class="op">@</span><span class="va">variants</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 3304</span></span>
+<span><span class="co">#&gt; [1] 10000</span></span>
 <span></span>
 <span><span class="co"># apply the same filter to the full dataset (ingroup + outgroup)</span></span>
 <span><span class="va">vcf1</span> <span class="op">&lt;-</span> <span class="va">vcf</span> <span class="op">|&gt;</span></span>
@@ -543,7 +548,7 @@ filter the ingroup VCFArrow object, and add the outgroup taxa with
 <span>  <span class="fu"><a href="../reference/vcf_filter_missing.html">vcf_filter_missing</a></span><span class="op">(</span><span class="fl">.3</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/vcf_filter_oneSNV.html">vcf_filter_oneSNV</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying indel filter</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retained 10000 / 10000 variants (non-Indels)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retained 9313 / 10000 variants (non-Indels)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying biallelic filter</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retained 9313 / 9313 variants (biallelic SNVs)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying read coverage filter</span></span>
@@ -693,8 +698,7 @@ object.</p>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Related file written to <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub.related</span></span></span>
 <span><span class="co"># long tidy dataframe of genotypes</span></span>
 <span><span class="fu"><a href="../reference/vcf2gt_long.html">vcf2gt_long</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'.csv'</span><span class="op">)</span><span class="op">)</span>, format <span class="op">=</span> <span class="st">'csv'</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Building gt_long: 1734 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Combining and writing GT long table...</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing gt_long: 1734 variants x 18 samples</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> gt_long table written to <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub.csv</span></span></span>
 <span><span class="co"># snapp https://www.beast2.org/snapp/</span></span>
 <span><span class="fu"><a href="../reference/vcf2snapp.html">vcf2snapp</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'_snapp.nex'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>

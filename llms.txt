@@ -702,6 +702,8 @@ vcf2fineradstructure(vcf, out_file = file.path(res_path, paste0(project, postfix
 
 ## All functions
 
+- [`VCFArrow-class`](https://legallab.github.io/VCFArrow/reference/VCFArrow-class.md)
+  : VCFArrow S4 class
 - [`assess_vcf_coverage()`](https://legallab.github.io/VCFArrow/reference/assess_vcf_coverage.md)
   : assess_vcf_coverage
 - [`assess_vcf_missing_data()`](https://legallab.github.io/VCFArrow/reference/assess_vcf_missing_data.md)
@@ -762,8 +764,6 @@ vcf2fineradstructure(vcf, out_file = file.path(res_path, paste0(project, postfix
   : vcf2treemix
 - [`vcf_bind()`](https://legallab.github.io/VCFArrow/reference/vcf_bind.md)
   : vcf_bind
-- [`vcf_bind_sparse()`](https://legallab.github.io/VCFArrow/reference/vcf_bind_sparse.md)
-  : vcf_bind_sparse
 - [`vcf_copy()`](https://legallab.github.io/VCFArrow/reference/vcf_copy.md)
   : vcf_copy
 - [`vcf_extract_groups()`](https://legallab.github.io/VCFArrow/reference/vcf_extract_groups.md)
@@ -792,16 +792,22 @@ vcf2fineradstructure(vcf, out_file = file.path(res_path, paste0(project, postfix
   : vcf_filter_multiSNV
 - [`vcf_filter_oneSNV()`](https://legallab.github.io/VCFArrow/reference/vcf_filter_oneSNV.md)
   : vcf_filter_oneSNV
+- [`vcf_filter_paralogs()`](https://legallab.github.io/VCFArrow/reference/vcf_filter_paralogs.md)
+  : vcf_filter_paralogs
 - [`vcf_filter_pass()`](https://legallab.github.io/VCFArrow/reference/vcf_filter_pass.md)
   : vcf_filter_pass
 - [`vcf_filter_quality()`](https://legallab.github.io/VCFArrow/reference/vcf_filter_quality.md)
   : vcf_filter_quality
 - [`vcf_filter_rank()`](https://legallab.github.io/VCFArrow/reference/vcf_filter_rank.md)
   : vcf_filter_rank
+- [`vcf_filter_rpt()`](https://legallab.github.io/VCFArrow/reference/vcf_filter_rpt.md)
+  : vcf_filter_rpt
 - [`vcf_gc()`](https://legallab.github.io/VCFArrow/reference/vcf_gc.md)
   : Garbage-collect VCFArrow temp directories
 - [`vcf_memory_estimate()`](https://legallab.github.io/VCFArrow/reference/vcf_memory_estimate.md)
   : Estimate RAM required for a VCFArrow export operation
+- [`vcf_set_workers()`](https://legallab.github.io/VCFArrow/reference/vcf_set_workers.md)
+  : vcf_set_workers
 - [`vcf_stats()`](https://legallab.github.io/VCFArrow/reference/vcf_stats.md)
   : vcf_stats
 - [`vcf_sub_SNVs()`](https://legallab.github.io/VCFArrow/reference/vcf_sub_SNVs.md)

@@ -41,8 +41,8 @@
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">vcf2genlight</span><span class="op">(</span></span>
 <span>  <span class="va">vcf_arrow</span>,</span>
+<span>  out_file <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  keep_groups <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  out_file <span class="op">=</span> <span class="st">"genlight.rds"</span>,</span>
 <span>  ploidy <span class="op">=</span> <span class="fl">2L</span>,</span>
 <span>  save <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -56,12 +56,13 @@
 <dd><p>-&gt; VCFArrow object</p></dd>
 
 
+<dt id="arg-out-file">out_file<a class="anchor" aria-label="anchor" href="#arg-out-file"></a></dt>
+<dd><p>-&gt; name of .rds file to write, required when save = TRUE,
+default NULL (character)</p></dd>
+
+
 <dt id="arg-keep-groups">keep_groups<a class="anchor" aria-label="anchor" href="#arg-keep-groups"></a></dt>
 <dd><p>-&gt; groups to retain, default NULL (character)</p></dd>
-
-
-<dt id="arg-out-file">out_file<a class="anchor" aria-label="anchor" href="#arg-out-file"></a></dt>
-<dd><p>-&gt; name of file to output, default 'genlight.rds' (character)</p></dd>
 
 
 <dt id="arg-ploidy">ploidy<a class="anchor" aria-label="anchor" href="#arg-ploidy"></a></dt>
@@ -73,14 +74,19 @@
 
 </dl></div>
     <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    <p>An adegenet <code>genlight</code> object.</p>
+    </div>
+    <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>This function converts a VCFArrow object to an external Genlight formatted file.
-Writing occurs in chunks whose size is determined by the read_vcf() function.
-Larger chunks result in faster writing speeds.
+    <p>This function converts a VCFArrow object to an adegenet Genlight object.
+Genotypes are read in chunks whose size is determined by the read_vcf() function.
 If no groups are defined, the default behavior is to use all groups.
 Genlight objects can encode polyploid genomes, by default diploid genomes are assumed.
-Genlight objects are in memory S4 objects, thus are returned as such, but
-but optionally may be saved as R data objects.</p>
+Genlight objects are in-memory S4 objects and are always returned; if
+save = TRUE, the object is also written to out_file with saveRDS().
+Unlike the other exporters, out_file is optional because nothing is written
+unless save = TRUE.</p>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
@@ -89,12 +95,39 @@ but optionally may be saved as R data objects.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">vcf2genlight</span><span class="op">(</span>vcf_arrow <span class="op">=</span> <span class="va">my_vcf</span>, keep_groups <span class="op">=</span> <span class="va">my_groups</span>, out_file <span class="op">=</span> <span class="st">"genlight.rds"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'my_vcf' not found</span>
-<span class="r-in"><span><span class="fu">vcf2genlight</span><span class="op">(</span><span class="va">vcf_arrow</span>, <span class="va">my_groups</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'vcf_arrow' not found</span>
-<span class="r-in"><span><span class="fu">vcf2genlight</span><span class="op">(</span><span class="va">vcf_arrow</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'vcf_arrow' not found</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"vaillantii_discosnp_sub.vcf.gz"</span>,</span></span>
+<span class="r-in"><span>                 package <span class="op">=</span> <span class="st">"VCFArrow"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">vcf</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_vcf.html">read_vcf</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="set_vcf_groups.html">set_vcf_groups</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">dirname</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> VCF is being read in chunks of 50000 variants</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> VCF successfully read into a VCFArrow object</span>
+<span class="r-in"><span><span class="va">gl</span> <span class="op">&lt;-</span> <span class="fu">vcf2genlight</span><span class="op">(</span><span class="va">vcf</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Accumulating Genlight: 9313 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Building Genlight object...</span>
+<span class="r-in"><span><span class="va">gl</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  /// GENLIGHT OBJECT /////////</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  // 18 genotypes,  9,313 binary SNPs, size: 1.9 Mb</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  79069 (47.17 %) missing data</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  // Basic content</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    @gen: list of 18 SNPbin</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    @ploidy: ploidy of each individual  (range: 2-2)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  // Optional content</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    @ind.names:  18 individual labels</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    @loc.names:  9313 locus labels</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    @chromosome: factor storing chromosomes of the SNPs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    @position: integer storing positions of the SNPs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    @pop: population of each individual (group size range: 3-5)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    @strata: a data frame with 1 columns ( pop )</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    @other: a list containing: elements without names </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span><span class="va">gl</span> <span class="op">&lt;-</span> <span class="fu">vcf2genlight</span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".rds"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                   save <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Accumulating Genlight: 9313 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Building Genlight object...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Writing Genlight object...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Genlight object written to <span style="color: #0000BB;">/tmp/RtmpodaNXU/file1ffe19ecdaf4.rds</span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

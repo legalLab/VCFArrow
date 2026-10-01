@@ -82,12 +82,77 @@ Locus is defined as a different chromosome or a block of the
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">vcf_filter_multiSNV</span><span class="op">(</span>vcf_arrow <span class="op">=</span> <span class="va">my_vcf</span>, block_size <span class="op">=</span> <span class="fl">10000</span>, minSNV <span class="op">=</span> <span class="fl">2</span>, maxSNV <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'my_vcf' not found</span>
-<span class="r-in"><span><span class="fu">vcf_filter_multiSNV</span><span class="op">(</span><span class="va">my_vcf</span>, <span class="fl">10000</span>, <span class="fl">2</span>, <span class="fl">5</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'my_vcf' not found</span>
-<span class="r-in"><span><span class="fu">vcf_filter_multiSNV</span><span class="op">(</span><span class="va">my_vcf</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'my_vcf' not found</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"vaillantii_discosnp_sub.vcf.gz"</span>,</span></span>
+<span class="r-in"><span>                 package <span class="op">=</span> <span class="st">"VCFArrow"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">vcf</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_vcf.html">read_vcf</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="set_vcf_groups.html">set_vcf_groups</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">dirname</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> VCF is being read in chunks of 50000 variants</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> VCF successfully read into a VCFArrow object</span>
+<span class="r-in"><span><span class="fu">vcf_filter_multiSNV</span><span class="op">(</span><span class="va">vcf</span>, block_size <span class="op">=</span> <span class="fl">10000</span>, minSNV <span class="op">=</span> <span class="fl">2</span>, maxSNV <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Applying linked SNV filter</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Retained 8 / 10000 variants (linked SNVs)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> An object of class "VCFArrow"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Dimensions:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Variants: 8 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Samples:  18 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Quick stats:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Non-missing variants: 8 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Phased genotypes: FALSE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Storage:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Path: /tmp/RtmpodaNXU/arrow_vcf_1ffe733a93c3 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Genotype storage (Arrow):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> FileSystemDataset with 1 Feather file</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9 columns</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> .row_id: int32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sample: string</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> a1: int32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> a2: int32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> phased: bool</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fmt: string</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> DP: double</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> GQ: double</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ADR: double</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> See $metadata for additional Schema metadata</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Variants (first 5 rows):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                         CHROM POS         ID REF ALT QUAL FILTER      Rk RPT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1128 SNP_higher_path_22880229  30 22880229_1   T   G    .      . 1.00000  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1129 SNP_higher_path_22880229  34 22880229_3   T   C    .      . 1.00000  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3055 SNP_higher_path_35991569  33 35991569_2   T   C    .      . 0.93928  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3056 SNP_higher_path_35991569  47 35991569_3   G   T    .      . 0.93928  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5500  SNP_higher_path_4000943  65  4000943_4   T   G    .      . 0.77253  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      n_alt is_biallelic is_indel .row_id</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1128     1         TRUE    FALSE    1128</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1129     1         TRUE    FALSE    1129</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3055     1         TRUE    FALSE    3055</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3056     1         TRUE    FALSE    3056</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5500     1         TRUE    FALSE    5500</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ... 3 more</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO (first 5):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Ty=SNP;Rk=1.0;UL=0;UR=0;CL=0;CR=0;Genome=.;Sd=.;Cluster=14533803;ClSize=1"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "Ty=SNP;Rk=1.0;UL=0;UR=0;CL=0;CR=0;Genome=.;Sd=.;Cluster=14533803;ClSize=1"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "Ty=SNP;Rk=0.93928;UL=2;UR=3;CL=2;CR=3;Genome=.;Sd=.;Cluster=3995598;ClSize=5"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4] "Ty=SNP;Rk=0.93928;UL=2;UR=3;CL=2;CR=3;Genome=.;Sd=.;Cluster=3995598;ClSize=5"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5] "Ty=SNP;Rk=0.77253;UL=25;UR=0;CL=25;CR=0;Genome=.;Sd=.;Cluster=8839140;ClSize=1"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> FORMAT (first 5):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           FORMAT .row_id</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 GT:DP:PL:AD:HQ       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 GT:DP:PL:AD:HQ       2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 GT:DP:PL:AD:HQ       3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 GT:DP:PL:AD:HQ       4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 GT:DP:PL:AD:HQ       5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Samples (first 5):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Pv120" "Pv126" "Pv13"  "Pv14"  "Pv27" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ... 13 more</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

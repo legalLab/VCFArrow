@@ -1,7 +1,7 @@
 # assess_vcf_coverage
 
 Quantifying read depth of all samples in VCF Inspired by
-https://grunwaldlab.github.io/Population_Genetics_in_R/qc.html
+<https://grunwaldlab.github.io/Population_Genetics_in_R/qc.html>
 
 ## Usage
 
@@ -59,10 +59,12 @@ Tomas Hrbek April 2026
 ## Examples
 
 ``` r
-assess_vcf_coverage(vcf_arrow = my_vcf, res_path = my_res_path, species = species_name, project = project_name)
-#> Error: object 'my_vcf' not found
-assess_vcf_coverage(my_vcf, my_res_path, species_name, project_name, details = TRUE, max_points_per_sample = 5000L)
-#> Error: object 'my_vcf' not found
-assess_vcf_coverage(my_vcf, my_res_path, species_name, project_name)
-#> Error: object 'my_vcf' not found
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
+                 package = "VCFArrow")
+vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+#> ℹ VCF is being read in chunks of 50000 variants
+#> ✔ VCF successfully read into a VCFArrow object
+assess_vcf_coverage(vcf, res_path = tempdir(),
+                    species = "Phyllomedusa vaillantii",
+                    project = "vaillantii")
 ```

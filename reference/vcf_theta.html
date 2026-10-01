@@ -49,16 +49,12 @@ and for sample groups from VCFArrow format data.</p>
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-gt">gt<a class="anchor" aria-label="anchor" href="#arg-gt"></a></dt>
-<dd><p>-&gt; VCFArrow gt in long format</p></dd>
+<dl><dt id="arg-vcf-arrow">vcf_arrow<a class="anchor" aria-label="anchor" href="#arg-vcf-arrow"></a></dt>
+<dd><p>-&gt; VCFArrow object</p></dd>
 
 
-<dt id="arg-sample">sample<a class="anchor" aria-label="anchor" href="#arg-sample"></a></dt>
-<dd><p>-&gt; samples to be included in analysis</p></dd>
-
-
-<dt id="arg-grps">grps<a class="anchor" aria-label="anchor" href="#arg-grps"></a></dt>
-<dd><p>-&gt; assignment of individuals to groups</p></dd>
+<dt id="arg-keep-groups">keep_groups<a class="anchor" aria-label="anchor" href="#arg-keep-groups"></a></dt>
+<dd><p>-&gt; groups to retain, default NULL (character)</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -78,10 +74,40 @@ the groups slot in the VCFArrow object.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">vcf_theta</span><span class="op">(</span>gt_matrix <span class="op">=</span> <span class="va">my_gt_matrix</span>, samples <span class="op">=</span> <span class="va">vcf_arrow</span><span class="op">@</span><span class="va">samples</span>, grps <span class="op">=</span> <span class="va">vcf_arrow</span><span class="op">@</span><span class="va">groups</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in vcf_theta(gt_matrix = my_gt_matrix, samples = vcf_arrow@samples,     grps = vcf_arrow@groups):</span> unused arguments (gt_matrix = my_gt_matrix, samples = vcf_arrow@samples, grps = vcf_arrow@groups)</span>
-<span class="r-in"><span><span class="fu">vcf_theta</span><span class="op">(</span><span class="va">my_gt_matrix</span>, <span class="va">vcf_arrow</span><span class="op">@</span><span class="va">samples</span>, <span class="va">vcf_arrow</span><span class="op">@</span><span class="va">groups</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in vcf_theta(my_gt_matrix, vcf_arrow@samples, vcf_arrow@groups):</span> unused argument (vcf_arrow@groups)</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"vaillantii_discosnp_sub.vcf.gz"</span>,</span></span>
+<span class="r-in"><span>                 package <span class="op">=</span> <span class="st">"VCFArrow"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">vcf</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_vcf.html">read_vcf</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="set_vcf_groups.html">set_vcf_groups</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">dirname</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> VCF is being read in chunks of 50000 variants</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> VCF successfully read into a VCFArrow object</span>
+<span class="r-in"><span><span class="fu">vcf_theta</span><span class="op">(</span><span class="va">vcf</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Accumulating theta/pi: 9313 variants x 4 pops (<span style="font-weight: bold;">0</span> MiB raw storage, vs 0 MiB with integer matrices)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $pi</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.3065724</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $theta_w</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.3225428</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $theta_g</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    sample group n_ind   theta_w        pi</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   Pv120    WA     5 0.2113146 0.1897392</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   Pv126    GS     5 0.1916500 0.1751468</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3    Pv13    BS     5 0.1842761 0.1692308</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4    Pv14    GS     5 0.1916500 0.1751468</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5    Pv27    GS     5 0.1916500 0.1751468</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6    Pv28    GS     5 0.1916500 0.1751468</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7     Pv2    WA     5 0.2113146 0.1897392</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8    Pv31    WA     5 0.2113146 0.1897392</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9    Pv56    WA     5 0.2113146 0.1897392</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10   Pv62    BS     5 0.1842761 0.1692308</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11   Pv68    BS     5 0.1842761 0.1692308</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12   Pv73    BS     5 0.1842761 0.1692308</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13   Pv78    GS     5 0.1916500 0.1751468</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14   Pv79    BS     5 0.1842761 0.1692308</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15   Pv93    WA     5 0.2113146 0.1897392</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16  Pb2Jp    OG     3 0.1712101 0.1498553</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17 Pb2Scx    OG     3 0.1712101 0.1498553</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18  Pb1Rd    OG     3 0.1712101 0.1498553</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

@@ -5,7 +5,7 @@ Write a VCFArrow object to an external VCF file
 ## Usage
 
 ``` r
-write_vcf(vcf_arrow, out_file = "output.vcf", gzip = FALSE)
+write_vcf(vcf_arrow, out_file, gzip = FALSE)
 ```
 
 ## Arguments
@@ -16,12 +16,15 @@ write_vcf(vcf_arrow, out_file = "output.vcf", gzip = FALSE)
 
 - out_file:
 
-  -\> name of the VCF file to be written to, default 'output.vcf'
-  (character)
+  -\> name of the VCF file to be written to, no default (character)
 
 - gzip:
 
   -\> a flag to GZIP VCF when writing, default FALSE (Boolean)
+
+## Value
+
+Invisibly returns the path of the written file.
 
 ## Details
 
@@ -39,10 +42,16 @@ Tomas Hrbek April 2026
 ## Examples
 
 ``` r
-write_vcf(vcf = my_vcf, out_file = "output.vcf", gzip = FALSE)
-#> Error: object 'my_vcf' not found
-write_vcf(my_vcf, "output.vcf", FALSE)
-#> Error: object 'my_vcf' not found
-write_vcf(my_vcf)
-#> Error: object 'my_vcf' not found
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
+                 package = "VCFArrow")
+vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+#> ℹ VCF is being read in chunks of 50000 variants
+#> ✔ VCF successfully read into a VCFArrow object
+write_vcf(vcf, out_file = tempfile(fileext = ".vcf"))
+#> ℹ VCF is being written in 1 chunk
+#> ✔ VCFArrow object successfully written to /tmp/RtmpodaNXU/file1ffe3b05315b.vcf
+write_vcf(vcf, out_file = tempfile(fileext = ".vcf.gz"),
+          gzip = TRUE)
+#> ℹ VCF is being written in 1 chunk
+#> ✔ VCFArrow object successfully written to /tmp/RtmpodaNXU/file1ffe7cb7751.vcf.gz
 ```

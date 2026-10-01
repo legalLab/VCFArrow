@@ -5,11 +5,7 @@ Converts a VCFArrow object to FineRadStructure format infile
 ## Usage
 
 ``` r
-vcf2fineradstructure(
-  vcf_arrow,
-  keep_groups = NULL,
-  out_file = "fineradstructure_infile.txt"
-)
+vcf2fineradstructure(vcf_arrow, out_file, keep_groups = NULL)
 ```
 
 ## Arguments
@@ -18,14 +14,18 @@ vcf2fineradstructure(
 
   -\> VCFArrow object
 
+- out_file:
+
+  -\> name of file to output, no default (character)
+
 - keep_groups:
 
   -\> groups to retain, default NULL (character)
 
-- out_file:
+## Value
 
-  -\> name of file to output, default 'fineradstructure_infile.txt'
-  (character)
+Invisibly returns the input VCFArrow object; called for its side effect
+of writing `out_file`.
 
 ## Details
 
@@ -41,10 +41,16 @@ Tomas Hrbek May 2026
 ## Examples
 
 ``` r
-vcf2fineradstructure(vcf_arrow = my_vcf, keep_groups = my_groups, out_file = "fineradstructure_infile.txt")
-#> Error: object 'my_vcf' not found
-vcf2fineradstructure(vcf_arrow, my_groups, out_file = "fineradstructure_infile.txt")
-#> Error: object 'vcf_arrow' not found
-vcf2fineradstructure(vcf_arrow)
-#> Error: object 'vcf_arrow' not found
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
+                 package = "VCFArrow")
+vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+#> ℹ VCF is being read in chunks of 50000 variants
+#> ✔ VCF successfully read into a VCFArrow object
+vcf_linked <- vcf_filter_multiSNV(vcf)
+#> ℹ Applying linked SNV filter
+#> ℹ Retained 8 / 10000 variants (linked SNVs)
+vcf2fineradstructure(vcf_linked, out_file = tempfile(fileext = ".txt"))
+#> ℹ Building fineRADstructure: 8 variants x 18 samples (0 MiB raw storage)
+#> ℹ Writing fineRADstructure file...
+#> ✔ fineRADstructure file written to /tmp/RtmpodaNXU/file1ffe6f6968b2.txt
 ```

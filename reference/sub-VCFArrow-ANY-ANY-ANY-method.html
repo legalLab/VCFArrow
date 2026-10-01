@@ -52,11 +52,15 @@
 
 
 <dt id="arg-i">i<a class="anchor" aria-label="anchor" href="#arg-i"></a></dt>
-<dd><p>Row indices (numeric or logical)</p></dd>
+<dd><p>Variant (row) positions, numeric or logical</p></dd>
 
 
 <dt id="arg-j">j<a class="anchor" aria-label="anchor" href="#arg-j"></a></dt>
 <dd><p>Column indices: numeric, logical, or sample name character vector</p></dd>
+
+
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>Ignored</p></dd>
 
 
 <dt id="arg-drop">drop<a class="anchor" aria-label="anchor" href="#arg-drop"></a></dt>
@@ -77,6 +81,80 @@ Method to subset by row and column of GT</p>
     <p>Tomas Hrbek April 2026</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"vaillantii_discosnp_sub.vcf.gz"</span>,</span></span>
+<span class="r-in"><span>                 package <span class="op">=</span> <span class="st">"VCFArrow"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">vcf</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_vcf.html">read_vcf</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> VCF is being read in chunks of 50000 variants</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> VCF successfully read into a VCFArrow object</span>
+<span class="r-in"><span><span class="va">vcf</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Compacting GT: 18 -&gt; 5 samples across 1 chunk</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> An object of class "VCFArrow"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Dimensions:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Variants: 100 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Samples:  5 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Quick stats:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Non-missing variants: 100 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Phased genotypes: FALSE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Storage:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Path: /tmp/RtmpodaNXU/arrow_vcf_samp_1ffe8b5caa6 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Genotype storage (Arrow):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> FileSystemDataset with 1 Feather file</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9 columns</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> .row_id: int32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sample: string</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> a1: int32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> a2: int32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> phased: bool</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fmt: string</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> DP: double</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> GQ: double</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ADR: double</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> See $metadata for additional Schema metadata</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Variants (first 5 rows):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                     CHROM POS        ID REF ALT QUAL FILTER Rk RPT n_alt</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 SNP_higher_path_9994239  41 9994239_1   C   G    .      .  1  NA     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 SNP_higher_path_9984432 105   9984432   C   T    .      .  1  NA     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 SNP_higher_path_9967574  50   9967574   A   C    .      .  1  NA     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  SNP_higher_path_993510  88  993510_4   A   G    .      .  1  NA     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 SNP_higher_path_9803974  33   9803974   A   G    .      .  1  NA     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   is_biallelic is_indel .row_id</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1         TRUE    FALSE       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2         TRUE    FALSE       2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3         TRUE    FALSE       3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4         TRUE    FALSE       4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5         TRUE    FALSE       5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ... 95 more</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO (first 5):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Ty=SNP;Rk=1.0;UL=11;UR=8;CL=11;CR=27;Genome=.;Sd=.;Cluster=20022615;ClSize=3"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "Ty=SNP;Rk=1.0;UL=3;UR=1;CL=75;CR=7;Genome=.;Sd=.;Cluster=17296599;ClSize=1"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "Ty=SNP;Rk=1.0;UL=20;UR=4;CL=20;CR=4;Genome=.;Sd=.;Cluster=18266172;ClSize=3" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4] "Ty=SNP;Rk=1.0;UL=1;UR=0;CL=1;CR=0;Genome=.;Sd=.;Cluster=16400006;ClSize=2"   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5] "Ty=SNP;Rk=1.0;UL=3;UR=7;CL=3;CR=7;Genome=.;Sd=.;Cluster=10880986;ClSize=5"   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> FORMAT (first 5):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           FORMAT .row_id</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 GT:DP:PL:AD:HQ       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 GT:DP:PL:AD:HQ       2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 GT:DP:PL:AD:HQ       3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 GT:DP:PL:AD:HQ       4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 GT:DP:PL:AD:HQ       5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Samples (first 5):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Pv120" "Pv126" "Pv13"  "Pv14"  "Pv27" </span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 
