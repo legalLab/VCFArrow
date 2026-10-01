@@ -32,7 +32,8 @@
 #   $n_samples      integer
 #   $P              integer matrix  n_pops × n_samples  (pop-membership 0/1)
 #   $valid_row_ids  integer         .row_id values surviving biallelic/non-indel
-#   $var_col_index  named int       .row_id (as char) → 1-based column position
+#   $var_pos        integer         .row_id → 1-based column position (0 = absent),
+#                                   see .row_id_pos()
 #   $variants       data.frame      filtered, arranged by .row_id  (REF, ALT, …)
 #   $loci           character       variant IDs or "CHROM_POS"
 #   $feather_files  character       chunk paths in natural numeric order
@@ -79,7 +80,7 @@
     dplyr::arrange(.row_id) |>
     dplyr::pull(.row_id)
 
-  var_col_index <- setNames(seq_along(valid_row_ids), as.character(valid_row_ids))
+  var_pos <- .row_id_pos(valid_row_ids)
 
   variants <- vcf_arrow@variants |>
     dplyr::filter(.row_id %in% valid_row_ids) |>
@@ -108,7 +109,7 @@
     n_samples = n_samples,
     P = P,
     valid_row_ids = valid_row_ids,
-    var_col_index = var_col_index,
+    var_pos = var_pos,
     variants = variants, loci = loci,
     feather_files = feather_files,
     n_var = length(valid_row_ids)
@@ -122,20 +123,56 @@
 # or NULL if no valid rows in this chunk.
 
 .reshape_chunk <- function(chunk, setup) {
-  chunk <- chunk[chunk$.row_id %in% setup$valid_row_ids & chunk$sample %in% setup$samples, ]
-  if (nrow(chunk) == 0L) return(NULL)
-  sample_order <- match(chunk$sample, setup$samples)
-  chunk <- chunk[order(chunk$.row_id, sample_order), ]
-  chunk_row_ids <- unique(chunk$.row_id)
+  # chunk: Arrow Table (read with as_data_frame = FALSE) or data frame.
+  # Work on column vectors rather than subsetting the whole table, and match
+  # sample names once (used both to filter and to order).
+  sample_order <- .sample_index(chunk, setup$samples)
+  row_id <- as.vector(chunk$.row_id)
+  keep <- !is.na(.match_row_id(row_id, setup$var_pos)) & !is.na(sample_order)
+  if (!any(keep)) return(NULL)
+  row_id <- row_id[keep]
+  sample_order <- sample_order[keep]
+  o <- order(row_id, sample_order)
+  row_id <- row_id[o]
+  chunk_row_ids <- row_id[c(TRUE, row_id[-1L] != row_id[-length(row_id)])]
   n_chunk_var <- length(chunk_row_ids)
-  col_idx <- unname(setup$var_col_index[as.character(chunk_row_ids)])
+  col_idx <- setup$var_pos[chunk_row_ids]
   list(
-    a1 = matrix(chunk$a1, nrow = setup$n_samples, ncol = n_chunk_var),
-    a2 = matrix(chunk$a2, nrow = setup$n_samples, ncol = n_chunk_var),
+    a1 = matrix(as.vector(chunk$a1)[keep][o], nrow = setup$n_samples, ncol = n_chunk_var),
+    a2 = matrix(as.vector(chunk$a2)[keep][o], nrow = setup$n_samples, ncol = n_chunk_var),
     col_idx = col_idx, chunk_row_ids = chunk_row_ids
   )
 }
 
+
+# What .reshape_chunk() needs from the export setup (sent to workers, so it
+# must not include large per-variant tables such as setup$variants)
+.reshape_shared <- function(setup) setup[c("samples", "var_pos", "n_samples")]
+
+# Read one chunk's genotypes as an Arrow Table and reshape it
+.read_reshape_chunk <- function(fpath, shared) {
+  chunk <- arrow::read_feather(fpath, col_select = c(".row_id", "sample", "a1", "a2"),
+                               as_data_frame = FALSE)
+  .reshape_chunk(chunk, shared)
+}
+
+# Worker side of .accumulate_individuals(): the chunk's alleles encoded as
+# raw bytes (1 byte per genotype, see .encode_raw()) and their columns.
+.individuals_chunk <- function(fpath, shared) {
+  rc <- .read_reshape_chunk(fpath, shared)
+  if (is.null(rc)) return(NULL)
+  list(col_idx = rc$col_idx, a1 = .encode_raw(rc$a1), a2 = .encode_raw(rc$a2))
+}
+
+# Worker side of .accumulate_pops_lowmem(): the chunk's per-population
+# counts (integer: they are sums of 0/1 values) and their columns.
+.pops_chunk <- function(fpath, shared) {
+  rc <- .read_reshape_chunk(fpath, shared)
+  if (is.null(rc)) return(NULL)
+  pc <- .pop_counts_from_chunk(rc, shared)
+  for (k in names(pc)) storage.mode(pc[[k]]) <- "integer"
+  c(list(col_idx = rc$col_idx), pc)
+}
 
 # ── Chunk aggregation: population level ───────────────────────────────────────
 # Returns $ref, $alt, $nobs: n_pops × n_chunk_var integer matrices.
@@ -186,21 +223,25 @@
   m
 }
 
-# Write a chunk's integer matrices into raw accumulation buffers in-place.
-# col_idx: 1-based column positions (variant columns for this chunk).
+# Linear cell indices of whole columns col_idx in a matrix with nrow rows
+# (column-major: column v occupies cells (v-1)*nrow + 1 .. v*nrow).
+# Double arithmetic avoids integer overflow beyond 2^31 cells.
 
-.fill_raw_matrix <- function(raw_mat, int_mat, col_idx, nrow) {
-  # int_mat is nrow × n_chunk_var integer matrix.
-  # Map: 0L → 0x00, 1L → 0x01, NA → 0xFF
-  encoded <- int_mat
+.column_cells <- function(col_idx, nrow) {
+  rep((col_idx - 1) * nrow, each = nrow) + seq_len(nrow)
+}
+
+# Encode an integer allele matrix for raw storage: 0L → 0x00, 1L → 0x01,
+# NA → 0xFF.
+#
+# The accumulation loops assign the result directly (acc[cells] <- ...)
+# rather than passing the accumulator to a helper: modifying a function
+# argument makes R copy the whole n_samples × n_var buffer on every chunk.
+
+.encode_raw <- function(int_mat) {
+  encoded <- as.integer(int_mat)
   encoded[is.na(encoded)] <- 0xFFL
-  storage.mode(encoded) <- "integer"
-  # Column-major fill: column v occupies rows [(col-1)*nrow + 1 .. col*nrow]
-  for (k in seq_along(col_idx)) {
-    base <- (col_idx[k] - 1L) * nrow
-    raw_mat[base + seq_len(nrow)] <- as.raw(encoded[, k])
-  }
-  raw_mat  # returned (modified copy; R semantics)
+  as.raw(encoded)
 }
 
 # Decode a raw accumulation matrix to an integer matrix for a C++ writer.
@@ -216,10 +257,7 @@
 
 # ── Memory-aware accumulation loop ────────────────────────────────────────────
 #
-# Drop-in replacement for .accumulate_individuals() that uses raw byte storage
-# and calls gc() after each chunk to hint Arrow to release pool memory.
-# The gc() call does not guarantee OS page return with jemalloc, but with the
-# system allocator (set in VCFArrow-lifecycle) it does.
+# Drop-in replacement for .accumulate_individuals() that uses raw byte storage.
 
 .accumulate_individuals <- function(setup, label) {
   nrow <- setup$n_samples
@@ -232,22 +270,19 @@
     "Accumulating {label}: {ncol} variant{?s} x {nrow} sample{?s} \\
      ({.strong {format(round(2 * nrow * ncol / 1024^2), big.mark=',')}} MiB raw storage)"
   )
-  cli::cli_progress_bar("Reading chunk", total = length(setup$feather_files))
-
-  for (fpath in setup$feather_files) {
-    chunk <- arrow::read_feather(fpath,
-                                 col_select = c(".row_id", "sample", "a1", "a2"))
-    rc <- .reshape_chunk(chunk, setup)
-    chunk <- NULL  # drop Arrow Table reference before gc()
-    gc(verbose = FALSE, full = FALSE)  # with system allocator: pages returned to OS
-
-    if (!is.null(rc)) {
-      a1_raw <- .fill_raw_matrix(a1_raw, rc$a1, rc$col_idx, nrow)
-      a2_raw <- .fill_raw_matrix(a2_raw, rc$a2, rc$col_idx, nrow)
+  # chunks are reshaped (in parallel with workers) and merged here, wave by
+  # wave, into the raw matrices, which are updated in place
+  it <- .chunk_iterator(setup$feather_files, .individuals_chunk,
+                        shared = .reshape_shared(setup), label = "Reading chunk")
+  on.exit(it$done())
+  while (!is.null(w <- it$next_wave())) {
+    for (rc in w$res) {
+      if (is.null(rc)) next
+      cells <- .column_cells(rc$col_idx, nrow)
+      a1_raw[cells] <- rc$a1
+      a2_raw[cells] <- rc$a2
     }
-    cli::cli_progress_update()
   }
-  cli::cli_progress_done()
 
   # Decode raw to integer only when handing off to C++.
   # Both matrices are decoded at the same time, so peak overhead is
@@ -283,10 +318,6 @@
 # Values are clamped to 65535 (with a one-time warning) rather than wrapping,
 # since silent wraparound would corrupt downstream allele-frequency math.
 
-.alloc_u16_pair <- function(n) {
-  list(lo = raw(n), hi = raw(n))  # both zero-initialised; counts start at 0
-}
-
 .encode_u16 <- function(int_vec) {
   if (any(int_vec > 65535L, na.rm = TRUE)) {
     cli::cli_warn(
@@ -304,24 +335,6 @@
   as.integer(lo) + as.integer(hi) * 256L
 }
 
-# Add a chunk's per-population counts into the running u16 accumulator for
-# the relevant columns (col_idx).  Each column is read, added, and re-written
-# — true accumulation, matching .accumulate_pops()'s "+=" semantics (needed
-# in case the same variant's rows are ever split across chunks, e.g. after
-# vcf_bind_sparse()).
-
-.add_u16_columns <- function(pair, add_mat, col_idx, n_pops) {
-  for (k in seq_along(col_idx)) {
-    base <- (col_idx[k] - 1L) * n_pops
-    idx <- base + seq_len(n_pops)
-    cur <- .decode_u16(pair$lo[idx], pair$hi[idx])
-    new <- cur + add_mat[, k]
-    enc <- .encode_u16(new)
-    pair$lo[idx] <- enc$lo
-    pair$hi[idx] <- enc$hi
-  }
-  pair
-}
 
 # Drop-in low-memory replacement for .accumulate_pops()
 #
@@ -333,9 +346,11 @@
   n_pops <- setup$n_pops
   n_var  <- setup$n_var
 
-  ref_pair <- .alloc_u16_pair(n_pops * n_var)
-  alt_pair <- .alloc_u16_pair(n_pops * n_var)
-  nobs_pair <- .alloc_u16_pair(n_pops * n_var)
+  # Plain local vectors (not lists passed to a helper) so that the
+  # per-chunk updates below modify them in place instead of copying.
+  ref_lo <- raw(n_pops * n_var); ref_hi <- raw(n_pops * n_var)
+  alt_lo <- raw(n_pops * n_var); alt_hi <- raw(n_pops * n_var)
+  nobs_lo <- raw(n_pops * n_var); nobs_hi <- raw(n_pops * n_var)
 
   cli::cli_alert_info(
     "Accumulating {label}: {n_var} variant{?s} x {n_pops} pop{?s} \\
@@ -343,29 +358,32 @@
      raw storage, vs {format(round(12 * n_pops * n_var / 1024^2), big.mark=',')} \\
      MiB with integer matrices)"
   )
-  cli::cli_progress_bar("Reading chunk", total = length(setup$feather_files))
-
-  for (fpath in setup$feather_files) {
-    chunk <- arrow::read_feather(fpath,
-                                 col_select = c(".row_id", "sample", "a1", "a2"))
-    rc <- .reshape_chunk(chunk, setup)
-    chunk <- NULL
-    gc(verbose = FALSE, full = FALSE)
-
-    if (!is.null(rc)) {
-      pc <- .pop_counts_from_chunk(rc, setup)
-      ref_pair <- .add_u16_columns(ref_pair, pc$ref, rc$col_idx, n_pops)
-      alt_pair <- .add_u16_columns(alt_pair, pc$alt, rc$col_idx, n_pops)
-      nobs_pair <- .add_u16_columns(nobs_pair, pc$nobs, rc$col_idx, n_pops)
+  # per-chunk population counts (in parallel with workers), added here wave
+  # by wave to the accumulators, which are updated in place
+  it <- .chunk_iterator(setup$feather_files, .pops_chunk,
+                        shared = c(.reshape_shared(setup), list(P = setup$P)),
+                        label = "Reading chunk")
+  on.exit(it$done())
+  while (!is.null(w <- it$next_wave())) {
+    for (pc in w$res) {
+      if (is.null(pc)) next
+      # Add this chunk's counts to its columns — true accumulation, matching
+      # .accumulate_pops()'s "+=" semantics (needed in case the same variant's
+      # rows are ever split across chunks, e.g. after vcf_bind()).
+      cells <- .column_cells(pc$col_idx, n_pops)
+      enc <- .encode_u16(.decode_u16(ref_lo[cells], ref_hi[cells]) + as.vector(pc$ref))
+      ref_lo[cells] <- enc$lo; ref_hi[cells] <- enc$hi
+      enc <- .encode_u16(.decode_u16(alt_lo[cells], alt_hi[cells]) + as.vector(pc$alt))
+      alt_lo[cells] <- enc$lo; alt_hi[cells] <- enc$hi
+      enc <- .encode_u16(.decode_u16(nobs_lo[cells], nobs_hi[cells]) + as.vector(pc$nobs))
+      nobs_lo[cells] <- enc$lo; nobs_hi[cells] <- enc$hi
     }
-    cli::cli_progress_update()
   }
-  cli::cli_progress_done()
 
   # Decode to integer matrices for the C++ writers.
-  ref <- matrix(.decode_u16(ref_pair$lo, ref_pair$hi), nrow = n_pops, ncol = n_var)
-  alt <- matrix(.decode_u16(alt_pair$lo, alt_pair$hi), nrow = n_pops, ncol = n_var)
-  nobs <- matrix(.decode_u16(nobs_pair$lo, nobs_pair$hi), nrow = n_pops, ncol = n_var)
+  ref <- matrix(.decode_u16(ref_lo, ref_hi), nrow = n_pops, ncol = n_var)
+  alt <- matrix(.decode_u16(alt_lo, alt_hi), nrow = n_pops, ncol = n_var)
+  nobs <- matrix(.decode_u16(nobs_lo, nobs_hi), nrow = n_pops, ncol = n_var)
 
   list(ref = ref, alt = alt, nobs = nobs)
 }
@@ -385,7 +403,8 @@
   cli::cli_progress_bar("Reading chunk", total = length(setup$feather_files))
   for (fpath in setup$feather_files) {
     chunk <- arrow::read_feather(fpath,
-                                 col_select = c(".row_id", "sample", "a1", "a2"))
+                                 col_select = c(".row_id", "sample", "a1", "a2"),
+                                 as_data_frame = FALSE)
     rc <- .reshape_chunk(chunk, setup)
     if (!is.null(rc)) {
       pc <- .pop_counts_from_chunk(rc, setup)

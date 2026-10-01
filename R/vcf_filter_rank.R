@@ -14,8 +14,8 @@
 #' @details
 #' This function removes loci below RANK threshold from a VCFArrow object,
 #' returning a new VCFArrow object.
-#' RANK is calculated in DiscoSNP-RAD (Gauthier et. al. 2020) and
-#' registered as Pk in INFO.
+#' RANK is calculated by kissreads2 in DiscoSNP-RAD (Gauthier et. al. 2020)
+#' and registered as Rk in INFO.
 #' RANK is calculated as sqrt(chi-sqr/n) of allele read counts, and
 #' used for paralog detection -> very low rank values (<0.4) are
 #' indicative of paralogs.
@@ -51,7 +51,7 @@ vcf_filter_rank <- function(vcf_arrow, threshold = 0.4, keep_na = FALSE) {
   }
 
   cli::cli_alert_info(
-    "Retained {length(keep)} / {idx$n_var} variant{?s} (Rank >= {threshold})"
+    "Retained {sum(keep, na.rm = TRUE)} / {idx$n_var} variant{?s} (Rank >= {threshold})"
   )
 
   # apply filter using unified API

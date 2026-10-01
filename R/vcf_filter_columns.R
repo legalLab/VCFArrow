@@ -59,37 +59,24 @@
     # backing files, benefiting every downstream operation.
     ffiles <- .get_sorted_feather_files(vcf_arrow@path)
 
-    # Fast logical-vector lookup for row_id membership (same pattern used in
-    # all filter scan loops throughout this package).
-    valid_row_ids <- vcf_arrow@variants$.row_id
-    max_id <- if (length(valid_row_ids) > 0L) max(valid_row_ids) else 0L
-    lv <- logical(max_id + 1L)
-    lv[valid_row_ids] <- TRUE
-
     tmp_dir <- tempfile("arrow_vcf_samp_")
     dir.create(tmp_dir)
-    out_idx <- 0L
 
     cli::cli_alert_info(
       "Compacting GT: {length(s)} -> {length(keep_ids)} sample{?s} \\
        across {length(ffiles)} chunk{?s}"
     )
-    cli::cli_progress_bar("Compacting chunk", total = length(ffiles))
-
-    for (fpath in ffiles) {
-      chunk <- arrow::read_feather(fpath)
-      chunk <- chunk[lv[chunk$.row_id] & chunk$sample %in% keep_ids, , drop = FALSE]
-      if (nrow(chunk) > 0L) {
-        out_idx <- out_idx + 1L
-        arrow::write_feather(
-          chunk,
-          file.path(tmp_dir, paste0("chunk_", out_idx, ".arrow"))
-        )
-      }
-      chunk <- NULL; gc(verbose = FALSE, full = FALSE)
-      cli::cli_progress_update()
-    }
-    cli::cli_progress_done()
+    # Each chunk is written to part_<i>.arrow (in parallel with workers);
+    # non-empty parts are then renamed chunk_1, chunk_2, ... in order.
+    tasks <- lapply(seq_along(ffiles), function(i) list(
+      fpath = ffiles[[i]], out = file.path(tmp_dir, paste0("part_", i, ".arrow"))
+    ))
+    shared <- list(pos = .row_id_pos(vcf_arrow@variants$.row_id), samples = keep_ids)
+    written <- unlist(.map_chunks(tasks, .compact_chunk, shared = shared,
+                                  label = "Compacting chunk"))
+    parts <- vapply(tasks[written], `[[`, character(1), "out")
+    out_idx <- length(parts)
+    file.rename(parts, file.path(tmp_dir, paste0("chunk_", seq_len(out_idx), ".arrow")))
 
     if (out_idx == 0L)
       cli::cli_abort("No genotype data remained after sample filtering.")
@@ -107,7 +94,8 @@
       samples = keep_ids,
       groups = vcf_arrow@groups[idx],
       path = tmp_dir,
-      invariant_removed = vcf_arrow@invariant_removed
+      invariant_removed = vcf_arrow@invariant_removed,
+      loci = vcf_arrow@loci
     )
 
   } else {
@@ -129,4 +117,24 @@
   }
 
   return(vcf_arrow)
+}
+
+# Write the rows of live variants (shared$pos) and kept samples
+# (shared$samples) of one chunk to task$out.  The chunk stays an Arrow Table:
+# converting it (including its per-sample FORMAT strings) to R and back is the
+# dominant cost.  Returns FALSE (and writes nothing) if no rows remain.
+
+.compact_chunk <- function(task, shared) {
+  chunk <- arrow::read_feather(task$fpath, as_data_frame = FALSE)
+  in_samples <- as.vector(arrow::call_function(
+    "is_in", chunk$sample,
+    options = list(value_set = arrow::Array$create(shared$samples), skip_nulls = FALSE)
+  ))
+  keep <- !is.na(.match_row_id(as.vector(chunk$.row_id), shared$pos)) & in_samples
+  chunk <- chunk$Filter(arrow::Array$create(keep))
+  written <- chunk$num_rows > 0L
+  if (written) arrow::write_feather(chunk, task$out)
+  chunk <- NULL
+  .release_arrow_memory()
+  written
 }

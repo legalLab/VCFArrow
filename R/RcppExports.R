@@ -9,8 +9,36 @@ scatter_assign_vec <- function(geno_list, rows, cols, vals) {
     invisible(.Call(`_VCFArrow_scatter_assign_vec`, geno_list, rows, cols, vals))
 }
 
-parse_vcf_cpp <- function(lines, nsamples) {
-    .Call(`_VCFArrow_parse_vcf_cpp`, lines, nsamples)
+vcf_open_cpp <- function(path) {
+    .Call(`_VCFArrow_vcf_open_cpp`, path)
+}
+
+vcf_close_cpp <- function(handle) {
+    invisible(.Call(`_VCFArrow_vcf_close_cpp`, handle))
+}
+
+vcf_read_header_cpp <- function(handle) {
+    .Call(`_VCFArrow_vcf_read_header_cpp`, handle)
+}
+
+vcf_read_chunk_cpp <- function(handle, chunk_size, samples, row_offset) {
+    .Call(`_VCFArrow_vcf_read_chunk_cpp`, handle, chunk_size, samples, row_offset)
+}
+
+vcf_read_raw_cpp <- function(handle, chunk_size) {
+    .Call(`_VCFArrow_vcf_read_raw_cpp`, handle, chunk_size)
+}
+
+vcf_parse_raw_cpp <- function(raw, samples, row_offset) {
+    .Call(`_VCFArrow_vcf_parse_raw_cpp`, raw, samples, row_offset)
+}
+
+sample_counts_cpp <- function(s, a1, a2, dp, n_samples) {
+    .Call(`_VCFArrow_sample_counts_cpp`, s, a1, a2, dp, n_samples)
+}
+
+match_row_id_cpp <- function(ids, pos) {
+    .Call(`_VCFArrow_match_row_id_cpp`, ids, pos)
 }
 
 write_smartsnp_header_cpp <- function(samples, out_file) {
@@ -105,7 +133,11 @@ write_plink_ped_cpp <- function(a1_mat, a2_mat, REF, ALT, samples, fid, pat, mat
     invisible(.Call(`_VCFArrow_write_plink_ped_cpp`, a1_mat, a2_mat, REF, ALT, samples, fid, pat, mat, sex, pheno, out_file))
 }
 
-write_vcf_chunk_cpp <- function(output_file, chrom, pos, id, ref, alt, qual, filter_col, info, format_col, fmt_vec, n_samples, gzip = FALSE) {
-    invisible(.Call(`_VCFArrow_write_vcf_chunk_cpp`, output_file, chrom, pos, id, ref, alt, qual, filter_col, info, format_col, fmt_vec, n_samples, gzip))
+arrow_c_alloc_cpp <- function() {
+    .Call(`_VCFArrow_arrow_c_alloc_cpp`)
+}
+
+write_vcf_chunk_cpp <- function(output_file, chrom, pos, id, ref, alt, qual, filter_col, info, format_col, fmt_array, fmt_schema, n_samples, gzip = FALSE) {
+    invisible(.Call(`_VCFArrow_write_vcf_chunk_cpp`, output_file, chrom, pos, id, ref, alt, qual, filter_col, info, format_col, fmt_array, fmt_schema, n_samples, gzip))
 }
 

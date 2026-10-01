@@ -37,19 +37,17 @@ vcf2smartsnp <- function(vcf_arrow, out_file, keep_groups = NULL) {
   cli::cli_alert_info("Building SmartSNP: {setup$n_var} variant{?s} x {setup$n_samples} sample{?s} \\
     ({.strong {format(round(2 * setup$n_var * setup$n_samples / 1024^2), big.mark=',')}} MiB raw storage)")
   cli::cli_alert_info("Writing SmartSNP file...")
-  cli::cli_progress_bar("Writing chunk", total = length(setup$feather_files))
-
-  for (fpath in setup$feather_files) {
-    chunk <- arrow::read_feather(fpath, col_select = c(".row_id","sample","a1","a2"))
-    rc <- .reshape_chunk(chunk, setup)
-    if (!is.null(rc)) {
-      write_smartsnp_chunk_cpp(rc$a1, rc$a2, out_file)
-      }
-    cli::cli_progress_update()
-  }
-
-  cli::cli_progress_done()
+  .write_chunks_ordered(.file_tasks(setup$feather_files), .smartsnp_chunk,
+                        shared = .reshape_shared(setup), out_file = out_file,
+                        label = "Writing chunk")
   cli::cli_alert_success("SmartSNP file written to {.file {out_file}}")
 
   invisible(vcf_arrow)
+}
+
+# Worker side of the chunk loop (see .write_chunks_ordered()): append one chunk to task$part
+.smartsnp_chunk <- function(task, shared) {
+  rc <- .read_reshape_chunk(task$fpath, shared)
+  if (!is.null(rc)) write_smartsnp_chunk_cpp(rc$a1, rc$a2, task$part)
+  invisible(NULL)
 }

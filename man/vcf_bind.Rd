@@ -4,12 +4,37 @@
 \alias{vcf_bind}
 \title{vcf_bind}
 \usage{
-vcf_bind(..., .check = TRUE)
+vcf_bind(
+  ...,
+  mode = c("intersect", "union"),
+  absent_as = c("missing", "hom_ref"),
+  outgroup = FALSE,
+  recover_loci = FALSE,
+  .check = NULL
+)
 }
 \arguments{
 \item{...}{-> a collection of VCFArrow objects}
 
-\item{.check}{-> check that VCFArrow objects are compatible, default TRUE (Boolean)}
+\item{mode}{-> "intersect" keeps variants present in all objects, "union"
+keeps variants present in any object, default "intersect" (character)}
+
+\item{absent_as}{-> for mode = "union" or outgroup = TRUE, how genotypes
+absent from a source object are coded, "missing" or "hom_ref",
+default "missing" (character)}
+
+\item{outgroup}{-> add the other objects (e.g. outgroups) to the first
+object (e.g. a filtered ingroup), keeping exactly the variants of the
+first object; mode and recover_loci are then not used, default FALSE
+(Boolean)}
+
+\item{recover_loci}{-> for mode = "union", restore the genotypes of
+variants an object removed by filtering, where its genotype files still
+hold them, instead of coding them according to absent_as, default FALSE
+(Boolean)}
+
+\item{.check}{-> deprecated and ignored; objects no longer need to share
+the same variants}
 }
 \value{
 VCFArrow object
@@ -18,21 +43,60 @@ VCFArrow object
 Bind two or more VCFArrow objects into a new VCFArrow object
 }
 \details{
-This function binds two or more VCFArrow objects, returning new VCFArrow object.
-The VCFArrow objects must have the same SNPs, and must have unique individuals.
-Default is to check compatibility between VCFArrow objects;
-this default can but is not meant to be changed.
-If VCFArrow objects are not compatible but need to be merged,
-use vcf_bind_sparse().
+This function binds two or more VCFArrow objects with different sets of
+individuals, returning a new VCFArrow object. Sample names must be unique
+across objects.
+The objects need not have the same variants: mode = "intersect" keeps the
+variants present in all objects, mode = "union" keeps the variants present
+in any object and codes the genotypes an object lacks according to
+absent_as.
+For objects with the same variants both modes give the same result.
+In mode = "union", variants an object removed stay removed for it: a
+variant that one object removed by filtering but that another object
+contains is included, with the genotypes of the object that removed it
+coded according to absent_as. Binding in steps and binding all objects in
+one call then give the same result. With recover_loci = TRUE, the real
+genotypes of such variants are restored instead, read from the genotype
+files of the object that removed them (which keep every variant the object
+had when its files were written). This suits joining separately filtered
+datasets; binding in steps can then differ from binding in one call.
+
+outgroup = TRUE is meant for adding outgroups to an ingroup that was
+filtered on its own (so that properties of the outgroup, such as its
+missingness, cannot remove ingroup variants): the result keeps exactly the
+variants of the first object, and variants removed from it stay removed.
+The other objects contribute their genotypes for these variants, read from
+their genotype files wherever present (including variants they removed,
+for example as invariant); genotypes they do not have are coded according
+to absent_as.
+
+Variants are matched by CHROM, POS, REF and ALT, so the objects may come
+from different VCF files (e.g. separate sequencing runs); REF and ALT must
+be written the same way in all of them (including the order of alternative
+alleles). This is assured when all datasets were called against the same
+reference genome assembly, which gives the same CHROM, POS and REF for the
+same locus. It is generally not possible for de novo (reference-free) SNP
+calling, for example with DiscoSnp, where locus names and positions are
+generated anew in each calling run, so the same locus will usually not
+match between separately called datasets; such datasets should be called
+together in a single run instead. Multi-allelic sites can list their ALT
+alleles in a different order in different files, so it is best to
+normalize the VCFs first, for example by splitting multi-allelic sites with
+\verb{bcftools norm -m -any}. Variants keep the .row_id of the first object where its source
+VCF has them, other variants get new ids; the variant metadata of the first
+object and, in mode = "intersect", its record of removed invariant variants
+are kept, so bound objects can be bound again.
 }
 \examples{
 f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
                  package = "VCFArrow")
 vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
-ingroup <- vcf_extract_groups(vcf, c("GS", "BS", "WA"),
-                              f_invar = FALSE)
-outgroup <- vcf_extract_groups(vcf, "OG", f_invar = FALSE)
-vcf_bind(ingroup, outgroup)
+ingroup <- vcf_extract_groups(vcf, c("GS", "BS", "WA"))
+outgroup <- vcf_extract_groups(vcf, "OG")
+vcf_bind(ingroup, outgroup, mode = "intersect")
+vcf_bind(ingroup, outgroup, mode = "union", absent_as = "missing")
+vcf_bind(vcf_filter_missingness(ingroup, 0.2), outgroup, outgroup = TRUE,
+         absent_as = "missing")
 
 }
 \author{

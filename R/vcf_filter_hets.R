@@ -30,32 +30,14 @@ vcf_filter_hets <- function(vcf_arrow, threshold = 0.5) {
     cli::cli_abort("Expecting a VCFArrow object")
 
   idx <- .vcf_filter_index(vcf_arrow)
-  n_het <- integer(idx$n_var)
-  n_called <- integer(idx$n_var)
   ffiles <- .get_sorted_feather_files(vcf_arrow@path)
 
   cli::cli_alert_info("Applying heterozygosity filter")
 
-  cli::cli_progress_bar("Scanning chunk", total = length(ffiles))
-  for (fpath in ffiles) {
-    chunk <- arrow::read_feather(fpath, col_select = c(".row_id", "sample", "a1", "a2"))
-    chunk <- chunk[idx$lv[chunk$.row_id] & chunk$sample %in% idx$samples, , drop = FALSE]
-    if (nrow(chunk) > 0L) {
-      called <- !is.na(chunk$a1) & !is.na(chunk$a2)
-      if (any(called)) {
-        sub <- chunk[called, , drop = FALSE]
-        pos <- idx$col_idx[as.character(sub$.row_id)]
-        n_called <- n_called + tabulate(pos, nbins = idx$n_var)
-        het_pos <- pos[sub$a1 != sub$a2]
-        if (length(het_pos) > 0L) {
-          n_het <- n_het + tabulate(het_pos, nbins = idx$n_var)
-        }
-      }
-    }
-    chunk <- NULL; gc(verbose = FALSE, full = FALSE)
-    cli::cli_progress_update()
-  }
-  cli::cli_progress_done()
+  parts <- .map_chunks(ffiles, .hets_chunk, shared = idx[c("pos", "samples")],
+                       label = "Scanning chunk")
+  n_called <- .merge_ranges(parts, "n", integer(idx$n_var))
+  n_het <- .merge_ranges(parts, "het", integer(idx$n_var))
 
   het_rate <- ifelse(n_called > 0L, n_het / n_called, NA_real_)
   # n_called == 0 → excluded (matches the original's implicit-omission behaviour)
@@ -70,4 +52,12 @@ vcf_filter_hets <- function(vcf_arrow, threshold = 0.5) {
   vcf_arrow <- .vcf_filter_rows(vcf_arrow, keep)
 
   return(vcf_arrow)
+}
+
+# Per-chunk counts of called and heterozygous genotypes per variant
+.hets_chunk <- function(fpath, shared) {
+  ch <- .read_live_chunk(fpath, c("a1", "a2"), shared)
+  called <- !is.na(ch$a1) & !is.na(ch$a2)
+  pos <- ch$pos[called]
+  list(n = .range_count(pos), het = .range_count(pos[ch$a1[called] != ch$a2[called]]))
 }

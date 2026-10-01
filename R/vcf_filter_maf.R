@@ -29,31 +29,14 @@ vcf_filter_maf <- function(vcf_arrow, threshold = 0.05) {
     cli::cli_abort("Expecting a VCFArrow object")
 
   idx <- .vcf_filter_index(vcf_arrow)
-  alt_sum <- integer(idx$n_var)
-  n_called <- integer(idx$n_var)
   ffiles <- .get_sorted_feather_files(vcf_arrow@path)
 
   cli::cli_alert_info("Applying MAF filter")
 
-  cli::cli_progress_bar("Scanning chunk", total = length(ffiles))
-  for (fpath in ffiles) {
-    chunk <- arrow::read_feather(fpath, col_select = c(".row_id", "sample", "a1", "a2"))
-    chunk <- chunk[idx$lv[chunk$.row_id] & chunk$sample %in% idx$samples, , drop = FALSE]
-    if (nrow(chunk) > 0L) {
-      called <- !is.na(chunk$a1) & !is.na(chunk$a2)
-      if (any(called)) {
-        sub <- chunk[called, , drop = FALSE]
-        pos <- idx$col_idx[as.character(sub$.row_id)]
-        n_called <- n_called + tabulate(pos, nbins = idx$n_var)
-        # tapply gives sum of (a1+a2) per position
-        rs <- tapply(sub$a1 + sub$a2, pos, sum)
-        alt_sum[as.integer(names(rs))] <- alt_sum[as.integer(names(rs))] + as.integer(rs)
-      }
-    }
-    chunk <- NULL; gc(verbose = FALSE, full = FALSE)
-    cli::cli_progress_update()
-  }
-  cli::cli_progress_done()
+  parts <- .map_chunks(ffiles, .maf_chunk, shared = idx[c("pos", "samples")],
+                       label = "Scanning chunk")
+  n_called <- .merge_ranges(parts, "n", integer(idx$n_var))
+  alt_sum <- .merge_ranges(parts, "alt", numeric(idx$n_var))  # sum of (a1+a2)
 
   af <- ifelse(n_called > 0L, alt_sum / (2L * n_called), NA_real_)
   maf <- pmin(af, 1 - af, na.rm = FALSE)
@@ -68,4 +51,12 @@ vcf_filter_maf <- function(vcf_arrow, threshold = 0.05) {
   vcf_arrow <- .vcf_filter_rows(vcf_arrow, keep)
 
   return(vcf_arrow)
+}
+
+# Per-chunk counts of called genotypes and sums of (a1 + a2) per variant
+.maf_chunk <- function(fpath, shared) {
+  ch <- .read_live_chunk(fpath, c("a1", "a2"), shared)
+  called <- !is.na(ch$a1) & !is.na(ch$a2)
+  pos <- ch$pos[called]
+  list(n = .range_count(pos), alt = .range_sum(pos, ch$a1[called] + ch$a2[called]))
 }

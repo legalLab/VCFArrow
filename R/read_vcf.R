@@ -46,27 +46,15 @@ read_vcf <- function(vcf_file, chunk_size = 50000) {
   # physically create the directory at that path
   dir.create(tmp_dir)
 
-  # set up a conditional file connection
-  con <- if (grepl("\\.gz$", vcf_file)) gzfile(vcf_file, "rt") else file(vcf_file, "rt")
-  on.exit(close(con))
+  # open the VCF (plain or gzip-compressed) with the C++ chunk reader
+  con <- vcf_open_cpp(normalizePath(vcf_file, mustWork = TRUE))
+  on.exit(vcf_close_cpp(con))
 
   # read header
-  header <- character()
-  repeat {
-    line <- readLines(con, n = 1)
-
-    if (length(line) == 0) {
-      cli::cli_abort("Unexpected EOF before header")
-    }
-    if (startsWith(line, "##")) {
-      header <- c(header, line)
-    } else if (startsWith(line, "#CHROM")) {
-      header <- c(header, line)
-      break
-    } else {
-      cli::cli_abort("Malformed VCF: missing #CHROM line")
-    }
-  }
+  hdr <- vcf_read_header_cpp(con)
+  header <- hdr$header
+  if (hdr$status == 1L) cli::cli_abort("Unexpected EOF before header")
+  if (hdr$status == 2L) cli::cli_abort("Malformed VCF: missing #CHROM line")
 
   # extract samples
   header_fields <- strsplit(header[length(header)], "\t", fixed = TRUE)[[1]]
@@ -81,71 +69,64 @@ read_vcf <- function(vcf_file, chunk_size = 50000) {
   format_buffer <- list()
   chunk_id <- 1
 
+  # R metadata that write_feather() attaches to a data.frame, so chunks
+  # written from the C++-built Arrow batches read back exactly as before
+  gt_metadata <- arrow::arrow_table(data.frame(
+    .row_id = integer(0), sample = character(0), a1 = integer(0), a2 = integer(0),
+    phased = logical(0), fmt = character(0), DP = numeric(0), GQ = numeric(0),
+    ADR = numeric(0), stringsAsFactors = FALSE
+  ))$metadata
+
   # chunk size message
   cli::cli_alert_info("VCF is being read in chunks of {chunk_size} variant{?s}")
 
   # set up progress bar
   cli::cli_progress_bar("Reading in VCF chunk", total = NA)
 
+  # Chunks are parsed into Arrow record batches and written to feather files;
+  # the per-variant fields are collected here.  With workers (see
+  # vcf_set_workers()), this process reads raw chunks of lines and the
+  # workers parse and write them, one chunk per worker per round.
+  n_workers <- .vcf_workers()
+  shared <- list(samples = samples, metadata = gt_metadata)
+  chunk_path <- function(id) file.path(tmp_dir, paste0("chunk_", id, ".arrow"))
+
   repeat {
-    lines <- readLines(con, n = chunk_size)
-    if (length(lines) == 0) break
+    if (n_workers == 1L) {
+      parsed <- vcf_read_chunk_cpp(con, chunk_size, samples,
+                                   as.integer((chunk_id - 1) * chunk_size))
+      if (parsed$n == 0L) break
+      done <- list(.write_gt_batch(parsed, chunk_path(chunk_id), gt_metadata))
+    } else {
+      tasks <- list()
+      for (w in seq_len(n_workers)) {
+        rc <- vcf_read_raw_cpp(con, chunk_size)
+        if (rc$n == 0L) break
+        id <- chunk_id + w - 1
+        tasks[[w]] <- list(raw = rc$raw, row_offset = as.integer((id - 1) * chunk_size),
+                           out = chunk_path(id))
+      }
+      if (length(tasks) == 0L) break
+      done <- .map_chunks(tasks, .read_vcf_chunk, shared = shared, progress = FALSE)
+    }
 
-    # progress update
-    cli::cli_progress_update()
+    for (parsed in done) {
+      # progress update
+      cli::cli_progress_update()
 
-    n <- length(lines)
+      # FORMAT is per-variant → for memory efficiency keep in a separate FORMAT lookup
+      format_df <- data.frame(
+        FORMAT = parsed$format,
+        .row_id = as.integer((chunk_id - 1) * chunk_size) + seq_len(parsed$n),
+        stringsAsFactors = FALSE
+      )
+      format_buffer[[chunk_id]] <- format_df
 
-    parsed <- parse_vcf_cpp(lines, length(samples))
+      variant_buffer[[chunk_id]] <- as.matrix(parsed$variants)
+      info_buffer[[chunk_id]] <- as.character(parsed$info)
 
-    # build long-format table
-    n <- nrow(parsed$a1)
-    n_samples <- length(samples)
-
-    # repeat row ids for each sample
-    row_ids <- as.integer(rep(seq_len(n) + (chunk_id - 1) * chunk_size, each = n_samples))
-
-    # repeat sample names for each variant
-    sample_ids <- rep(samples, times = n)
-
-    # flatten matrices (column-major → need transpose first)
-    a1_vec <- as.vector(t(parsed$a1))
-    a2_vec <- as.vector(t(parsed$a2))
-    phased_vec <- as.vector(t(parsed$phased))
-    fmt_vec <- as.vector(t(parsed$fmt))
-    DP_vec <- as.vector(t(parsed$DP))
-    GQ_vec <- as.vector(t(parsed$GQ))
-    ADR_vec <- as.vector(t(parsed$ADR))
-
-    gt_long <- data.frame(
-      .row_id = row_ids,
-      sample = sample_ids,
-      a1 = a1_vec,
-      a2 = a2_vec,
-      phased = phased_vec,
-      fmt = fmt_vec,
-      DP = DP_vec,
-      GQ = GQ_vec,
-      ADR = ADR_vec,
-      stringsAsFactors = FALSE
-    )
-
-    arrow::write_feather(gt_long, file.path(tmp_dir, paste0("chunk_", chunk_id, ".arrow")))
-    # option to store as Apache parquet
-    #arrow::write_parquet(gt_long, file.path(tmp_dir, paste0("chunk_", chunk_id, ".parquet")))
-
-    # FORMAT is per-variant → for memory efficiency keep in a separate FORMAT lookup
-    format_df <- data.frame(
-      FORMAT = parsed$format,
-      .row_id = as.integer(seq_len(n) + (chunk_id - 1) * chunk_size),
-      stringsAsFactors = FALSE
-    )
-    format_buffer[[chunk_id]] <- format_df
-
-    variant_buffer[[chunk_id]] <- as.matrix(parsed$variants)
-    info_buffer[[chunk_id]] <- as.character(parsed$info)
-
-    chunk_id <- chunk_id + 1
+      chunk_id <- chunk_id + 1
+    }
   }
 
   # end of progress bar
@@ -160,25 +141,20 @@ read_vcf <- function(vcf_file, chunk_size = 50000) {
   variants_df$POS <- suppressWarnings(as.integer(variants_df$POS))
   info_vec <- unlist(info_buffer, use.names = FALSE)
 
-  # detect if Rk exists anywhere and make a slot
-  has_rk <- any(stringr::str_detect(info_vec, "(^|;)Rk="))
-
-  if (has_rk) {
-    variants_df$Rk <- suppressWarnings(
-      as.numeric(stringr::str_remove(
-        stringr::str_extract(info_vec, "Rk=[^;]+"), "Rk="))
-    )
-  } else {
-    variants_df$Rk <- NA_real_
-  }
+  # DiscoSNP-RAD paralog metrics from INFO: RANK (Rk) and REPEAT (RPT);
+  # NA where absent
+  variants_df$Rk <- .info_numeric(info_vec, "Rk")
+  variants_df$RPT <- .info_numeric(info_vec, "RPT")
 
   # extract variant information for filtering
   variants_df <- variants_df |>
     dplyr::mutate(
       n_alt = stringr::str_count(ALT, ",") + 1,
       is_biallelic = n_alt == 1,
+      # indel: REF or any ALT allele not exactly one character long
+      # (an allele of 2+ characters, or an empty allele before a comma)
       is_indel = (nchar(REF) != 1 |
-                    vapply(strsplit(ALT, ","), function(x) any(nchar(x) != 1), logical(1)))
+                    grepl("[^,]{2,}", ALT) | grepl("(^|,),", ALT))
     )
 
   variants_df$.row_id <- as.integer(seq_len(nrow(variants_df)))
@@ -188,6 +164,11 @@ read_vcf <- function(vcf_file, chunk_size = 50000) {
   # option to store as Apache parquet
   #gt_arrow <- arrow::open_dataset(tmp_dir, format = "parquet")
 
+  # CHROM/POS/REF/ALT of every .row_id, kept unfiltered (row i = .row_id i);
+  # shares its columns with variants_df until variants are filtered
+  loci <- variants_df[c("CHROM", "POS", "REF", "ALT")]
+  rownames(loci) <- NULL
+
   vcf_arrow <- .new_vcfarrow(
     header,
     info_vec,
@@ -196,10 +177,45 @@ read_vcf <- function(vcf_file, chunk_size = 50000) {
     gt_arrow,
     samples,
     groups,
-    tmp_dir
+    tmp_dir,
+    loci = loci
   )
 
   cli::cli_alert_success("VCF successfully read into a VCFArrow object")
 
   return(vcf_arrow)
+}
+
+# Write the genotype record batch of a parsed chunk to a feather file and
+# return the per-variant fields.  gt_metadata: the R metadata write_feather()
+# attaches to a data.frame, so chunks read back exactly as before.
+
+.write_gt_batch <- function(parsed, out, gt_metadata) {
+  gt_long <- arrow::Table$create(
+    arrow::RecordBatch$import_from_c(parsed$array, parsed$schema)
+  )
+  gt_long$metadata <- gt_metadata
+  arrow::write_feather(gt_long, out)
+  # option to store as Apache parquet
+  #arrow::write_parquet(gt_long, sub("\\.arrow$", ".parquet", out))
+  gt_long <- NULL
+  .release_arrow_memory()
+  parsed[c("n", "variants", "info", "format")]
+}
+
+# Worker side of parallel reading: parse one raw chunk (see
+# vcf_read_raw_cpp()) and write its genotypes.
+
+.read_vcf_chunk <- function(task, shared) {
+  parsed <- vcf_parse_raw_cpp(task$raw, shared$samples, task$row_offset)
+  .write_gt_batch(parsed, task$out, shared$metadata)
+}
+
+# Numeric value of INFO key `key` for each variant (NA where the key is absent
+# or its value is not a number).  The key is matched only at the start of an
+# INFO entry, so e.g. "RPT" does not match inside "MRPT=3".
+
+.info_numeric <- function(info, key) {
+  value <- stringr::str_match(info, paste0("(?:^|;)", key, "=([^;]*)"))[, 2]
+  suppressWarnings(as.numeric(value))
 }

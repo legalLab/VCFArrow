@@ -40,29 +40,15 @@ vcf_filter_multiSNV <- function(vcf_arrow, block_size = 10000,
   cli::cli_alert_info("Applying linked SNV filter")
 
   # select variants
-  keep <- vcf_arrow@variants |>
-    dplyr::arrange(CHROM, POS) |>
-    dplyr::group_by(CHROM) |>
-    dplyr::mutate(
-      first_pos = min(POS),
-      block = ((POS - first_pos) %/% block_size) + 1
-    ) |>
-    dplyr::ungroup() |>
-    # count SNVs per block
-    dplyr::group_by(CHROM, block) |>
-    dplyr::mutate(snvs_in_block = dplyr::n()) |>
-    # keep only blocks with enough SNVs
-    dplyr::filter(snvs_in_block >= minSNV) |>
-    # rank SNVs within each block
-    dplyr::arrange(CHROM, block, POS) |>
-    dplyr::mutate(rank = dplyr::row_number()) |>
-    # keep up to maxS SNVs per block
-    dplyr::filter(rank <= maxSNV) |>
-    dplyr::ungroup() |>
-    dplyr::pull(.row_id)
+  b <- .snv_blocks(vcf_arrow@variants, block_size)
+  # count SNVs per block, and rank SNVs within each block (by POS)
+  snvs_in_block <- tabulate(b$run)[b$run]
+  rank <- seq_along(b$run) - which(b$first)[b$run] + 1L
+  # keep only blocks with enough SNVs, and up to maxSNV SNVs per block
+  keep <- b$row_id[snvs_in_block >= minSNV & rank <= maxSNV]
 
   cli::cli_alert_info(
-    "Retained {length(keep)} / {idx$n_var} variant{?s} (unlinked SNVs)"
+    "Retained {length(keep)} / {idx$n_var} variant{?s} (linked SNVs)"
   )
 
   # apply filter using unified API

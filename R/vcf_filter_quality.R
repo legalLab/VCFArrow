@@ -47,7 +47,7 @@ vcf_filter_quality <- function(vcf_arrow, threshold = 30) {
   keep <- qual >= threshold
 
   cli::cli_alert_info(
-    "Retained {length(keep)} / {idx$n_var} variant{?s} (QUAL >= {threshold})"
+    "Retained {sum(keep, na.rm = TRUE)} / {idx$n_var} variant{?s} (QUAL >= {threshold})"
   )
 
   # apply filter using unified API

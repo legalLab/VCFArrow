@@ -85,18 +85,9 @@ vcf2eigenstrat <- function(vcf_arrow, out_file, keep_groups = NULL,
   cli::cli_alert_info(
     "Writing EIGENSTRAT files..."
   )
-  cli::cli_progress_bar("Writing chunk", total = length(setup$feather_files))
-
-  for (fpath in setup$feather_files) {
-    chunk <- arrow::read_feather(fpath,
-                                 col_select = c(".row_id", "sample", "a1", "a2"))
-    rc <- .reshape_chunk(chunk, setup)
-    if (!is.null(rc)) {
-      write_eigenstrat_chunk_cpp(rc$a1, rc$a2, geno_file)
-    }
-    cli::cli_progress_update()
-  }
-  cli::cli_progress_done()
+  .write_chunks_ordered(.file_tasks(setup$feather_files), .eigenstrat_chunk,
+                        shared = .reshape_shared(setup), out_file = geno_file,
+                        label = "Writing chunk")
 
   # ── .ind ───────────────────────────────────────────────────────────────────
   #
@@ -145,4 +136,11 @@ vcf2eigenstrat <- function(vcf_arrow, out_file, keep_groups = NULL,
   )
 
   invisible(vcf_arrow)
+}
+
+# Worker side of the chunk loop (see .write_chunks_ordered()): append one chunk to task$part
+.eigenstrat_chunk <- function(task, shared) {
+  rc <- .read_reshape_chunk(task$fpath, shared)
+  if (!is.null(rc)) write_eigenstrat_chunk_cpp(rc$a1, rc$a2, task$part)
+  invisible(NULL)
 }

@@ -35,85 +35,117 @@ write_vcf <- function(vcf_arrow, out_file, gzip = FALSE) {
 
   if (missing(out_file)) cli::cli_abort("{.arg out_file} must be supplied.")
 
-  # write header
+  # write header (with gzip, as its own gzip member: the chunks are appended
+  # as further members, which together form a valid multi-member gzip file)
   header <- vcf_arrow@header
   header[length(header)] <- paste(
     c("#CHROM","POS","ID","REF","ALT","QUAL","FILTER","INFO","FORMAT",
       vcf_arrow@samples),
     collapse = "\t"
   )
-  writeLines(header, out_file)
+  con <- if (gzip) gzfile(out_file, "w") else file(out_file, "w")
+  writeLines(header, con)
+  close(con)
 
   variants <- vcf_arrow@variants
-  n_samples <- length(vcf_arrow@samples)
-  samples <- vcf_arrow@samples
 
   # locate and sort feather files by chunk number
   # natural numeric sort avoids chunk_10 < chunk_2 with plain sort()
-  feather_files <- list.files(vcf_arrow@path, pattern = "\\.arrow$",
-                              full.names = TRUE)
-  if (length(feather_files) == 0L)
-    cli::cli_abort("No .arrow files found in {vcf_arrow@path}")
+  feather_files <- .get_sorted_feather_files(vcf_arrow@path)
 
-  chunk_nums <- as.integer(stringr::str_extract(basename(feather_files), "\\d+"))
-  feather_files <- feather_files[order(chunk_nums)]
-
-  # join FORMAT lookup (per variant) keyed by .row_id
+  # Each chunk's task carries the metadata of the variants in its .row_id
+  # range (CHROM ... INFO, and FORMAT from the per-variant lookup), so the
+  # chunks can be written in parallel without sending all metadata to every
+  # worker.
   fmt_lookup <- vcf_arrow@format
+  meta <- data.frame(
+    .row_id = variants$.row_id,
+    CHROM = variants$CHROM, POS = variants$POS, ID = variants$ID,
+    REF = variants$REF, ALT = variants$ALT, QUAL = variants$QUAL,
+    FILTER = variants$FILTER, INFO = vcf_arrow@info,
+    FORMAT = fmt_lookup$FORMAT[.match_row_id(variants$.row_id,
+                                             .row_id_pos(fmt_lookup$.row_id))],
+    stringsAsFactors = FALSE
+  )
+  tasks <- lapply(feather_files, function(f) {
+    id <- as.vector(arrow::read_feather(f, col_select = ".row_id",
+                                        as_data_frame = FALSE)$.row_id)
+    in_range <- if (length(id)) meta$.row_id >= min(id) & meta$.row_id <= max(id)
+                else logical(nrow(meta))
+    list(fpath = f, meta = meta[in_range, , drop = FALSE])
+  })
+  meta <- NULL
 
   # chunk size message
   cli::cli_alert_info("VCF is being written in {length(feather_files)} chunk{?s}")
 
-  # set up progress bar
-  cli::cli_progress_bar("Writing VCF chunk", total = length(feather_files))
+  .write_chunks_ordered(tasks, .write_vcf_chunk,
+                        shared = list(samples = vcf_arrow@samples, gzip = gzip),
+                        out_file = out_file, label = "Writing VCF chunk")
 
-  for (fpath in feather_files) {
-
-    chunk <- arrow::read_feather(fpath)  # columns: .row_id, sample, a1, a2, phased, fmt, ...
-
-    # remove filtered samples from chunks
-    # filtering here mirrors the .reshape_chunk() logic used in all exporters
-    chunk <- chunk[chunk$.row_id %in% variants$.row_id &
-                     chunk$sample %in% samples, , drop = FALSE]
-
-    # sort so rows are: variant 1 sample 1, variant 1 sample 2, ..., variant 2 sample 1, ...
-    # in practice read_vcf() writes them this way already, but sort defensively
-    chunk <- chunk[order(chunk$.row_id, match(chunk$sample, samples)), ]
-
-    row_ids <- unique(chunk$.row_id) # integer vector, one entry per variant in chunk
-    n_chunk <- length(row_ids)
-
-    # fmt_vec: flat row-major character vector, length n_chunk * n_samples
-    # matrix() with byrow=TRUE then as.vector() gives column-major; use t() to stay row-major
-    fmt_mat <- matrix(chunk$fmt, nrow = n_chunk, ncol = n_samples, byrow = TRUE)
-    fmt_vec <- as.vector(t(fmt_mat)) # row-major: [var1_s1, var1_s2, ..., var2_s1, ...]
-
-    # variant metadata for this chunk (indexed by .row_id)
-    vi <- match(row_ids, variants$.row_id)
-
-    # progress update
-    cli::cli_progress_update()
-
-    write_vcf_chunk_cpp(
-      output_file = out_file,
-      chrom = variants$CHROM[vi],
-      pos = variants$POS[vi],
-      id = variants$ID[vi],
-      ref = variants$REF[vi],
-      alt = variants$ALT[vi],
-      qual = variants$QUAL[vi],
-      filter_col = variants$FILTER[vi],
-      info = vcf_arrow@info[vi],
-      format_col = fmt_lookup$FORMAT[match(row_ids, fmt_lookup$.row_id)],
-      fmt_vec = fmt_vec,
-      n_samples = n_samples,
-      gzip = gzip
-    )
-  }
-
-  # end of progress bar
-  cli::cli_progress_done()
   cli::cli_alert_success("VCFArrow object successfully written to {.file {out_file}}")
 
   invisible(out_file)
+}
+
+# Worker side of write_vcf() (see .write_chunks_ordered()): append the VCF
+# lines of one chunk to task$part.  task$meta: metadata of the variants in the
+# chunk's .row_id range.
+
+.write_vcf_chunk <- function(task, shared) {
+  samples <- shared$samples
+  meta <- task$meta
+  var_pos <- .row_id_pos(meta$.row_id)
+
+  # only the per-sample FORMAT strings are written; the other genotype
+  # columns are derived from them at read time
+  chunk <- arrow::read_feather(task$fpath, col_select = c(".row_id", "sample", "fmt"),
+                               as_data_frame = FALSE)
+
+  # remove filtered variants and samples from chunks
+  # filtering here mirrors the .reshape_chunk() logic used in all exporters
+  sample_order <- .sample_index(chunk, samples)
+  row_id <- as.vector(chunk$.row_id)
+  keep <- !is.na(.match_row_id(row_id, var_pos)) & !is.na(sample_order)
+
+  # sort so rows are: variant 1 sample 1, variant 1 sample 2, ..., variant 2 sample 1, ...
+  # in practice read_vcf() writes them this way already, but sort defensively
+  # (rows: positions in the chunk of the kept rows, in that order)
+  rows <- which(keep)
+  rows <- rows[order(row_id[rows], sample_order[rows])]
+  row_id <- row_id[rows]
+
+  # one entry per variant in chunk (row_id is sorted)
+  row_ids <- row_id[c(TRUE, row_id[-1L] != row_id[-length(row_id)])]
+
+  # per-sample FORMAT strings in that order (flat, row-major:
+  # [var1_s1, var1_s2, ..., var2_s1, ...]), selected in Arrow and handed to
+  # the C++ writer as an Arrow array, so they never become R strings
+  fmt <- chunk$fmt$Take(arrow::Array$create(rows - 1L))
+  fmt <- if (fmt$num_chunks == 1L) fmt$chunk(0L)
+         else do.call(arrow::concat_arrays, fmt$chunks)
+  fmt_c <- arrow_c_alloc_cpp()
+  fmt$export_to_c(fmt_c$array, fmt_c$schema)
+  fmt <- chunk <- NULL
+
+  # variant metadata for this chunk (indexed by .row_id)
+  vi <- .match_row_id(row_ids, var_pos)
+
+  write_vcf_chunk_cpp(
+    output_file = task$part,
+    chrom = meta$CHROM[vi],
+    pos = meta$POS[vi],
+    id = meta$ID[vi],
+    ref = meta$REF[vi],
+    alt = meta$ALT[vi],
+    qual = meta$QUAL[vi],
+    filter_col = meta$FILTER[vi],
+    info = meta$INFO[vi],
+    format_col = meta$FORMAT[vi],
+    fmt_array = fmt_c$array,
+    fmt_schema = fmt_c$schema,
+    n_samples = length(samples),
+    gzip = shared$gzip
+  )
+  invisible(NULL)
 }

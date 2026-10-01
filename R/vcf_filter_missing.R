@@ -45,23 +45,12 @@ vcf_filter_missing <- function(vcf_arrow, threshold = 0.5,
 
   cli::cli_alert_info("Applying sample missingness filter")
 
-  cli::cli_progress_bar("Scanning chunk", total = length(ffiles))
-  for (fpath in ffiles) {
-    chunk <- arrow::read_feather(fpath, col_select = c(".row_id", "sample", "a1"))
-    chunk <- chunk[idx$lv[chunk$.row_id] & chunk$sample %in% samples, , drop = FALSE]
-    if (nrow(chunk) > 0L) {
-      tt <- table(chunk$sample)
-      total_n[names(tt)] <- total_n[names(tt)] + as.integer(tt)
-      na_samp <- chunk$sample[is.na(chunk$a1)]
-      if (length(na_samp) > 0L) {
-        nt <- table(na_samp)
-        miss_n[names(nt)] <- miss_n[names(nt)] + as.integer(nt)
-      }
-    }
-    chunk <- NULL; gc(verbose = FALSE, full = FALSE)
-    cli::cli_progress_update()
+  parts <- .map_chunks(ffiles, .missing_chunk, shared = idx[c("pos", "samples")],
+                       label = "Scanning chunk")
+  for (p in parts) {
+    total_n <- total_n + p$n
+    miss_n <- miss_n + p$miss
   }
-  cli::cli_progress_done()
 
   p_miss <- ifelse(total_n > 0L, miss_n / total_n, 1)
   keep <- samples[p_miss < threshold]
@@ -72,4 +61,11 @@ vcf_filter_missing <- function(vcf_arrow, threshold = 0.5,
   vcf_arrow <- .vcf_filter_columns(vcf_arrow, keep, f_invar, verbose)
 
   return(vcf_arrow)
+}
+
+# Per-chunk counts of genotypes and of missing (a1 NA) genotypes per sample
+.missing_chunk <- function(fpath, shared) {
+  ch <- .read_live_chunk(fpath, "a1", shared)
+  n_s <- length(shared$samples)
+  list(n = tabulate(ch$s, n_s), miss = tabulate(ch$s[is.na(ch$a1)], n_s))
 }

@@ -35,7 +35,7 @@ vcf_filter_biallelic <- function(vcf_arrow) {
   cli::cli_alert_info("Applying biallelic filter")
 
   cli::cli_alert_info(
-    "Retained {length(keep)} / {idx$n_var} variant{?s} (biallelic SNVs)"
+    "Retained {sum(keep, na.rm = TRUE)} / {idx$n_var} variant{?s} (biallelic SNVs)"
   )
 
   # apply filter using unified API

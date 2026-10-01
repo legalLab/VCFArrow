@@ -49,7 +49,7 @@ vcf_copy <- function(vcf_arrow) {
 
   # suppressWarnings: Arrow's "Invalid metadata$r" warning when re-parsing
   # R-specific IPC schema annotations on freshly copied files — benign, see
-  # the note on this same pattern in vcf_bind_sparse().
+  # the note on this same pattern in vcf_bind().
   gt_arrow <- suppressWarnings(arrow::open_dataset(new_path, format = "feather"))
 
   new_vcfarrow <- .new_vcfarrow(
@@ -60,7 +60,9 @@ vcf_copy <- function(vcf_arrow) {
     gt = gt_arrow,
     samples = vcf_arrow@samples,
     groups = vcf_arrow@groups,
-    path = new_path
+    path = new_path,
+    invariant_removed = vcf_arrow@invariant_removed,
+    loci = vcf_arrow@loci
   )
 
   return(new_vcfarrow)

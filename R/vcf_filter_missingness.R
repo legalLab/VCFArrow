@@ -31,28 +31,14 @@ vcf_filter_missingness <- function(vcf_arrow, threshold = 0.1, verbose = TRUE) {
     cli::cli_abort("Expecting a VCFArrow object")
 
   idx <- .vcf_filter_index(vcf_arrow)
-  miss_n <- integer(idx$n_var)  # NA count per variant position
-  total_n <- integer(idx$n_var)  # row count per variant position
   ffiles <- .get_sorted_feather_files(vcf_arrow@path)
 
   cli::cli_alert_info("Applying locus missingness filter")
 
-  cli::cli_progress_bar("Scanning chunk", total = length(ffiles))
-  for (fpath in ffiles) {
-    chunk <- arrow::read_feather(fpath, col_select = c(".row_id", "sample", "a1"))
-    chunk <- chunk[idx$lv[chunk$.row_id] & chunk$sample %in% idx$samples, , drop = FALSE]
-    if (nrow(chunk) > 0L) {
-      pos <- idx$col_idx[as.character(chunk$.row_id)]
-      tt <- tabulate(pos, nbins = idx$n_var)
-      total_n <- total_n + tt
-      na_pos <- pos[is.na(chunk$a1)]
-      if (length(na_pos) > 0L)
-        miss_n <- miss_n + tabulate(na_pos, nbins = idx$n_var)
-    }
-    chunk <- NULL; gc(verbose = FALSE, full = FALSE)
-    cli::cli_progress_update()
-  }
-  cli::cli_progress_done()
+  parts <- .map_chunks(ffiles, .missingness_chunk, shared = idx[c("pos", "samples")],
+                       label = "Scanning chunk")
+  total_n <- .merge_ranges(parts, "n", integer(idx$n_var))
+  miss_n <- .merge_ranges(parts, "miss", integer(idx$n_var))
 
   p_miss <- ifelse(total_n > 0L, miss_n / total_n, 1)
   keep_pos <- which(p_miss <= threshold)
@@ -68,4 +54,10 @@ vcf_filter_missingness <- function(vcf_arrow, threshold = 0.1, verbose = TRUE) {
     )
 
   return(vcf_arrow)
+}
+
+# Per-chunk counts of genotypes and of missing (a1 NA) genotypes per variant
+.missingness_chunk <- function(fpath, shared) {
+  ch <- .read_live_chunk(fpath, "a1", shared)
+  list(n = .range_count(ch$pos), miss = .range_count(ch$pos[is.na(ch$a1)]))
 }

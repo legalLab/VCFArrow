@@ -72,16 +72,9 @@ vcf2plink_bed <- function(vcf_arrow, out_file, keep_groups = NULL,
   cli::cli_alert_info("Building PLINK: {setup$n_var} variant{?s} x {setup$n_samples} sample{?s} \\
     ({.strong {format(round(2 * setup$n_var * setup$n_samples / 1024^2), big.mark=',')}} MiB raw storage)")
   cli::cli_alert_info("Writing PLINK files...")
-  cli::cli_progress_bar("Writing chunk", total = length(setup$feather_files))
-
-  for (fpath in setup$feather_files) {
-    chunk <- arrow::read_feather(fpath,
-                                 col_select = c(".row_id", "sample", "a1", "a2"))
-    rc <- .reshape_chunk(chunk, setup)
-    if (!is.null(rc)) write_plink_bed_chunk_cpp(rc$a1, rc$a2, bed_file)
-    cli::cli_progress_update()
-  }
-  cli::cli_progress_done()
+  .write_chunks_ordered(.file_tasks(setup$feather_files), .plink_bed_chunk,
+                        shared = .reshape_shared(setup), out_file = bed_file,
+                        label = "Writing chunk")
 
   # ── .bim ─────────────────────────────────────────────────────────────────
   # Six fields, no header: CHROM, ID, genetic distance (dummy 0), POS,
@@ -128,4 +121,11 @@ vcf2plink_bed <- function(vcf_arrow, out_file, keep_groups = NULL,
   )
 
   invisible(vcf_arrow)
+}
+
+# Worker side of the chunk loop (see .write_chunks_ordered()): append one chunk to task$part
+.plink_bed_chunk <- function(task, shared) {
+  rc <- .read_reshape_chunk(task$fpath, shared)
+  if (!is.null(rc)) write_plink_bed_chunk_cpp(rc$a1, rc$a2, task$part)
+  invisible(NULL)
 }

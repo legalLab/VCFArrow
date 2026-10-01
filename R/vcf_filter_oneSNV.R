@@ -35,16 +35,9 @@ vcf_filter_oneSNV <- function(vcf_arrow, block_size = 10000) {
 
   cli::cli_alert_info("Applying unlinked SNV filter")
 
-  # select variants
-  keep <- vcf_arrow@variants |>
-    dplyr::arrange(CHROM, POS) |>
-    dplyr::group_by(CHROM) |>
-    dplyr::mutate(
-      block = ((POS - min(POS)) %/% block_size) + 1
-    ) |>
-    dplyr::ungroup() |>
-    dplyr::distinct(CHROM, block, .keep_all = TRUE) |>
-    dplyr::pull(.row_id)
+  # select variants: the first (lowest POS) variant of each block
+  b <- .snv_blocks(vcf_arrow@variants, block_size)
+  keep <- b$row_id[b$first]
 
   cli::cli_alert_info(
     "Retained {length(keep)} / {idx$n_var} variant{?s} (unlinked SNVs)"

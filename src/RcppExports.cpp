@@ -36,15 +36,101 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
-// parse_vcf_cpp
-List parse_vcf_cpp(CharacterVector lines, int nsamples);
-RcppExport SEXP _VCFArrow_parse_vcf_cpp(SEXP linesSEXP, SEXP nsamplesSEXP) {
+// vcf_open_cpp
+SEXP vcf_open_cpp(std::string path);
+RcppExport SEXP _VCFArrow_vcf_open_cpp(SEXP pathSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< CharacterVector >::type lines(linesSEXP);
-    Rcpp::traits::input_parameter< int >::type nsamples(nsamplesSEXP);
-    rcpp_result_gen = Rcpp::wrap(parse_vcf_cpp(lines, nsamples));
+    Rcpp::traits::input_parameter< std::string >::type path(pathSEXP);
+    rcpp_result_gen = Rcpp::wrap(vcf_open_cpp(path));
+    return rcpp_result_gen;
+END_RCPP
+}
+// vcf_close_cpp
+void vcf_close_cpp(SEXP handle);
+RcppExport SEXP _VCFArrow_vcf_close_cpp(SEXP handleSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type handle(handleSEXP);
+    vcf_close_cpp(handle);
+    return R_NilValue;
+END_RCPP
+}
+// vcf_read_header_cpp
+List vcf_read_header_cpp(SEXP handle);
+RcppExport SEXP _VCFArrow_vcf_read_header_cpp(SEXP handleSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type handle(handleSEXP);
+    rcpp_result_gen = Rcpp::wrap(vcf_read_header_cpp(handle));
+    return rcpp_result_gen;
+END_RCPP
+}
+// vcf_read_chunk_cpp
+List vcf_read_chunk_cpp(SEXP handle, int chunk_size, CharacterVector samples, int row_offset);
+RcppExport SEXP _VCFArrow_vcf_read_chunk_cpp(SEXP handleSEXP, SEXP chunk_sizeSEXP, SEXP samplesSEXP, SEXP row_offsetSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type handle(handleSEXP);
+    Rcpp::traits::input_parameter< int >::type chunk_size(chunk_sizeSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type samples(samplesSEXP);
+    Rcpp::traits::input_parameter< int >::type row_offset(row_offsetSEXP);
+    rcpp_result_gen = Rcpp::wrap(vcf_read_chunk_cpp(handle, chunk_size, samples, row_offset));
+    return rcpp_result_gen;
+END_RCPP
+}
+// vcf_read_raw_cpp
+List vcf_read_raw_cpp(SEXP handle, int chunk_size);
+RcppExport SEXP _VCFArrow_vcf_read_raw_cpp(SEXP handleSEXP, SEXP chunk_sizeSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type handle(handleSEXP);
+    Rcpp::traits::input_parameter< int >::type chunk_size(chunk_sizeSEXP);
+    rcpp_result_gen = Rcpp::wrap(vcf_read_raw_cpp(handle, chunk_size));
+    return rcpp_result_gen;
+END_RCPP
+}
+// vcf_parse_raw_cpp
+List vcf_parse_raw_cpp(RawVector raw, CharacterVector samples, int row_offset);
+RcppExport SEXP _VCFArrow_vcf_parse_raw_cpp(SEXP rawSEXP, SEXP samplesSEXP, SEXP row_offsetSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< RawVector >::type raw(rawSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type samples(samplesSEXP);
+    Rcpp::traits::input_parameter< int >::type row_offset(row_offsetSEXP);
+    rcpp_result_gen = Rcpp::wrap(vcf_parse_raw_cpp(raw, samples, row_offset));
+    return rcpp_result_gen;
+END_RCPP
+}
+// sample_counts_cpp
+List sample_counts_cpp(const IntegerVector& s, const IntegerVector& a1, const IntegerVector& a2, const NumericVector& dp, int n_samples);
+RcppExport SEXP _VCFArrow_sample_counts_cpp(SEXP sSEXP, SEXP a1SEXP, SEXP a2SEXP, SEXP dpSEXP, SEXP n_samplesSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const IntegerVector& >::type s(sSEXP);
+    Rcpp::traits::input_parameter< const IntegerVector& >::type a1(a1SEXP);
+    Rcpp::traits::input_parameter< const IntegerVector& >::type a2(a2SEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type dp(dpSEXP);
+    Rcpp::traits::input_parameter< int >::type n_samples(n_samplesSEXP);
+    rcpp_result_gen = Rcpp::wrap(sample_counts_cpp(s, a1, a2, dp, n_samples));
+    return rcpp_result_gen;
+END_RCPP
+}
+// match_row_id_cpp
+IntegerVector match_row_id_cpp(const IntegerVector& ids, const IntegerVector& pos);
+RcppExport SEXP _VCFArrow_match_row_id_cpp(SEXP idsSEXP, SEXP posSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const IntegerVector& >::type ids(idsSEXP);
+    Rcpp::traits::input_parameter< const IntegerVector& >::type pos(posSEXP);
+    rcpp_result_gen = Rcpp::wrap(match_row_id_cpp(ids, pos));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -372,9 +458,19 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// arrow_c_alloc_cpp
+List arrow_c_alloc_cpp();
+RcppExport SEXP _VCFArrow_arrow_c_alloc_cpp() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(arrow_c_alloc_cpp());
+    return rcpp_result_gen;
+END_RCPP
+}
 // write_vcf_chunk_cpp
-void write_vcf_chunk_cpp(std::string output_file, CharacterVector chrom, IntegerVector pos, CharacterVector id, CharacterVector ref, CharacterVector alt, CharacterVector qual, CharacterVector filter_col, CharacterVector info, CharacterVector format_col, CharacterVector fmt_vec, int n_samples, bool gzip);
-RcppExport SEXP _VCFArrow_write_vcf_chunk_cpp(SEXP output_fileSEXP, SEXP chromSEXP, SEXP posSEXP, SEXP idSEXP, SEXP refSEXP, SEXP altSEXP, SEXP qualSEXP, SEXP filter_colSEXP, SEXP infoSEXP, SEXP format_colSEXP, SEXP fmt_vecSEXP, SEXP n_samplesSEXP, SEXP gzipSEXP) {
+void write_vcf_chunk_cpp(std::string output_file, CharacterVector chrom, IntegerVector pos, CharacterVector id, CharacterVector ref, CharacterVector alt, CharacterVector qual, CharacterVector filter_col, CharacterVector info, CharacterVector format_col, SEXP fmt_array, SEXP fmt_schema, int n_samples, bool gzip);
+RcppExport SEXP _VCFArrow_write_vcf_chunk_cpp(SEXP output_fileSEXP, SEXP chromSEXP, SEXP posSEXP, SEXP idSEXP, SEXP refSEXP, SEXP altSEXP, SEXP qualSEXP, SEXP filter_colSEXP, SEXP infoSEXP, SEXP format_colSEXP, SEXP fmt_arraySEXP, SEXP fmt_schemaSEXP, SEXP n_samplesSEXP, SEXP gzipSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< std::string >::type output_file(output_fileSEXP);
@@ -387,10 +483,11 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< CharacterVector >::type filter_col(filter_colSEXP);
     Rcpp::traits::input_parameter< CharacterVector >::type info(infoSEXP);
     Rcpp::traits::input_parameter< CharacterVector >::type format_col(format_colSEXP);
-    Rcpp::traits::input_parameter< CharacterVector >::type fmt_vec(fmt_vecSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type fmt_array(fmt_arraySEXP);
+    Rcpp::traits::input_parameter< SEXP >::type fmt_schema(fmt_schemaSEXP);
     Rcpp::traits::input_parameter< int >::type n_samples(n_samplesSEXP);
     Rcpp::traits::input_parameter< bool >::type gzip(gzipSEXP);
-    write_vcf_chunk_cpp(output_file, chrom, pos, id, ref, alt, qual, filter_col, info, format_col, fmt_vec, n_samples, gzip);
+    write_vcf_chunk_cpp(output_file, chrom, pos, id, ref, alt, qual, filter_col, info, format_col, fmt_array, fmt_schema, n_samples, gzip);
     return R_NilValue;
 END_RCPP
 }
@@ -398,7 +495,14 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_VCFArrow_scatter_assign_mat", (DL_FUNC) &_VCFArrow_scatter_assign_mat, 4},
     {"_VCFArrow_scatter_assign_vec", (DL_FUNC) &_VCFArrow_scatter_assign_vec, 4},
-    {"_VCFArrow_parse_vcf_cpp", (DL_FUNC) &_VCFArrow_parse_vcf_cpp, 2},
+    {"_VCFArrow_vcf_open_cpp", (DL_FUNC) &_VCFArrow_vcf_open_cpp, 1},
+    {"_VCFArrow_vcf_close_cpp", (DL_FUNC) &_VCFArrow_vcf_close_cpp, 1},
+    {"_VCFArrow_vcf_read_header_cpp", (DL_FUNC) &_VCFArrow_vcf_read_header_cpp, 1},
+    {"_VCFArrow_vcf_read_chunk_cpp", (DL_FUNC) &_VCFArrow_vcf_read_chunk_cpp, 4},
+    {"_VCFArrow_vcf_read_raw_cpp", (DL_FUNC) &_VCFArrow_vcf_read_raw_cpp, 2},
+    {"_VCFArrow_vcf_parse_raw_cpp", (DL_FUNC) &_VCFArrow_vcf_parse_raw_cpp, 3},
+    {"_VCFArrow_sample_counts_cpp", (DL_FUNC) &_VCFArrow_sample_counts_cpp, 5},
+    {"_VCFArrow_match_row_id_cpp", (DL_FUNC) &_VCFArrow_match_row_id_cpp, 2},
     {"_VCFArrow_write_smartsnp_header_cpp", (DL_FUNC) &_VCFArrow_write_smartsnp_header_cpp, 2},
     {"_VCFArrow_write_smartsnp_chunk_cpp", (DL_FUNC) &_VCFArrow_write_smartsnp_chunk_cpp, 3},
     {"_VCFArrow_write_structure_cpp", (DL_FUNC) &_VCFArrow_write_structure_cpp, 6},
@@ -422,7 +526,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_VCFArrow_write_plink_bed_header_cpp", (DL_FUNC) &_VCFArrow_write_plink_bed_header_cpp, 1},
     {"_VCFArrow_write_plink_bed_chunk_cpp", (DL_FUNC) &_VCFArrow_write_plink_bed_chunk_cpp, 3},
     {"_VCFArrow_write_plink_ped_cpp", (DL_FUNC) &_VCFArrow_write_plink_ped_cpp, 11},
-    {"_VCFArrow_write_vcf_chunk_cpp", (DL_FUNC) &_VCFArrow_write_vcf_chunk_cpp, 13},
+    {"_VCFArrow_arrow_c_alloc_cpp", (DL_FUNC) &_VCFArrow_arrow_c_alloc_cpp, 0},
+    {"_VCFArrow_write_vcf_chunk_cpp", (DL_FUNC) &_VCFArrow_write_vcf_chunk_cpp, 14},
     {NULL, NULL, 0}
 };
 

@@ -38,21 +38,22 @@ vcf2fineradstructure <- function(vcf_arrow, out_file, keep_groups = NULL) {
   cli::cli_alert_info("Building fineRADstructure: {setup$n_var} variant{?s} x {setup$n_samples} sample{?s} \\
     ({.strong {format(round(2 * setup$n_var * setup$n_samples / 1024^2), big.mark=',')}} MiB raw storage)")
   cli::cli_alert_info("Writing fineRADstructure file...")
-  cli::cli_progress_bar("Writing chunk", total = length(setup$feather_files))
-
-  for (fpath in setup$feather_files) {
-    chunk <- arrow::read_feather(fpath, col_select = c(".row_id","sample","a1","a2"))
-    rc <- .reshape_chunk(chunk, setup)
-    if (!is.null(rc))
-      write_fineradstructure_chunk_cpp(rc$a1, rc$a2,
-                                       setup$variants$REF[rc$col_idx],
-                                       setup$variants$ALT[rc$col_idx],
-                                       out_file)
-    cli::cli_progress_update()
-  }
-  cli::cli_progress_done()
+  .write_chunks_ordered(.file_tasks(setup$feather_files), .fineradstructure_chunk,
+                        shared = c(.reshape_shared(setup),
+                                   list(REF = setup$variants$REF, ALT = setup$variants$ALT)),
+                        out_file = out_file, label = "Writing chunk")
 
   cli::cli_alert_success("fineRADstructure file written to {.file {out_file}}")
 
   invisible(vcf_arrow)
+}
+
+# Worker side of the chunk loop (see .write_chunks_ordered()): append one
+# chunk to task$part
+.fineradstructure_chunk <- function(task, shared) {
+  rc <- .read_reshape_chunk(task$fpath, shared)
+  if (!is.null(rc))
+    write_fineradstructure_chunk_cpp(rc$a1, rc$a2, shared$REF[rc$col_idx],
+                                     shared$ALT[rc$col_idx], task$part)
+  invisible(NULL)
 }

@@ -10,6 +10,8 @@
 #include <cstdio>
 #include <cstring>
 
+#include "arrow_c_data.h"
+
 using namespace Rcpp;
 
 // ---- buffer helpers ----
@@ -36,6 +38,64 @@ inline void buf_rstr(std::vector<char>& b, SEXP sx) {
   buf_cstr(b, s);
 }
 
+// ---- per-sample FORMAT strings from an Arrow string array ----
+//
+// The array is handed over from R through the Arrow C Data Interface
+// (Array$export_to_c()), so the strings are read from Arrow's buffers and
+// never become R strings.  Handles utf8 ("u", int32 offsets) and large_utf8
+// ("U", int64 offsets).
+struct ArrowStrings {
+  const uint8_t* valid = nullptr;
+  const int32_t* off32 = nullptr;
+  const int64_t* off64 = nullptr;
+  const char* data = nullptr;
+  int64_t offset = 0, length = 0;
+
+  ArrowStrings(const ArrowArray* a, const ArrowSchema* s) {
+    const bool large = std::strcmp(s->format, "U") == 0;
+    if (!large && std::strcmp(s->format, "u") != 0)
+      stop("write_vcf_chunk_cpp: fmt must be a string array (got format '%s')", s->format);
+    if (a->n_buffers != 3) stop("write_vcf_chunk_cpp: unexpected string array layout");
+    valid = static_cast<const uint8_t*>(a->buffers[0]);
+    if (large) off64 = static_cast<const int64_t*>(a->buffers[1]);
+    else off32 = static_cast<const int32_t*>(a->buffers[1]);
+    data = static_cast<const char*>(a->buffers[2]);
+    offset = a->offset;
+    length = a->length;
+  }
+
+  // writes element k, substituting "." for null/empty
+  void write(std::vector<char>& b, int64_t k) const {
+    const int64_t i = offset + k;
+    if (valid && !(valid[i >> 3] & (1u << (i & 7)))) { b.push_back('.'); return; }
+    const int64_t lo = off32 ? off32[i] : off64[i];
+    const int64_t hi = off32 ? off32[i + 1] : off64[i + 1];
+    if (hi <= lo) { b.push_back('.'); return; }
+    b.insert(b.end(), data + lo, data + hi);
+  }
+};
+
+// Empty ArrowArray / ArrowSchema structs for R to export an Arrow array into
+// (Array$export_to_c()), as external pointers that free them when collected.
+// [[Rcpp::export]]
+List arrow_c_alloc_cpp() {
+  ArrowArray* a = new ArrowArray();
+  ArrowSchema* s = new ArrowSchema();
+  a->release = nullptr;
+  s->release = nullptr;
+  SEXP pa = PROTECT(R_MakeExternalPtr(a, R_NilValue, R_NilValue));
+  R_RegisterCFinalizerEx(pa, arrow_array_finalizer, TRUE);
+  SEXP ps = PROTECT(R_MakeExternalPtr(s, R_NilValue, R_NilValue));
+  R_RegisterCFinalizerEx(ps, arrow_schema_finalizer, TRUE);
+  List out = List::create(Named("array") = pa, Named("schema") = ps);
+  UNPROTECT(2);
+  return out;
+}
+
+// Appends VCF lines for one chunk.  fmt_array / fmt_schema: external pointers
+// (see arrow_c_alloc_cpp()) holding the per-sample FORMAT strings, flat and
+// row-major: variant i, sample j -> element i * n_samples + j.  The array is
+// released once written.
 // [[Rcpp::export]]
 void write_vcf_chunk_cpp(
     std::string output_file,
@@ -48,15 +108,22 @@ void write_vcf_chunk_cpp(
     CharacterVector filter_col,
     CharacterVector info,
     CharacterVector format_col,
-    CharacterVector fmt_vec, // flat, row-major: variant i, sample j → fmt_vec[i*n_samples + j]
+    SEXP fmt_array,
+    SEXP fmt_schema,
     int n_samples,
     bool gzip = false
     ) {
 
+  ArrowArray* fa = static_cast<ArrowArray*>(R_ExternalPtrAddr(fmt_array));
+  ArrowSchema* fs = static_cast<ArrowSchema*>(R_ExternalPtrAddr(fmt_schema));
+  if (!fa || !fs || !fa->release || !fs->release)
+    stop("write_vcf_chunk_cpp: fmt is not an exported Arrow array");
+  const ArrowStrings fmt(fa, fs);
+
   int n_chroms = chrom.size();
 
-  if (fmt_vec.size() != (R_xlen_t)(n_chroms * n_samples))
-    stop("fmt_vec length must equal nrow * nsamples");
+  if (fmt.length != (int64_t) n_chroms * n_samples)
+    stop("fmt length must equal nrow * nsamples");
 
   // output setup (always append: header already written)
   std::ofstream out;
@@ -95,7 +162,7 @@ void write_vcf_chunk_cpp(
     // samples: flat row-major → offset i*n_samples
     for (int j = 0; j < n_samples; j++) {
       buf_char(buf, '\t');
-      buf_rstr(buf, fmt_vec[i * n_samples + j]);
+      fmt.write(buf, (int64_t) i * n_samples + j);
     }
     buf_char(buf, '\n');
 
@@ -105,4 +172,8 @@ void write_vcf_chunk_cpp(
   flush();
   if (gzip) gzclose(gz);
   else out.close();
+
+  // free the Arrow buffers now rather than when R collects the pointers
+  fa->release(fa);
+  fs->release(fs);
 }

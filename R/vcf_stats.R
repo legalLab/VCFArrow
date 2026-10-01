@@ -66,56 +66,19 @@ vcf_stats <- function(vcf_arrow, res_path, project, theta = FALSE) {
     "Computing per-sample stats: {length(valid_row_ids)} variant{?s} x \\
      {n_samples} sample{?s}, reading {length(ffiles)} chunk{?s} directly"
   )
-  cli::cli_progress_bar("Scanning chunk", total = length(ffiles))
 
-  for (fpath in ffiles) {
+  idx <- list(pos = .row_id_pos(valid_row_ids), samples = samples)
 
-    chunk <- arrow::read_feather(
-      fpath, col_select = c(".row_id", "sample", "a1", "a2", "DP")
-    )
-    chunk <- chunk[chunk$.row_id %in% valid_row_ids &
-                     chunk$sample %in% samples, , drop = FALSE]
-
-    if (nrow(chunk) > 0L) {
-
-      called <- !(is.na(chunk$a1) | is.na(chunk$a2))
-      is_het <- called & (chunk$a1 != chunk$a2)
-      is_hom_ref <- called & (chunk$a1 == 0 & chunk$a2 == 0)
-      is_hom_alt <- called & (chunk$a1 == 1 & chunk$a2 == 1)
-
-      tt <- table(chunk$sample)
-      total_loci[names(tt)] <- total_loci[names(tt)] + as.integer(tt)
-
-      if (any(called)) {
-        ct <- table(chunk$sample[called])
-        called_n[names(ct)] <- called_n[names(ct)] + as.integer(ct)
-      }
-      if (any(is_het)) {
-        ht <- table(chunk$sample[is_het])
-        het_n[names(ht)] <- het_n[names(ht)] + as.integer(ht)
-      }
-      if (any(is_hom_ref)) {
-        rt <- table(chunk$sample[is_hom_ref])
-        hom_ref_n[names(rt)] <- hom_ref_n[names(rt)] + as.integer(rt)
-      }
-      if (any(is_hom_alt)) {
-        at <- table(chunk$sample[is_hom_alt])
-        hom_alt_n[names(at)] <- hom_alt_n[names(at)] + as.integer(at)
-      }
-
-      dp_ok <- !is.na(chunk$DP)
-      if (any(dp_ok)) {
-        dpt <- table(chunk$sample[dp_ok])
-        dp_n[names(dpt)] <- dp_n[names(dpt)] + as.integer(dpt)
-        dps <- tapply(chunk$DP[dp_ok], chunk$sample[dp_ok], sum)
-        dp_sum[names(dps)] <- dp_sum[names(dps)] + as.numeric(dps)
-      }
-    }
-
-    chunk <- NULL  # release Arrow Table reference before next chunk
-    cli::cli_progress_update()
+  parts <- .map_chunks(ffiles, .stats_chunk, shared = idx, label = "Scanning chunk")
+  for (cnt in parts) {
+    total_loci <- total_loci + cnt$total
+    called_n <- called_n + cnt$called
+    het_n <- het_n + cnt$het
+    hom_ref_n <- hom_ref_n + cnt$hom_ref
+    hom_alt_n <- hom_alt_n + cnt$hom_alt
+    dp_n <- dp_n + cnt$dp_n
+    dp_sum <- dp_sum + cnt$dp_sum
   }
-  cli::cli_progress_done()
 
   # Assemble per-sample stats (equivalent to the original collect() output) ────
   sample_stats <- tibble::tibble(
@@ -188,4 +151,10 @@ vcf_stats <- function(vcf_arrow, res_path, project, theta = FALSE) {
   )
 
   invisible(vcf_arrow)
+}
+
+# Per-chunk, per-sample counts in one C++ pass (see src/sample_counts.cpp)
+.stats_chunk <- function(fpath, shared) {
+  ch <- .read_live_chunk(fpath, c("a1", "a2", "DP"), shared)
+  sample_counts_cpp(ch$s, ch$a1, ch$a2, as.numeric(ch$DP), length(shared$samples))
 }

@@ -26,28 +26,64 @@ using namespace Rcpp;
 
 static const std::size_t IO_BUF = 1u << 22;   // 4 MiB
 
+// Output is accumulated in our own buffer and written in IO_BUF blocks:
+// per-field fputc()/fputs() calls each lock the stream, and snprintf() per
+// integer is slow, which dominated writing large files.
 struct WFile {
   FILE* fp;
-  std::vector<char> _buf;
-  WFile(const std::string& path, bool append) : fp(nullptr), _buf(IO_BUF) {
+  std::vector<char> buf;
+  std::size_t n;
+  WFile(const std::string& path, bool append) : fp(nullptr), buf(IO_BUF), n(0) {
     fp = std::fopen(path.c_str(), append ? "ab" : "wb");
     if (!fp) Rcpp::stop("Cannot open '%s' for writing.", path.c_str());
-    std::setvbuf(fp, _buf.data(), _IOFBF, IO_BUF);
   }
-  ~WFile() { if (fp) std::fclose(fp); }
+  ~WFile() {
+    if (fp) {
+      if (n) std::fwrite(buf.data(), 1, n, fp);
+      std::fclose(fp);
+    }
+  }
+  void flush() {
+    if (n && std::fwrite(buf.data(), 1, n, fp) != n)
+      Rcpp::stop("Error writing output file.");
+    n = 0;
+  }
+  void put(char c) {
+    if (n == IO_BUF) flush();
+    buf[n++] = c;
+  }
+  void put(const char* s, std::size_t len) {
+    if (len > IO_BUF - n) {
+      flush();
+      if (len > IO_BUF) {
+        if (std::fwrite(s, 1, len, fp) != len) Rcpp::stop("Error writing output file.");
+        return;
+      }
+    }
+    std::memcpy(buf.data() + n, s, len);
+    n += len;
+  }
   WFile(const WFile&) = delete;
   WFile& operator=(const WFile&) = delete;
 };
 
-static inline void wf(WFile& w, char c) { std::fputc(c, w.fp); }
-static inline void wf(WFile& w, const char* s) { std::fputs(s, w.fp); }
+static inline void wf(WFile& w, char c) { w.put(c); }
+static inline void wf(WFile& w, const char* s) { w.put(s, std::strlen(s)); }
 static inline void wf_int(WFile& w, int v) {
-  char tmp[12]; std::snprintf(tmp, sizeof(tmp), "%d", v); std::fputs(tmp, w.fp);
+  // same output as printf("%d"), including INT_MIN (NA_INTEGER)
+  char tmp[12];
+  char* end = tmp + sizeof(tmp);
+  char* p = end;
+  unsigned int u = (v < 0) ? 0u - static_cast<unsigned int>(v)
+                           : static_cast<unsigned int>(v);
+  do { *--p = static_cast<char>('0' + u % 10u); u /= 10u; } while (u);
+  if (v < 0) *--p = '-';
+  w.put(p, static_cast<std::size_t>(end - p));
 }
 static inline void wf_allele(WFile& w, int a, const char* rp,
                              const char* ap, const char* miss) {
-  if (a == NA_INTEGER) { std::fputs(miss, w.fp); return; }
-  std::fputs((a == 0) ? rp : ap, w.fp);
+  if (a == NA_INTEGER) { wf(w, miss); return; }
+  wf(w, (a == 0) ? rp : ap);
 }
 
 

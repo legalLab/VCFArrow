@@ -13,7 +13,7 @@
 #                         yet succeeded (Arrow file handles may still be open)
 #
 # Lifecycle of a temp directory
-#   read_vcf / vcf_bind_sparse  →  .register_vcfarrow()   [count = 1]
+#   read_vcf / vcf_bind         →  .register_vcfarrow()   [count = 1]
 #   each filter that inherits the same path  →  .register_vcfarrow()  [count + 1]
 #   GC of a VCFArrow object fires finalizer  →  .deregister_vcfarrow()
 #     if count → 0: move path to .vcfarrow_pending, attempt immediate unlink
@@ -143,7 +143,12 @@
 # VCFArrow object's `finalizer_env` SLOT (not as an attr()).
 .make_finalizer_env <- function(path) {
   ptr <- new.env(parent = emptyenv())
-  reg.finalizer(ptr, function(e) .deregister_vcfarrow(path), onexit = TRUE)
+  # If the package namespace is gone (unloaded while objects still exist),
+  # its registry can no longer be reached: just delete the directory.
+  reg.finalizer(ptr, function(e) {
+    tryCatch(.deregister_vcfarrow(path),
+             error = function(err) unlink(path, recursive = TRUE, force = TRUE))
+  }, onexit = TRUE)
   ptr
 }
 
@@ -156,7 +161,7 @@
 
 .new_vcfarrow <- function(header, info, format, variants, gt,
                           samples, groups, path,
-                          invariant_removed = NULL) {
+                          invariant_removed = NULL, loci = NULL) {
   .register_vcfarrow(path)
   if (is.null(invariant_removed)) {
     # Zero-row slice of `variants` preserves exact column types; add the
@@ -165,6 +170,7 @@
     invariant_removed <- variants[0, , drop = FALSE]
     invariant_removed$.info_str <- character(0)
   }
+  if (is.null(loci)) loci <- .loci_from_variants(variants)
   new("VCFArrow",
       header = header,
       info = info,
@@ -175,8 +181,22 @@
       groups = groups,
       path = path,
       finalizer_env = .make_finalizer_env(path),
-      invariant_removed = invariant_removed
+      invariant_removed = invariant_removed,
+      loci = loci
   )
+}
+
+# Locus table (see the VCFArrow class, @loci) holding only the variants in
+# `variants`: row i describes .row_id i, NA where unknown.
+.loci_from_variants <- function(variants) {
+  cols <- c("CHROM", "POS", "REF", "ALT")
+  ids <- variants$.row_id
+  n <- if (length(ids)) max(ids) else 0L
+  loci <- data.frame(CHROM = rep(NA_character_, n), POS = rep(NA_integer_, n),
+                     REF = rep(NA_character_, n), ALT = rep(NA_character_, n),
+                     stringsAsFactors = FALSE)
+  for (col in cols) loci[[col]][ids] <- variants[[col]]
+  loci
 }
 
 
