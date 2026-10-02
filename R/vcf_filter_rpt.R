@@ -37,14 +37,16 @@ vcf_filter_rpt <- function(vcf_arrow, threshold = 0.5, keep_na = FALSE) {
 
   idx <- .vcf_filter_index(vcf_arrow)
   rpt <- vcf_arrow@variants$RPT
-
-  cli::cli_alert_info("Applying REPEAT filter")
-
-  # select passing variants
+  
+  # check if field present
   if (all(is.na(rpt))) {
     cli::cli_alert_warning("RPT field not present; returning unfiltered VCFArrow")
     return(vcf_arrow)
   }
+
+  cli::cli_alert_info("Applying REPEAT filter")
+
+  # select passing variants
   keep <- if (keep_na) {
     is.na(rpt) | rpt <= threshold
   } else {
