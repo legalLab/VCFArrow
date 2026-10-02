@@ -35,6 +35,20 @@
 
 vcf_filter_paralogs <- function(vcf_arrow, threshold_rk = 0.2, 
                             threshold_rpt = 0.5, keep_na = FALSE) {
+  
+  if (!inherits(vcf_arrow, "VCFArrow"))
+    cli::cli_abort("Expecting a VCFArrow object")
+  
+  rk <- vcf_arrow@variants$Rk
+  rpt <- vcf_arrow@variants$RPT
+  
+  # check if field present
+  if (all(is.na(rk)) & all(is.na(rpt))) {
+    cli::cli_alert_warning("Neither the Rk nor RPT fields are present; 
+                           not applying the parallog filter; 
+                           returning unfiltered VCFArrow")
+    return(vcf_arrow)
+  }
 
   # use existing filters
   vcf_arrow <- vcf_filter_rank(vcf_arrow, threshold_rk, keep_na) |>
