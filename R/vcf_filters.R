@@ -134,8 +134,12 @@
 # allocate in Arrow's memory pool, which R's garbage collector does not see:
 # dropped Tables are only freed when R happens to collect, so they pile up.
 # Collect once the pool exceeds `limit` bytes, instead of after every chunk.
+# The trigger is the memory Arrow holds, so it adapts to the chunk size (which
+# grows with the number of samples). The limit is not lower because each
+# collection scans R's whole heap: with a full-size dataset loaded it takes
+# about 2 s, and a lower limit would collect after almost every chunk.
 
-.release_arrow_memory <- function(limit = 512 * 1024^2) {
+.release_arrow_memory <- function(limit = 1024^3) {
   if (arrow::default_memory_pool()$bytes_allocated > limit)
     gc(verbose = FALSE, full = FALSE)
   invisible(NULL)
