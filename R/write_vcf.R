@@ -107,6 +107,9 @@ write_vcf <- function(vcf_arrow, out_file, gzip = FALSE) {
   sample_order <- .sample_index(chunk, samples)
   row_id <- as.vector(chunk$.row_id)
   keep <- !is.na(.match_row_id(row_id, var_pos)) & !is.na(sample_order)
+  # nothing to write if no variant of this chunk is retained (e.g. all were
+  # filtered out); this also avoids integer(0)[TRUE], which is NA, below
+  if (!any(keep)) return(invisible(NULL))
 
   # sort so rows are: variant 1 sample 1, variant 1 sample 2, ..., variant 2 sample 1, ...
   # in practice read_vcf() writes them this way already, but sort defensively
