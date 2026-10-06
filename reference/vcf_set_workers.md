@@ -39,9 +39,15 @@ Tomas Hrbek September 2026
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-vcf_set_workers(4)
+# \donttest{
+f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
+                 package = "VCFArrow")
+# 2 workers (CRAN examples may use at most 2 cores)
+vcf_set_workers(2)
+#> ℹ VCFArrow will use 2 worker processes.
 vcf <- read_vcf(f)
+#> ℹ VCF is being read in chunks of 50000 variants
+#> ✔ VCF successfully read into a VCFArrow object
 vcf_set_workers(1)
-} # }
+# }
 ```

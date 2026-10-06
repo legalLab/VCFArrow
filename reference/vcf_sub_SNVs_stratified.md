@@ -59,7 +59,7 @@ vcf_sub_SNVs_stratified(vcf, n_SNVs = 1000, seed = 42)
 #> Phased genotypes: FALSE 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpFwXb6F/arrow_vcf_1f6b6bbd4fe3 
+#>   Path: /tmp/RtmpOwogNL/arrow_vcf_1eff4afe8e1f 
 #> 
 #> Genotype storage (Arrow):
 #> FileSystemDataset with 1 Feather file

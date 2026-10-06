@@ -8,10 +8,6 @@
   : assess_vcf_coverage
 - [`assess_vcf_missing_data()`](https://legallab.github.io/VCFArrow/reference/assess_vcf_missing_data.md)
   : assess_vcf_missing_data
-- [`.vcf_filter_columns()`](https://legallab.github.io/VCFArrow/reference/dot-vcf_filter_columns.md)
-  : vcf_filter_columns
-- [`.vcf_filter_rows()`](https://legallab.github.io/VCFArrow/reference/dot-vcf_filter_rows.md)
-  : vcf_filter_rows
 - [`read_vcf()`](https://legallab.github.io/VCFArrow/reference/read_vcf.md)
   : read_vcf
 - [`set_vcf_groups()`](https://legallab.github.io/VCFArrow/reference/set_vcf_groups.md)

@@ -57,9 +57,8 @@ linked; this is appropriate if SNPs are extracted without a reference.
 The N format extracts all SNPs within a chromosome, within the block
 size and treats them as linked; this is appropriate if SNPs are mapped
 against a reference. The size of the linked block is determined by the
-block_size parameter. See
-<https://peterbeerli.com/programs/migrate/distribution_4.x/migratedoc4.x.pdf>
-for format detail.
+block_size parameter. See the Migrate-N documentation
+(<https://peterbeerli.com/migrate-html5/>) for format detail.
 
 ## Author
 
@@ -76,5 +75,5 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf2migrate(vcf, out_file = tempfile(fileext = ".txt"))
 #> ℹ Accumulating Migrate-N (S): 9313 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing Migrate-N (S) file...
-#> ✔ Migrate-N file written to /tmp/RtmpFwXb6F/file1f6b6dacf909.txt
+#> ✔ Migrate-N file written to /tmp/RtmpOwogNL/file1eff4785b06f.txt
 ```

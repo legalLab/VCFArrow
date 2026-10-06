@@ -49,5 +49,5 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf2fasta(vcf, out_file = tempfile(fileext = ".fas"))
 #> ℹ Accumulating FASTA: 9313 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing FASTA file...
-#> ✔ FASTA file written to /tmp/RtmpFwXb6F/file1f6b793fed6c.fas
+#> ✔ FASTA file written to /tmp/RtmpOwogNL/file1eff55dd50e7.fas
 ```

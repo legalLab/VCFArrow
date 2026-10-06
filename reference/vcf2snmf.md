@@ -49,5 +49,5 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf2snmf(vcf, out_file = tempfile(fileext = ".geno"))
 #> ℹ Formatting sNMF: 9313 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing sNMF file...
-#> ✔ sNMF file written to /tmp/RtmpFwXb6F/file1f6b406609ce.geno
+#> ✔ sNMF file written to /tmp/RtmpOwogNL/file1eff5952dfd2.geno
 ```
