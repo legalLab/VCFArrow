@@ -134,6 +134,23 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// theta_chunk_cpp
+List theta_chunk_cpp(const IntegerVector& var, const IntegerVector& grp, const IntegerVector& a1, const IntegerVector& a2, int n_var, int n_pops, const NumericVector& harmonic);
+RcppExport SEXP _VCFArrow_theta_chunk_cpp(SEXP varSEXP, SEXP grpSEXP, SEXP a1SEXP, SEXP a2SEXP, SEXP n_varSEXP, SEXP n_popsSEXP, SEXP harmonicSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const IntegerVector& >::type var(varSEXP);
+    Rcpp::traits::input_parameter< const IntegerVector& >::type grp(grpSEXP);
+    Rcpp::traits::input_parameter< const IntegerVector& >::type a1(a1SEXP);
+    Rcpp::traits::input_parameter< const IntegerVector& >::type a2(a2SEXP);
+    Rcpp::traits::input_parameter< int >::type n_var(n_varSEXP);
+    Rcpp::traits::input_parameter< int >::type n_pops(n_popsSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type harmonic(harmonicSEXP);
+    rcpp_result_gen = Rcpp::wrap(theta_chunk_cpp(var, grp, a1, a2, n_var, n_pops, harmonic));
+    return rcpp_result_gen;
+END_RCPP
+}
 // write_smartsnp_header_cpp
 void write_smartsnp_header_cpp(const CharacterVector& samples, const std::string& out_file);
 RcppExport SEXP _VCFArrow_write_smartsnp_header_cpp(SEXP samplesSEXP, SEXP out_fileSEXP) {
@@ -503,6 +520,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_VCFArrow_vcf_parse_raw_cpp", (DL_FUNC) &_VCFArrow_vcf_parse_raw_cpp, 3},
     {"_VCFArrow_sample_counts_cpp", (DL_FUNC) &_VCFArrow_sample_counts_cpp, 5},
     {"_VCFArrow_match_row_id_cpp", (DL_FUNC) &_VCFArrow_match_row_id_cpp, 2},
+    {"_VCFArrow_theta_chunk_cpp", (DL_FUNC) &_VCFArrow_theta_chunk_cpp, 7},
     {"_VCFArrow_write_smartsnp_header_cpp", (DL_FUNC) &_VCFArrow_write_smartsnp_header_cpp, 2},
     {"_VCFArrow_write_smartsnp_chunk_cpp", (DL_FUNC) &_VCFArrow_write_smartsnp_chunk_cpp, 3},
     {"_VCFArrow_write_structure_cpp", (DL_FUNC) &_VCFArrow_write_structure_cpp, 6},

@@ -41,6 +41,10 @@ match_row_id_cpp <- function(ids, pos) {
     .Call(`_VCFArrow_match_row_id_cpp`, ids, pos)
 }
 
+theta_chunk_cpp <- function(var, grp, a1, a2, n_var, n_pops, harmonic) {
+    .Call(`_VCFArrow_theta_chunk_cpp`, var, grp, a1, a2, n_var, n_pops, harmonic)
+}
+
 write_smartsnp_header_cpp <- function(samples, out_file) {
     invisible(.Call(`_VCFArrow_write_smartsnp_header_cpp`, samples, out_file))
 }
