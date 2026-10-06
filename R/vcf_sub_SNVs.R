@@ -41,11 +41,10 @@ vcf_sub_SNVs <- function(vcf_arrow, n_SNVs = 10000, seed = NULL) {
     return(vcf_arrow)
   }
 
-  if (!is.null(seed)) {
-    set.seed(seed)
-  }
-
-  keep <- sort(sample(variants$.row_id, n_SNVs))
+  # with a seed, sample reproducibly without changing the session's random
+  # number state (.with_seed() restores it afterwards)
+  draw <- function() sort(sample(variants$.row_id, n_SNVs))
+  keep <- if (is.null(seed)) draw() else .with_seed(seed, draw())
 
   # apply filter using unified API
   vcf_arrow <- .vcf_filter_rows(vcf_arrow, keep)

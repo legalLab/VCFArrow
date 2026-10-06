@@ -42,16 +42,17 @@ vcf_sub_SNVs_stratified <- function(vcf_arrow, n_SNVs = 1000, seed = NULL) {
     return(vcf_arrow)
   }
 
-  if (!is.null(seed)) {
-    set.seed(seed)
+  # with a seed, sample reproducibly without changing the session's random
+  # number state (.with_seed() restores it afterwards)
+  draw <- function() {
+    variants |>
+      dplyr::group_by(CHROM) |>
+      dplyr::slice_sample(prop = n_SNVs / n_vars) |>
+      dplyr::ungroup() |>
+      dplyr::pull(.row_id) |>
+      sort()
   }
-
-  keep <- variants |>
-    dplyr::group_by(CHROM) |>
-    dplyr::slice_sample(prop = n_SNVs / n_vars) |>
-    dplyr::ungroup() |>
-    dplyr::pull(.row_id) |>
-    sort()
+  keep <- if (is.null(seed)) draw() else .with_seed(seed, draw())
 
   # apply filter using unified API
   vcf_arrow <- .vcf_filter_rows(vcf_arrow, keep)

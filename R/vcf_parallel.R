@@ -22,8 +22,11 @@
 #' to the number of physical CPU cores; disk speed limits the gain beyond that.
 #'
 #' @examples
-#' \dontrun{
-#' vcf_set_workers(4)
+#' \donttest{
+#' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
+#'                  package = "VCFArrow")
+#' # 2 workers (CRAN examples may use at most 2 cores)
+#' vcf_set_workers(2)
 #' vcf <- read_vcf(f)
 #' vcf_set_workers(1)
 #' }
