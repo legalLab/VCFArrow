@@ -98,17 +98,7 @@ assess_vcf_missing_data <- function(vcf_arrow, res_path, species, project,
     )
 
   # save plots
-  for (ext in c("pdf", "svg", "png")) {
-    ggplot2::ggsave(
-      plt,
-      filename = file.path(res_path, paste0(project, "_missingness.", ext)),
-      device = ext,
-      width = 6,
-      height = 4,
-      bg = "transparent",
-      limitsize = FALSE
-    )
-  }
+  .save_plot(plt, file.path(res_path, paste0(project, "_missingness")))
 
   invisible(vcf_arrow)
 }

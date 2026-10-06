@@ -78,19 +78,7 @@ assess_vcf_coverage <- function(vcf_arrow, res_path, species, project,
       title = plot_title
     )
 
-  for (ext in c("pdf", "svg", "png")) {
-    suppressWarnings(
-      ggplot2::ggsave(
-        plt,
-        filename = file.path(res_path, paste0(project, "_coverage.", ext)),
-        device = ext,
-        width = 6,
-        height = 4,
-        bg = "transparent",
-        limitsize = FALSE
-      )
-    )
-  }
+  suppressWarnings(.save_plot(plt, file.path(res_path, paste0(project, "_coverage"))))
 
   invisible(vcf_arrow)
 }
