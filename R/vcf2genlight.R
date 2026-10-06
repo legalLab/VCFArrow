@@ -12,12 +12,12 @@
 #' @param ploidy -> ploidy level, default = 2 (integer)
 #' @param save ->  save as R data object, default = FALSE (Boolean)
 #'
-#' @importClassesFrom adegenet genlight
-#'
 #' @return An adegenet `genlight` object.
 #'
 #' @details
 #' This function converts a VCFArrow object to an adegenet Genlight object.
+#' It requires the 'adegenet' package, which VCFArrow only suggests: install
+#' it with `install.packages("adegenet")` to use this function.
 #' Genotypes are read in chunks whose size is determined by the read_vcf() function.
 #' If no groups are defined, the default behavior is to use all groups.
 #' Genlight objects can encode polyploid genomes, by default diploid genomes are assumed.
@@ -41,6 +41,12 @@
 vcf2genlight <- function(vcf_arrow, out_file = NULL, keep_groups = NULL,
                          ploidy = 2L, save = FALSE) {
 
+  if (!requireNamespace("adegenet", quietly = TRUE)) {
+    cli::cli_abort(c(
+      "{.fn vcf2genlight} requires the {.pkg adegenet} package.",
+      "i" = "Install it with {.code install.packages(\"adegenet\")}."
+    ))
+  }
   if (save && is.null(out_file)) {
     cli::cli_abort("{.arg out_file} must be supplied when {.code save = TRUE}.")
   }
@@ -56,7 +62,9 @@ vcf2genlight <- function(vcf_arrow, out_file = NULL, keep_groups = NULL,
   rownames(geno_mat) <- setup$samples
 
   x <- suppressWarnings(
-    new("genlight",
+    # the class is taken from adegenet's namespace (adegenet is suggested,
+    # not imported, so the class is not visible from VCFArrow's namespace)
+    new(methods::getClass("genlight", where = asNamespace("adegenet")),
         gen = lapply(seq_len(nrow(geno_mat)), function(i) geno_mat[i, ]))
   )
   adegenet::indNames(x) <- setup$samples
