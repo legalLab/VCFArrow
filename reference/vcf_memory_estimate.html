@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">VCFArrow</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -93,7 +93,19 @@ variants); otherwise integer matrices.</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> VCF is being read in chunks of 50000 variants</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> VCF successfully read into a VCFArrow object</span>
 <span class="r-in"><span><span class="fu">vcf_memory_estimate</span><span class="op">(</span><span class="va">vcf</span>, format <span class="op">=</span> <span class="st">"individual"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in vcf_memory_estimate(vcf, format = "individual"):</span> could not find function "vcf_memory_estimate"</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">VCFArrow memory estimate</span> ──</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> • Variants (filtered): 9313</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> • Samples retained: 18</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> • Populations: 4</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> • Chunk size: 100,000 variants</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> • Low-memory mode: FALSE</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ── Per-operation footprint </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Arrow pool per chunk read: 34.3 MiB</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Accumulation matrices (a1+a2): 1.3 MiB [4 B/cell]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Estimated peak RAM: 35.6 MiB</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

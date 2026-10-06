@@ -9,7 +9,7 @@ and for sample groups from VCFArrow format data."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">VCFArrow</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,7 +65,10 @@ and for sample groups from VCFArrow format data.</p>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>This function calculates Watterson's theta and pi for the entire VCFArrow
 object, and for groups of individuals whose grouping is indicated by
-the groups slot in the VCFArrow object.</p>
+the groups slot in the VCFArrow object.
+The statistics are accumulated chunk by chunk as running sums per group,
+so memory use does not grow with the number of variants, and chunks are
+processed in parallel when workers are set with vcf_set_workers().</p>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
@@ -80,7 +83,6 @@ the groups slot in the VCFArrow object.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> VCF is being read in chunks of 50000 variants</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> VCF successfully read into a VCFArrow object</span>
 <span class="r-in"><span><span class="fu">vcf_theta</span><span class="op">(</span><span class="va">vcf</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Accumulating theta/pi: 9313 variants x 4 pops (<span style="font-weight: bold;">0</span> MiB raw storage, vs 0 MiB with integer matrices)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $pi</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.3065724</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>

@@ -46,5 +46,9 @@ vcf <- read_vcf(f)
 #> ✔ VCF successfully read into a VCFArrow object
 rm(vcf)
 vcf_gc()
-#> Error in vcf_gc(): could not find function "vcf_gc"
+#> VCFArrow: 2 temp directories are still live (VCFArrow objects not yet GC'd):
+#>   /tmp/RtmpFwXb6F/arrow_vcf_1f6b1b02886
+#>   /tmp/RtmpFwXb6F/arrow_vcf_1f6b380f0365
+#>   → rm() all VCFArrow objects, then call vcf_gc() again.
+#>   → Or call vcf_gc(force = TRUE) to delete regardless.
 ```

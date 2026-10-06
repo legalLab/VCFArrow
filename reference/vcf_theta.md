@@ -27,7 +27,10 @@ list of statistics
 
 This function calculates Watterson's theta and pi for the entire
 VCFArrow object, and for groups of individuals whose grouping is
-indicated by the groups slot in the VCFArrow object.
+indicated by the groups slot in the VCFArrow object. The statistics are
+accumulated chunk by chunk as running sums per group, so memory use does
+not grow with the number of variants, and chunks are processed in
+parallel when workers are set with vcf_set_workers().
 
 ## Author
 
@@ -42,7 +45,6 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 #> ℹ VCF is being read in chunks of 50000 variants
 #> ✔ VCF successfully read into a VCFArrow object
 vcf_theta(vcf)
-#> ℹ Accumulating theta/pi: 9313 variants x 4 pops (0 MiB raw storage, vs 0 MiB with integer matrices)
 #> $pi
 #> [1] 0.3065724
 #> 

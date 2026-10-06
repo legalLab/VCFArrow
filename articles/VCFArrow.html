@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">VCFArrow</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,12 +65,17 @@ Hrbek</h4>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>This package needs to be installed from GitHub.
-<code>devtools::install_github("legalLab/VCFArrow")</code></p>
-<p>The package is build around Apache Arrow (<a href="https://arrow.apache.org/" class="external-link uri">https://arrow.apache.org/</a>). The Apache Arrow
-libarrow-dev, libparquet-dev, libarrow-dataset-dev, and
-libarrow-acero-dev libraries need to be installed. Installation
-instruction are found here (<a href="https://arrow.apache.org/install/" class="external-link uri">https://arrow.apache.org/install/</a>).</p>
+<p>The released version can be installed from CRAN with
+<code>install.packages("VCFArrow")</code>, and the development version
+from GitHub with <code>pak::pak("legalLab/VCFArrow")</code> or
+<code>devtools::install_github("legalLab/VCFArrow")</code>. Two packages
+are optional and only needed for specific functions:
+<code>adegenet</code>, for <code><a href="../reference/vcf2genlight.html">vcf2genlight()</a></code>, and
+<code>svglite</code>, for SVG plots (without it, SVG plots are written
+with R’s own Cairo device). Install them with
+<code>install.packages(c("adegenet", "svglite"))</code>.</p>
+<p>The package is built around Apache Arrow (<a href="https://arrow.apache.org/" class="external-link uri">https://arrow.apache.org/</a>), accessed through the
+<code>arrow</code> R package.</p>
 </div>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
@@ -89,11 +94,12 @@ VCF data file into an S4 R object constructed around an Apache Arrow
 data structure. It precalculate a number of metrics and stores them in
 the S4 object. The VCF genotype matrix is stored as a long tidy table,
 and the data in the S4 object are lazy loaded. Many common tasks have
-been delegated to shared, C++ backed APIs and functions. These
-modifications and optimizations now permit extremely fast data
-filtering, manipulation and transformation. It is possible to process
-VCFs comprising tens of millions of SNVs and hundreds of individuals in
-matter minutes with minimal RAM overhead.</p>
+been delegated to shared, C++ backed APIs and functions, and these
+operations have been parallelized when possible. These modifications and
+optimizations now permit extremely fast data filtering, manipulation and
+transformation. It is possible to process VCFs comprising tens of
+millions of SNVs and hundreds of individuals in matter minutes with
+minimal RAM overhead.</p>
 <div class="section level3">
 <h3 id="meta">Meta<a class="anchor" aria-label="anchor" href="#meta"></a>
 </h3>
@@ -171,7 +177,7 @@ vaillantii</em> Photo: Albertina Lima</div>
 <span><span class="co">#&gt; Phased genotypes: FALSE </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Storage:</span></span>
-<span><span class="co">#&gt;   Path: /tmp/RtmpjinOnt/arrow_vcf_23ca73ced443 </span></span>
+<span><span class="co">#&gt;   Path: /tmp/RtmpGfkGlU/arrow_vcf_22fe70b852fc </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Genotype storage (Arrow):</span></span>
 <span><span class="co">#&gt; FileSystemDataset with 1 Feather file</span></span>
@@ -248,7 +254,7 @@ species name is reported. The default is to report species name and
 details.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># define results path</span></span>
-<span><span class="va">res_path</span> <span class="op">&lt;-</span> <span class="va">data_path</span></span>
+<span><span class="va">res_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co"># species for plot title</span></span>
 <span><span class="va">species</span> <span class="op">&lt;-</span> <span class="st">"Phyllomedusa vaillantii"</span></span>
 <span><span class="co"># filter - filter parameters in file name</span></span>
@@ -273,8 +279,7 @@ based on the ‘theta’ flag.</p>
 <code class="sourceCode R"><span><span class="co"># get a table of basic sample stats, including Watterson's Theta and Pi</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/vcf_stats.html">vcf_stats</a></span><span class="op">(</span><span class="va">vcf</span>, <span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span><span class="op">)</span>, theta <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Computing per-sample stats: 10000 variants x 18 samples, reading 1 chunk directly</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Accumulating theta/pi: 9313 variants x 4 pops (<span style="font-weight: bold;">0</span> MiB raw storage, vs 0 MiB with integer matrices)</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Computing per-sample stats: 10000 variants x 18 samples, reading 1 chunk directly</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="filtering-subsetting-merging-and-otherwise-wrangling-vcf-files">Filtering, subsetting, merging and otherwise wrangling VCF
@@ -347,9 +352,13 @@ with minor allele frequency below a % threshold,
 % threshold, <code><a href="../reference/vcf_filter_rank.html">vcf_filter_rank()</a></code> removes SNPs with rank below
 a % threshold (rank is specific to VCFs generated by DiscoSnpRad and
 measures the likelihood of observed SNP variation being due to
-paralogs), <code><a href="../reference/vcf_filter_adr.html">vcf_filter_adr()</a></code> either removes (make genotype
-missing) or corrects (make genotype homozygous) genotypes with allele
-ratio imbalance, <code><a href="../reference/vcf_filter_coverage.html">vcf_filter_coverage()</a></code> removes SNVs below a
+paralogs), <code><a href="../reference/vcf_filter_rpt.html">vcf_filter_rpt()</a></code> removes SNPs with a repeat
+score above a threshold (repeat is also specific to DiscoSnpRad VCFs;
+high values indicate paralogs), <code><a href="../reference/vcf_filter_paralogs.html">vcf_filter_paralogs()</a></code>
+applies both the rank and the repeat filter,
+<code><a href="../reference/vcf_filter_adr.html">vcf_filter_adr()</a></code> either removes (make genotype missing) or
+corrects (make genotype homozygous) genotypes with allele ratio
+imbalance, <code><a href="../reference/vcf_filter_coverage.html">vcf_filter_coverage()</a></code> removes SNVs below a
 specific coverage (make genotypes missing), and
 <code><a href="../reference/vcf_filter_biallelic.html">vcf_filter_biallelic()</a></code> removes all variants that are not
 biallelic. Finally the <code><a href="../reference/vcf_filter_invariant.html">vcf_filter_invariant()</a></code> removes
@@ -423,11 +432,26 @@ work with linked SNVs.</p>
 <div class="section level4">
 <h4 id="extracting-and-binding">Extracting and binding<a class="anchor" aria-label="anchor" href="#extracting-and-binding"></a>
 </h4>
-<p>The functions <code>vcf_merge_bind()</code>,
-<code><a href="../reference/vcf_bind_sparse.html">vcf_bind_sparse()</a></code>, <code><a href="../reference/vcf_extract_samples.html">vcf_extract_samples()</a></code> and
-<code><a href="../reference/vcf_extract_groups.html">vcf_extract_groups()</a></code> are used to merge two or more VCFArrow
-objects, and to extract samples/groups of samples from a VCFArrow
-objects storing them in a separate VCFArrow object.</p>
+<p>The functions <code><a href="../reference/vcf_bind.html">vcf_bind()</a></code>,
+<code><a href="../reference/vcf_extract_samples.html">vcf_extract_samples()</a></code> and <code><a href="../reference/vcf_extract_groups.html">vcf_extract_groups()</a></code>
+are used to bind two or more VCFArrow objects, and to extract
+samples/groups of samples from a VCFArrow objects storing them in a
+separate VCFArrow object. Variants are matched by <code>CHROM</code>,
+<code>POS</code>, <code>REF</code> and <code>ALT</code>, so the objects
+can also come from different VCF files, for example from separate
+sequencing runs.</p>
+<p>Matching requires each locus to be described the same way in every
+dataset. This is assured when all datasets were called against the same
+reference genome assembly, which gives the same <code>CHROM</code>,
+<code>POS</code> and <code>REF</code> for the same locus. It is
+generally not possible for de novo (reference-free) SNP calling, where
+locus names and positions are generated anew in each calling run, so the
+same locus will usually not match between separately called datasets;
+such datasets should be called together in a single run instead.
+Multi-allelic sites can list their <code>ALT</code> alleles in a
+different order in different files, so it is best to normalize the VCFs
+first, for example by splitting multi-allelic sites with
+<code>bcftools norm -m -any</code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># extract individuals from VCFArrow object (keep all loci)</span></span>
 <span><span class="va">indivs1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Pb2Jp"</span>, <span class="st">"Pb2Scx"</span>, <span class="st">"Pb1Rd"</span><span class="op">)</span></span>
@@ -451,7 +475,7 @@ objects storing them in a separate VCFArrow object.</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Removed samples: Pb2Jp, Pb2Scx, and Pb1Rd</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Variants retained: 10000 | Samples retained: 15</span></span>
 <span></span>
-<span><span class="co"># bind vcf_outgrp and vcf_ingrp (objects must share all variants)</span></span>
+<span><span class="co"># bind vcf_outgrp and vcf_ingrp (same variants)</span></span>
 <span><span class="va">vcf1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/vcf_bind.html">vcf_bind</a></span><span class="op">(</span><span class="va">vcf_ingrp</span>, <span class="va">vcf_outgrp</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Binding 2 VCFArrow objects (intersect): 10000 variants, 18 total samples.</span></span>
 <span></span>
@@ -471,17 +495,28 @@ objects storing them in a separate VCFArrow object.</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Variants retained: 8295 | Samples retained: 15</span></span>
 <span></span>
 <span><span class="co"># bind vcf_outgrp and vcf_ingrp (intersection - variable SNVs in all objects)</span></span>
-<span><span class="va">vcf1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/vcf_bind_sparse.html">vcf_bind_sparse</a></span><span class="op">(</span><span class="va">vcf_ingrp</span>, <span class="va">vcf_outgrp</span>, mode <span class="op">=</span> <span class="st">"intersect"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: `vcf_bind_sparse()` is deprecated; use `vcf_bind()` instead.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> `vcf_bind()` takes the same `mode` and `absent_as` arguments.</span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">This warning is displayed once every 8 hours.</span></span></span>
-<span><span class="co">#&gt; Warning: `recover_loci` is only used with `mode = "union"`.</span></span>
+<span><span class="va">vcf1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/vcf_bind.html">vcf_bind</a></span><span class="op">(</span><span class="va">vcf_ingrp</span>, <span class="va">vcf_outgrp</span>, mode <span class="op">=</span> <span class="st">"intersect"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Binding 2 VCFArrow objects (intersect): 421 variants, 18 total samples.</span></span>
 <span></span>
-<span><span class="co"># bind vcf_outgrp and vcf_ingrp (intersection - variable SNVs in all objects)</span></span>
-<span><span class="va">vcf1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/vcf_bind_sparse.html">vcf_bind_sparse</a></span><span class="op">(</span><span class="va">vcf_ingrp</span>, <span class="va">vcf_outgrp</span>, mode <span class="op">=</span> <span class="st">"union"</span>, absent_as <span class="op">=</span> <span class="st">"missing"</span><span class="op">)</span></span>
+<span><span class="co"># bind vcf_outgrp and vcf_ingrp (union - variable SNVs in any object)</span></span>
+<span><span class="va">vcf1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/vcf_bind.html">vcf_bind</a></span><span class="op">(</span><span class="va">vcf_ingrp</span>, <span class="va">vcf_outgrp</span>, mode <span class="op">=</span> <span class="st">"union"</span>, absent_as <span class="op">=</span> <span class="st">"missing"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Binding 2 VCFArrow objects (union): 10000 variants, 18 total samples.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Absent genotypes will be filled as: missing</span></span></code></pre></div>
+<p>With <code>mode = "union"</code>, loci removed from an object stay
+removed for it: a locus that one object removed by filtering (for
+example with <code><a href="../reference/vcf_filter_maf.html">vcf_filter_maf()</a></code>) but that another object
+still contains is included in the result, and the genotypes of the
+object that removed it are coded according to <code>absent_as</code>
+(missing, <code>./.</code>, by default). Binding in steps,
+<code>vcf_bind(vcf_bind(A, B, mode = "union"), C, mode = "union")</code>,
+and binding in one call, <code>vcf_bind(A, B, C, mode = "union")</code>,
+therefore give the same result. To join datasets that were filtered
+separately before the join, set <code>recover_loci = TRUE</code>: the
+real genotypes of removed loci are then restored wherever an object’s
+genotype files still hold them. With <code>recover_loci = TRUE</code>,
+binding in steps can differ from binding in one call, because an
+intermediate object keeps only the loci it contains, so bind all objects
+in a single call.</p>
 </div>
 <div class="section level4">
 <h4 id="filtering-with-outgroup">Filtering with outgroup<a class="anchor" aria-label="anchor" href="#filtering-with-outgroup"></a>
@@ -495,7 +530,16 @@ threshold. It also results in fewer SNVs being retained after filtering.
 The solution is to extract the outgroup taxa with
 <code><a href="../reference/vcf_extract_samples.html">vcf_extract_samples()</a></code> or <code><a href="../reference/vcf_extract_groups.html">vcf_extract_groups()</a></code>,
 filter the ingroup VCFArrow object, and add the outgroup taxa with
-<code><a href="../reference/vcf_bind_sparse.html">vcf_bind_sparse()</a></code> using the ‘union’ binding option.</p>
+<code><a href="../reference/vcf_bind.html">vcf_bind()</a></code> using <code>outgroup = TRUE</code>.</p>
+<p>With <code>outgroup = TRUE</code>, the result keeps exactly the loci
+of the filtered ingroup, which must be the first object: loci removed
+from the ingroup stay removed, and properties of the outgroup, such as
+its missing data, cannot remove ingroup loci. The outgroup genotypes are
+added for these loci wherever they exist, including loci the outgroup
+dropped as invariant, so it does not matter whether the outgroup was
+extracted with <code>f_invar = TRUE</code> or <code>FALSE</code>. By
+contrast, <code>mode = "union"</code> also keeps loci found only in the
+outgroup (see above).</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># extract outgroup from VCFArrow</span></span>
 <span><span class="va">groups1</span> <span class="op">&lt;-</span> <span class="st">"OG"</span></span>
@@ -514,7 +558,7 @@ filter the ingroup VCFArrow object, and add the outgroup taxa with
 <span>  <span class="fu"><a href="../reference/vcf_filter_missingness.html">vcf_filter_missingness</a></span><span class="op">(</span><span class="fl">.2</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/vcf_filter_missing.html">vcf_filter_missing</a></span><span class="op">(</span><span class="fl">.3</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/vcf_filter_oneSNV.html">vcf_filter_oneSNV</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="../reference/vcf_bind_sparse.html">vcf_bind_sparse</a></span><span class="op">(</span><span class="va">vcf_outgrp</span>, mode <span class="op">=</span> <span class="st">"union"</span>, absent_as <span class="op">=</span> <span class="st">"missing"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="../reference/vcf_bind.html">vcf_bind</a></span><span class="op">(</span><span class="va">vcf_outgrp</span>, outgroup <span class="op">=</span> <span class="cn">TRUE</span>, absent_as <span class="op">=</span> <span class="st">"missing"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Compacting GT: 18 -&gt; 15 samples across 1 chunk</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying invariant filter</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Removed 1705 invariant variants; 8295 retained.</span></span>
@@ -532,12 +576,12 @@ filter the ingroup VCFArrow object, and add the outgroup taxa with
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Variants retained: 2409 | Samples retained: 15</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying unlinked SNV filter</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retained 2409 / 2409 variants (unlinked SNVs)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Binding 2 VCFArrow objects (union): 10000 variants, 18 total samples.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Binding 2 VCFArrow objects (outgroup): 2409 variants, 18 total samples.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Absent genotypes will be filled as: missing</span></span>
 <span></span>
 <span><span class="co"># see how many variants remained</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">vcf1</span><span class="op">@</span><span class="va">variants</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 10000</span></span>
+<span><span class="co">#&gt; [1] 2409</span></span>
 <span></span>
 <span><span class="co"># apply the same filter to the full dataset (ingroup + outgroup)</span></span>
 <span><span class="va">vcf1</span> <span class="op">&lt;-</span> <span class="va">vcf</span> <span class="op">|&gt;</span></span>
@@ -583,7 +627,7 @@ later.</p>
 <code class="sourceCode R"><span><span class="co"># write the VCFArrow object as a VCF (and compress it using gzip)</span></span>
 <span><span class="fu"><a href="../reference/write_vcf.html">write_vcf</a></span><span class="op">(</span><span class="va">vcf1</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="st">"_filtered.vcf.gz"</span><span class="op">)</span><span class="op">)</span>, gzip <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> VCF is being written in 1 chunk</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> VCFArrow object successfully written to <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub_filtered.vcf.gz</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> VCFArrow object successfully written to <span style="color: #0000BB;">/tmp/RtmpGfkGlU/vaillantii_discosnp_sub_filtered.vcf.gz</span></span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="converting-a-vcf-file-to-other-population-genetic-and-phylogenetic-formats">Converting a VCF file to other population genetic and phylogenetic
@@ -594,13 +638,14 @@ it other populations genetic and phylogenetic formats, exporting/writing
 a file of this format. Group/population information is extracted from
 the VCFArrow object for those formats that require it. The function
 <code><a href="../reference/vcf2genlight.html">vcf2genlight()</a></code> automatically returns a genlight object and
-optionally can also export/write a file of this format to the working
-directory. Generally the <code><a href="../reference/vcf2genlight.html">vcf2genlight()</a></code> function is called
-within a script using functions of the <code>adegenet</code> and
-<code>poppr</code> packages rather than importing the genlight
-object.</p>
+optionally can also save it as an .rds file given by
+<code>out_file</code>. Generally the <code><a href="../reference/vcf2genlight.html">vcf2genlight()</a></code>
+function is called within a script using functions of the
+<code>adegenet</code> and <code>poppr</code> packages rather than
+importing the genlight object. <code><a href="../reference/vcf2genlight.html">vcf2genlight()</a></code> requires the
+<code>adegenet</code> package.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">res_path</span> <span class="op">&lt;-</span> <span class="va">data_path</span></span>
+<code class="sourceCode R"><span><span class="va">res_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">project</span> <span class="op">&lt;-</span> <span class="st">"vaillantii_"</span></span>
 <span><span class="va">postfix</span> <span class="op">&lt;-</span> <span class="st">"discosnp_sub"</span></span>
 <span><span class="va">fltr</span> <span class="op">&lt;-</span> <span class="st">""</span></span>
@@ -615,106 +660,106 @@ object.</p>
 <span><span class="fu"><a href="../reference/vcf2migrate.html">vcf2migrate</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'_migrate.txt'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Accumulating Migrate-N (S): 1734 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing Migrate-N (S) file...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Migrate-N file written to <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub_migrate.txt</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Migrate-N file written to <span style="color: #0000BB;">/tmp/RtmpGfkGlU/vaillantii_discosnp_sub_migrate.txt</span></span></span>
 <span><span class="co"># arlequin http://cmpg.unibe.ch/software/arlequin35/</span></span>
 <span><span class="fu"><a href="../reference/vcf2arlequin.html">vcf2arlequin</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'.arp'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Accumulating Arlequin: 1734 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing Arlequin file...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Arlequin file written to <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub.arp</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Arlequin file written to <span style="color: #0000BB;">/tmp/RtmpGfkGlU/vaillantii_discosnp_sub.arp</span></span></span>
 <span><span class="co"># structure https://web.stanford.edu/group/pritchardlab/structure.html</span></span>
 <span><span class="fu"><a href="../reference/vcf2structure.html">vcf2structure</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'.str'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Accumulating Structure: 1734 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing Structure file...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Structure file written to <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub.str</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Structure file written to <span style="color: #0000BB;">/tmp/RtmpGfkGlU/vaillantii_discosnp_sub.str</span></span></span>
 <span><span class="co"># faststucture http://rajanil.github.io/fastStructure/</span></span>
 <span><span class="fu"><a href="../reference/vcf2structure.html">vcf2structure</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'.fstr'</span><span class="op">)</span><span class="op">)</span>, method <span class="op">=</span> <span class="st">"F"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Accumulating Structure: 1734 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing Structure file...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Structure file written to <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub.fstr</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Structure file written to <span style="color: #0000BB;">/tmp/RtmpGfkGlU/vaillantii_discosnp_sub.fstr</span></span></span>
 <span><span class="co"># sNMF http://membres-timc.imag.fr/Olivier.Francois/snmf/index.htm</span></span>
 <span><span class="fu"><a href="../reference/vcf2snmf.html">vcf2snmf</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'.geno'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Formatting sNMF: 1734 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing sNMF file...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> sNMF file written to <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub.geno</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> sNMF file written to <span style="color: #0000BB;">/tmp/RtmpGfkGlU/vaillantii_discosnp_sub.geno</span></span></span>
 <span><span class="co"># Admixture https://dalexander.github.io/admixture/index.html</span></span>
 <span><span class="co"># takes as input binary PLINK (.bed), ordinary PLINK (.ped), or EIGENSTRAT (.geno) formatted files</span></span>
 <span><span class="co"># so a thin wrapper around vcf2plink_bed() plus optional generation of known-ancestry reference populations</span></span>
 <span><span class="fu"><a href="../reference/vcf2admixture.html">vcf2admixture</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'_admixture'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Building PLINK: 1734 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing PLINK files...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Chromosome names were recoded as integers for PLINK compatibility; mapping written to <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub_admixture.chrommap</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> PLINK binary fileset written to <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub_admixture.bed</span>, <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub_admixture.bim</span>, <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub_admixture.fam</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Chromosome names were recoded as integers for PLINK compatibility; mapping written to <span style="color: #0000BB;">/tmp/RtmpGfkGlU/vaillantii_discosnp_sub_admixture.chrommap</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> PLINK binary fileset written to <span style="color: #0000BB;">/tmp/RtmpGfkGlU/vaillantii_discosnp_sub_admixture.bed</span>, <span style="color: #0000BB;">/tmp/RtmpGfkGlU/vaillantii_discosnp_sub_admixture.bim</span>, <span style="color: #0000BB;">/tmp/RtmpGfkGlU/vaillantii_discosnp_sub_admixture.fam</span></span></span>
 <span><span class="co"># PLINK .bed https://www.cog-genomics.org/plink/1.9/formats#bed</span></span>
 <span><span class="fu"><a href="../reference/vcf2plink_bed.html">vcf2plink_bed</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'_plink'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Building PLINK: 1734 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing PLINK files...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Chromosome names were recoded as integers for PLINK compatibility; mapping written to <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub_plink.chrommap</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> PLINK binary fileset written to <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub_plink.bed</span>, <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub_plink.bim</span>, <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub_plink.fam</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Chromosome names were recoded as integers for PLINK compatibility; mapping written to <span style="color: #0000BB;">/tmp/RtmpGfkGlU/vaillantii_discosnp_sub_plink.chrommap</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> PLINK binary fileset written to <span style="color: #0000BB;">/tmp/RtmpGfkGlU/vaillantii_discosnp_sub_plink.bed</span>, <span style="color: #0000BB;">/tmp/RtmpGfkGlU/vaillantii_discosnp_sub_plink.bim</span>, <span style="color: #0000BB;">/tmp/RtmpGfkGlU/vaillantii_discosnp_sub_plink.fam</span></span></span>
 <span><span class="co"># PLINK .ped https://www.cog-genomics.org/plink/1.9/formats#ped</span></span>
 <span><span class="fu"><a href="../reference/vcf2plink_ped.html">vcf2plink_ped</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'_plink'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Accumulating PLINK .ped: 1734 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing PLINK file...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Chromosome names were recoded as integers for PLINK compatibility; mapping written to <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub_plink.chrommap</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> PLINK text fileset written to <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub_plink.ped</span>, <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub_plink.map</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Chromosome names were recoded as integers for PLINK compatibility; mapping written to <span style="color: #0000BB;">/tmp/RtmpGfkGlU/vaillantii_discosnp_sub_plink.chrommap</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> PLINK text fileset written to <span style="color: #0000BB;">/tmp/RtmpGfkGlU/vaillantii_discosnp_sub_plink.ped</span>, <span style="color: #0000BB;">/tmp/RtmpGfkGlU/vaillantii_discosnp_sub_plink.map</span></span></span>
 <span><span class="co"># eigenstrat https://github.com/DReichLab/EIG/tree/master</span></span>
 <span><span class="fu"><a href="../reference/vcf2eigenstrat.html">vcf2eigenstrat</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'_eigenstrat'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Building EIGENSTRAT: 1734 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing EIGENSTRAT files...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> EIGENSTRAT fileset written to <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub_eigenstrat.geno</span>, <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub_eigenstrat.ind</span>, <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub_eigenstrat.snp</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> EIGENSTRAT fileset written to <span style="color: #0000BB;">/tmp/RtmpGfkGlU/vaillantii_discosnp_sub_eigenstrat.geno</span>, <span style="color: #0000BB;">/tmp/RtmpGfkGlU/vaillantii_discosnp_sub_eigenstrat.ind</span>, <span style="color: #0000BB;">/tmp/RtmpGfkGlU/vaillantii_discosnp_sub_eigenstrat.snp</span></span></span>
 <span><span class="co"># genepop https://gitlab.mbb.univ-montp2.fr/francois/genepop</span></span>
 <span><span class="fu"><a href="../reference/vcf2genepop.html">vcf2genepop</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'.gen'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Accumulating Genepop: 1734 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing Genepop file...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Genepop file written to <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub.gen</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Genepop file written to <span style="color: #0000BB;">/tmp/RtmpGfkGlU/vaillantii_discosnp_sub.gen</span></span></span>
 <span><span class="co"># smartsnp https://github.com/ChristianHuber/smartsnp</span></span>
 <span><span class="fu"><a href="../reference/vcf2smartsnp.html">vcf2smartsnp</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'.smartsnp'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Building SmartSNP: 1734 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing SmartSNP file...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> SmartSNP file written to <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub.smartsnp</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> SmartSNP file written to <span style="color: #0000BB;">/tmp/RtmpGfkGlU/vaillantii_discosnp_sub.smartsnp</span></span></span>
 <span><span class="co"># bayescan https://github.com/mfoll/BayeScan</span></span>
 <span><span class="fu"><a href="../reference/vcf2bayescan.html">vcf2bayescan</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'.bayescan'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Accumulating BayesScan: 1734 variants x 4 pops (<span style="font-weight: bold;">0</span> MiB raw storage, vs 0 MiB with integer matrices)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing BayesScan file...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> BayesScan file written to <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub.bayescan</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> BayesScan file written to <span style="color: #0000BB;">/tmp/RtmpGfkGlU/vaillantii_discosnp_sub.bayescan</span></span></span>
 <span><span class="co"># bayesass https://github.com/brannala/BA3</span></span>
 <span><span class="fu"><a href="../reference/vcf2bayesass.html">vcf2bayesass</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'.bayesass'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Accumulating BayesAss: 1734 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing BayesAss file...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> BayesAss file written to <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub.bayesass</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> BayesAss file written to <span style="color: #0000BB;">/tmp/RtmpGfkGlU/vaillantii_discosnp_sub.bayesass</span></span></span>
 <span><span class="co"># treemix https://bitbucket.org/nygcresearch/treemix/wiki/Home</span></span>
 <span><span class="fu"><a href="../reference/vcf2treemix.html">vcf2treemix</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'.treemix'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Building Treemix: 1734 variants x 4 pops (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing Treemix file...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Treemix file written to <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub.treemix</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Treemix file written to <span style="color: #0000BB;">/tmp/RtmpGfkGlU/vaillantii_discosnp_sub.treemix</span></span></span>
 <span><span class="co"># apparent https://github.com/halelab/apparent/tree/master</span></span>
 <span><span class="fu"><a href="../reference/vcf2apparent.html">vcf2apparent</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'.apparent'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Accumulating Apparent: 1734 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing Apparent file...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Apparent file written to <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub.apparent</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Apparent file written to <span style="color: #0000BB;">/tmp/RtmpGfkGlU/vaillantii_discosnp_sub.apparent</span></span></span>
 <span><span class="co"># related https://github.com/timothyfrasier/related</span></span>
 <span><span class="fu"><a href="../reference/vcf2related.html">vcf2related</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'.related'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Accumulating Related: 1734 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing Related file...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Related file written to <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub.related</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Related file written to <span style="color: #0000BB;">/tmp/RtmpGfkGlU/vaillantii_discosnp_sub.related</span></span></span>
 <span><span class="co"># long tidy dataframe of genotypes</span></span>
 <span><span class="fu"><a href="../reference/vcf2gt_long.html">vcf2gt_long</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'.csv'</span><span class="op">)</span><span class="op">)</span>, format <span class="op">=</span> <span class="st">'csv'</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing gt_long: 1734 variants x 18 samples</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> gt_long table written to <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub.csv</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> gt_long table written to <span style="color: #0000BB;">/tmp/RtmpGfkGlU/vaillantii_discosnp_sub.csv</span></span></span>
 <span><span class="co"># snapp https://www.beast2.org/snapp/</span></span>
 <span><span class="fu"><a href="../reference/vcf2snapp.html">vcf2snapp</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'_snapp.nex'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Accumulating SNAPP: 1734 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing SNAPP file...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> SNAPP file written to <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub_snapp.nex</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> SNAPP file written to <span style="color: #0000BB;">/tmp/RtmpGfkGlU/vaillantii_discosnp_sub_snapp.nex</span></span></span>
 <span><span class="co"># nexus - only SNPs, meant for SVDq analyses https://www.asc.ohio-state.edu/kubatko.2/software/SVDquartets/</span></span>
 <span><span class="fu"><a href="../reference/vcf2nexus.html">vcf2nexus</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'_sdvq.nex'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Accumulating Nexus: 1734 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing Nexus file...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Nexus file written to <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub_sdvq.nex</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Nexus file written to <span style="color: #0000BB;">/tmp/RtmpGfkGlU/vaillantii_discosnp_sub_sdvq.nex</span></span></span>
 <span><span class="co"># fasta https://www.ncbi.nlm.nih.gov/genbank/fastaformat/</span></span>
 <span><span class="fu"><a href="../reference/vcf2fasta.html">vcf2fasta</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'.fna'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Accumulating FASTA: 1734 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing FASTA file...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> FASTA file written to <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub.fna</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> FASTA file written to <span style="color: #0000BB;">/tmp/RtmpGfkGlU/vaillantii_discosnp_sub.fna</span></span></span>
 <span></span>
 <span><span class="co"># genlight object https://www.rdocumentation.org/packages/adegenet/versions/2.0.0/topics/genlight-class</span></span>
 <span><span class="va">genlight</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/vcf2genlight.html">vcf2genlight</a></span><span class="op">(</span><span class="va">vcf</span><span class="op">)</span></span>
@@ -725,7 +770,7 @@ object.</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Accumulating Genlight: 1734 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Building Genlight object...</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing Genlight object...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Genlight object written to <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub_genlight.rds</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Genlight object written to <span style="color: #0000BB;">/tmp/RtmpGfkGlU/vaillantii_discosnp_sub_genlight.rds</span></span></span>
 <span></span>
 <span><span class="co">##########</span></span>
 <span><span class="co"># datasets for analyses with linked SNPs</span></span>
@@ -737,7 +782,7 @@ object.</p>
 <span><span class="fu"><a href="../reference/vcf2fineradstructure.html">vcf2fineradstructure</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'.finerad'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Building fineRADstructure: 0 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing fineRADstructure file...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> fineRADstructure file written to <span style="color: #0000BB;">/home/runner/work/_temp/Library/VCFArrow/extdata/vaillantii_discosnp_sub.finerad</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> fineRADstructure file written to <span style="color: #0000BB;">/tmp/RtmpGfkGlU/vaillantii_discosnp_sub.finerad</span></span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

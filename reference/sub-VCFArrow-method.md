@@ -1,27 +1,44 @@
-# vcf_filter_biallelic
+# Subset method for VCFArrow
 
-Remove non-biallelic loci from a VCFArrow object
+Subset a VCFArrow object by variants (rows) and samples (columns)
 
 ## Usage
 
 ``` r
-vcf_filter_biallelic(vcf_arrow)
+# S4 method for class 'VCFArrow'
+x[i, j, ..., drop = FALSE]
 ```
 
 ## Arguments
 
-- vcf_arrow:
+- x:
 
-  -\> VCFArrow object
+  A VCFArrow object
+
+- i:
+
+  Variant (row) positions, numeric or logical
+
+- j:
+
+  Column indices: numeric, logical, or sample name character vector
+
+- ...:
+
+  Ignored
+
+- drop:
+
+  Ignored; kept for S4 compatibility
 
 ## Value
 
-subsetted VCFArrow object
+A new VCFArrow object containing the selected variants and samples
 
 ## Details
 
-This function removes non-biallelic loci from a VCFArrow object,
-returning a new VCFArrow object.
+This function is a method of the VCFArrow S4 class Method to subset by
+row and column of GT
 
 ## Author
 
@@ -32,26 +49,25 @@ Tomas Hrbek April 2026
 ``` r
 f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
                  package = "VCFArrow")
-vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
+vcf <- read_vcf(f)
 #> ℹ VCF is being read in chunks of 50000 variants
 #> ✔ VCF successfully read into a VCFArrow object
-vcf_filter_biallelic(vcf)
-#> ℹ Applying biallelic filter
-#> ℹ Retained 10000 / 10000 variants (biallelic SNVs)
+vcf[1:100, 1:5]
+#> ℹ Compacting GT: 18 -> 5 samples across 1 chunk
 #> 
 #> An object of class "VCFArrow"
 #> 
 #> Dimensions:
-#>   Variants: 10000 
-#>   Samples:  18 
+#>   Variants: 100 
+#>   Samples:  5 
 #> 
 #> Quick stats:
-#>   Non-missing variants: 10000 
+#>   Non-missing variants: 100 
 #> 
 #> Phased genotypes: FALSE 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpFwXb6F/arrow_vcf_1f6b1a4bad8 
+#>   Path: /tmp/RtmpFwXb6F/arrow_vcf_samp_1f6b31ce2eaa 
 #> 
 #> Genotype storage (Arrow):
 #> FileSystemDataset with 1 Feather file
@@ -81,7 +97,7 @@ vcf_filter_biallelic(vcf)
 #> 3         TRUE    FALSE       3
 #> 4         TRUE    FALSE       4
 #> 5         TRUE    FALSE       5
-#>   ... 9995 more
+#>   ... 95 more
 #> 
 #> INFO (first 5):
 #> [1] "Ty=SNP;Rk=1.0;UL=11;UR=8;CL=11;CR=27;Genome=.;Sd=.;Cluster=20022615;ClSize=3"
@@ -100,5 +116,4 @@ vcf_filter_biallelic(vcf)
 #> 
 #> Samples (first 5):
 #> [1] "Pv120" "Pv126" "Pv13"  "Pv14"  "Pv27" 
-#>   ... 13 more
 ```

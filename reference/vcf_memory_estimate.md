@@ -64,5 +64,17 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 #> ℹ VCF is being read in chunks of 50000 variants
 #> ✔ VCF successfully read into a VCFArrow object
 vcf_memory_estimate(vcf, format = "individual")
-#> Error in vcf_memory_estimate(vcf, format = "individual"): could not find function "vcf_memory_estimate"
+#> 
+#> ── VCFArrow memory estimate ──
+#> 
+#> • Variants (filtered): 9313
+#> • Samples retained: 18
+#> • Populations: 4
+#> • Chunk size: 100,000 variants
+#> • Low-memory mode: FALSE
+#> 
+#> ── Per-operation footprint 
+#> • Arrow pool per chunk read: 34.3 MiB
+#> • Accumulation matrices (a1+a2): 1.3 MiB [4 B/cell]
+#> • Estimated peak RAM: 35.6 MiB
 ```

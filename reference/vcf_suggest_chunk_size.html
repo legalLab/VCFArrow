@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">VCFArrow</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,7 +67,8 @@ a1, a2, phased).</p></dd>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">vcf_suggest_chunk_size</span><span class="op">(</span>available_gb <span class="op">=</span> <span class="fl">8</span>, n_samples <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in vcf_suggest_chunk_size(available_gb = 8, n_samples = 100):</span> could not find function "vcf_suggest_chunk_size"</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> For 8 GB RAM and 100 samples, recommended chunk_size = 5e+05</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> (use: read_vcf(vcf_file, chunk_size = 5e+05))</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

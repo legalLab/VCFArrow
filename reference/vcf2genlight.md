@@ -44,6 +44,8 @@ An adegenet `genlight` object.
 ## Details
 
 This function converts a VCFArrow object to an adegenet Genlight object.
+It requires the 'adegenet' package, which VCFArrow only suggests:
+install it with `install.packages("adegenet")` to use this function.
 Genotypes are read in chunks whose size is determined by the read_vcf()
 function. If no groups are defined, the default behavior is to use all
 groups. Genlight objects can encode polyploid genomes, by default
@@ -91,5 +93,5 @@ gl <- vcf2genlight(vcf, out_file = tempfile(fileext = ".rds"),
 #> ℹ Accumulating Genlight: 9313 variants x 18 samples (0 MiB raw storage)
 #> ℹ Building Genlight object...
 #> ℹ Writing Genlight object...
-#> ✔ Genlight object written to /tmp/RtmpodaNXU/file1ffe19ecdaf4.rds
+#> ✔ Genlight object written to /tmp/RtmpFwXb6F/file1f6b2ebf04f.rds
 ```

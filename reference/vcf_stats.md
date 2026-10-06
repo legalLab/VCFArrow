@@ -55,5 +55,4 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf_stats(vcf, res_path = tempdir(), project = "vaillantii",
           theta = TRUE)
 #> ℹ Computing per-sample stats: 10000 variants x 18 samples, reading 1 chunk directly
-#> ℹ Accumulating theta/pi: 9313 variants x 4 pops (0 MiB raw storage, vs 0 MiB with integer matrices)
 ```

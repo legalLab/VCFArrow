@@ -18,7 +18,7 @@
   : set_vcf_groups
 - [`show(`*`<VCFArrow>`*`)`](https://legallab.github.io/VCFArrow/reference/show-VCFArrow-method.md)
   : Show method for VCFArrow
-- [`` `[`( ``*`<VCFArrow>`*`,`*`<ANY>`*`,`*`<ANY>`*`,`*`<ANY>`*`)`](https://legallab.github.io/VCFArrow/reference/sub-VCFArrow-ANY-ANY-ANY-method.md)
+- [`` `[`( ``*`<VCFArrow>`*`)`](https://legallab.github.io/VCFArrow/reference/sub-VCFArrow-method.md)
   : Subset method for VCFArrow
 - [`vcf2admixture()`](https://legallab.github.io/VCFArrow/reference/vcf2admixture.md)
   : vcf2admixture
