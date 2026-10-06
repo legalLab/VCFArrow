@@ -22,6 +22,9 @@ and for sample groups from VCFArrow format data.
 This function calculates Watterson's theta and pi for the entire VCFArrow
 object, and for groups of individuals whose grouping is indicated by
 the groups slot in the VCFArrow object.
+The statistics are accumulated chunk by chunk as running sums per group,
+so memory use does not grow with the number of variants, and chunks are
+processed in parallel when workers are set with vcf_set_workers().
 }
 \examples{
 f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",

@@ -32,6 +32,8 @@ Converts a VCFArrow object to Genlight format infile
 }
 \details{
 This function converts a VCFArrow object to an adegenet Genlight object.
+It requires the 'adegenet' package, which VCFArrow only suggests: install
+it with \code{install.packages("adegenet")} to use this function.
 Genotypes are read in chunks whose size is determined by the read_vcf() function.
 If no groups are defined, the default behavior is to use all groups.
 Genlight objects can encode polyploid genomes, by default diploid genomes are assumed.
