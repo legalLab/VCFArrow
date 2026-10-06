@@ -48,7 +48,7 @@ The data used in this example are from ([Mota et al., 2026](https://dx.doi.org/1
 
 ![white-lined leaf frog _Phyllomedusa vaillantii_ Photo: Albertina Lima](https://github.com/legalLab/VCFArrow/blob/main/man/figures/P_vaillantii.jpeg)
 
-```{r setup} 
+```{r setup, message = FALSE} 
 library(VCFArrow)
 library(dplyr)
 
@@ -104,7 +104,7 @@ vcf_stats(vcf, res_path, paste0(project, postfix, fltr), theta = TRUE)
 
 ## Filtering, subsetting, merging and otherwise wrangling VCF files
 
-Most but not all functions can be used by the user directly on the `VCFArrow` object. Some functions, such as `.vcf_filter_rows()` and `.vcf_filter_columns()` are common APIs used by other functions to perform filtering. Other functions, such as `vcf_filter_invariant()` will remove invariant SNPs from a VCFArrow object; however, VCF by definition should not have invariant SNPs. So this function is primarily called by other functions to remove loci that may have become invariant following filtering.
+Most but not all functions can be used by the user directly on the `VCFArrow` object. Internally, all filters use two common functions, `.vcf_filter_rows()` for variants and `.vcf_filter_columns()` for samples, which are not exported. Other functions, such as `vcf_filter_invariant()` will remove invariant SNPs from a VCFArrow object; however, VCF by definition should not have invariant SNPs. So this function is primarily called by other functions to remove loci that may have become invariant following filtering.
 
 ### Subsetting samples and variants
 

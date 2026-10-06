@@ -9,11 +9,11 @@
 
 The released version can be installed from CRAN with
 `install.packages("VCFArrow")`, and the development version from GitHub
-with `devtools::install_github("legalLab/VCFArrow")`.
-
-Two packages are optional and only needed for specific functions:
-`adegenet`, for `vcf2genlight()`, and `svglite`, for SVG plots (without
-it, SVG plots are written with R's own Cairo device). Install them with
+with `pak::pak("legalLab/VCFArrow")` or
+`devtools::install_github("legalLab/VCFArrow")`. Two packages are
+optional and only needed for specific functions: `adegenet`, for
+`vcf2genlight()`, and `svglite`, for SVG plots (without it, SVG plots
+are written with R’s own Cairo device). Install them with
 `install.packages(c("adegenet", "svglite"))`.
 
 The package is built around Apache Arrow (<https://arrow.apache.org/>),
@@ -35,18 +35,19 @@ constructed around an Apache Arrow data structure. It precalculate a
 number of metrics and stores them in the S4 object. The VCF genotype
 matrix is stored as a long tidy table, and the data in the S4 object are
 lazy loaded. Many common tasks have been delegated to shared, C++ backed
-APIs and functions. These modifications and optimizations now permit
-extremely fast data filtering, manipulation and transformation. It is
-possible to process VCFs comprising tens of millions of SNVs and
-hundreds of individuals in matter minutes with minimal RAM overhead.
+APIs and functions, and these operations have been parallelized when
+possible. These modifications and optimizations now permit extremely
+fast data filtering, manipulation and transformation. It is possible to
+process VCFs comprising tens of millions of SNVs and hundreds of
+individuals in matter minutes with minimal RAM overhead.
 
 ## Meta
 
-- Please [report here any issues or bugs or
-  suggestions](https://github.com/legalLab/VCFArrow/issues).
-- License: MIT.
-- Get citation information for `VCFArrow` in R by running
-  `citation(package='VCFArrow')`.
+  - Please [report here any issues or bugs or
+    suggestions](https://github.com/legalLab/VCFArrow/issues).
+  - License: MIT.
+  - Get citation information for `VCFArrow` in R by running
+    `citation(package='VCFArrow')`.
 
 # How to use the functions of this package
 
@@ -62,23 +63,17 @@ headers). The grouping of individuals can be used in filtering steps,
 and it is necessary for transformation of the VCFArrow object to other
 population genetic formats, many of which require it.
 
-The data used in this example are from ([Mota et al.,
-2026](https://dx.doi.org/10.1080/14772000.2026.2692965))—a population
-genomic analysis of the *Phyllomedusa vaillantii* species complex. The
-original dataset has 18579683 SNVs by 56 samples. For the purpose of
-this tutorial, the dataset was randomly subsampled to 10000 SNVs by 18
-samples (five samples by three main lineages of *Phyllomedusa
+The data used in this example are from ([Mota et
+al., 2026](https://dx.doi.org/10.1080/14772000.2026.2692965))—a
+population genomic analysis of the *Phyllomedusa vaillantii* species
+complex. The original dataset has 18579683 SNVs by 56 samples. For the
+purpose of this tutorial, the dataset was randomly subsampled to 10000
+SNVs by 18 samples (five samples by three main lineages of *Phyllomedusa
 vaillantii* as ingroups, plus three samples of *Phyllomedusa bicolor*
 included as outgroups).
 
-<figure>
-<img
-src="https://github.com/legalLab/VCFArrow/blob/main/man/figures/P_vaillantii.jpeg"
-alt="white-lined leaf frog Phyllomedusa vaillantii Photo: Albertina Lima" />
-<figcaption aria-hidden="true">white-lined leaf frog <em>Phyllomedusa
-vaillantii</em> Photo: Albertina Lima</figcaption>
-</figure>
-
+![white-lined leaf frog *Phyllomedusa vaillantii* Photo: Albertina
+Lima](https://github.com/legalLab/VCFArrow/blob/main/man/figures/P_vaillantii.jpeg)
 
 ``` r
 library(VCFArrow)
@@ -92,8 +87,6 @@ postfix <- "discosnp_sub"
 # load vcf and assign individuals to groups based on 'strata'
 vcf <- read_vcf(file.path(data_path, paste0(project, postfix, ".vcf.gz"))) |>
   set_vcf_groups(data_path)
-#> ℹ VCF is being read in chunks of 50000 variants
-#> ✔ VCF successfully read into a VCFArrow object
 
 # visualize the VCFArrow object
 vcf
@@ -110,7 +103,7 @@ vcf
 #> Phased genotypes: FALSE 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpV42HaQ/arrow_vcf_14e434dc9095 
+#>   Path: /tmp/RtmpGRqN6S/arrow_vcf_4f2e8338f1d 
 #> 
 #> Genotype storage (Arrow):
 #> FileSystemDataset with 1 Feather file
@@ -128,12 +121,18 @@ vcf
 #> See $metadata for additional Schema metadata
 #> 
 #> Variants (first 5 rows):
-#>                     CHROM POS        ID REF ALT QUAL FILTER Rk RPT n_alt is_biallelic is_indel .row_id
-#> 1 SNP_higher_path_9994239  41 9994239_1   C   G    .      .  1  NA     1         TRUE    FALSE       1
-#> 2 SNP_higher_path_9984432 105   9984432   C   T    .      .  1  NA     1         TRUE    FALSE       2
-#> 3 SNP_higher_path_9967574  50   9967574   A   C    .      .  1  NA     1         TRUE    FALSE       3
-#> 4  SNP_higher_path_993510  88  993510_4   A   G    .      .  1  NA     1         TRUE    FALSE       4
-#> 5 SNP_higher_path_9803974  33   9803974   A   G    .      .  1  NA     1         TRUE    FALSE       5
+#>                     CHROM POS        ID REF ALT QUAL FILTER Rk RPT n_alt
+#> 1 SNP_higher_path_9994239  41 9994239_1   C   G    .      .  1  NA     1
+#> 2 SNP_higher_path_9984432 105   9984432   C   T    .      .  1  NA     1
+#> 3 SNP_higher_path_9967574  50   9967574   A   C    .      .  1  NA     1
+#> 4  SNP_higher_path_993510  88  993510_4   A   G    .      .  1  NA     1
+#> 5 SNP_higher_path_9803974  33   9803974   A   G    .      .  1  NA     1
+#>   is_biallelic is_indel .row_id
+#> 1         TRUE    FALSE       1
+#> 2         TRUE    FALSE       2
+#> 3         TRUE    FALSE       3
+#> 4         TRUE    FALSE       4
+#> 5         TRUE    FALSE       5
 #>   ... 9995 more
 #> 
 #> INFO (first 5):
@@ -181,7 +180,7 @@ reported. The default is to report species name and details.
 
 ``` r
 # define results path
-res_path <- data_path
+res_path <- tempdir()
 # species for plot title
 species <- "Phyllomedusa vaillantii"
 # filter - filter parameters in file name
@@ -207,20 +206,19 @@ Watterson’s Theta and Pi can be included or excluded based on the
 # get a table of basic sample stats, including Watterson's Theta and Pi
 
 vcf_stats(vcf, res_path, paste0(project, postfix, fltr), theta = TRUE)
-#> ℹ Computing per-sample stats: 10000 variants x 18 samples, reading 1 chunk(s) directly
-#> ℹ Accumulating theta/pi: 9313 variants x 4 pops (0 MiB raw storage, vs 0 MiB with integer matrices)
+#> ℹ Computing per-sample stats: 10000 variants x 18 samples, reading 1 chunk directly
 ```
 
 ## Filtering, subsetting, merging and otherwise wrangling VCF files
 
 Most but not all functions can be used by the user directly on the
-`VCFArrow` object. Some functions, such as `.vcf_filter_rows()` and
-`.vcf_filter_columns()` are common APIs used by other functions to
-perform filtering. Other functions, such as `vcf_filter_invariant()`
-will remove invariant SNPs from a VCFArrow object; however, VCF by
-definition should not have invariant SNPs. So this function is primarily
-called by other functions to remove loci that may have become invariant
-following filtering.
+`VCFArrow` object. Internally, all filters use two common functions,
+`.vcf_filter_rows()` for variants and `.vcf_filter_columns()` for
+samples, which are not exported. Other functions, such as
+`vcf_filter_invariant()` will remove invariant SNPs from a VCFArrow
+object; however, VCF by definition should not have invariant SNPs. So
+this function is primarily called by other functions to remove loci that
+may have become invariant following filtering.
 
 ### Subsetting samples and variants
 
@@ -231,8 +229,8 @@ The ‘keep’ flag in both functions determines whether the indicated
 samples should be extracted from the VCF (‘keep = TRUE’) or excluded
 from the VCF (‘keep = FALSE’). Once subsetted, the invariant SNVs are
 removed by default, however, this behavior is controlled by the
-‘f_invar’ flag. The second type subsets a random number of SNVs from the
-VCF. The subsetting is done either across the entire VCF
+‘f\_invar’ flag. The second type subsets a random number of SNVs from
+the VCF. The subsetting is done either across the entire VCF
 `vcf_sub_SNVs()` or proportionately within each chromosome/linkage group
 `vcf_sub_SNVs_stratified()`. For repeatability, both functions accept a
 ‘seed’; if ‘seed’ is not specified, it is randomly generated.
@@ -348,7 +346,7 @@ vcf_multiSNP <- vcf_extract_samples(vcf, indivs) |>
 #> ℹ Applying sample missingness filter
 #> ℹ Variants retained: 1734 | Samples retained: 18
 #> ℹ Applying linked SNV filter
-#> ℹ Retained 0 / 1734 variants (unlinked SNVs)
+#> ℹ Retained 0 / 1734 variants (linked SNVs)
 
 # see how many variants remained
 nrow(vcf_multiSNP@variants)
@@ -368,13 +366,13 @@ Matching requires each locus to be described the same way in every
 dataset. This is assured when all datasets were called against the same
 reference genome assembly, which gives the same `CHROM`, `POS` and `REF`
 for the same locus. It is generally not possible for de novo
-(reference-free) SNP calling, where locus names and positions are 
-generated anew in each calling run, so the same locus will usually not 
-match between separately called datasets; such datasets should be called 
-together in a single run instead. Multi-allelic sites can list their 
-`ALT` alleles in a different order in different files, so it is best 
-to normalize the VCFs first, for example by splitting multi-allelic 
-sites with `bcftools norm -m -any`.
+(reference-free) SNP calling, where locus names and positions are
+generated anew in each calling run, so the same locus will usually not
+match between separately called datasets; such datasets should be called
+together in a single run instead. Multi-allelic sites can list their
+`ALT` alleles in a different order in different files, so it is best to
+normalize the VCFs first, for example by splitting multi-allelic sites
+with `bcftools norm -m -any`.
 
 ``` r
 # extract individuals from VCFArrow object (keep all loci)
@@ -401,6 +399,7 @@ vcf_ingrp <- vcf_extract_groups(vcf, groups1, f_invar = FALSE)
 
 # bind vcf_outgrp and vcf_ingrp (same variants)
 vcf1 <- vcf_bind(vcf_ingrp, vcf_outgrp)
+#> ℹ Binding 2 VCFArrow objects (intersect): 10000 variants, 18 total samples.
 
 # extract groups of individuals from VCFArrow object (remove invariant loci)
 groups1 <- c("GS", "BS", "WA")
@@ -436,7 +435,7 @@ according to `absent_as` (missing, `./.`, by default). Binding in steps,
 binding in one call, `vcf_bind(A, B, C, mode = "union")`, therefore give
 the same result. To join datasets that were filtered separately before
 the join, set `recover_loci = TRUE`: the real genotypes of removed loci
-are then restored wherever an object's genotype files still hold them.
+are then restored wherever an object’s genotype files still hold them.
 With `recover_loci = TRUE`, binding in steps can differ from binding in
 one call, because an intermediate object keeps only the loci it
 contains, so bind all objects in a single call.
@@ -547,8 +546,8 @@ save an uncompressed VCF and then compress it later.
 ``` r
 # write the VCFArrow object as a VCF (and compress it using gzip)
 write_vcf(vcf1, out_file = file.path(res_path, paste0(project, postfix, "_filtered.vcf.gz")), gzip = TRUE)
-#> ℹ VCF is being written in 1 chunks
-#> ✔ VCFArrow object successfully written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/vaillantii_discosnp_sub_filtered.vcf.gz'
+#> ℹ VCF is being written in 1 chunk
+#> ✔ VCFArrow object successfully written to '/tmp/RtmpGRqN6S/vaillantii_discosnp_sub_filtered.vcf.gz'
 ```
 
 ## Converting a VCF file to other population genetic and phylogenetic formats
@@ -558,13 +557,13 @@ other populations genetic and phylogenetic formats, exporting/writing a
 file of this format. Group/population information is extracted from the
 VCFArrow object for those formats that require it. The function
 `vcf2genlight()` automatically returns a genlight object and optionally
-can also save it as an .rds file given by `out_file`.
-Generally the `vcf2genlight()` function is called within a script using
-functions of the `adegenet` and `poppr` packages rather than importing
-the genlight object. `vcf2genlight()` requires the `adegenet` package.
+can also save it as an .rds file given by `out_file`. Generally the
+`vcf2genlight()` function is called within a script using functions of
+the `adegenet` and `poppr` packages rather than importing the genlight
+object. `vcf2genlight()` requires the `adegenet` package.
 
 ``` r
-res_path <- data_path
+res_path <- tempdir()
 project <- "vaillantii_"
 postfix <- "discosnp_sub"
 fltr <- ""
@@ -579,104 +578,106 @@ vcf <- vcf_oneSNP
 vcf2migrate(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_migrate.txt')))
 #> ℹ Accumulating Migrate-N (S): 1734 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing Migrate-N (S) file...
-#> ✔ Migrate-N file written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/vaillantii_discosnp_sub_migrate.txt'
+#> ✔ Migrate-N file written to '/tmp/RtmpGRqN6S/vaillantii_discosnp_sub_migrate.txt'
 # arlequin http://cmpg.unibe.ch/software/arlequin35/
 vcf2arlequin(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.arp')))
 #> ℹ Accumulating Arlequin: 1734 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing Arlequin file...
-#> ✔ Arlequin file written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/vaillantii_discosnp_sub.arp'
+#> ✔ Arlequin file written to '/tmp/RtmpGRqN6S/vaillantii_discosnp_sub.arp'
 # structure https://web.stanford.edu/group/pritchardlab/structure.html
 vcf2structure(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.str')))
 #> ℹ Accumulating Structure: 1734 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing Structure file...
-#> ✔ Structure file written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/vaillantii_discosnp_sub.str'
+#> ✔ Structure file written to '/tmp/RtmpGRqN6S/vaillantii_discosnp_sub.str'
 # faststucture http://rajanil.github.io/fastStructure/
 vcf2structure(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.fstr')), method = "F")
 #> ℹ Accumulating Structure: 1734 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing Structure file...
-#> ✔ Structure file written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/vaillantii_discosnp_sub.fstr'
+#> ✔ Structure file written to '/tmp/RtmpGRqN6S/vaillantii_discosnp_sub.fstr'
 # sNMF http://membres-timc.imag.fr/Olivier.Francois/snmf/index.htm
 vcf2snmf(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.geno')))
 #> ℹ Formatting sNMF: 1734 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing sNMF file...
-#> ✔ sNMF file written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/vaillantii_discosnp_sub.geno'
+#> ✔ sNMF file written to '/tmp/RtmpGRqN6S/vaillantii_discosnp_sub.geno'
 # Admixture https://dalexander.github.io/admixture/index.html
 # takes as input binary PLINK (.bed), ordinary PLINK (.ped), or EIGENSTRAT (.geno) formatted files
 # so a thin wrapper around vcf2plink_bed() plus optional generation of known-ancestry reference populations
 vcf2admixture(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_admixture')))
 #> ℹ Building PLINK: 1734 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing PLINK files...
-#> ✔ PLINK binary fileset written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/vaillantii_discosnp_sub_admixture.bed', '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/vaillantii_discosnp_sub_admixture.bim', '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/vaillantii_discosnp_sub_admixture.fam'
+#> ℹ Chromosome names were recoded as integers for PLINK compatibility; mapping written to '/tmp/RtmpGRqN6S/vaillantii_discosnp_sub_admixture.chrommap'
+#> ✔ PLINK binary fileset written to '/tmp/RtmpGRqN6S/vaillantii_discosnp_sub_admixture.bed', '/tmp/RtmpGRqN6S/vaillantii_discosnp_sub_admixture.bim', '/tmp/RtmpGRqN6S/vaillantii_discosnp_sub_admixture.fam'
 # PLINK .bed https://www.cog-genomics.org/plink/1.9/formats#bed
 vcf2plink_bed(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_plink')))
 #> ℹ Building PLINK: 1734 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing PLINK files...
-#> ✔ PLINK binary fileset written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/vaillantii_discosnp_sub_plink.bed', '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/vaillantii_discosnp_sub_plink.bim', '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/vaillantii_discosnp_sub_plink.fam'
+#> ℹ Chromosome names were recoded as integers for PLINK compatibility; mapping written to '/tmp/RtmpGRqN6S/vaillantii_discosnp_sub_plink.chrommap'
+#> ✔ PLINK binary fileset written to '/tmp/RtmpGRqN6S/vaillantii_discosnp_sub_plink.bed', '/tmp/RtmpGRqN6S/vaillantii_discosnp_sub_plink.bim', '/tmp/RtmpGRqN6S/vaillantii_discosnp_sub_plink.fam'
 # PLINK .ped https://www.cog-genomics.org/plink/1.9/formats#ped
 vcf2plink_ped(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_plink')))
 #> ℹ Accumulating PLINK .ped: 1734 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing PLINK file...
-#> ✔ PLINK text fileset written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/vaillantii_discosnp_sub_plink.ped', '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/vaillantii_discosnp_sub_plink.map'
+#> ℹ Chromosome names were recoded as integers for PLINK compatibility; mapping written to '/tmp/RtmpGRqN6S/vaillantii_discosnp_sub_plink.chrommap'
+#> ✔ PLINK text fileset written to '/tmp/RtmpGRqN6S/vaillantii_discosnp_sub_plink.ped', '/tmp/RtmpGRqN6S/vaillantii_discosnp_sub_plink.map'
 # eigenstrat https://github.com/DReichLab/EIG/tree/master
 vcf2eigenstrat(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_eigenstrat')))
-#> ℹ Building EIGENSTRAT: 1734 variants x 18  (0 MiB raw storage)
+#> ℹ Building EIGENSTRAT: 1734 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing EIGENSTRAT files...
-#> ✔ EIGENSTRAT fileset written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/vaillantii_discosnp_sub_eigenstrat.geno', '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/vaillantii_discosnp_sub_eigenstrat.ind', '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/vaillantii_discosnp_sub_eigenstrat.snp'
+#> ✔ EIGENSTRAT fileset written to '/tmp/RtmpGRqN6S/vaillantii_discosnp_sub_eigenstrat.geno', '/tmp/RtmpGRqN6S/vaillantii_discosnp_sub_eigenstrat.ind', '/tmp/RtmpGRqN6S/vaillantii_discosnp_sub_eigenstrat.snp'
 # genepop https://gitlab.mbb.univ-montp2.fr/francois/genepop
 vcf2genepop(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.gen')))
 #> ℹ Accumulating Genepop: 1734 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing Genepop file...
-#> ✔ Genepop file written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/vaillantii_discosnp_sub.gen'
+#> ✔ Genepop file written to '/tmp/RtmpGRqN6S/vaillantii_discosnp_sub.gen'
 # smartsnp https://github.com/ChristianHuber/smartsnp
 vcf2smartsnp(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.smartsnp')))
 #> ℹ Building SmartSNP: 1734 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing SmartSNP file...
-#> ✔ SmartSNP file written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/vaillantii_discosnp_sub.smartsnp'
+#> ✔ SmartSNP file written to '/tmp/RtmpGRqN6S/vaillantii_discosnp_sub.smartsnp'
 # bayescan https://github.com/mfoll/BayeScan
 vcf2bayescan(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.bayescan')))
 #> ℹ Accumulating BayesScan: 1734 variants x 4 pops (0 MiB raw storage, vs 0 MiB with integer matrices)
 #> ℹ Writing BayesScan file...
-#> ✔ BayesScan file written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/vaillantii_discosnp_sub.bayescan'
+#> ✔ BayesScan file written to '/tmp/RtmpGRqN6S/vaillantii_discosnp_sub.bayescan'
 # bayesass https://github.com/brannala/BA3
 vcf2bayesass(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.bayesass')))
 #> ℹ Accumulating BayesAss: 1734 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing BayesAss file...
-#> ✔ BayesAss file written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/vaillantii_discosnp_sub.bayesass'
+#> ✔ BayesAss file written to '/tmp/RtmpGRqN6S/vaillantii_discosnp_sub.bayesass'
 # treemix https://bitbucket.org/nygcresearch/treemix/wiki/Home
 vcf2treemix(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.treemix')))
 #> ℹ Building Treemix: 1734 variants x 4 pops (0 MiB raw storage)
 #> ℹ Writing Treemix file...
-#> ✔ Treemix file written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/vaillantii_discosnp_sub.treemix'
+#> ✔ Treemix file written to '/tmp/RtmpGRqN6S/vaillantii_discosnp_sub.treemix'
 # apparent https://github.com/halelab/apparent/tree/master
 vcf2apparent(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.apparent')))
 #> ℹ Accumulating Apparent: 1734 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing Apparent file...
-#> ✔ Apparent file written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/vaillantii_discosnp_sub.apparent'
+#> ✔ Apparent file written to '/tmp/RtmpGRqN6S/vaillantii_discosnp_sub.apparent'
 # related https://github.com/timothyfrasier/related
 vcf2related(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.related')))
 #> ℹ Accumulating Related: 1734 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing Related file...
-#> ✔ Related file written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/vaillantii_discosnp_sub.related'
+#> ✔ Related file written to '/tmp/RtmpGRqN6S/vaillantii_discosnp_sub.related'
 # long tidy dataframe of genotypes
 vcf2gt_long(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.csv')), format = 'csv')
-#> ℹ Building gt_long: 1734 variants x 18 samples (0 MiB raw storage)
-#> ℹ Combining and writing GT long table...
-#> ✔ gt_long table written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/vaillantii_discosnp_sub.csv'
+#> ℹ Writing gt_long: 1734 variants x 18 samples
+#> ✔ gt_long table written to '/tmp/RtmpGRqN6S/vaillantii_discosnp_sub.csv'
 # snapp https://www.beast2.org/snapp/
 vcf2snapp(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_snapp.nex')))
 #> ℹ Accumulating SNAPP: 1734 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing SNAPP file...
-#> ✔ SNAPP file written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/vaillantii_discosnp_sub_snapp.nex'
+#> ✔ SNAPP file written to '/tmp/RtmpGRqN6S/vaillantii_discosnp_sub_snapp.nex'
 # nexus - only SNPs, meant for SVDq analyses https://www.asc.ohio-state.edu/kubatko.2/software/SVDquartets/
 vcf2nexus(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_sdvq.nex')))
 #> ℹ Accumulating Nexus: 1734 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing Nexus file...
-#> ✔ Nexus file written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/vaillantii_discosnp_sub_sdvq.nex'
+#> ✔ Nexus file written to '/tmp/RtmpGRqN6S/vaillantii_discosnp_sub_sdvq.nex'
 # fasta https://www.ncbi.nlm.nih.gov/genbank/fastaformat/
 vcf2fasta(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.fna')))
 #> ℹ Accumulating FASTA: 1734 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing FASTA file...
-#> ✔ FASTA file written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/vaillantii_discosnp_sub.fna'
+#> ✔ FASTA file written to '/tmp/RtmpGRqN6S/vaillantii_discosnp_sub.fna'
 
 # genlight object https://www.rdocumentation.org/packages/adegenet/versions/2.0.0/topics/genlight-class
 genlight <- vcf2genlight(vcf)
@@ -687,7 +688,7 @@ genlight <- vcf2genlight(vcf, out_file = file.path(res_path, paste0(project, pos
 #> ℹ Accumulating Genlight: 1734 variants x 18 samples (0 MiB raw storage)
 #> ℹ Building Genlight object...
 #> ℹ Writing Genlight object...
-#> ✔ Genlight object written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/vaillantii_discosnp_sub_genlight.rds'
+#> ✔ Genlight object written to '/tmp/RtmpGRqN6S/vaillantii_discosnp_sub_genlight.rds'
 
 ##########
 # datasets for analyses with linked SNPs
@@ -699,5 +700,5 @@ vcf <- vcf_multiSNP
 vcf2fineradstructure(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.finerad')))
 #> ℹ Building fineRADstructure: 0 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing fineRADstructure file...
-#> ✔ fineRADstructure file written to '/home/tomas/git/legal_public/packages/VCFArrow/inst/extdata/vaillantii_discosnp_sub.finerad'
+#> ✔ fineRADstructure file written to '/tmp/RtmpGRqN6S/vaillantii_discosnp_sub.finerad'
 ```
