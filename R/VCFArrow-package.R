@@ -5,7 +5,6 @@
 #' @importFrom Rcpp sourceCpp
 #' @importFrom methods new show
 #' @importFrom stats setNames
-#' @importFrom svglite svglite
 #' @importFrom utils read.table write.table
 #' @useDynLib VCFArrow, .registration = TRUE
 ## usethis namespace: end
