@@ -26,7 +26,8 @@
 #' vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 #' .vcf_filter_columns(vcf, keep = vcf@groups != "OG")
 #'
-#' @export
+#' @keywords internal
+#' @noRd
 #'
 
 .vcf_filter_columns <- function(vcf_arrow, keep, f_invar = TRUE, verbose = TRUE) {

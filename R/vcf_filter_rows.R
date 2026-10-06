@@ -20,7 +20,8 @@
 #' vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 #' .vcf_filter_rows(vcf, keep = vcf@variants$is_biallelic)
 #'
-#' @export
+#' @keywords internal
+#' @noRd
 #'
 
 .vcf_filter_rows <- function(vcf_arrow, keep) {
