@@ -1,36 +1,46 @@
 Package: VCFArrow
-Title: VCFArrow: a fast and efficient R package for VCF manipulation and transformation
-Version: 0.3.2
-Date: 2026-08-27
-Authors@R: 
+Title: Fast and Memory-Efficient Manipulation and Conversion of VCF Files
+Version: 0.9.0
+Authors@R:
     person("Tomas", "Hrbek", , "hrbek@evoamazon.net", role = c("aut", "cre", "cph"),
            comment = c(ORCID = "0000-0003-3239-7068"))
-Maintainer: Tomas Hrbek <hrbek@evoamazon.net>
-Description: This package has six main functionalities: (1) reading in and writing out VCF data files, including precalculation of diverse metrics used in the filtering functions; (2) data filtering functions; (3) merging VCFs; (4) subsetting VCFs; (5) generation of summary statistics and graphs; and (6) data transformation and writing out of other data formats for posterior analyses.
-URL: https://legallab.github.io/VCFArrow/
+Description: Reads Variant Call Format (VCF) files into an S4 object whose
+    genotypes are stored on disk as an 'Apache Arrow' dataset and loaded
+    lazily, allowing large datasets to be processed with little memory.
+    Provides functions to filter variants and samples, subset and merge
+    datasets, compute summary statistics and diagnostic plots, write VCF
+    files, and convert data to input formats of population genetic and
+    phylogenetic software such as 'STRUCTURE', 'ADMIXTURE', 'PLINK',
+    'EIGENSTRAT', 'Arlequin', 'GENEPOP', 'BayeScan', 'TreeMix', 'SNAPP'
+    and 'adegenet'.
+URL: https://legallab.github.io/VCFArrow/, https://github.com/legalLab/VCFArrow
 BugReports: https://github.com/legalLab/VCFArrow/issues
 Language: en-US
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
-LinkingTo: 
-    arrow,
+Depends:
+    R (>= 4.1.0)
+LinkingTo:
     Rcpp
-Imports: 
+Imports:
     Rcpp,
     arrow,
     cli,
     dplyr,
-    stringr,
     ggplot2,
+    methods,
+    parallel,
+    stats,
+    stringr,
     tibble,
+    utils,
+    vctrs
+Suggests:
     adegenet,
-    svglite
-SystemRequirements:
-    libarrow-dev (>= 10.0.0), libparquet-dev, zlib
-Config/roxygen2/version: 8.0.0
-Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    svglite
 VignetteBuilder: knitr
+SystemRequirements: zlib
+Config/roxygen2/version: 8.1.0

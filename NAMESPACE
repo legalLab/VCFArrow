@@ -43,17 +43,31 @@ export(vcf_filter_missing)
 export(vcf_filter_missingness)
 export(vcf_filter_multiSNV)
 export(vcf_filter_oneSNV)
+export(vcf_filter_paralogs)
 export(vcf_filter_pass)
 export(vcf_filter_quality)
 export(vcf_filter_rank)
+export(vcf_filter_rpt)
+export(vcf_gc)
+export(vcf_memory_estimate)
+export(vcf_set_workers)
 export(vcf_stats)
 export(vcf_sub_SNVs)
 export(vcf_sub_SNVs_stratified)
+export(vcf_suggest_chunk_size)
 export(vcf_theta)
 export(write_vcf)
 exportClasses(VCFArrow)
 exportMethods("[")
 exportMethods(show)
-importClassesFrom(adegenet,genlight)
 importFrom(Rcpp,sourceCpp)
+importFrom(methods,
+  new,
+  show
+)
+importFrom(stats,setNames)
+importFrom(utils,
+  read.table,
+  write.table
+)
 useDynLib(VCFArrow, .registration = TRUE)
