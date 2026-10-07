@@ -67,7 +67,7 @@ vcf_filter_multiSNV(vcf, block_size = 10000, minSNV = 2, maxSNV = 5)
 #> Phased genotypes: FALSE 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpOwogNL/arrow_vcf_1eff70a8069b 
+#>   Path: /tmp/RtmpSpcr9J/arrow_vcf_1ff841ab4118 
 #> 
 #> Genotype storage (Arrow):
 #> FileSystemDataset with 1 Feather file

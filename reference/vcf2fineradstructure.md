@@ -52,5 +52,5 @@ vcf_linked <- vcf_filter_multiSNV(vcf)
 vcf2fineradstructure(vcf_linked, out_file = tempfile(fileext = ".txt"))
 #> ℹ Building fineRADstructure: 8 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing fineRADstructure file...
-#> ✔ fineRADstructure file written to /tmp/RtmpOwogNL/file1eff524790b8.txt
+#> ✔ fineRADstructure file written to /tmp/RtmpSpcr9J/file1ff8769fbf34.txt
 ```

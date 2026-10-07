@@ -1,7 +1,6 @@
 # assess_vcf_missing_data
 
-Quantifying missing data of all samples in VCF Inspired by
-<https://grunwaldlab.github.io/Population_Genetics_in_R/qc.html>
+Quantifying missing data of all samples in VCF
 
 ## Usage
 

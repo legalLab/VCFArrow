@@ -1,7 +1,6 @@
 # assess_vcf_coverage
 
-Quantifying read depth of all samples in VCF Inspired by
-<https://grunwaldlab.github.io/Population_Genetics_in_R/qc.html>
+Quantifying read depth of all samples in VCF
 
 ## Usage
 

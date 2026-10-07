@@ -49,5 +49,5 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf2snapp(vcf, out_file = tempfile(fileext = ".nex"))
 #> ℹ Accumulating SNAPP: 9313 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing SNAPP file...
-#> ✔ SNAPP file written to /tmp/RtmpOwogNL/file1eff3b757d9f.nex
+#> ✔ SNAPP file written to /tmp/RtmpSpcr9J/file1ff8377ba8.nex
 ```

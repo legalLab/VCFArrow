@@ -72,6 +72,6 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf2plink_bed(vcf, out_file = file.path(tempdir(), "plink_out"))
 #> ℹ Building PLINK: 9313 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing PLINK files...
-#> ℹ Chromosome names were recoded as integers for PLINK compatibility; mapping written to /tmp/RtmpOwogNL/plink_out.chrommap
-#> ✔ PLINK binary fileset written to /tmp/RtmpOwogNL/plink_out.bed, /tmp/RtmpOwogNL/plink_out.bim, /tmp/RtmpOwogNL/plink_out.fam
+#> ℹ Chromosome names were recoded as integers for PLINK compatibility; mapping written to /tmp/RtmpSpcr9J/plink_out.chrommap
+#> ✔ PLINK binary fileset written to /tmp/RtmpSpcr9J/plink_out.bed, /tmp/RtmpSpcr9J/plink_out.bim, /tmp/RtmpSpcr9J/plink_out.fam
 ```

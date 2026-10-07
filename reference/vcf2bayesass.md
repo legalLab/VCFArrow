@@ -49,5 +49,5 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf2bayesass(vcf, out_file = tempfile(fileext = ".immanc"))
 #> ℹ Accumulating BayesAss: 9313 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing BayesAss file...
-#> ✔ BayesAss file written to /tmp/RtmpOwogNL/file1eff6da19781.immanc
+#> ✔ BayesAss file written to /tmp/RtmpSpcr9J/file1ff84c2ed015.immanc
 ```
