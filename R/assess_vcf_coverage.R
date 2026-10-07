@@ -2,7 +2,6 @@
 #'
 #' @description
 #' Quantifying read depth of all samples in VCF
-#' Inspired by <https://grunwaldlab.github.io/Population_Genetics_in_R/qc.html>
 #'
 #' @author Tomas Hrbek April 2026
 #'
