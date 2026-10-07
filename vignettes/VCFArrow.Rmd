@@ -40,6 +40,22 @@ This package is a reimagination of the `vcf2others` package. Same as `vcf2others
 
 Following are examples of the usage of the functions of this package.
 
+## Parallel processing (optional)
+
+VCFArrow stores the genotypes on disk in chunks of variants, and most functions process one chunk at a time. `vcf_set_workers()` starts a number of background R processes (workers) and from then on distributes the chunks over them, so that several chunks are processed at the same time. This applies to `read_vcf()`, the genotype-based filters, sample and group extraction, `vcf_stats()` and `vcf_theta()`, the assess functions, `vcf_bind()`, `write_vcf()`, the `vcf2*()` exporters and `vcf2gt_long()` with CSV output. Functions that only use the variant table (for example the quality, PASS, biallelic or indel filters) are fast and always run in the main session.
+
+```{r, eval = FALSE}
+# process chunks on 4 background R processes
+vcf_set_workers(workers = 4)
+
+# ... read, filter, compute statistics and export as usual ...
+
+# stop the workers and return to processing in the main session
+vcf_set_workers(1)
+```
+
+The workers are started once and reused by every following call until `vcf_set_workers(1)` is called or the R session ends. Results do not depend on the number of workers. Each worker is a separate R process that holds about 1 GB of memory, so memory use grows with the number of workers. Workers pay off for large datasets: on 18.6 million variants by 56 samples, most functions ran about twice as fast with 4 workers, while more workers than that brought little further gain because reading and writing the disk becomes the limit. For small datasets such as the one in this tutorial, starting the workers costs more time than they save, so the code above is not run here.
+
 ## Load VCF and associated files of individuals and groups
 
 First we need to read in the VCF. If one has information on the grouping of individuals, this information can also be put into the VCFArrow object. This grouping information is stored in a 'strata' file (a tab-separated text file with two columns with an 'id' and 'pop' headers). The grouping of individuals can be used in filtering steps, and it is necessary for transformation of the VCFArrow object to other population genetic formats, many of which require it.
