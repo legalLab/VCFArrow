@@ -16,6 +16,11 @@ knitr::opts_chunk$set(
 )
 ```
 
+# VCFArrow <img src="man/figures/VCFArrow_logo.png" align="right" height="138"  />
+<!-- badges: start -->
+[![CRAN status](https://www.r-pkg.org/badges/version/VCFArrow)](https://cran.r-project.org/package=VCFArrow)
+[![](https://cranlogs.r-pkg.org/badges/grand-total/VCFArrow)](https://cran.r-project.org/package=VCFArrow)
+<!-- badges: end -->
 
 # Installation
 
