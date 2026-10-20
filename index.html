@@ -51,6 +51,7 @@
 <div class="page-header"><h1 id="vcfarrow-">VCFArrow <img src="reference/figures/VCFArrow_logo.png" align="right" height="138"><a class="anchor" aria-label="anchor" href="#vcfarrow-"></a>
 </h1></div>
 <!-- badges: start -->
+
 </div>
 <div class="section level1">
 <h1 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -126,7 +127,7 @@
 <span><span class="co">#&gt; Phased genotypes: FALSE </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Storage:</span></span>
-<span><span class="co">#&gt;   Path: /tmp/RtmpOHmUZa/arrow_vcf_7e345bc28489 </span></span>
+<span><span class="co">#&gt;   Path: /tmp/Rtmpp7HLak/arrow_vcf_cd933336e860 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Genotype storage (Arrow):</span></span>
 <span><span class="co">#&gt; FileSystemDataset with 1 Feather file</span></span>
@@ -445,7 +446,7 @@
 <code class="sourceCode R"><span><span class="co"># write the VCFArrow object as a VCF (and compress it using gzip)</span></span>
 <span><span class="fu"><a href="reference/write_vcf.html">write_vcf</a></span><span class="op">(</span><span class="va">vcf1</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="st">"_filtered.vcf.gz"</span><span class="op">)</span><span class="op">)</span>, gzip <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ VCF is being written in 1 chunk</span></span>
-<span><span class="co">#&gt; ✔ VCFArrow object successfully written to '/tmp/RtmpOHmUZa/vaillantii_discosnp_sub_filtered.vcf.gz'</span></span></code></pre></div>
+<span><span class="co">#&gt; ✔ VCFArrow object successfully written to '/tmp/Rtmpp7HLak/vaillantii_discosnp_sub_filtered.vcf.gz'</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="converting-a-vcf-file-to-other-population-genetic-and-phylogenetic-formats">Converting a VCF file to other population genetic and phylogenetic formats<a class="anchor" aria-label="anchor" href="#converting-a-vcf-file-to-other-population-genetic-and-phylogenetic-formats"></a>
@@ -467,106 +468,106 @@
 <span><span class="fu"><a href="reference/vcf2migrate.html">vcf2migrate</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'_migrate.txt'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ Accumulating Migrate-N (S): 1734 variants x 18 samples (0 MiB raw storage)</span></span>
 <span><span class="co">#&gt; ℹ Writing Migrate-N (S) file...</span></span>
-<span><span class="co">#&gt; ✔ Migrate-N file written to '/tmp/RtmpOHmUZa/vaillantii_discosnp_sub_migrate.txt'</span></span>
+<span><span class="co">#&gt; ✔ Migrate-N file written to '/tmp/Rtmpp7HLak/vaillantii_discosnp_sub_migrate.txt'</span></span>
 <span><span class="co"># arlequin http://cmpg.unibe.ch/software/arlequin35/</span></span>
 <span><span class="fu"><a href="reference/vcf2arlequin.html">vcf2arlequin</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'.arp'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ Accumulating Arlequin: 1734 variants x 18 samples (0 MiB raw storage)</span></span>
 <span><span class="co">#&gt; ℹ Writing Arlequin file...</span></span>
-<span><span class="co">#&gt; ✔ Arlequin file written to '/tmp/RtmpOHmUZa/vaillantii_discosnp_sub.arp'</span></span>
+<span><span class="co">#&gt; ✔ Arlequin file written to '/tmp/Rtmpp7HLak/vaillantii_discosnp_sub.arp'</span></span>
 <span><span class="co"># structure https://web.stanford.edu/group/pritchardlab/structure.html</span></span>
 <span><span class="fu"><a href="reference/vcf2structure.html">vcf2structure</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'.str'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ Accumulating Structure: 1734 variants x 18 samples (0 MiB raw storage)</span></span>
 <span><span class="co">#&gt; ℹ Writing Structure file...</span></span>
-<span><span class="co">#&gt; ✔ Structure file written to '/tmp/RtmpOHmUZa/vaillantii_discosnp_sub.str'</span></span>
+<span><span class="co">#&gt; ✔ Structure file written to '/tmp/Rtmpp7HLak/vaillantii_discosnp_sub.str'</span></span>
 <span><span class="co"># faststucture http://rajanil.github.io/fastStructure/</span></span>
 <span><span class="fu"><a href="reference/vcf2structure.html">vcf2structure</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'.fstr'</span><span class="op">)</span><span class="op">)</span>, method <span class="op">=</span> <span class="st">"F"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ Accumulating Structure: 1734 variants x 18 samples (0 MiB raw storage)</span></span>
 <span><span class="co">#&gt; ℹ Writing Structure file...</span></span>
-<span><span class="co">#&gt; ✔ Structure file written to '/tmp/RtmpOHmUZa/vaillantii_discosnp_sub.fstr'</span></span>
+<span><span class="co">#&gt; ✔ Structure file written to '/tmp/Rtmpp7HLak/vaillantii_discosnp_sub.fstr'</span></span>
 <span><span class="co"># sNMF http://membres-timc.imag.fr/Olivier.Francois/snmf/index.htm</span></span>
 <span><span class="fu"><a href="reference/vcf2snmf.html">vcf2snmf</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'.geno'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ Formatting sNMF: 1734 variants x 18 samples (0 MiB raw storage)</span></span>
 <span><span class="co">#&gt; ℹ Writing sNMF file...</span></span>
-<span><span class="co">#&gt; ✔ sNMF file written to '/tmp/RtmpOHmUZa/vaillantii_discosnp_sub.geno'</span></span>
+<span><span class="co">#&gt; ✔ sNMF file written to '/tmp/Rtmpp7HLak/vaillantii_discosnp_sub.geno'</span></span>
 <span><span class="co"># Admixture https://dalexander.github.io/admixture/index.html</span></span>
 <span><span class="co"># takes as input binary PLINK (.bed), ordinary PLINK (.ped), or EIGENSTRAT (.geno) formatted files</span></span>
 <span><span class="co"># so a thin wrapper around vcf2plink_bed() plus optional generation of known-ancestry reference populations</span></span>
 <span><span class="fu"><a href="reference/vcf2admixture.html">vcf2admixture</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'_admixture'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ Building PLINK: 1734 variants x 18 samples (0 MiB raw storage)</span></span>
 <span><span class="co">#&gt; ℹ Writing PLINK files...</span></span>
-<span><span class="co">#&gt; ℹ Chromosome names were recoded as integers for PLINK compatibility; mapping written to '/tmp/RtmpOHmUZa/vaillantii_discosnp_sub_admixture.chrommap'</span></span>
-<span><span class="co">#&gt; ✔ PLINK binary fileset written to '/tmp/RtmpOHmUZa/vaillantii_discosnp_sub_admixture.bed', '/tmp/RtmpOHmUZa/vaillantii_discosnp_sub_admixture.bim', '/tmp/RtmpOHmUZa/vaillantii_discosnp_sub_admixture.fam'</span></span>
+<span><span class="co">#&gt; ℹ Chromosome names were recoded as integers for PLINK compatibility; mapping written to '/tmp/Rtmpp7HLak/vaillantii_discosnp_sub_admixture.chrommap'</span></span>
+<span><span class="co">#&gt; ✔ PLINK binary fileset written to '/tmp/Rtmpp7HLak/vaillantii_discosnp_sub_admixture.bed', '/tmp/Rtmpp7HLak/vaillantii_discosnp_sub_admixture.bim', '/tmp/Rtmpp7HLak/vaillantii_discosnp_sub_admixture.fam'</span></span>
 <span><span class="co"># PLINK .bed https://www.cog-genomics.org/plink/1.9/formats#bed</span></span>
 <span><span class="fu"><a href="reference/vcf2plink_bed.html">vcf2plink_bed</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'_plink'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ Building PLINK: 1734 variants x 18 samples (0 MiB raw storage)</span></span>
 <span><span class="co">#&gt; ℹ Writing PLINK files...</span></span>
-<span><span class="co">#&gt; ℹ Chromosome names were recoded as integers for PLINK compatibility; mapping written to '/tmp/RtmpOHmUZa/vaillantii_discosnp_sub_plink.chrommap'</span></span>
-<span><span class="co">#&gt; ✔ PLINK binary fileset written to '/tmp/RtmpOHmUZa/vaillantii_discosnp_sub_plink.bed', '/tmp/RtmpOHmUZa/vaillantii_discosnp_sub_plink.bim', '/tmp/RtmpOHmUZa/vaillantii_discosnp_sub_plink.fam'</span></span>
+<span><span class="co">#&gt; ℹ Chromosome names were recoded as integers for PLINK compatibility; mapping written to '/tmp/Rtmpp7HLak/vaillantii_discosnp_sub_plink.chrommap'</span></span>
+<span><span class="co">#&gt; ✔ PLINK binary fileset written to '/tmp/Rtmpp7HLak/vaillantii_discosnp_sub_plink.bed', '/tmp/Rtmpp7HLak/vaillantii_discosnp_sub_plink.bim', '/tmp/Rtmpp7HLak/vaillantii_discosnp_sub_plink.fam'</span></span>
 <span><span class="co"># PLINK .ped https://www.cog-genomics.org/plink/1.9/formats#ped</span></span>
 <span><span class="fu"><a href="reference/vcf2plink_ped.html">vcf2plink_ped</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'_plink'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ Accumulating PLINK .ped: 1734 variants x 18 samples (0 MiB raw storage)</span></span>
 <span><span class="co">#&gt; ℹ Writing PLINK file...</span></span>
-<span><span class="co">#&gt; ℹ Chromosome names were recoded as integers for PLINK compatibility; mapping written to '/tmp/RtmpOHmUZa/vaillantii_discosnp_sub_plink.chrommap'</span></span>
-<span><span class="co">#&gt; ✔ PLINK text fileset written to '/tmp/RtmpOHmUZa/vaillantii_discosnp_sub_plink.ped', '/tmp/RtmpOHmUZa/vaillantii_discosnp_sub_plink.map'</span></span>
+<span><span class="co">#&gt; ℹ Chromosome names were recoded as integers for PLINK compatibility; mapping written to '/tmp/Rtmpp7HLak/vaillantii_discosnp_sub_plink.chrommap'</span></span>
+<span><span class="co">#&gt; ✔ PLINK text fileset written to '/tmp/Rtmpp7HLak/vaillantii_discosnp_sub_plink.ped', '/tmp/Rtmpp7HLak/vaillantii_discosnp_sub_plink.map'</span></span>
 <span><span class="co"># eigenstrat https://github.com/DReichLab/EIG/tree/master</span></span>
 <span><span class="fu"><a href="reference/vcf2eigenstrat.html">vcf2eigenstrat</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'_eigenstrat'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ Building EIGENSTRAT: 1734 variants x 18 samples (0 MiB raw storage)</span></span>
 <span><span class="co">#&gt; ℹ Writing EIGENSTRAT files...</span></span>
-<span><span class="co">#&gt; ✔ EIGENSTRAT fileset written to '/tmp/RtmpOHmUZa/vaillantii_discosnp_sub_eigenstrat.geno', '/tmp/RtmpOHmUZa/vaillantii_discosnp_sub_eigenstrat.ind', '/tmp/RtmpOHmUZa/vaillantii_discosnp_sub_eigenstrat.snp'</span></span>
+<span><span class="co">#&gt; ✔ EIGENSTRAT fileset written to '/tmp/Rtmpp7HLak/vaillantii_discosnp_sub_eigenstrat.geno', '/tmp/Rtmpp7HLak/vaillantii_discosnp_sub_eigenstrat.ind', '/tmp/Rtmpp7HLak/vaillantii_discosnp_sub_eigenstrat.snp'</span></span>
 <span><span class="co"># genepop https://gitlab.mbb.univ-montp2.fr/francois/genepop</span></span>
 <span><span class="fu"><a href="reference/vcf2genepop.html">vcf2genepop</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'.gen'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ Accumulating Genepop: 1734 variants x 18 samples (0 MiB raw storage)</span></span>
 <span><span class="co">#&gt; ℹ Writing Genepop file...</span></span>
-<span><span class="co">#&gt; ✔ Genepop file written to '/tmp/RtmpOHmUZa/vaillantii_discosnp_sub.gen'</span></span>
+<span><span class="co">#&gt; ✔ Genepop file written to '/tmp/Rtmpp7HLak/vaillantii_discosnp_sub.gen'</span></span>
 <span><span class="co"># smartsnp https://github.com/ChristianHuber/smartsnp</span></span>
 <span><span class="fu"><a href="reference/vcf2smartsnp.html">vcf2smartsnp</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'.smartsnp'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ Building SmartSNP: 1734 variants x 18 samples (0 MiB raw storage)</span></span>
 <span><span class="co">#&gt; ℹ Writing SmartSNP file...</span></span>
-<span><span class="co">#&gt; ✔ SmartSNP file written to '/tmp/RtmpOHmUZa/vaillantii_discosnp_sub.smartsnp'</span></span>
+<span><span class="co">#&gt; ✔ SmartSNP file written to '/tmp/Rtmpp7HLak/vaillantii_discosnp_sub.smartsnp'</span></span>
 <span><span class="co"># bayescan https://github.com/mfoll/BayeScan</span></span>
 <span><span class="fu"><a href="reference/vcf2bayescan.html">vcf2bayescan</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'.bayescan'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ Accumulating BayesScan: 1734 variants x 4 pops (0 MiB raw storage, vs 0 MiB with integer matrices)</span></span>
 <span><span class="co">#&gt; ℹ Writing BayesScan file...</span></span>
-<span><span class="co">#&gt; ✔ BayesScan file written to '/tmp/RtmpOHmUZa/vaillantii_discosnp_sub.bayescan'</span></span>
+<span><span class="co">#&gt; ✔ BayesScan file written to '/tmp/Rtmpp7HLak/vaillantii_discosnp_sub.bayescan'</span></span>
 <span><span class="co"># bayesass https://github.com/brannala/BA3</span></span>
 <span><span class="fu"><a href="reference/vcf2bayesass.html">vcf2bayesass</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'.bayesass'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ Accumulating BayesAss: 1734 variants x 18 samples (0 MiB raw storage)</span></span>
 <span><span class="co">#&gt; ℹ Writing BayesAss file...</span></span>
-<span><span class="co">#&gt; ✔ BayesAss file written to '/tmp/RtmpOHmUZa/vaillantii_discosnp_sub.bayesass'</span></span>
+<span><span class="co">#&gt; ✔ BayesAss file written to '/tmp/Rtmpp7HLak/vaillantii_discosnp_sub.bayesass'</span></span>
 <span><span class="co"># treemix https://bitbucket.org/nygcresearch/treemix/wiki/Home</span></span>
 <span><span class="fu"><a href="reference/vcf2treemix.html">vcf2treemix</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'.treemix'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ Building Treemix: 1734 variants x 4 pops (0 MiB raw storage)</span></span>
 <span><span class="co">#&gt; ℹ Writing Treemix file...</span></span>
-<span><span class="co">#&gt; ✔ Treemix file written to '/tmp/RtmpOHmUZa/vaillantii_discosnp_sub.treemix'</span></span>
+<span><span class="co">#&gt; ✔ Treemix file written to '/tmp/Rtmpp7HLak/vaillantii_discosnp_sub.treemix'</span></span>
 <span><span class="co"># apparent https://github.com/halelab/apparent/tree/master</span></span>
 <span><span class="fu"><a href="reference/vcf2apparent.html">vcf2apparent</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'.apparent'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ Accumulating Apparent: 1734 variants x 18 samples (0 MiB raw storage)</span></span>
 <span><span class="co">#&gt; ℹ Writing Apparent file...</span></span>
-<span><span class="co">#&gt; ✔ Apparent file written to '/tmp/RtmpOHmUZa/vaillantii_discosnp_sub.apparent'</span></span>
+<span><span class="co">#&gt; ✔ Apparent file written to '/tmp/Rtmpp7HLak/vaillantii_discosnp_sub.apparent'</span></span>
 <span><span class="co"># related https://github.com/timothyfrasier/related</span></span>
 <span><span class="fu"><a href="reference/vcf2related.html">vcf2related</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'.related'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ Accumulating Related: 1734 variants x 18 samples (0 MiB raw storage)</span></span>
 <span><span class="co">#&gt; ℹ Writing Related file...</span></span>
-<span><span class="co">#&gt; ✔ Related file written to '/tmp/RtmpOHmUZa/vaillantii_discosnp_sub.related'</span></span>
+<span><span class="co">#&gt; ✔ Related file written to '/tmp/Rtmpp7HLak/vaillantii_discosnp_sub.related'</span></span>
 <span><span class="co"># long tidy dataframe of genotypes</span></span>
 <span><span class="fu"><a href="reference/vcf2gt_long.html">vcf2gt_long</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'.csv'</span><span class="op">)</span><span class="op">)</span>, format <span class="op">=</span> <span class="st">'csv'</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ Writing gt_long: 1734 variants x 18 samples</span></span>
-<span><span class="co">#&gt; ✔ gt_long table written to '/tmp/RtmpOHmUZa/vaillantii_discosnp_sub.csv'</span></span>
+<span><span class="co">#&gt; ✔ gt_long table written to '/tmp/Rtmpp7HLak/vaillantii_discosnp_sub.csv'</span></span>
 <span><span class="co"># snapp https://www.beast2.org/snapp/</span></span>
 <span><span class="fu"><a href="reference/vcf2snapp.html">vcf2snapp</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'_snapp.nex'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ Accumulating SNAPP: 1734 variants x 18 samples (0 MiB raw storage)</span></span>
 <span><span class="co">#&gt; ℹ Writing SNAPP file...</span></span>
-<span><span class="co">#&gt; ✔ SNAPP file written to '/tmp/RtmpOHmUZa/vaillantii_discosnp_sub_snapp.nex'</span></span>
+<span><span class="co">#&gt; ✔ SNAPP file written to '/tmp/Rtmpp7HLak/vaillantii_discosnp_sub_snapp.nex'</span></span>
 <span><span class="co"># nexus - only SNPs, meant for SVDq analyses https://www.asc.ohio-state.edu/kubatko.2/software/SVDquartets/</span></span>
 <span><span class="fu"><a href="reference/vcf2nexus.html">vcf2nexus</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'_sdvq.nex'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ Accumulating Nexus: 1734 variants x 18 samples (0 MiB raw storage)</span></span>
 <span><span class="co">#&gt; ℹ Writing Nexus file...</span></span>
-<span><span class="co">#&gt; ✔ Nexus file written to '/tmp/RtmpOHmUZa/vaillantii_discosnp_sub_sdvq.nex'</span></span>
+<span><span class="co">#&gt; ✔ Nexus file written to '/tmp/Rtmpp7HLak/vaillantii_discosnp_sub_sdvq.nex'</span></span>
 <span><span class="co"># fasta https://www.ncbi.nlm.nih.gov/genbank/fastaformat/</span></span>
 <span><span class="fu"><a href="reference/vcf2fasta.html">vcf2fasta</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'.fna'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ Accumulating FASTA: 1734 variants x 18 samples (0 MiB raw storage)</span></span>
 <span><span class="co">#&gt; ℹ Writing FASTA file...</span></span>
-<span><span class="co">#&gt; ✔ FASTA file written to '/tmp/RtmpOHmUZa/vaillantii_discosnp_sub.fna'</span></span>
+<span><span class="co">#&gt; ✔ FASTA file written to '/tmp/Rtmpp7HLak/vaillantii_discosnp_sub.fna'</span></span>
 <span></span>
 <span><span class="co"># genlight object https://www.rdocumentation.org/packages/adegenet/versions/2.0.0/topics/genlight-class</span></span>
 <span><span class="va">genlight</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/vcf2genlight.html">vcf2genlight</a></span><span class="op">(</span><span class="va">vcf</span><span class="op">)</span></span>
@@ -577,7 +578,7 @@
 <span><span class="co">#&gt; ℹ Accumulating Genlight: 1734 variants x 18 samples (0 MiB raw storage)</span></span>
 <span><span class="co">#&gt; ℹ Building Genlight object...</span></span>
 <span><span class="co">#&gt; ℹ Writing Genlight object...</span></span>
-<span><span class="co">#&gt; ✔ Genlight object written to '/tmp/RtmpOHmUZa/vaillantii_discosnp_sub_genlight.rds'</span></span>
+<span><span class="co">#&gt; ✔ Genlight object written to '/tmp/Rtmpp7HLak/vaillantii_discosnp_sub_genlight.rds'</span></span>
 <span></span>
 <span><span class="co">##########</span></span>
 <span><span class="co"># datasets for analyses with linked SNPs</span></span>
@@ -589,13 +590,14 @@
 <span><span class="fu"><a href="reference/vcf2fineradstructure.html">vcf2fineradstructure</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'.finerad'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ Building fineRADstructure: 0 variants x 18 samples (0 MiB raw storage)</span></span>
 <span><span class="co">#&gt; ℹ Writing fineRADstructure file...</span></span>
-<span><span class="co">#&gt; ✔ fineRADstructure file written to '/tmp/RtmpOHmUZa/vaillantii_discosnp_sub.finerad'</span></span></code></pre></div>
+<span><span class="co">#&gt; ✔ fineRADstructure file written to '/tmp/Rtmpp7HLak/vaillantii_discosnp_sub.finerad'</span></span></code></pre></div>
 </div>
 </div>
 
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
+<li><a href="https://cloud.r-project.org/package=VCFArrow" class="external-link">View on CRAN</a></li>
 <li><a href="https://github.com/legalLab/VCFArrow/" class="external-link">Browse source code</a></li>
 <li><a href="https://github.com/legalLab/VCFArrow/issues" class="external-link">Report a bug</a></li>
 </ul>
@@ -624,7 +626,13 @@
 </ul>
 </div>
 
-
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://cran.r-project.org/package=VCFArrow" class="external-link"><img src="https://www.r-pkg.org/badges/version/VCFArrow" alt="CRAN status"></a></li>
+<li><a href="https://cran.r-project.org/package=VCFArrow" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/grand-total/VCFArrow"></a></li>
+</ul>
+</div>
 
   </aside>
 </div>

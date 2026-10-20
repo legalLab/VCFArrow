@@ -58,7 +58,7 @@ vcf_sub_SNVs(vcf, n_SNVs = 1000, seed = 42)
 #> Phased genotypes: FALSE 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpSpcr9J/arrow_vcf_1ff84e443f5c 
+#>   Path: /tmp/RtmpYJTNRJ/arrow_vcf_204165943d7a 
 #> 
 #> Genotype storage (Arrow):
 #> FileSystemDataset with 1 Feather file

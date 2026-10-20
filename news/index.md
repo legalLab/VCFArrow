@@ -2,6 +2,8 @@
 
 ## VCFArrow 0.9.0
 
+CRAN release: 2026-10-16
+
 - Initial CRAN submission.
 
 ### Reading and storage
