@@ -41,6 +41,14 @@ match_row_id_cpp <- function(ids, pos) {
     .Call(`_VCFArrow_match_row_id_cpp`, ids, pos)
 }
 
+f_allele_counts_cpp <- function(s, vpos, a1, a2, ok, grp, n_groups) {
+    .Call(`_VCFArrow_f_allele_counts_cpp`, s, vpos, a1, a2, ok, grp, n_groups)
+}
+
+f_hom_cpp <- function(s, vpos, a1, a2, ok, grp, alt, nobs, lo, n_groups, n_samples) {
+    .Call(`_VCFArrow_f_hom_cpp`, s, vpos, a1, a2, ok, grp, alt, nobs, lo, n_groups, n_samples)
+}
+
 theta_chunk_cpp <- function(var, grp, a1, a2, n_var, n_pops, harmonic) {
     .Call(`_VCFArrow_theta_chunk_cpp`, var, grp, a1, a2, n_var, n_pops, harmonic)
 }

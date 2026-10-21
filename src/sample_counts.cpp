@@ -10,6 +10,7 @@
 //   dp_ok   = !is.na(DP)             (dp_n, and dp_sum = sum of DP)
 
 #include <Rcpp.h>
+#include <climits>
 #include <cmath>
 using namespace Rcpp;
 
@@ -70,4 +71,88 @@ IntegerVector match_row_id_cpp(const IntegerVector& ids, const IntegerVector& po
     out[i] = p;
   }
   return out;
+}
+
+
+// ── Inbreeding coefficient F (vcf_stats()) ──────────────────────────────────
+//
+// Method-of-moments F per sample, as vcftools --het and plink --het:
+//   F = (O - E) / (N - E)
+// over the biallelic SNVs (ok[vpos]) at which the sample is called, at least
+// 2 samples of its reference set are called (n >= 4 called alleles) and the
+// reference set is polymorphic (0 < p < 1; a monomorphic site would add 1 to
+// N, O and E alike, leaving F unchanged; vcftools skips them too):
+//   N += 1;  O += 1 if homozygous;  E += 1 - n / (n - 1) * 2p(1 - p)
+// where p is the ALT allele frequency and n the number of called alleles at
+// the site in the reference set: all samples (n_groups = 1) or the sample's
+// group (grp, 1-based; samples with grp < 1 are skipped).
+//
+// Inputs (rows of one chunk): s = 1-based sample index, vpos = 1-based
+// position of the row's variant in the variant table, a1/a2 = allele codes
+// (0 = REF, 1 = ALT, NA = missing).
+
+// Allele counts per (group, variant) for the variants of one chunk, over the
+// range of positions it covers: element (vpos - lo) * n_groups + (g - 1).
+// [[Rcpp::export]]
+List f_allele_counts_cpp(const IntegerVector& s, const IntegerVector& vpos,
+                         const IntegerVector& a1, const IntegerVector& a2,
+                         const LogicalVector& ok, const IntegerVector& grp,
+                         int n_groups) {
+  const R_xlen_t n = s.size();
+  if (vpos.size() != n || a1.size() != n || a2.size() != n)
+    stop("f_allele_counts_cpp: input lengths differ");
+  int lo = INT_MAX, hi = 0;
+  for (R_xlen_t i = 0; i < n; ++i) {
+    const int v = vpos[i];
+    if (v == NA_INTEGER) continue;
+    if (v < lo) lo = v;
+    if (v > hi) hi = v;
+  }
+  const int nv = hi >= lo ? hi - lo + 1 : 0;
+  IntegerVector alt((R_xlen_t)nv * n_groups), nobs((R_xlen_t)nv * n_groups);
+  for (R_xlen_t i = 0; i < n; ++i) {
+    const int v = vpos[i], si = s[i], x = a1[i], y = a2[i];
+    if (v == NA_INTEGER || si == NA_INTEGER || x == NA_INTEGER || y == NA_INTEGER) continue;
+    if (v > ok.size() || ok[v - 1] != TRUE) continue;
+    const int g = n_groups == 1 ? 1 : grp[si - 1];
+    if (g < 1 || g > n_groups) continue;
+    const R_xlen_t j = (R_xlen_t)(v - lo) * n_groups + (g - 1);
+    alt[j] += x + y;
+    nobs[j] += 2;
+  }
+  return List::create(_["lo"] = nv ? lo : 1, _["n_var"] = nv, _["alt"] = alt, _["nobs"] = nobs);
+}
+
+// Per-sample N, O and E for the rows of one chunk, given allele counts per
+// (group, variant) laid out as in f_allele_counts_cpp() from position lo on
+// (the chunk's own counts, or counts over all chunks with lo = 1).
+// [[Rcpp::export]]
+List f_hom_cpp(const IntegerVector& s, const IntegerVector& vpos,
+               const IntegerVector& a1, const IntegerVector& a2,
+               const LogicalVector& ok, const IntegerVector& grp,
+               const IntegerVector& alt, const IntegerVector& nobs, int lo,
+               int n_groups, int n_samples) {
+  const R_xlen_t n = s.size(), m = alt.size();
+  if (vpos.size() != n || a1.size() != n || a2.size() != n || nobs.size() != m)
+    stop("f_hom_cpp: input lengths differ");
+  IntegerVector n_sites(n_samples), obs_hom(n_samples);
+  NumericVector exp_hom(n_samples);
+  for (R_xlen_t i = 0; i < n; ++i) {
+    const int v = vpos[i], si = s[i], x = a1[i], y = a2[i];
+    if (v == NA_INTEGER || si == NA_INTEGER || x == NA_INTEGER || y == NA_INTEGER) continue;
+    if (si < 1 || si > n_samples || v > ok.size() || ok[v - 1] != TRUE) continue;
+    const int g = n_groups == 1 ? 1 : grp[si - 1];
+    if (g < 1 || g > n_groups) continue;
+    const R_xlen_t j = (R_xlen_t)(v - lo) * n_groups + (g - 1);
+    if (j < 0 || j >= m) stop("f_hom_cpp: variant outside the allele counts");
+    const int nn = nobs[j];
+    if (nn < 4) continue;                      // fewer than 2 called samples
+    if (alt[j] == 0 || alt[j] == nn) continue; // monomorphic in the reference set
+    const double p = static_cast<double>(alt[j]) / nn;
+    const int k = si - 1;
+    ++n_sites[k];
+    if (x == y) ++obs_hom[k];
+    exp_hom[k] += 1.0 - 2.0 * p * (1.0 - p) * nn / (nn - 1.0);
+  }
+  return List::create(_["n_sites"] = n_sites, _["obs_hom"] = obs_hom, _["exp_hom"] = exp_hom);
 }
