@@ -6,7 +6,9 @@
 // variant) and for each variant over all groups, with nobs observed alleles:
 //   valid   = nobs / 2 >= 2                       (at least 2 called samples)
 //   p       = alt / nobs
-//   pi      = 2 * p * (1 - p)
+//   pi      = nobs / (nobs - 1) * 2 * p * (1 - p)  (unbiased: the proportion of
+//             differing pairs among all pairs of observed alleles, as in
+//             vcftools --site-pi and tidypopgen::loci_pi())
 //   contrib = 1 / H(nobs - 1) if 0 < p < 1        (Watterson's a1 for nobs
 //             chromosomes; H(k) = sum of 1/i for i = 1..k)
 // and the sums of contrib, pi and valid are returned.  Same definitions as
@@ -20,7 +22,7 @@ static inline void add_site(int alt, int nobs, const NumericVector& harmonic,
                             double* contrib, double* pi, double* n_valid) {
   if (nobs < 4) return;                      // n_called = nobs / 2 < 2
   const double p = static_cast<double>(alt) / nobs;
-  *pi += 2.0 * p * (1.0 - p);
+  *pi += 2.0 * p * (1.0 - p) * nobs / (nobs - 1.0);
   *n_valid += 1.0;
   if (p > 0.0 && p < 1.0) {
     if (nobs - 1 > harmonic.size()) stop("theta_chunk_cpp: harmonic numbers too short");

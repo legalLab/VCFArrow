@@ -22,6 +22,14 @@ and for sample groups from VCFArrow format data.
 This function calculates Watterson's theta and pi for the entire VCFArrow
 object, and for groups of individuals whose grouping is indicated by
 the groups slot in the VCFArrow object.
+Only biallelic SNVs are used, and a site is used for a group (valid) when
+at least two of its samples are called. With n called alleles and ALT
+allele frequency p at a site, the site's nucleotide diversity is
+n / (n - 1) * 2p(1 - p), the proportion of differing pairs among all pairs
+of called alleles (the unbiased estimator, as in vcftools --site-pi), and
+its Watterson contribution is 1 / a1 if the site is segregating, with
+a1 = sum(1 / i) for i = 1 .. n - 1. pi and theta are the means of these
+values over the valid sites.
 The statistics are accumulated chunk by chunk as running sums per group,
 so memory use does not grow with the number of variants, and chunks are
 processed in parallel when workers are set with vcf_set_workers().

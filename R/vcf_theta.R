@@ -15,6 +15,14 @@
 #' This function calculates Watterson's theta and pi for the entire VCFArrow
 #' object, and for groups of individuals whose grouping is indicated by
 #' the groups slot in the VCFArrow object.
+#' Only biallelic SNVs are used, and a site is used for a group (valid) when
+#' at least two of its samples are called. With n called alleles and ALT
+#' allele frequency p at a site, the site's nucleotide diversity is
+#' n / (n - 1) * 2p(1 - p), the proportion of differing pairs among all pairs
+#' of called alleles (the unbiased estimator, as in vcftools --site-pi), and
+#' its Watterson contribution is 1 / a1 if the site is segregating, with
+#' a1 = sum(1 / i) for i = 1 .. n - 1. pi and theta are the means of these
+#' values over the valid sites.
 #' The statistics are accumulated chunk by chunk as running sums per group,
 #' so memory use does not grow with the number of variants, and chunks are
 #' processed in parallel when workers are set with vcf_set_workers().
@@ -117,7 +125,10 @@ vcf_theta <- function(vcf_arrow, keep_groups = NULL) {
 # and alt ALT alleles:
 #   valid   n_called >= 2
 #   p       alt / nobs
-#   pi      2 * p * (1 - p)
+#   pi      nobs / (nobs - 1) * 2 * p * (1 - p), the unbiased per-site
+#           nucleotide diversity: the proportion of differing pairs among all
+#           pairs of observed alleles (as vcftools --site-pi and
+#           tidypopgen::loci_pi())
 #   contrib 1 / a1 if the site segregates in the group (0 < p < 1), else 0,
 #           with a1 = H(2 * n_called - 1), the harmonic number for the
 #           2 * n_called sampled chromosomes
@@ -131,8 +142,8 @@ vcf_theta <- function(vcf_arrow, keep_groups = NULL) {
 .theta_sums <- function(alt, nobs, harmonic) {
   n_called <- nobs / 2
   valid <- n_called >= 2
-  p <- alt / nobs                       # NaN where nobs == 0 (never valid)
-  pi <- 2 * p * (1 - p)
+  p <- alt / nobs   # NaN where nobs == 0 (never valid)
+  pi <- nobs / (nobs - 1) * 2 * p * (1 - p)  # NaN where nobs <= 1 (never valid)
   pi[!valid] <- 0
   seg <- valid & p > 0 & p < 1
   contrib <- numeric(length(p))

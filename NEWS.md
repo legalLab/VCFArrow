@@ -38,7 +38,9 @@
 
 * `vcf_stats()` computes per-sample statistics (heterozygosity, missing data,
   depth) and, optionally, Watterson's theta and nucleotide diversity per group
-  (`vcf_theta()`), accumulated chunk by chunk with little memory.
+  (`vcf_theta()`), accumulated chunk by chunk with little memory. Per-site
+  nucleotide diversity uses the unbiased estimator n/(n - 1) * 2p(1 - p) for
+  n called alleles, as in vcftools (`--site-pi`).
 * `assess_vcf_missing_data()` writes a table and plots of missing data per
   sample, and `assess_vcf_coverage()` plots of read depth per sample (PDF,
   PNG and SVG).
