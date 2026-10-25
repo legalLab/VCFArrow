@@ -12,10 +12,6 @@
 ^CRAN-SUBMISSION$
 ^vignettes/VCFArrow\.md$
 ^benchmark$
-^VCFArrow_benchmark\.(odt|pdf)$
-^VCFArrow_benchmark_2M\.(odt|pdf)$
-^VCFArrow_changes\.(odt|pdf)$
-^VCFArrow_benchmark_testH\.(odt|pdf)$
-^VCFArrow_benchmark_2M_scripts\.txt$
-^VCFArrow_benchmark_full\.(odt|pdf)$
-^VCFArrow_benchmark_full_scripts\.txt$
+^\.~lock\.
+^README\.Rmd$
+^comparison$
