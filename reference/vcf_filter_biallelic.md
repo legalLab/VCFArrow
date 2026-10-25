@@ -51,7 +51,7 @@ vcf_filter_biallelic(vcf)
 #> Phased genotypes: FALSE 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpM6xU6l/arrow_vcf_36903f7ec50a 
+#>   Path: /tmp/RtmpkqNpJr/arrow_vcf_36211f565784 
 #> 
 #> Genotype storage (Arrow):
 #> FileSystemDataset with 1 Feather file

@@ -49,5 +49,5 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf2bayescan(vcf, out_file = tempfile(fileext = ".txt"))
 #> ℹ Accumulating BayesScan: 9313 variants x 4 pops (0 MiB raw storage, vs 0 MiB with integer matrices)
 #> ℹ Writing BayesScan file...
-#> ✔ BayesScan file written to /tmp/RtmpM6xU6l/file36905f515baf.txt
+#> ✔ BayesScan file written to /tmp/RtmpkqNpJr/file36213933aef5.txt
 ```

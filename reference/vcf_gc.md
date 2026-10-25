@@ -47,8 +47,8 @@ vcf <- read_vcf(f)
 rm(vcf)
 vcf_gc()
 #> VCFArrow: 2 temp directories are still live (VCFArrow objects not yet GC'd):
-#>   /tmp/RtmpM6xU6l/arrow_vcf_369037bf82b8
-#>   /tmp/RtmpM6xU6l/arrow_vcf_3690eb0600d
+#>   /tmp/RtmpkqNpJr/arrow_vcf_3621279ad169
+#>   /tmp/RtmpkqNpJr/arrow_vcf_362193b0d4b
 #>   → rm() all VCFArrow objects, then call vcf_gc() again.
 #>   → Or call vcf_gc(force = TRUE) to delete regardless.
 ```

@@ -55,7 +55,7 @@ vcf_filter_maf(vcf, threshold = 0.05)
 #> Phased genotypes: FALSE 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpM6xU6l/arrow_vcf_36901e795743 
+#>   Path: /tmp/RtmpkqNpJr/arrow_vcf_3621598eb6c2 
 #> 
 #> Genotype storage (Arrow):
 #> FileSystemDataset with 1 Feather file

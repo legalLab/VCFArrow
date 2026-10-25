@@ -1,4 +1,4 @@
-# VCFArrow ![](reference/figures/VCFArrow_logo.png)
+# VCFArrow
 
 # Introduction
 

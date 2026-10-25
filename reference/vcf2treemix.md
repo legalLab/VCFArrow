@@ -49,5 +49,5 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf2treemix(vcf, out_file = tempfile(fileext = ".txt"))
 #> ℹ Building Treemix: 9313 variants x 4 pops (0 MiB raw storage)
 #> ℹ Writing Treemix file...
-#> ✔ Treemix file written to /tmp/RtmpM6xU6l/file36903796190.txt
+#> ✔ Treemix file written to /tmp/RtmpkqNpJr/file3621539d53dd.txt
 ```
