@@ -56,7 +56,7 @@ compared](https://github.com/legalLab/VCFArrow/blob/main/comparison/tool_compari
 
 How to use the functions of this package with examples of common
 workflows is available in the
-[vignette](https://legallab.github.io/VCFArrow/articles/VCFArrow.html).
+[vignette](https://legallab.github.io/VCFArrow/).
 
 ## Meta
 
