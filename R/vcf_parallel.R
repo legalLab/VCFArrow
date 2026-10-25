@@ -48,11 +48,20 @@ vcf_set_workers <- function(workers = 1L) {
     # and keep Arrow to one thread each, so n workers do not start
     # n x n_cpu Arrow threads
     lib <- c(dirname(getNamespaceInfo("VCFArrow", "path")), .libPaths())
-    init <- .init_worker
-    # sent without the VCFArrow namespace as its environment: unserializing a
-    # namespace function would load VCFArrow before the library path is set
-    environment(init) <- baseenv()
-    tryCatch(parallel::clusterCall(cl, init, unique(lib)), error = function(e) {
+    # sent as an expression evaluated by base eval(), not as a package
+    # function: unserializing a namespace function, or its source references
+    # when the package was installed with R_KEEP_PKG_SOURCE=yes, would load
+    # VCFArrow before the library path is set
+    init <- bquote({
+      .libPaths(.(unique(lib)))
+      if ("VCFArrow" %in% loadedNamespaces())
+        stop("VCFArrow was loaded in the worker before its library path was set")
+      loadNamespace("VCFArrow")
+      arrow::set_cpu_count(1L)
+      arrow::set_io_thread_count(2L)
+      invisible(NULL)
+    })
+    tryCatch(parallel::clusterCall(cl, eval, init, envir = globalenv()), error = function(e) {
       parallel::stopCluster(cl)
       cli::cli_abort(c("Could not start VCFArrow worker processes.", "x" = conditionMessage(e)))
     })
@@ -75,16 +84,6 @@ vcf_set_workers <- function(workers = 1L) {
   cl <- .vcfarrow_parallel$cl
   .vcfarrow_parallel$cl <- NULL
   if (!is.null(cl)) try(parallel::stopCluster(cl), silent = TRUE)
-  invisible(NULL)
-}
-
-.init_worker <- function(lib_paths) {
-  .libPaths(lib_paths)
-  if ("VCFArrow" %in% loadedNamespaces())
-    stop("VCFArrow was loaded in the worker before its library path was set")
-  loadNamespace("VCFArrow")
-  arrow::set_cpu_count(1L)
-  arrow::set_io_thread_count(2L)
   invisible(NULL)
 }
 
