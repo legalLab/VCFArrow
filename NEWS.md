@@ -1,3 +1,18 @@
+# VCFArrow 0.9.1
+
+* `vcf_theta()` (and `vcf_stats(theta = TRUE)`): per-site nucleotide diversity
+  now uses the unbiased estimator n/(n - 1) * 2p(1 - p) for n called alleles,
+  as vcftools (`--site-pi`) and tidypopgen (`loci_pi()`) do. Values of pi are
+  therefore higher than in 0.9.0 by the factor n/(n - 1), most for small
+  groups; Watterson's theta is unchanged.
+* `vcf_stats()` reports each sample's inbreeding coefficient F, the
+  method-of-moments estimate of vcftools and PLINK (`--het`), with the numbers
+  of sites and of observed and expected homozygotes it is based on, and the
+  mean F of each sample group (columns `F`, `F_sites`, `F_hom_obs`,
+  `F_hom_exp` and `F_group_mean`). The new argument `f_ref` takes the allele
+  frequencies from all samples (`"all"`, the default) or from each sample's
+  group (`"group"`).
+
 # VCFArrow 0.9.0
 
 * Initial CRAN submission.
@@ -38,9 +53,7 @@
 
 * `vcf_stats()` computes per-sample statistics (heterozygosity, missing data,
   depth) and, optionally, Watterson's theta and nucleotide diversity per group
-  (`vcf_theta()`), accumulated chunk by chunk with little memory. Per-site
-  nucleotide diversity uses the unbiased estimator n/(n - 1) * 2p(1 - p) for
-  n called alleles, as in vcftools (`--site-pi`).
+  (`vcf_theta()`), accumulated chunk by chunk with little memory.
 * `assess_vcf_missing_data()` writes a table and plots of missing data per
   sample, and `assess_vcf_coverage()` plots of read depth per sample (PDF,
   PNG and SVG).
