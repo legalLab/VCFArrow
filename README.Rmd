@@ -36,7 +36,7 @@ A comparison of `VCFArrow` with `vcftools`, `vcfR` and `tidypopgen` on a dataset
 
 
 ## Cookbook
-How to use the functions of this package with examples of common workflows is available in the [vignette](https://legallab.github.io/VCFArrow/).
+How to use the functions of this package with examples of common workflows is available in the [vignette](https://legallab.github.io/VCFArrow/articles/VCFArrow.html).
 
 
 ## Meta
