@@ -13,8 +13,9 @@ and functions, which have been parallelized when possible, and memory
 efficient, implementing the lazy-loaded [Apache
 Arrow](https://arrow.apache.org/) data scheme. This package is,
 therefore, capable of processing VCFs comprising tens of millions of
-SNVs and hundreds of individuals in a matter of seconds to minutes with
-minimal RAM overhead.
+SNVs and hundreds of individuals in a matter of [seconds to minutes with
+minimal RAM
+overhead](https://github.com/legalLab/VCFArrow/blob/main/comparison/tool_comparison.md).
 
 ## How to use the functions of this package
 
@@ -101,6 +102,11 @@ postfix <- "discosnp_sub"
 # load vcf and assign individuals to groups based on 'strata'
 vcf <- read_vcf(file.path(data_path, paste0(project, postfix, ".vcf.gz"))) |>
   set_vcf_groups(data_path)
+#> Warning in write_ipc_impl(x = x, sink = sink, version = version, chunk_size =
+#> chunk_size, : write_feather(version = 2) has been superseded by
+#> write_ipc_file().
+#> Warning in FileFormat$create(match.arg(format), partitioning = partitioning, :
+#> `format = "feather"` is deprecated; use `format = "ipc"` instead.
 
 # visualize the VCFArrow object
 vcf
@@ -117,10 +123,10 @@ vcf
 #> Phased genotypes: FALSE 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpIFO8G0/arrow_vcf_39c24461a76c 
+#>   Path: /tmp/RtmpwH1gTm/arrow_vcf_3a12190a9d8c 
 #> 
 #> Genotype storage (Arrow):
-#> FileSystemDataset with 1 Feather file
+#> FileSystemDataset with 1 Arrow IPC file
 #> 9 columns
 #> .row_id: int32
 #> sample: string
@@ -206,9 +212,15 @@ fltr <- ""
 
 # output a table and histogram of missing data
 assess_vcf_missing_data(vcf, res_path, species, paste0(project, postfix, fltr))
+#> Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 
 # output a violin plot of read depth/coverage
 assess_vcf_coverage(vcf, res_path, species, paste0(project, postfix, fltr))
+#> Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 ```
 
 ### Basic stats for individuals in VCF
@@ -238,6 +250,12 @@ of Watterson’s Theta and Pi can be included or excluded based on the
 # output a table of sample and group statistics
 vcf_stats(vcf, res_path, paste0(project, postfix, fltr), theta = TRUE)
 #> ℹ Computing per-sample stats: 10000 variants x 18 samples, reading 1 chunk directly
+#> Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 ```
 
 ### Filtering, subsetting, merging and otherwise wrangling VCF files
@@ -277,7 +295,16 @@ specified, it is randomly generated.
 indivs1 <- c("Pv14", "Pv27", "Pv28", "Pv78", "Pv126")
 vcf1 <- vcf_extract_samples(vcf, indivs1)
 #> ℹ Compacting GT: 18 -> 5 samples across 1 chunk
+#> Warning in arrow::read_feather(task$fpath, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in write_ipc_impl(x = x, sink = sink, version = version, chunk_size =
+#> chunk_size, : write_feather(version = 2) has been superseded by
+#> write_ipc_file().
 #> ℹ Applying invariant filter
+#> Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Removed 7220 invariant variants; 2780 retained.
 #> ℹ Removed samples: Pv120, Pv13, Pv2, Pv31, Pv56, Pv62, Pv68, Pv73, Pv79, Pv93, Pb2Jp, Pb2Scx, and Pb1Rd
 #> ℹ Variants retained: 2780 | Samples retained: 5
@@ -290,7 +317,14 @@ nrow(vcf1@variants)
 groups1 <- c("GS", "BS", "WA")
 vcf1 <- vcf_extract_groups(vcf, groups1)
 #> ℹ Compacting GT: 18 -> 15 samples across 1 chunk
+#> Warning in arrow::read_feather(task$fpath, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in arrow::read_feather(task$fpath, as_data_frame = FALSE): write_feather(version = 2) has been superseded by write_ipc_file().
 #> ℹ Applying invariant filter
+#> Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Removed 1705 invariant variants; 8295 retained.
 #> ℹ Removed samples: Pb2Jp, Pb2Scx, and Pb1Rd
 #> ℹ Variants retained: 8295 | Samples retained: 15
@@ -379,12 +413,24 @@ vcf_oneSNP <- vcf_extract_samples(vcf, indivs) |>
 #> ℹ Applying biallelic filter
 #> ℹ Retained 9313 / 9313 variants (biallelic SNVs)
 #> ℹ Applying MAF filter
+#> Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Retained 9069 / 9313 variants (MAF >= 0.03)
 #> ℹ Applying read coverage filter
+#> Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Retained 5171 / 9069 variants (polymorphic with DP >= 10)
 #> ℹ Applying locus missingness filter
+#> Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Retained 1734 / 5171 variants (per-variant missingness <= 0.2)
 #> ℹ Applying sample missingness filter
+#> Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Variants retained: 1734 | Samples retained: 18
 #> ℹ Applying unlinked SNV filter
 #> ℹ Retained 1734 / 1734 variants (unlinked SNVs)
@@ -408,12 +454,24 @@ vcf_multiSNP <- vcf_extract_samples(vcf, indivs) |>
 #> ℹ Applying biallelic filter
 #> ℹ Retained 9313 / 9313 variants (biallelic SNVs)
 #> ℹ Applying MAF filter
+#> Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Retained 9069 / 9313 variants (MAF >= 0.03)
 #> ℹ Applying read coverage filter
+#> Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Retained 5171 / 9069 variants (polymorphic with DP >= 10)
 #> ℹ Applying locus missingness filter
+#> Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Retained 1734 / 5171 variants (per-variant missingness <= 0.2)
 #> ℹ Applying sample missingness filter
+#> Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Variants retained: 1734 | Samples retained: 18
 #> ℹ Applying linked SNV filter
 #> ℹ Retained 0 / 1734 variants (linked SNVs)
@@ -456,6 +514,12 @@ with `bcftools norm -m -any`.
 indivs1 <- c("Pb2Jp", "Pb2Scx", "Pb1Rd") # the outgroup
 vcf_ingrp <- vcf_extract_samples(vcf, indivs1, keep = FALSE, f_invar = FALSE)
 #> ℹ Compacting GT: 18 -> 15 samples across 1 chunk
+#> Warning in arrow::read_feather(task$fpath, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in write_ipc_impl(x = x, sink = sink, version = version, chunk_size =
+#> chunk_size, : write_feather(version = 2) has been superseded by
+#> write_ipc_file().
 #> ℹ Removed samples: Pb2Jp, Pb2Scx, and Pb1Rd
 #> ℹ Variants retained: 10000 | Samples retained: 15
 # see how many variants remained
@@ -463,6 +527,10 @@ nrow(vcf_ingrp@variants)
 #> [1] 10000
 vcf_outgrp <- vcf_extract_samples(vcf, indivs1, f_invar = FALSE)
 #> ℹ Compacting GT: 18 -> 3 samples across 1 chunk
+#> Warning in arrow::read_feather(task$fpath, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in arrow::read_feather(task$fpath, as_data_frame = FALSE): write_feather(version = 2) has been superseded by write_ipc_file().
 #> ℹ Removed samples: Pv120, Pv126, Pv13, Pv14, Pv27, Pv28, Pv2, Pv31, Pv56, Pv62, Pv68, Pv73, Pv78, Pv79, and Pv93
 #> ℹ Variants retained: 10000 | Samples retained: 3
 # see how many variants remained
@@ -472,6 +540,24 @@ nrow(vcf_outgrp@variants)
 # bind vcf_outgrp and vcf_ingrp (same variants)
 vcf1 <- vcf_bind(vcf_ingrp, vcf_outgrp)
 #> ℹ Binding 2 VCFArrow objects (intersect): 10000 variants, 18 total samples.
+#> Warning in arrow::read_feather(f, col_select = ".row_id", as_data_frame = FALSE): 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in arrow::read_feather(f, col_select = ".row_id", as_data_frame = FALSE): 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in arrow::read_feather(srcs[[1L]]$files[1L], col_select = .bind_gt_cols, : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in arrow::read_feather(f, col_select = .bind_gt_cols, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in arrow::read_feather(f, col_select = .bind_gt_cols, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in write_ipc_impl(x = x, sink = sink, version = version, chunk_size =
+#> chunk_size, : write_feather(version = 2) has been superseded by
+#> write_ipc_file().
 
 # see how many variants remained
 nrow(vcf1@variants)
@@ -486,6 +572,12 @@ nrow(vcf1@variants)
 groups1 <- c("GS", "BS", "WA") # the ingroup
 vcf_ingrp <- vcf_extract_groups(vcf, groups1, f_invar = FALSE)
 #> ℹ Compacting GT: 18 -> 15 samples across 1 chunk
+#> Warning in arrow::read_feather(task$fpath, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in write_ipc_impl(x = x, sink = sink, version = version, chunk_size =
+#> chunk_size, : write_feather(version = 2) has been superseded by
+#> write_ipc_file().
 #> ℹ Removed samples: Pb2Jp, Pb2Scx, and Pb1Rd
 #> ℹ Variants retained: 10000 | Samples retained: 15
 # see how many variants remained
@@ -493,6 +585,10 @@ nrow(vcf_ingrp@variants)
 #> [1] 10000
 vcf_outgrp <- vcf_extract_groups(vcf, groups1, keep = FALSE, f_invar = FALSE)
 #> ℹ Compacting GT: 18 -> 3 samples across 1 chunk
+#> Warning in arrow::read_feather(task$fpath, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in arrow::read_feather(task$fpath, as_data_frame = FALSE): write_feather(version = 2) has been superseded by write_ipc_file().
 #> ℹ Removed samples: Pv120, Pv126, Pv13, Pv14, Pv27, Pv28, Pv2, Pv31, Pv56, Pv62, Pv68, Pv73, Pv78, Pv79, and Pv93
 #> ℹ Variants retained: 10000 | Samples retained: 3
 # see how many variants remained
@@ -502,6 +598,24 @@ nrow(vcf_outgrp@variants)
 # bind vcf_outgrp and vcf_ingrp (same variants)
 vcf1 <- vcf_bind(vcf_ingrp, vcf_outgrp)
 #> ℹ Binding 2 VCFArrow objects (intersect): 10000 variants, 18 total samples.
+#> Warning in arrow::read_feather(f, col_select = ".row_id", as_data_frame = FALSE): 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in arrow::read_feather(f, col_select = ".row_id", as_data_frame = FALSE): 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in arrow::read_feather(srcs[[1L]]$files[1L], col_select = .bind_gt_cols, : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in arrow::read_feather(f, col_select = .bind_gt_cols, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in arrow::read_feather(f, col_select = .bind_gt_cols, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in write_ipc_impl(x = x, sink = sink, version = version, chunk_size =
+#> chunk_size, : write_feather(version = 2) has been superseded by
+#> write_ipc_file().
 
 # see how many variants remained
 nrow(vcf1@variants)
@@ -516,7 +630,16 @@ nrow(vcf1@variants)
 groups1 <- c("GS", "BS", "WA") # the ingroup
 vcf_ingrp <- vcf_extract_groups(vcf, groups1)
 #> ℹ Compacting GT: 18 -> 15 samples across 1 chunk
+#> Warning in arrow::read_feather(task$fpath, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in write_ipc_impl(x = x, sink = sink, version = version, chunk_size =
+#> chunk_size, : write_feather(version = 2) has been superseded by
+#> write_ipc_file().
 #> ℹ Applying invariant filter
+#> Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Removed 1705 invariant variants; 8295 retained.
 #> ℹ Removed samples: Pb2Jp, Pb2Scx, and Pb1Rd
 #> ℹ Variants retained: 8295 | Samples retained: 15
@@ -525,7 +648,14 @@ nrow(vcf_ingrp@variants)
 #> [1] 8295
 vcf_outgrp <- vcf_extract_groups(vcf, groups1, keep = FALSE)
 #> ℹ Compacting GT: 18 -> 3 samples across 1 chunk
+#> Warning in arrow::read_feather(task$fpath, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in arrow::read_feather(task$fpath, as_data_frame = FALSE): write_feather(version = 2) has been superseded by write_ipc_file().
 #> ℹ Applying invariant filter
+#> Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Removed 8904 invariant variants; 1096 retained.
 #> ℹ Removed samples: Pv120, Pv126, Pv13, Pv14, Pv27, Pv28, Pv2, Pv31, Pv56, Pv62, Pv68, Pv73, Pv78, Pv79, and Pv93
 #> ℹ Variants retained: 1096 | Samples retained: 3
@@ -536,6 +666,24 @@ nrow(vcf_outgrp@variants)
 # bind vcf_outgrp and vcf_ingrp (intersection - variable SNVs in all objects)
 vcf1 <- vcf_bind(vcf_ingrp, vcf_outgrp, mode = "intersect")
 #> ℹ Binding 2 VCFArrow objects (intersect): 421 variants, 18 total samples.
+#> Warning in arrow::read_feather(f, col_select = ".row_id", as_data_frame = FALSE): 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in arrow::read_feather(f, col_select = ".row_id", as_data_frame = FALSE): 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in arrow::read_feather(srcs[[1L]]$files[1L], col_select = .bind_gt_cols, : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in arrow::read_feather(f, col_select = .bind_gt_cols, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in arrow::read_feather(f, col_select = .bind_gt_cols, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in write_ipc_impl(x = x, sink = sink, version = version, chunk_size =
+#> chunk_size, : write_feather(version = 2) has been superseded by
+#> write_ipc_file().
 
 # see how many variants remained
 nrow(vcf1@variants)
@@ -550,7 +698,16 @@ nrow(vcf1@variants)
 groups1 <- c("GS", "BS", "WA") # the ingroup
 vcf_ingrp <- vcf_extract_groups(vcf, groups1)
 #> ℹ Compacting GT: 18 -> 15 samples across 1 chunk
+#> Warning in arrow::read_feather(task$fpath, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in write_ipc_impl(x = x, sink = sink, version = version, chunk_size =
+#> chunk_size, : write_feather(version = 2) has been superseded by
+#> write_ipc_file().
 #> ℹ Applying invariant filter
+#> Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Removed 1705 invariant variants; 8295 retained.
 #> ℹ Removed samples: Pb2Jp, Pb2Scx, and Pb1Rd
 #> ℹ Variants retained: 8295 | Samples retained: 15
@@ -559,7 +716,14 @@ nrow(vcf_ingrp@variants)
 #> [1] 8295
 vcf_outgrp <- vcf_extract_groups(vcf, groups1, keep = FALSE)
 #> ℹ Compacting GT: 18 -> 3 samples across 1 chunk
+#> Warning in arrow::read_feather(task$fpath, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in arrow::read_feather(task$fpath, as_data_frame = FALSE): write_feather(version = 2) has been superseded by write_ipc_file().
 #> ℹ Applying invariant filter
+#> Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Removed 8904 invariant variants; 1096 retained.
 #> ℹ Removed samples: Pv120, Pv126, Pv13, Pv14, Pv27, Pv28, Pv2, Pv31, Pv56, Pv62, Pv68, Pv73, Pv78, Pv79, and Pv93
 #> ℹ Variants retained: 1096 | Samples retained: 3
@@ -576,6 +740,24 @@ vcf1 <- vcf_bind(vcf_ingrp, vcf_outgrp, mode = "union")
 #>   reference).
 #> ℹ Binding 2 VCFArrow objects (union): 10000 variants, 18 total samples.
 #> ℹ Absent genotypes will be filled as: missing
+#> Warning in arrow::read_feather(f, col_select = ".row_id", as_data_frame = FALSE): 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in arrow::read_feather(f, col_select = ".row_id", as_data_frame = FALSE): 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in arrow::read_feather(srcs[[1L]]$files[1L], col_select = .bind_gt_cols, : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in arrow::read_feather(f, col_select = .bind_gt_cols, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in arrow::read_feather(f, col_select = .bind_gt_cols, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in write_ipc_impl(x = x, sink = sink, version = version, chunk_size =
+#> chunk_size, : write_feather(version = 2) has been superseded by
+#> write_ipc_file().
 
 # see how many variants remained
 nrow(vcf1@variants)
@@ -589,7 +771,16 @@ nrow(vcf1@variants)
 groups1 <- c("GS", "BS", "WA") # the ingroup
 vcf_ingrp <- vcf_extract_groups(vcf, groups1)
 #> ℹ Compacting GT: 18 -> 15 samples across 1 chunk
+#> Warning in arrow::read_feather(task$fpath, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in write_ipc_impl(x = x, sink = sink, version = version, chunk_size =
+#> chunk_size, : write_feather(version = 2) has been superseded by
+#> write_ipc_file().
 #> ℹ Applying invariant filter
+#> Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Removed 1705 invariant variants; 8295 retained.
 #> ℹ Removed samples: Pb2Jp, Pb2Scx, and Pb1Rd
 #> ℹ Variants retained: 8295 | Samples retained: 15
@@ -598,7 +789,14 @@ nrow(vcf_ingrp@variants)
 #> [1] 8295
 vcf_outgrp <- vcf_extract_groups(vcf, groups1, keep = FALSE)
 #> ℹ Compacting GT: 18 -> 3 samples across 1 chunk
+#> Warning in arrow::read_feather(task$fpath, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in arrow::read_feather(task$fpath, as_data_frame = FALSE): write_feather(version = 2) has been superseded by write_ipc_file().
 #> ℹ Applying invariant filter
+#> Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Removed 8904 invariant variants; 1096 retained.
 #> ℹ Removed samples: Pv120, Pv126, Pv13, Pv14, Pv27, Pv28, Pv2, Pv31, Pv56, Pv62, Pv68, Pv73, Pv78, Pv79, and Pv93
 #> ℹ Variants retained: 1096 | Samples retained: 3
@@ -610,6 +808,24 @@ nrow(vcf_outgrp@variants)
 vcf1 <- vcf_bind(vcf_ingrp, vcf_outgrp, mode = "union", absent_as = "hom_ref")
 #> ℹ Binding 2 VCFArrow objects (union): 10000 variants, 18 total samples.
 #> ℹ Absent genotypes will be filled as: hom_ref
+#> Warning in arrow::read_feather(f, col_select = ".row_id", as_data_frame = FALSE): 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in arrow::read_feather(f, col_select = ".row_id", as_data_frame = FALSE): 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in arrow::read_feather(srcs[[1L]]$files[1L], col_select = .bind_gt_cols, : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in arrow::read_feather(f, col_select = .bind_gt_cols, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in arrow::read_feather(f, col_select = .bind_gt_cols, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in write_ipc_impl(x = x, sink = sink, version = version, chunk_size =
+#> chunk_size, : write_feather(version = 2) has been superseded by
+#> write_ipc_file().
 
 # see how many variants remained
 nrow(vcf1@variants)
@@ -663,7 +879,16 @@ extracted with `f_invar = TRUE` or `FALSE`. By contrast,
 groups1 <- "OG"
 vcf_outgrp <- vcf_extract_groups(vcf, groups1)
 #> ℹ Compacting GT: 18 -> 3 samples across 1 chunk
+#> Warning in arrow::read_feather(task$fpath, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in write_ipc_impl(x = x, sink = sink, version = version, chunk_size =
+#> chunk_size, : write_feather(version = 2) has been superseded by
+#> write_ipc_file().
 #> ℹ Applying invariant filter
+#> Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Removed 8904 invariant variants; 1096 retained.
 #> ℹ Removed samples: Pv120, Pv126, Pv13, Pv14, Pv27, Pv28, Pv2, Pv31, Pv56, Pv62, Pv68, Pv73, Pv78, Pv79, and Pv93
 #> ℹ Variants retained: 1096 | Samples retained: 3
@@ -678,7 +903,14 @@ vcf1 <- vcf_extract_groups(vcf, groups1, keep = FALSE) |>
   vcf_filter_oneSNV() |>
   vcf_bind(vcf_outgrp, outgroup = TRUE, absent_as = "missing")
 #> ℹ Compacting GT: 18 -> 15 samples across 1 chunk
+#> Warning in arrow::read_feather(task$fpath, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in arrow::read_feather(task$fpath, as_data_frame = FALSE): write_feather(version = 2) has been superseded by write_ipc_file().
 #> ℹ Applying invariant filter
+#> Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Removed 1705 invariant variants; 8295 retained.
 #> ℹ Removed samples: Pb2Jp, Pb2Scx, and Pb1Rd
 #> ℹ Variants retained: 8295 | Samples retained: 15
@@ -687,15 +919,42 @@ vcf1 <- vcf_extract_groups(vcf, groups1, keep = FALSE) |>
 #> ℹ Applying biallelic filter
 #> ℹ Retained 7706 / 7706 variants (biallelic SNVs)
 #> ℹ Applying read coverage filter
+#> Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Retained 4483 / 7706 variants (polymorphic with DP >= 10)
 #> ℹ Applying locus missingness filter
+#> Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Retained 2409 / 4483 variants (per-variant missingness <= 0.2)
 #> ℹ Applying sample missingness filter
+#> Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Variants retained: 2409 | Samples retained: 15
 #> ℹ Applying unlinked SNV filter
 #> ℹ Retained 2409 / 2409 variants (unlinked SNVs)
 #> ℹ Binding 2 VCFArrow objects (outgroup): 2409 variants, 18 total samples.
 #> ℹ Absent genotypes will be filled as: missing
+#> Warning in arrow::read_feather(f, col_select = ".row_id", as_data_frame = FALSE): 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in arrow::read_feather(f, col_select = ".row_id", as_data_frame = FALSE): 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in arrow::read_feather(srcs[[1L]]$files[1L], col_select = .bind_gt_cols, : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in arrow::read_feather(f, col_select = .bind_gt_cols, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in arrow::read_feather(f, col_select = .bind_gt_cols, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in write_ipc_impl(x = x, sink = sink, version = version, chunk_size =
+#> chunk_size, : write_feather(version = 2) has been superseded by
+#> write_ipc_file().
 
 # see how many variants remained
 nrow(vcf1@variants)
@@ -706,6 +965,9 @@ fltr <- "_ingroup_filter"
 
 # output a table and histogram of missing data
 assess_vcf_missing_data(vcf1, res_path, species, paste0(project, postfix, fltr))
+#> Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 
 # apply the same filter to the full dataset (ingroup + outgroup)
 vcf1 <- vcf |>
@@ -720,10 +982,19 @@ vcf1 <- vcf |>
 #> ℹ Applying biallelic filter
 #> ℹ Retained 9313 / 9313 variants (biallelic SNVs)
 #> ℹ Applying read coverage filter
+#> Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Retained 5388 / 9313 variants (polymorphic with DP >= 10)
 #> ℹ Applying locus missingness filter
+#> Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Retained 1951 / 5388 variants (per-variant missingness <= 0.2)
 #> ℹ Applying sample missingness filter
+#> Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Variants retained: 1951 | Samples retained: 18
 #> ℹ Applying unlinked SNV filter
 #> ℹ Retained 1951 / 1951 variants (unlinked SNVs)
@@ -737,6 +1008,9 @@ fltr <- "_all_filter"
 
 # output a table and histogram of missing data
 assess_vcf_missing_data(vcf1, res_path, species, paste0(project, postfix, fltr))
+#> Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 ```
 
 ### Saving and copying VCFArrow objects
@@ -759,8 +1033,14 @@ uncompressed VCF and then compress it later.
 
 # write the VCFArrow object as a VCF (and compress it using gzip)
 write_vcf(vcf1, out_file = file.path(res_path, paste0(project, postfix, "_filtered.vcf.gz")), gzip = TRUE)
+#> Warning in arrow::read_feather(f, col_select = ".row_id", as_data_frame = FALSE): 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ VCF is being written in 1 chunk
-#> ✔ VCFArrow object successfully written to /tmp/RtmpIFO8G0/vaillantii_discosnp_sub_filtered.vcf.gz
+#> Warning in arrow::read_feather(task$fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> ✔ VCFArrow object successfully written to /tmp/RtmpwH1gTm/vaillantii_discosnp_sub_filtered.vcf.gz
 ```
 
 ### Converting a VCF file to other population genetic and phylogenetic formats
@@ -794,107 +1074,170 @@ vcf <- vcf_oneSNP
 # migrate-n https://peterbeerli.com/migrate-html5/
 vcf2migrate(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_migrate.txt')))
 #> ℹ Accumulating Migrate-N (S): 1734 variants x 18 samples (0 MiB raw storage)
+#> Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Writing Migrate-N (S) file...
-#> ✔ Migrate-N file written to /tmp/RtmpIFO8G0/vaillantii_discosnp_sub_migrate.txt
+#> ✔ Migrate-N file written to /tmp/RtmpwH1gTm/vaillantii_discosnp_sub_migrate.txt
 # arlequin http://cmpg.unibe.ch/software/arlequin35/
 vcf2arlequin(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.arp')))
 #> ℹ Accumulating Arlequin: 1734 variants x 18 samples (0 MiB raw storage)
+#> Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Writing Arlequin file...
-#> ✔ Arlequin file written to /tmp/RtmpIFO8G0/vaillantii_discosnp_sub.arp
+#> ✔ Arlequin file written to /tmp/RtmpwH1gTm/vaillantii_discosnp_sub.arp
 # structure https://web.stanford.edu/group/pritchardlab/structure.html
 vcf2structure(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.str')))
 #> ℹ Accumulating Structure: 1734 variants x 18 samples (0 MiB raw storage)
+#> Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Writing Structure file...
-#> ✔ Structure file written to /tmp/RtmpIFO8G0/vaillantii_discosnp_sub.str
+#> ✔ Structure file written to /tmp/RtmpwH1gTm/vaillantii_discosnp_sub.str
 # faststructure http://rajanil.github.io/fastStructure/
 vcf2structure(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.fstr')), method = "F")
 #> ℹ Accumulating Structure: 1734 variants x 18 samples (0 MiB raw storage)
+#> Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Writing Structure file...
-#> ✔ Structure file written to /tmp/RtmpIFO8G0/vaillantii_discosnp_sub.fstr
+#> ✔ Structure file written to /tmp/RtmpwH1gTm/vaillantii_discosnp_sub.fstr
 # sNMF http://membres-timc.imag.fr/Olivier.Francois/snmf/index.htm
 vcf2snmf(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.geno')))
 #> ℹ Formatting sNMF: 1734 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing sNMF file...
-#> ✔ sNMF file written to /tmp/RtmpIFO8G0/vaillantii_discosnp_sub.geno
+#> Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> ✔ sNMF file written to /tmp/RtmpwH1gTm/vaillantii_discosnp_sub.geno
 # Admixture https://dalexander.github.io/admixture/index.html
 # takes as input binary PLINK (.bed), ordinary PLINK (.ped), or EIGENSTRAT (.geno) formatted files
 # so a thin wrapper around vcf2plink_bed() plus optional generation of known-ancestry reference populations
 vcf2admixture(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_admixture')))
 #> ℹ Building PLINK: 1734 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing PLINK files...
-#> ℹ Chromosome names were recoded as integers for PLINK compatibility; mapping written to /tmp/RtmpIFO8G0/vaillantii_discosnp_sub_admixture.chrommap
-#> ✔ PLINK binary fileset written to /tmp/RtmpIFO8G0/vaillantii_discosnp_sub_admixture.bed, /tmp/RtmpIFO8G0/vaillantii_discosnp_sub_admixture.bim, /tmp/RtmpIFO8G0/vaillantii_discosnp_sub_admixture.fam
+#> Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> ℹ Chromosome names were recoded as integers for PLINK compatibility; mapping written to /tmp/RtmpwH1gTm/vaillantii_discosnp_sub_admixture.chrommap
+#> ✔ PLINK binary fileset written to /tmp/RtmpwH1gTm/vaillantii_discosnp_sub_admixture.bed, /tmp/RtmpwH1gTm/vaillantii_discosnp_sub_admixture.bim, /tmp/RtmpwH1gTm/vaillantii_discosnp_sub_admixture.fam
 # PLINK .bed https://www.cog-genomics.org/plink/1.9/formats#bed
 vcf2plink_bed(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_plink')))
 #> ℹ Building PLINK: 1734 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing PLINK files...
-#> ℹ Chromosome names were recoded as integers for PLINK compatibility; mapping written to /tmp/RtmpIFO8G0/vaillantii_discosnp_sub_plink.chrommap
-#> ✔ PLINK binary fileset written to /tmp/RtmpIFO8G0/vaillantii_discosnp_sub_plink.bed, /tmp/RtmpIFO8G0/vaillantii_discosnp_sub_plink.bim, /tmp/RtmpIFO8G0/vaillantii_discosnp_sub_plink.fam
+#> Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> ℹ Chromosome names were recoded as integers for PLINK compatibility; mapping written to /tmp/RtmpwH1gTm/vaillantii_discosnp_sub_plink.chrommap
+#> ✔ PLINK binary fileset written to /tmp/RtmpwH1gTm/vaillantii_discosnp_sub_plink.bed, /tmp/RtmpwH1gTm/vaillantii_discosnp_sub_plink.bim, /tmp/RtmpwH1gTm/vaillantii_discosnp_sub_plink.fam
 # PLINK .ped https://www.cog-genomics.org/plink/1.9/formats#ped
 vcf2plink_ped(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_plink')))
 #> ℹ Accumulating PLINK .ped: 1734 variants x 18 samples (0 MiB raw storage)
+#> Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Writing PLINK file...
-#> ℹ Chromosome names were recoded as integers for PLINK compatibility; mapping written to /tmp/RtmpIFO8G0/vaillantii_discosnp_sub_plink.chrommap
-#> ✔ PLINK text fileset written to /tmp/RtmpIFO8G0/vaillantii_discosnp_sub_plink.ped, /tmp/RtmpIFO8G0/vaillantii_discosnp_sub_plink.map
+#> ℹ Chromosome names were recoded as integers for PLINK compatibility; mapping written to /tmp/RtmpwH1gTm/vaillantii_discosnp_sub_plink.chrommap
+#> ✔ PLINK text fileset written to /tmp/RtmpwH1gTm/vaillantii_discosnp_sub_plink.ped, /tmp/RtmpwH1gTm/vaillantii_discosnp_sub_plink.map
 # eigenstrat https://github.com/DReichLab/EIG/tree/master
 vcf2eigenstrat(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_eigenstrat')))
 #> ℹ Building EIGENSTRAT: 1734 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing EIGENSTRAT files...
-#> ✔ EIGENSTRAT fileset written to /tmp/RtmpIFO8G0/vaillantii_discosnp_sub_eigenstrat.geno, /tmp/RtmpIFO8G0/vaillantii_discosnp_sub_eigenstrat.ind, /tmp/RtmpIFO8G0/vaillantii_discosnp_sub_eigenstrat.snp
+#> Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> ✔ EIGENSTRAT fileset written to /tmp/RtmpwH1gTm/vaillantii_discosnp_sub_eigenstrat.geno, /tmp/RtmpwH1gTm/vaillantii_discosnp_sub_eigenstrat.ind, /tmp/RtmpwH1gTm/vaillantii_discosnp_sub_eigenstrat.snp
 # genepop https://gitlab.mbb.univ-montp2.fr/francois/genepop
 vcf2genepop(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.gen')))
 #> ℹ Accumulating Genepop: 1734 variants x 18 samples (0 MiB raw storage)
+#> Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Writing Genepop file...
-#> ✔ Genepop file written to /tmp/RtmpIFO8G0/vaillantii_discosnp_sub.gen
+#> ✔ Genepop file written to /tmp/RtmpwH1gTm/vaillantii_discosnp_sub.gen
 # smartsnp https://github.com/ChristianHuber/smartsnp
 vcf2smartsnp(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.smartsnp')))
 #> ℹ Building SmartSNP: 1734 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing SmartSNP file...
-#> ✔ SmartSNP file written to /tmp/RtmpIFO8G0/vaillantii_discosnp_sub.smartsnp
+#> Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> ✔ SmartSNP file written to /tmp/RtmpwH1gTm/vaillantii_discosnp_sub.smartsnp
 # bayescan https://github.com/mfoll/BayeScan
 vcf2bayescan(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.bayescan')))
 #> ℹ Accumulating BayesScan: 1734 variants x 4 pops (0 MiB raw storage, vs 0 MiB with integer matrices)
+#> Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Writing BayesScan file...
-#> ✔ BayesScan file written to /tmp/RtmpIFO8G0/vaillantii_discosnp_sub.bayescan
+#> ✔ BayesScan file written to /tmp/RtmpwH1gTm/vaillantii_discosnp_sub.bayescan
 # bayesass https://github.com/brannala/BA3
 vcf2bayesass(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.bayesass')))
 #> ℹ Accumulating BayesAss: 1734 variants x 18 samples (0 MiB raw storage)
+#> Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Writing BayesAss file...
-#> ✔ BayesAss file written to /tmp/RtmpIFO8G0/vaillantii_discosnp_sub.bayesass
+#> ✔ BayesAss file written to /tmp/RtmpwH1gTm/vaillantii_discosnp_sub.bayesass
 # treemix https://bitbucket.org/nygcresearch/treemix/wiki/Home
 vcf2treemix(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.treemix')))
 #> ℹ Building Treemix: 1734 variants x 4 pops (0 MiB raw storage)
 #> ℹ Writing Treemix file...
-#> ✔ Treemix file written to /tmp/RtmpIFO8G0/vaillantii_discosnp_sub.treemix
+#> Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> ✔ Treemix file written to /tmp/RtmpwH1gTm/vaillantii_discosnp_sub.treemix
 # apparent https://github.com/halelab/apparent/tree/master
 vcf2apparent(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.apparent')))
 #> ℹ Accumulating Apparent: 1734 variants x 18 samples (0 MiB raw storage)
+#> Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Writing Apparent file...
-#> ✔ Apparent file written to /tmp/RtmpIFO8G0/vaillantii_discosnp_sub.apparent
+#> ✔ Apparent file written to /tmp/RtmpwH1gTm/vaillantii_discosnp_sub.apparent
 # related https://github.com/timothyfrasier/related
 vcf2related(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.related')))
 #> ℹ Accumulating Related: 1734 variants x 18 samples (0 MiB raw storage)
+#> Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Writing Related file...
-#> ✔ Related file written to /tmp/RtmpIFO8G0/vaillantii_discosnp_sub.related
+#> ✔ Related file written to /tmp/RtmpwH1gTm/vaillantii_discosnp_sub.related
 # long tidy dataframe of genotypes
 vcf2gt_long(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.csv')), format = 'csv')
 #> ℹ Writing gt_long: 1734 variants x 18 samples
-#> ✔ gt_long table written to /tmp/RtmpIFO8G0/vaillantii_discosnp_sub.csv
+#> Warning in arrow::read_feather(setup$feather_files[[1L]], col_select = read_cols, : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning in arrow::read_feather(task$fpath, col_select = shared$read_cols, : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> ✔ gt_long table written to /tmp/RtmpwH1gTm/vaillantii_discosnp_sub.csv
 # snapp https://www.beast2.org/snapp/
 vcf2snapp(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_snapp.nex')))
 #> ℹ Accumulating SNAPP: 1734 variants x 18 samples (0 MiB raw storage)
+#> Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Writing SNAPP file...
-#> ✔ SNAPP file written to /tmp/RtmpIFO8G0/vaillantii_discosnp_sub_snapp.nex
+#> ✔ SNAPP file written to /tmp/RtmpwH1gTm/vaillantii_discosnp_sub_snapp.nex
 # nexus - only SNPs, meant for SVDq analyses https://www.asc.ohio-state.edu/kubatko.2/software/SVDquartets/
 vcf2nexus(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_sdvq.nex')))
 #> ℹ Accumulating Nexus: 1734 variants x 18 samples (0 MiB raw storage)
+#> Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Writing Nexus file...
-#> ✔ Nexus file written to /tmp/RtmpIFO8G0/vaillantii_discosnp_sub_sdvq.nex
+#> ✔ Nexus file written to /tmp/RtmpwH1gTm/vaillantii_discosnp_sub_sdvq.nex
 # fasta https://www.ncbi.nlm.nih.gov/genbank/fastaformat/
 vcf2fasta(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.fna')))
 #> ℹ Accumulating FASTA: 1734 variants x 18 samples (0 MiB raw storage)
+#> Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Writing FASTA file...
-#> ✔ FASTA file written to /tmp/RtmpIFO8G0/vaillantii_discosnp_sub.fna
+#> ✔ FASTA file written to /tmp/RtmpwH1gTm/vaillantii_discosnp_sub.fna
 
 # genlight object https://www.rdocumentation.org/packages/adegenet/versions/2.0.0/topics/genlight-class
 # (requires the suggested package adegenet)
@@ -904,11 +1247,17 @@ if (requireNamespace("adegenet", quietly = TRUE)) {
   genlight <- vcf2genlight(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_genlight.rds')), save = TRUE)
 }
 #> ℹ Accumulating Genlight: 1734 variants x 18 samples (0 MiB raw storage)
+#> Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Building Genlight object...
 #> ℹ Accumulating Genlight: 1734 variants x 18 samples (0 MiB raw storage)
+#> Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Building Genlight object...
 #> ℹ Writing Genlight object...
-#> ✔ Genlight object written to /tmp/RtmpIFO8G0/vaillantii_discosnp_sub_genlight.rds
+#> ✔ Genlight object written to /tmp/RtmpwH1gTm/vaillantii_discosnp_sub_genlight.rds
 
 ##########
 # datasets for analyses with linked SNPs
@@ -920,5 +1269,8 @@ vcf <- vcf_multiSNP
 vcf2fineradstructure(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.finerad')))
 #> ℹ Building fineRADstructure: 0 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing fineRADstructure file...
-#> ✔ fineRADstructure file written to /tmp/RtmpIFO8G0/vaillantii_discosnp_sub.finerad
+#> Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> ✔ fineRADstructure file written to /tmp/RtmpwH1gTm/vaillantii_discosnp_sub.finerad
 ```

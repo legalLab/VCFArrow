@@ -34,9 +34,14 @@ f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
                  package = "VCFArrow")
 vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 #> ℹ VCF is being read in chunks of 50000 variants
+#> Warning: write_feather(version = 2) has been superseded by write_ipc_file().
+#> Warning: `format = "feather"` is deprecated; use `format = "ipc"` instead.
 #> ✔ VCF successfully read into a VCFArrow object
 vcf_copy(vcf_filter_maf(vcf, 0.05))
 #> ℹ Applying MAF filter
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Retained 8955 / 10000 variants (MAF >= 0.05)
 #> 
 #> An object of class "VCFArrow"
@@ -51,10 +56,10 @@ vcf_copy(vcf_filter_maf(vcf, 0.05))
 #> Phased genotypes: FALSE 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpkqNpJr/arrow_vcf_copy_3621ca14c2a 
+#>   Path: /tmp/Rtmpmnning/arrow_vcf_copy_36707c822900 
 #> 
 #> Genotype storage (Arrow):
-#> FileSystemDataset with 1 Feather file
+#> FileSystemDataset with 1 Arrow IPC file
 #> 9 columns
 #> .row_id: int32
 #> sample: string

@@ -88,16 +88,24 @@ FastStructure (flag = 'F') formatted output is written out.</p>
 <span class="r-in"><span>                 package <span class="op">=</span> <span class="st">"VCFArrow"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">vcf</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_vcf.html">read_vcf</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="set_vcf_groups.html">set_vcf_groups</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">dirname</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> VCF is being read in chunks of 50000 variants</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>write_feather(version = 2) has been superseded by write_ipc_file().</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>`format = "feather"` is deprecated; use `format = "ipc"` instead.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> VCF successfully read into a VCFArrow object</span>
 <span class="r-in"><span><span class="fu">vcf2structure</span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".str"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Accumulating Structure: 9313 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'arrow::read_feather' is deprecated.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Writing Structure file...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Structure file written to <span style="color: #0000BB;">/tmp/RtmpkqNpJr/file362154afebf8.str</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Structure file written to <span style="color: #0000BB;">/tmp/Rtmpmnning/file36706e38b6cf.str</span></span>
 <span class="r-in"><span><span class="fu">vcf2structure</span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".fstr"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>              method <span class="op">=</span> <span class="st">"F"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Accumulating Structure: 9313 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'arrow::read_feather' is deprecated.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Writing Structure file...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Structure file written to <span style="color: #0000BB;">/tmp/RtmpkqNpJr/file36215be94282.fstr</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Structure file written to <span style="color: #0000BB;">/tmp/Rtmpmnning/file3670407e7848.fstr</span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

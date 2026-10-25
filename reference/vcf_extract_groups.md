@@ -61,10 +61,19 @@ f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
                  package = "VCFArrow")
 vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 #> ℹ VCF is being read in chunks of 50000 variants
+#> Warning: write_feather(version = 2) has been superseded by write_ipc_file().
+#> Warning: `format = "feather"` is deprecated; use `format = "ipc"` instead.
 #> ✔ VCF successfully read into a VCFArrow object
 vcf_extract_groups(vcf, groups = c("GS", "BS"))
 #> ℹ Compacting GT: 18 -> 10 samples across 1 chunk
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning: write_feather(version = 2) has been superseded by write_ipc_file().
 #> ℹ Applying invariant filter
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Removed 4217 invariant variants; 5783 retained.
 #> ℹ Removed samples: Pv120, Pv2, Pv31, Pv56, Pv93, Pb2Jp, Pb2Scx, and Pb1Rd
 #> ℹ Variants retained: 5783 | Samples retained: 10
@@ -81,10 +90,10 @@ vcf_extract_groups(vcf, groups = c("GS", "BS"))
 #> Phased genotypes: FALSE 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpkqNpJr/arrow_vcf_samp_36214fe025f2 
+#>   Path: /tmp/Rtmpmnning/arrow_vcf_samp_3670545a2905 
 #> 
 #> Genotype storage (Arrow):
-#> FileSystemDataset with 1 Feather file
+#> FileSystemDataset with 1 Arrow IPC file
 #> 9 columns
 #> .row_id: int32
 #> sample: string
@@ -133,7 +142,14 @@ vcf_extract_groups(vcf, groups = c("GS", "BS"))
 #>   ... 5 more
 vcf_extract_groups(vcf, groups = "OG", keep = FALSE)
 #> ℹ Compacting GT: 18 -> 15 samples across 1 chunk
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning: write_feather(version = 2) has been superseded by write_ipc_file().
 #> ℹ Applying invariant filter
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Removed 1705 invariant variants; 8295 retained.
 #> ℹ Removed samples: Pb2Jp, Pb2Scx, and Pb1Rd
 #> ℹ Variants retained: 8295 | Samples retained: 15
@@ -150,10 +166,10 @@ vcf_extract_groups(vcf, groups = "OG", keep = FALSE)
 #> Phased genotypes: FALSE 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpkqNpJr/arrow_vcf_samp_362172486e4d 
+#>   Path: /tmp/Rtmpmnning/arrow_vcf_samp_36702bc706d 
 #> 
 #> Genotype storage (Arrow):
-#> FileSystemDataset with 1 Feather file
+#> FileSystemDataset with 1 Arrow IPC file
 #> 9 columns
 #> .row_id: int32
 #> sample: string

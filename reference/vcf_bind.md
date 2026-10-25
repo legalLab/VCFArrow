@@ -110,21 +110,53 @@ f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
                  package = "VCFArrow")
 vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 #> ℹ VCF is being read in chunks of 50000 variants
+#> Warning: write_feather(version = 2) has been superseded by write_ipc_file().
+#> Warning: `format = "feather"` is deprecated; use `format = "ipc"` instead.
 #> ✔ VCF successfully read into a VCFArrow object
 ingroup <- vcf_extract_groups(vcf, c("GS", "BS", "WA"))
 #> ℹ Compacting GT: 18 -> 15 samples across 1 chunk
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning: write_feather(version = 2) has been superseded by write_ipc_file().
 #> ℹ Applying invariant filter
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Removed 1705 invariant variants; 8295 retained.
 #> ℹ Removed samples: Pb2Jp, Pb2Scx, and Pb1Rd
 #> ℹ Variants retained: 8295 | Samples retained: 15
 outgroup <- vcf_extract_groups(vcf, "OG")
 #> ℹ Compacting GT: 18 -> 3 samples across 1 chunk
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning: write_feather(version = 2) has been superseded by write_ipc_file().
 #> ℹ Applying invariant filter
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Removed 8904 invariant variants; 1096 retained.
 #> ℹ Removed samples: Pv120, Pv126, Pv13, Pv14, Pv27, Pv28, Pv2, Pv31, Pv56, Pv62, Pv68, Pv73, Pv78, Pv79, and Pv93
 #> ℹ Variants retained: 1096 | Samples retained: 3
 vcf_bind(ingroup, outgroup, mode = "intersect")
 #> ℹ Binding 2 VCFArrow objects (intersect): 421 variants, 18 total samples.
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning: write_feather(version = 2) has been superseded by write_ipc_file().
 #> 
 #> An object of class "VCFArrow"
 #> 
@@ -138,10 +170,10 @@ vcf_bind(ingroup, outgroup, mode = "intersect")
 #> Phased genotypes: FALSE 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpkqNpJr/arrow_vcf_bind_362130129632 
+#>   Path: /tmp/Rtmpmnning/arrow_vcf_bind_3670628987b1 
 #> 
 #> Genotype storage (Arrow):
-#> FileSystemDataset with 1 Feather file
+#> FileSystemDataset with 1 Arrow IPC file
 #> 9 columns
 #> .row_id: int32
 #> sample: string
@@ -189,6 +221,22 @@ vcf_bind(ingroup, outgroup, mode = "intersect")
 vcf_bind(ingroup, outgroup, mode = "union", absent_as = "missing")
 #> ℹ Binding 2 VCFArrow objects (union): 10000 variants, 18 total samples.
 #> ℹ Absent genotypes will be filled as: missing
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning: write_feather(version = 2) has been superseded by write_ipc_file().
 #> 
 #> An object of class "VCFArrow"
 #> 
@@ -202,10 +250,10 @@ vcf_bind(ingroup, outgroup, mode = "union", absent_as = "missing")
 #> Phased genotypes: FALSE 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpkqNpJr/arrow_vcf_bind_362164bc1208 
+#>   Path: /tmp/Rtmpmnning/arrow_vcf_bind_3670102791e6 
 #> 
 #> Genotype storage (Arrow):
-#> FileSystemDataset with 1 Feather file
+#> FileSystemDataset with 1 Arrow IPC file
 #> 9 columns
 #> .row_id: int32
 #> sample: string
@@ -253,9 +301,28 @@ vcf_bind(ingroup, outgroup, mode = "union", absent_as = "missing")
 vcf_bind(vcf_filter_missingness(ingroup, 0.2), outgroup, outgroup = TRUE,
          absent_as = "missing")
 #> ℹ Applying locus missingness filter
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Retained 3005 / 8295 variants (per-variant missingness <= 0.2)
 #> ℹ Binding 2 VCFArrow objects (outgroup): 3005 variants, 18 total samples.
 #> ℹ Absent genotypes will be filled as: missing
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning: write_feather(version = 2) has been superseded by write_ipc_file().
 #> 
 #> An object of class "VCFArrow"
 #> 
@@ -269,10 +336,10 @@ vcf_bind(vcf_filter_missingness(ingroup, 0.2), outgroup, outgroup = TRUE,
 #> Phased genotypes: FALSE 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpkqNpJr/arrow_vcf_bind_3621590eb629 
+#>   Path: /tmp/Rtmpmnning/arrow_vcf_bind_367078443e04 
 #> 
 #> Genotype storage (Arrow):
-#> FileSystemDataset with 1 Feather file
+#> FileSystemDataset with 1 Arrow IPC file
 #> 9 columns
 #> .row_id: int32
 #> sample: string

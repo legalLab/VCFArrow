@@ -46,12 +46,26 @@ f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
                  package = "VCFArrow")
 vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 #> ℹ VCF is being read in chunks of 50000 variants
+#> Warning: write_feather(version = 2) has been superseded by write_ipc_file().
+#> Warning: `format = "feather"` is deprecated; use `format = "ipc"` instead.
 #> ✔ VCF successfully read into a VCFArrow object
 write_vcf(vcf, out_file = tempfile(fileext = ".vcf"))
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ VCF is being written in 1 chunk
-#> ✔ VCFArrow object successfully written to /tmp/RtmpkqNpJr/file3621634b902.vcf
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> ✔ VCFArrow object successfully written to /tmp/Rtmpmnning/file367058807b01.vcf
 write_vcf(vcf, out_file = tempfile(fileext = ".vcf.gz"),
           gzip = TRUE)
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ VCF is being written in 1 chunk
-#> ✔ VCFArrow object successfully written to /tmp/RtmpkqNpJr/file362135097800.vcf.gz
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> ✔ VCFArrow object successfully written to /tmp/Rtmpmnning/file367043314b90.vcf.gz
 ```

@@ -147,21 +147,53 @@ are kept, so bound objects can be bound again.</p>
 <span class="r-in"><span>                 package <span class="op">=</span> <span class="st">"VCFArrow"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">vcf</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_vcf.html">read_vcf</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="set_vcf_groups.html">set_vcf_groups</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">dirname</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> VCF is being read in chunks of 50000 variants</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>write_feather(version = 2) has been superseded by write_ipc_file().</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>`format = "feather"` is deprecated; use `format = "ipc"` instead.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> VCF successfully read into a VCFArrow object</span>
 <span class="r-in"><span><span class="va">ingroup</span> <span class="op">&lt;-</span> <span class="fu"><a href="vcf_extract_groups.html">vcf_extract_groups</a></span><span class="op">(</span><span class="va">vcf</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GS"</span>, <span class="st">"BS"</span>, <span class="st">"WA"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Compacting GT: 18 -&gt; 15 samples across 1 chunk</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'arrow::read_feather' is deprecated.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>write_feather(version = 2) has been superseded by write_ipc_file().</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Applying invariant filter</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'arrow::read_feather' is deprecated.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Removed 1705 invariant variants; 8295 retained.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Removed samples: Pb2Jp, Pb2Scx, and Pb1Rd</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Variants retained: 8295 | Samples retained: 15</span>
 <span class="r-in"><span><span class="va">outgroup</span> <span class="op">&lt;-</span> <span class="fu"><a href="vcf_extract_groups.html">vcf_extract_groups</a></span><span class="op">(</span><span class="va">vcf</span>, <span class="st">"OG"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Compacting GT: 18 -&gt; 3 samples across 1 chunk</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'arrow::read_feather' is deprecated.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>write_feather(version = 2) has been superseded by write_ipc_file().</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Applying invariant filter</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'arrow::read_feather' is deprecated.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Removed 8904 invariant variants; 1096 retained.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Removed samples: Pv120, Pv126, Pv13, Pv14, Pv27, Pv28, Pv2, Pv31, Pv56, Pv62, Pv68, Pv73, Pv78, Pv79, and Pv93</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Variants retained: 1096 | Samples retained: 3</span>
 <span class="r-in"><span><span class="fu">vcf_bind</span><span class="op">(</span><span class="va">ingroup</span>, <span class="va">outgroup</span>, mode <span class="op">=</span> <span class="st">"intersect"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Binding 2 VCFArrow objects (intersect): 421 variants, 18 total samples.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'arrow::read_feather' is deprecated.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'arrow::read_feather' is deprecated.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'arrow::read_feather' is deprecated.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'arrow::read_feather' is deprecated.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'arrow::read_feather' is deprecated.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>write_feather(version = 2) has been superseded by write_ipc_file().</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> An object of class "VCFArrow"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -175,10 +207,10 @@ are kept, so bound objects can be bound again.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Phased genotypes: FALSE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Storage:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Path: /tmp/RtmpkqNpJr/arrow_vcf_bind_362130129632 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Path: /tmp/Rtmpmnning/arrow_vcf_bind_3670628987b1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Genotype storage (Arrow):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> FileSystemDataset with 1 Feather file</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> FileSystemDataset with 1 Arrow IPC file</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 9 columns</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> .row_id: int32</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> sample: string</span>
@@ -226,6 +258,22 @@ are kept, so bound objects can be bound again.</p>
 <span class="r-in"><span><span class="fu">vcf_bind</span><span class="op">(</span><span class="va">ingroup</span>, <span class="va">outgroup</span>, mode <span class="op">=</span> <span class="st">"union"</span>, absent_as <span class="op">=</span> <span class="st">"missing"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Binding 2 VCFArrow objects (union): 10000 variants, 18 total samples.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Absent genotypes will be filled as: missing</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'arrow::read_feather' is deprecated.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'arrow::read_feather' is deprecated.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'arrow::read_feather' is deprecated.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'arrow::read_feather' is deprecated.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'arrow::read_feather' is deprecated.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>write_feather(version = 2) has been superseded by write_ipc_file().</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> An object of class "VCFArrow"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -239,10 +287,10 @@ are kept, so bound objects can be bound again.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Phased genotypes: FALSE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Storage:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Path: /tmp/RtmpkqNpJr/arrow_vcf_bind_362164bc1208 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Path: /tmp/Rtmpmnning/arrow_vcf_bind_3670102791e6 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Genotype storage (Arrow):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> FileSystemDataset with 1 Feather file</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> FileSystemDataset with 1 Arrow IPC file</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 9 columns</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> .row_id: int32</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> sample: string</span>
@@ -290,9 +338,28 @@ are kept, so bound objects can be bound again.</p>
 <span class="r-in"><span><span class="fu">vcf_bind</span><span class="op">(</span><span class="fu"><a href="vcf_filter_missingness.html">vcf_filter_missingness</a></span><span class="op">(</span><span class="va">ingroup</span>, <span class="fl">0.2</span><span class="op">)</span>, <span class="va">outgroup</span>, outgroup <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>         absent_as <span class="op">=</span> <span class="st">"missing"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Applying locus missingness filter</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'arrow::read_feather' is deprecated.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Retained 3005 / 8295 variants (per-variant missingness &lt;= 0.2)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Binding 2 VCFArrow objects (outgroup): 3005 variants, 18 total samples.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Absent genotypes will be filled as: missing</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'arrow::read_feather' is deprecated.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'arrow::read_feather' is deprecated.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'arrow::read_feather' is deprecated.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'arrow::read_feather' is deprecated.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'arrow::read_feather' is deprecated.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>write_feather(version = 2) has been superseded by write_ipc_file().</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> An object of class "VCFArrow"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -306,10 +373,10 @@ are kept, so bound objects can be bound again.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Phased genotypes: FALSE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Storage:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Path: /tmp/RtmpkqNpJr/arrow_vcf_bind_3621590eb629 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Path: /tmp/Rtmpmnning/arrow_vcf_bind_367078443e04 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Genotype storage (Arrow):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> FileSystemDataset with 1 Feather file</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> FileSystemDataset with 1 Arrow IPC file</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 9 columns</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> .row_id: int32</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> sample: string</span>

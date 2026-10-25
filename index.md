@@ -13,8 +13,9 @@ and functions, which have been parallelized when possible, and memory
 efficient, implementing the lazy-loaded [Apache
 Arrow](https://arrow.apache.org/) data scheme. This package is,
 therefore, capable of processing VCFs comprising tens of millions of
-SNVs and hundreds of individuals in a matter of seconds to minutes with
-minimal RAM overhead.
+SNVs and hundreds of individuals in a matter of [seconds to minutes with
+minimal RAM
+overhead](https://github.com/legalLab/VCFArrow/blob/main/comparison/tool_comparison.md).
 
 # How to use the functions of this package
 

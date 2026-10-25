@@ -46,6 +46,8 @@ f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
 vcf <- set_vcf_groups(read_vcf(f), data_path = dirname(f),
                       strt = "strata")
 #> ℹ VCF is being read in chunks of 50000 variants
+#> Warning: write_feather(version = 2) has been superseded by write_ipc_file().
+#> Warning: `format = "feather"` is deprecated; use `format = "ipc"` instead.
 #> ✔ VCF successfully read into a VCFArrow object
 table(vcf@groups)
 #> 

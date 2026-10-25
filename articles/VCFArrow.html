@@ -76,8 +76,8 @@ It has been designed to be fast, implementing shared, C++ backed APIs
 and functions, which have been parallelized when possible, and memory
 efficient, implementing the lazy-loaded <a href="https://arrow.apache.org/" class="external-link">Apache Arrow</a> data scheme. This
 package is, therefore, capable of processing VCFs comprising tens of
-millions of SNVs and hundreds of individuals in a matter of seconds to
-minutes with minimal RAM overhead.</p>
+millions of SNVs and hundreds of individuals in a matter of <a href="https://github.com/legalLab/VCFArrow/blob/main/comparison/tool_comparison.md" class="external-link">seconds
+to minutes with minimal RAM overhead</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="how-to-use-the-functions-of-this-package">How to use the functions of this package<a class="anchor" aria-label="anchor" href="#how-to-use-the-functions-of-this-package"></a>
@@ -152,6 +152,11 @@ vaillantii</em> Photo: Albertina Lima</div>
 <span><span class="co"># load vcf and assign individuals to groups based on 'strata'</span></span>
 <span><span class="va">vcf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_vcf.html">read_vcf</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="st">".vcf.gz"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/set_vcf_groups.html">set_vcf_groups</a></span><span class="op">(</span><span class="va">data_path</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in write_ipc_impl(x = x, sink = sink, version = version, chunk_size =</span></span>
+<span><span class="co">#&gt; chunk_size, : write_feather(version = 2) has been superseded by</span></span>
+<span><span class="co">#&gt; write_ipc_file().</span></span>
+<span><span class="co">#&gt; Warning in FileFormat$create(match.arg(format), partitioning = partitioning, :</span></span>
+<span><span class="co">#&gt; `format = "feather"` is deprecated; use `format = "ipc"` instead.</span></span>
 <span></span>
 <span><span class="co"># visualize the VCFArrow object</span></span>
 <span><span class="va">vcf</span></span>
@@ -168,10 +173,10 @@ vaillantii</em> Photo: Albertina Lima</div>
 <span><span class="co">#&gt; Phased genotypes: FALSE </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Storage:</span></span>
-<span><span class="co">#&gt;   Path: /tmp/RtmpIFO8G0/arrow_vcf_39c24461a76c </span></span>
+<span><span class="co">#&gt;   Path: /tmp/RtmpwH1gTm/arrow_vcf_3a12190a9d8c </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Genotype storage (Arrow):</span></span>
-<span><span class="co">#&gt; FileSystemDataset with 1 Feather file</span></span>
+<span><span class="co">#&gt; FileSystemDataset with 1 Arrow IPC file</span></span>
 <span><span class="co">#&gt; 9 columns</span></span>
 <span><span class="co">#&gt; .row_id: int32</span></span>
 <span><span class="co">#&gt; sample: string</span></span>
@@ -253,9 +258,15 @@ details.</p>
 <span></span>
 <span><span class="co"># output a table and histogram of missing data</span></span>
 <span><span class="fu"><a href="../reference/assess_vcf_missing_data.html">assess_vcf_missing_data</a></span><span class="op">(</span><span class="va">vcf</span>, <span class="va">res_path</span>, <span class="va">species</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
 <span></span>
 <span><span class="co"># output a violin plot of read depth/coverage</span></span>
-<span><span class="fu"><a href="../reference/assess_vcf_coverage.html">assess_vcf_coverage</a></span><span class="op">(</span><span class="va">vcf</span>, <span class="va">res_path</span>, <span class="va">species</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/assess_vcf_coverage.html">assess_vcf_coverage</a></span><span class="op">(</span><span class="va">vcf</span>, <span class="va">res_path</span>, <span class="va">species</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="basic-stats-for-individuals-in-vcf">Basic stats for individuals in VCF<a class="anchor" aria-label="anchor" href="#basic-stats-for-individuals-in-vcf"></a>
@@ -280,7 +291,13 @@ Pi can be included or excluded based on the ‘theta’ flag.</p>
 <span></span>
 <span><span class="co"># output a table of sample and group statistics</span></span>
 <span><span class="fu"><a href="../reference/vcf_stats.html">vcf_stats</a></span><span class="op">(</span><span class="va">vcf</span>, <span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span><span class="op">)</span>, theta <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Computing per-sample stats: 10000 variants x 18 samples, reading 1 chunk directly</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Computing per-sample stats: 10000 variants x 18 samples, reading 1 chunk directly</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="filtering-subsetting-merging-and-otherwise-wrangling-vcf-files">Filtering, subsetting, merging and otherwise wrangling VCF
@@ -316,7 +333,16 @@ specified, it is randomly generated.</p>
 <span><span class="va">indivs1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Pv14"</span>, <span class="st">"Pv27"</span>, <span class="st">"Pv28"</span>, <span class="st">"Pv78"</span>, <span class="st">"Pv126"</span><span class="op">)</span></span>
 <span><span class="va">vcf1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/vcf_extract_samples.html">vcf_extract_samples</a></span><span class="op">(</span><span class="va">vcf</span>, <span class="va">indivs1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Compacting GT: 18 -&gt; 5 samples across 1 chunk</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(task$fpath, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in write_ipc_impl(x = x, sink = sink, version = version, chunk_size =</span></span>
+<span><span class="co">#&gt; chunk_size, : write_feather(version = 2) has been superseded by</span></span>
+<span><span class="co">#&gt; write_ipc_file().</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying invariant filter</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Removed 7220 invariant variants; 2780 retained.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Removed samples: Pv120, Pv13, Pv2, Pv31, Pv56, Pv62, Pv68, Pv73, Pv79, Pv93, Pb2Jp, Pb2Scx, and Pb1Rd</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Variants retained: 2780 | Samples retained: 5</span></span>
@@ -329,7 +355,14 @@ specified, it is randomly generated.</p>
 <span><span class="va">groups1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GS"</span>, <span class="st">"BS"</span>, <span class="st">"WA"</span><span class="op">)</span></span>
 <span><span class="va">vcf1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/vcf_extract_groups.html">vcf_extract_groups</a></span><span class="op">(</span><span class="va">vcf</span>, <span class="va">groups1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Compacting GT: 18 -&gt; 15 samples across 1 chunk</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(task$fpath, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(task$fpath, as_data_frame = FALSE): write_feather(version = 2) has been superseded by write_ipc_file().</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying invariant filter</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Removed 1705 invariant variants; 8295 retained.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Removed samples: Pb2Jp, Pb2Scx, and Pb1Rd</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Variants retained: 8295 | Samples retained: 15</span></span>
@@ -403,12 +436,24 @@ work with linked SNVs.</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying biallelic filter</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retained 9313 / 9313 variants (biallelic SNVs)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying MAF filter</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retained 9069 / 9313 variants (MAF &gt;= 0.03)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying read coverage filter</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retained 5171 / 9069 variants (polymorphic with DP &gt;= 10)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying locus missingness filter</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retained 1734 / 5171 variants (per-variant missingness &lt;= 0.2)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying sample missingness filter</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Variants retained: 1734 | Samples retained: 18</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying unlinked SNV filter</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retained 1734 / 1734 variants (unlinked SNVs)</span></span>
@@ -432,12 +477,24 @@ work with linked SNVs.</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying biallelic filter</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retained 9313 / 9313 variants (biallelic SNVs)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying MAF filter</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retained 9069 / 9313 variants (MAF &gt;= 0.03)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying read coverage filter</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retained 5171 / 9069 variants (polymorphic with DP &gt;= 10)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying locus missingness filter</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retained 1734 / 5171 variants (per-variant missingness &lt;= 0.2)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying sample missingness filter</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Variants retained: 1734 | Samples retained: 18</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying linked SNV filter</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retained 0 / 1734 variants (linked SNVs)</span></span>
@@ -477,6 +534,12 @@ first, for example by splitting multi-allelic sites with
 <span><span class="va">indivs1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Pb2Jp"</span>, <span class="st">"Pb2Scx"</span>, <span class="st">"Pb1Rd"</span><span class="op">)</span> <span class="co"># the outgroup</span></span>
 <span><span class="va">vcf_ingrp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/vcf_extract_samples.html">vcf_extract_samples</a></span><span class="op">(</span><span class="va">vcf</span>, <span class="va">indivs1</span>, keep <span class="op">=</span> <span class="cn">FALSE</span>, f_invar <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Compacting GT: 18 -&gt; 15 samples across 1 chunk</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(task$fpath, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in write_ipc_impl(x = x, sink = sink, version = version, chunk_size =</span></span>
+<span><span class="co">#&gt; chunk_size, : write_feather(version = 2) has been superseded by</span></span>
+<span><span class="co">#&gt; write_ipc_file().</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Removed samples: Pb2Jp, Pb2Scx, and Pb1Rd</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Variants retained: 10000 | Samples retained: 15</span></span>
 <span><span class="co"># see how many variants remained</span></span>
@@ -484,6 +547,10 @@ first, for example by splitting multi-allelic sites with
 <span><span class="co">#&gt; [1] 10000</span></span>
 <span><span class="va">vcf_outgrp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/vcf_extract_samples.html">vcf_extract_samples</a></span><span class="op">(</span><span class="va">vcf</span>, <span class="va">indivs1</span>, f_invar <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Compacting GT: 18 -&gt; 3 samples across 1 chunk</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(task$fpath, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(task$fpath, as_data_frame = FALSE): write_feather(version = 2) has been superseded by write_ipc_file().</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Removed samples: Pv120, Pv126, Pv13, Pv14, Pv27, Pv28, Pv2, Pv31, Pv56, Pv62, Pv68, Pv73, Pv78, Pv79, and Pv93</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Variants retained: 10000 | Samples retained: 3</span></span>
 <span><span class="co"># see how many variants remained</span></span>
@@ -493,6 +560,24 @@ first, for example by splitting multi-allelic sites with
 <span><span class="co"># bind vcf_outgrp and vcf_ingrp (same variants)</span></span>
 <span><span class="va">vcf1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/vcf_bind.html">vcf_bind</a></span><span class="op">(</span><span class="va">vcf_ingrp</span>, <span class="va">vcf_outgrp</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Binding 2 VCFArrow objects (intersect): 10000 variants, 18 total samples.</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(f, col_select = ".row_id", as_data_frame = FALSE): 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(f, col_select = ".row_id", as_data_frame = FALSE): 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(srcs[[1L]]$files[1L], col_select = .bind_gt_cols, : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(f, col_select = .bind_gt_cols, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(f, col_select = .bind_gt_cols, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in write_ipc_impl(x = x, sink = sink, version = version, chunk_size =</span></span>
+<span><span class="co">#&gt; chunk_size, : write_feather(version = 2) has been superseded by</span></span>
+<span><span class="co">#&gt; write_ipc_file().</span></span>
 <span></span>
 <span><span class="co"># see how many variants remained</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">vcf1</span><span class="op">@</span><span class="va">variants</span><span class="op">)</span></span>
@@ -506,6 +591,12 @@ first, for example by splitting multi-allelic sites with
 <span><span class="va">groups1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GS"</span>, <span class="st">"BS"</span>, <span class="st">"WA"</span><span class="op">)</span> <span class="co"># the ingroup</span></span>
 <span><span class="va">vcf_ingrp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/vcf_extract_groups.html">vcf_extract_groups</a></span><span class="op">(</span><span class="va">vcf</span>, <span class="va">groups1</span>, f_invar <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Compacting GT: 18 -&gt; 15 samples across 1 chunk</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(task$fpath, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in write_ipc_impl(x = x, sink = sink, version = version, chunk_size =</span></span>
+<span><span class="co">#&gt; chunk_size, : write_feather(version = 2) has been superseded by</span></span>
+<span><span class="co">#&gt; write_ipc_file().</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Removed samples: Pb2Jp, Pb2Scx, and Pb1Rd</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Variants retained: 10000 | Samples retained: 15</span></span>
 <span><span class="co"># see how many variants remained</span></span>
@@ -513,6 +604,10 @@ first, for example by splitting multi-allelic sites with
 <span><span class="co">#&gt; [1] 10000</span></span>
 <span><span class="va">vcf_outgrp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/vcf_extract_groups.html">vcf_extract_groups</a></span><span class="op">(</span><span class="va">vcf</span>, <span class="va">groups1</span>, keep <span class="op">=</span> <span class="cn">FALSE</span>, f_invar <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Compacting GT: 18 -&gt; 3 samples across 1 chunk</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(task$fpath, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(task$fpath, as_data_frame = FALSE): write_feather(version = 2) has been superseded by write_ipc_file().</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Removed samples: Pv120, Pv126, Pv13, Pv14, Pv27, Pv28, Pv2, Pv31, Pv56, Pv62, Pv68, Pv73, Pv78, Pv79, and Pv93</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Variants retained: 10000 | Samples retained: 3</span></span>
 <span><span class="co"># see how many variants remained</span></span>
@@ -522,6 +617,24 @@ first, for example by splitting multi-allelic sites with
 <span><span class="co"># bind vcf_outgrp and vcf_ingrp (same variants)</span></span>
 <span><span class="va">vcf1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/vcf_bind.html">vcf_bind</a></span><span class="op">(</span><span class="va">vcf_ingrp</span>, <span class="va">vcf_outgrp</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Binding 2 VCFArrow objects (intersect): 10000 variants, 18 total samples.</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(f, col_select = ".row_id", as_data_frame = FALSE): 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(f, col_select = ".row_id", as_data_frame = FALSE): 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(srcs[[1L]]$files[1L], col_select = .bind_gt_cols, : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(f, col_select = .bind_gt_cols, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(f, col_select = .bind_gt_cols, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in write_ipc_impl(x = x, sink = sink, version = version, chunk_size =</span></span>
+<span><span class="co">#&gt; chunk_size, : write_feather(version = 2) has been superseded by</span></span>
+<span><span class="co">#&gt; write_ipc_file().</span></span>
 <span></span>
 <span><span class="co"># see how many variants remained</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">vcf1</span><span class="op">@</span><span class="va">variants</span><span class="op">)</span></span>
@@ -536,7 +649,16 @@ intersection<a class="anchor" aria-label="anchor" href="#extracting-groups---rem
 <span><span class="va">groups1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GS"</span>, <span class="st">"BS"</span>, <span class="st">"WA"</span><span class="op">)</span> <span class="co"># the ingroup</span></span>
 <span><span class="va">vcf_ingrp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/vcf_extract_groups.html">vcf_extract_groups</a></span><span class="op">(</span><span class="va">vcf</span>, <span class="va">groups1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Compacting GT: 18 -&gt; 15 samples across 1 chunk</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(task$fpath, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in write_ipc_impl(x = x, sink = sink, version = version, chunk_size =</span></span>
+<span><span class="co">#&gt; chunk_size, : write_feather(version = 2) has been superseded by</span></span>
+<span><span class="co">#&gt; write_ipc_file().</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying invariant filter</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Removed 1705 invariant variants; 8295 retained.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Removed samples: Pb2Jp, Pb2Scx, and Pb1Rd</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Variants retained: 8295 | Samples retained: 15</span></span>
@@ -545,7 +667,14 @@ intersection<a class="anchor" aria-label="anchor" href="#extracting-groups---rem
 <span><span class="co">#&gt; [1] 8295</span></span>
 <span><span class="va">vcf_outgrp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/vcf_extract_groups.html">vcf_extract_groups</a></span><span class="op">(</span><span class="va">vcf</span>, <span class="va">groups1</span>, keep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Compacting GT: 18 -&gt; 3 samples across 1 chunk</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(task$fpath, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(task$fpath, as_data_frame = FALSE): write_feather(version = 2) has been superseded by write_ipc_file().</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying invariant filter</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Removed 8904 invariant variants; 1096 retained.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Removed samples: Pv120, Pv126, Pv13, Pv14, Pv27, Pv28, Pv2, Pv31, Pv56, Pv62, Pv68, Pv73, Pv78, Pv79, and Pv93</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Variants retained: 1096 | Samples retained: 3</span></span>
@@ -556,6 +685,24 @@ intersection<a class="anchor" aria-label="anchor" href="#extracting-groups---rem
 <span><span class="co"># bind vcf_outgrp and vcf_ingrp (intersection - variable SNVs in all objects)</span></span>
 <span><span class="va">vcf1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/vcf_bind.html">vcf_bind</a></span><span class="op">(</span><span class="va">vcf_ingrp</span>, <span class="va">vcf_outgrp</span>, mode <span class="op">=</span> <span class="st">"intersect"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Binding 2 VCFArrow objects (intersect): 421 variants, 18 total samples.</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(f, col_select = ".row_id", as_data_frame = FALSE): 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(f, col_select = ".row_id", as_data_frame = FALSE): 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(srcs[[1L]]$files[1L], col_select = .bind_gt_cols, : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(f, col_select = .bind_gt_cols, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(f, col_select = .bind_gt_cols, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in write_ipc_impl(x = x, sink = sink, version = version, chunk_size =</span></span>
+<span><span class="co">#&gt; chunk_size, : write_feather(version = 2) has been superseded by</span></span>
+<span><span class="co">#&gt; write_ipc_file().</span></span>
 <span></span>
 <span><span class="co"># see how many variants remained</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">vcf1</span><span class="op">@</span><span class="va">variants</span><span class="op">)</span></span>
@@ -570,7 +717,16 @@ missing genotypes<a class="anchor" aria-label="anchor" href="#extracting-groups-
 <span><span class="va">groups1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GS"</span>, <span class="st">"BS"</span>, <span class="st">"WA"</span><span class="op">)</span> <span class="co"># the ingroup</span></span>
 <span><span class="va">vcf_ingrp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/vcf_extract_groups.html">vcf_extract_groups</a></span><span class="op">(</span><span class="va">vcf</span>, <span class="va">groups1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Compacting GT: 18 -&gt; 15 samples across 1 chunk</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(task$fpath, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in write_ipc_impl(x = x, sink = sink, version = version, chunk_size =</span></span>
+<span><span class="co">#&gt; chunk_size, : write_feather(version = 2) has been superseded by</span></span>
+<span><span class="co">#&gt; write_ipc_file().</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying invariant filter</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Removed 1705 invariant variants; 8295 retained.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Removed samples: Pb2Jp, Pb2Scx, and Pb1Rd</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Variants retained: 8295 | Samples retained: 15</span></span>
@@ -579,7 +735,14 @@ missing genotypes<a class="anchor" aria-label="anchor" href="#extracting-groups-
 <span><span class="co">#&gt; [1] 8295</span></span>
 <span><span class="va">vcf_outgrp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/vcf_extract_groups.html">vcf_extract_groups</a></span><span class="op">(</span><span class="va">vcf</span>, <span class="va">groups1</span>, keep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Compacting GT: 18 -&gt; 3 samples across 1 chunk</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(task$fpath, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(task$fpath, as_data_frame = FALSE): write_feather(version = 2) has been superseded by write_ipc_file().</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying invariant filter</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Removed 8904 invariant variants; 1096 retained.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Removed samples: Pv120, Pv126, Pv13, Pv14, Pv27, Pv28, Pv2, Pv31, Pv56, Pv62, Pv68, Pv73, Pv78, Pv79, and Pv93</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Variants retained: 1096 | Samples retained: 3</span></span>
@@ -596,6 +759,24 @@ missing genotypes<a class="anchor" aria-label="anchor" href="#extracting-groups-
 <span><span class="co">#&gt;   reference).</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Binding 2 VCFArrow objects (union): 10000 variants, 18 total samples.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Absent genotypes will be filled as: missing</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(f, col_select = ".row_id", as_data_frame = FALSE): 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(f, col_select = ".row_id", as_data_frame = FALSE): 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(srcs[[1L]]$files[1L], col_select = .bind_gt_cols, : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(f, col_select = .bind_gt_cols, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(f, col_select = .bind_gt_cols, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in write_ipc_impl(x = x, sink = sink, version = version, chunk_size =</span></span>
+<span><span class="co">#&gt; chunk_size, : write_feather(version = 2) has been superseded by</span></span>
+<span><span class="co">#&gt; write_ipc_file().</span></span>
 <span></span>
 <span><span class="co"># see how many variants remained</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">vcf1</span><span class="op">@</span><span class="va">variants</span><span class="op">)</span></span>
@@ -609,7 +790,16 @@ recover genotypes<a class="anchor" aria-label="anchor" href="#extracting-groups-
 <code class="sourceCode R"><span><span class="va">groups1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GS"</span>, <span class="st">"BS"</span>, <span class="st">"WA"</span><span class="op">)</span> <span class="co"># the ingroup</span></span>
 <span><span class="va">vcf_ingrp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/vcf_extract_groups.html">vcf_extract_groups</a></span><span class="op">(</span><span class="va">vcf</span>, <span class="va">groups1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Compacting GT: 18 -&gt; 15 samples across 1 chunk</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(task$fpath, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in write_ipc_impl(x = x, sink = sink, version = version, chunk_size =</span></span>
+<span><span class="co">#&gt; chunk_size, : write_feather(version = 2) has been superseded by</span></span>
+<span><span class="co">#&gt; write_ipc_file().</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying invariant filter</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Removed 1705 invariant variants; 8295 retained.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Removed samples: Pb2Jp, Pb2Scx, and Pb1Rd</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Variants retained: 8295 | Samples retained: 15</span></span>
@@ -618,7 +808,14 @@ recover genotypes<a class="anchor" aria-label="anchor" href="#extracting-groups-
 <span><span class="co">#&gt; [1] 8295</span></span>
 <span><span class="va">vcf_outgrp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/vcf_extract_groups.html">vcf_extract_groups</a></span><span class="op">(</span><span class="va">vcf</span>, <span class="va">groups1</span>, keep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Compacting GT: 18 -&gt; 3 samples across 1 chunk</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(task$fpath, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(task$fpath, as_data_frame = FALSE): write_feather(version = 2) has been superseded by write_ipc_file().</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying invariant filter</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Removed 8904 invariant variants; 1096 retained.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Removed samples: Pv120, Pv126, Pv13, Pv14, Pv27, Pv28, Pv2, Pv31, Pv56, Pv62, Pv68, Pv73, Pv78, Pv79, and Pv93</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Variants retained: 1096 | Samples retained: 3</span></span>
@@ -630,6 +827,24 @@ recover genotypes<a class="anchor" aria-label="anchor" href="#extracting-groups-
 <span><span class="va">vcf1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/vcf_bind.html">vcf_bind</a></span><span class="op">(</span><span class="va">vcf_ingrp</span>, <span class="va">vcf_outgrp</span>, mode <span class="op">=</span> <span class="st">"union"</span>, absent_as <span class="op">=</span> <span class="st">"hom_ref"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Binding 2 VCFArrow objects (union): 10000 variants, 18 total samples.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Absent genotypes will be filled as: hom_ref</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(f, col_select = ".row_id", as_data_frame = FALSE): 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(f, col_select = ".row_id", as_data_frame = FALSE): 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(srcs[[1L]]$files[1L], col_select = .bind_gt_cols, : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(f, col_select = .bind_gt_cols, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(f, col_select = .bind_gt_cols, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in write_ipc_impl(x = x, sink = sink, version = version, chunk_size =</span></span>
+<span><span class="co">#&gt; chunk_size, : write_feather(version = 2) has been superseded by</span></span>
+<span><span class="co">#&gt; write_ipc_file().</span></span>
 <span></span>
 <span><span class="co"># see how many variants remained</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">vcf1</span><span class="op">@</span><span class="va">variants</span><span class="op">)</span></span>
@@ -678,7 +893,16 @@ outgroup (see above).</p>
 <span><span class="va">groups1</span> <span class="op">&lt;-</span> <span class="st">"OG"</span></span>
 <span><span class="va">vcf_outgrp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/vcf_extract_groups.html">vcf_extract_groups</a></span><span class="op">(</span><span class="va">vcf</span>, <span class="va">groups1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Compacting GT: 18 -&gt; 3 samples across 1 chunk</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(task$fpath, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in write_ipc_impl(x = x, sink = sink, version = version, chunk_size =</span></span>
+<span><span class="co">#&gt; chunk_size, : write_feather(version = 2) has been superseded by</span></span>
+<span><span class="co">#&gt; write_ipc_file().</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying invariant filter</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Removed 8904 invariant variants; 1096 retained.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Removed samples: Pv120, Pv126, Pv13, Pv14, Pv27, Pv28, Pv2, Pv31, Pv56, Pv62, Pv68, Pv73, Pv78, Pv79, and Pv93</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Variants retained: 1096 | Samples retained: 3</span></span>
@@ -693,7 +917,14 @@ outgroup (see above).</p>
 <span>  <span class="fu"><a href="../reference/vcf_filter_oneSNV.html">vcf_filter_oneSNV</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/vcf_bind.html">vcf_bind</a></span><span class="op">(</span><span class="va">vcf_outgrp</span>, outgroup <span class="op">=</span> <span class="cn">TRUE</span>, absent_as <span class="op">=</span> <span class="st">"missing"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Compacting GT: 18 -&gt; 15 samples across 1 chunk</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(task$fpath, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(task$fpath, as_data_frame = FALSE): write_feather(version = 2) has been superseded by write_ipc_file().</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying invariant filter</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Removed 1705 invariant variants; 8295 retained.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Removed samples: Pb2Jp, Pb2Scx, and Pb1Rd</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Variants retained: 8295 | Samples retained: 15</span></span>
@@ -702,15 +933,42 @@ outgroup (see above).</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying biallelic filter</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retained 7706 / 7706 variants (biallelic SNVs)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying read coverage filter</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retained 4483 / 7706 variants (polymorphic with DP &gt;= 10)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying locus missingness filter</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retained 2409 / 4483 variants (per-variant missingness &lt;= 0.2)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying sample missingness filter</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Variants retained: 2409 | Samples retained: 15</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying unlinked SNV filter</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retained 2409 / 2409 variants (unlinked SNVs)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Binding 2 VCFArrow objects (outgroup): 2409 variants, 18 total samples.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Absent genotypes will be filled as: missing</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(f, col_select = ".row_id", as_data_frame = FALSE): 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(f, col_select = ".row_id", as_data_frame = FALSE): 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(srcs[[1L]]$files[1L], col_select = .bind_gt_cols, : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(f, col_select = .bind_gt_cols, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(f, col_select = .bind_gt_cols, as_data_frame = FALSE): 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in write_ipc_impl(x = x, sink = sink, version = version, chunk_size =</span></span>
+<span><span class="co">#&gt; chunk_size, : write_feather(version = 2) has been superseded by</span></span>
+<span><span class="co">#&gt; write_ipc_file().</span></span>
 <span></span>
 <span><span class="co"># see how many variants remained</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">vcf1</span><span class="op">@</span><span class="va">variants</span><span class="op">)</span></span>
@@ -721,6 +979,9 @@ outgroup (see above).</p>
 <span></span>
 <span><span class="co"># output a table and histogram of missing data</span></span>
 <span><span class="fu"><a href="../reference/assess_vcf_missing_data.html">assess_vcf_missing_data</a></span><span class="op">(</span><span class="va">vcf1</span>, <span class="va">res_path</span>, <span class="va">species</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
 <span></span>
 <span><span class="co"># apply the same filter to the full dataset (ingroup + outgroup)</span></span>
 <span><span class="va">vcf1</span> <span class="op">&lt;-</span> <span class="va">vcf</span> <span class="op">|&gt;</span></span>
@@ -735,10 +996,19 @@ outgroup (see above).</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying biallelic filter</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retained 9313 / 9313 variants (biallelic SNVs)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying read coverage filter</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retained 5388 / 9313 variants (polymorphic with DP &gt;= 10)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying locus missingness filter</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retained 1951 / 5388 variants (per-variant missingness &lt;= 0.2)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying sample missingness filter</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Variants retained: 1951 | Samples retained: 18</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Applying unlinked SNV filter</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retained 1951 / 1951 variants (unlinked SNVs)</span></span>
@@ -751,7 +1021,10 @@ outgroup (see above).</p>
 <span><span class="va">fltr</span> <span class="op">&lt;-</span> <span class="st">"_all_filter"</span></span>
 <span></span>
 <span><span class="co"># output a table and histogram of missing data</span></span>
-<span><span class="fu"><a href="../reference/assess_vcf_missing_data.html">assess_vcf_missing_data</a></span><span class="op">(</span><span class="va">vcf1</span>, <span class="va">res_path</span>, <span class="va">species</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/assess_vcf_missing_data.html">assess_vcf_missing_data</a></span><span class="op">(</span><span class="va">vcf1</span>, <span class="va">res_path</span>, <span class="va">species</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level3">
@@ -771,8 +1044,14 @@ later.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># write the VCFArrow object as a VCF (and compress it using gzip)</span></span>
 <span><span class="fu"><a href="../reference/write_vcf.html">write_vcf</a></span><span class="op">(</span><span class="va">vcf1</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="st">"_filtered.vcf.gz"</span><span class="op">)</span><span class="op">)</span>, gzip <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(f, col_select = ".row_id", as_data_frame = FALSE): 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> VCF is being written in 1 chunk</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> VCFArrow object successfully written to <span style="color: #0000BB;">/tmp/RtmpIFO8G0/vaillantii_discosnp_sub_filtered.vcf.gz</span></span></span></code></pre></div>
+<span><span class="co">#&gt; Warning in arrow::read_feather(task$fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> VCFArrow object successfully written to <span style="color: #0000BB;">/tmp/RtmpwH1gTm/vaillantii_discosnp_sub_filtered.vcf.gz</span></span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="converting-a-vcf-file-to-other-population-genetic-and-phylogenetic-formats">Converting a VCF file to other population genetic and phylogenetic
@@ -804,107 +1083,170 @@ importing the genlight object. <code><a href="../reference/vcf2genlight.html">vc
 <span><span class="co"># migrate-n https://peterbeerli.com/migrate-html5/</span></span>
 <span><span class="fu"><a href="../reference/vcf2migrate.html">vcf2migrate</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'_migrate.txt'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Accumulating Migrate-N (S): 1734 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing Migrate-N (S) file...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Migrate-N file written to <span style="color: #0000BB;">/tmp/RtmpIFO8G0/vaillantii_discosnp_sub_migrate.txt</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Migrate-N file written to <span style="color: #0000BB;">/tmp/RtmpwH1gTm/vaillantii_discosnp_sub_migrate.txt</span></span></span>
 <span><span class="co"># arlequin http://cmpg.unibe.ch/software/arlequin35/</span></span>
 <span><span class="fu"><a href="../reference/vcf2arlequin.html">vcf2arlequin</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'.arp'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Accumulating Arlequin: 1734 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing Arlequin file...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Arlequin file written to <span style="color: #0000BB;">/tmp/RtmpIFO8G0/vaillantii_discosnp_sub.arp</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Arlequin file written to <span style="color: #0000BB;">/tmp/RtmpwH1gTm/vaillantii_discosnp_sub.arp</span></span></span>
 <span><span class="co"># structure https://web.stanford.edu/group/pritchardlab/structure.html</span></span>
 <span><span class="fu"><a href="../reference/vcf2structure.html">vcf2structure</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'.str'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Accumulating Structure: 1734 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing Structure file...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Structure file written to <span style="color: #0000BB;">/tmp/RtmpIFO8G0/vaillantii_discosnp_sub.str</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Structure file written to <span style="color: #0000BB;">/tmp/RtmpwH1gTm/vaillantii_discosnp_sub.str</span></span></span>
 <span><span class="co"># faststructure http://rajanil.github.io/fastStructure/</span></span>
 <span><span class="fu"><a href="../reference/vcf2structure.html">vcf2structure</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'.fstr'</span><span class="op">)</span><span class="op">)</span>, method <span class="op">=</span> <span class="st">"F"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Accumulating Structure: 1734 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing Structure file...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Structure file written to <span style="color: #0000BB;">/tmp/RtmpIFO8G0/vaillantii_discosnp_sub.fstr</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Structure file written to <span style="color: #0000BB;">/tmp/RtmpwH1gTm/vaillantii_discosnp_sub.fstr</span></span></span>
 <span><span class="co"># sNMF http://membres-timc.imag.fr/Olivier.Francois/snmf/index.htm</span></span>
 <span><span class="fu"><a href="../reference/vcf2snmf.html">vcf2snmf</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'.geno'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Formatting sNMF: 1734 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing sNMF file...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> sNMF file written to <span style="color: #0000BB;">/tmp/RtmpIFO8G0/vaillantii_discosnp_sub.geno</span></span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> sNMF file written to <span style="color: #0000BB;">/tmp/RtmpwH1gTm/vaillantii_discosnp_sub.geno</span></span></span>
 <span><span class="co"># Admixture https://dalexander.github.io/admixture/index.html</span></span>
 <span><span class="co"># takes as input binary PLINK (.bed), ordinary PLINK (.ped), or EIGENSTRAT (.geno) formatted files</span></span>
 <span><span class="co"># so a thin wrapper around vcf2plink_bed() plus optional generation of known-ancestry reference populations</span></span>
 <span><span class="fu"><a href="../reference/vcf2admixture.html">vcf2admixture</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'_admixture'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Building PLINK: 1734 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing PLINK files...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Chromosome names were recoded as integers for PLINK compatibility; mapping written to <span style="color: #0000BB;">/tmp/RtmpIFO8G0/vaillantii_discosnp_sub_admixture.chrommap</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> PLINK binary fileset written to <span style="color: #0000BB;">/tmp/RtmpIFO8G0/vaillantii_discosnp_sub_admixture.bed</span>, <span style="color: #0000BB;">/tmp/RtmpIFO8G0/vaillantii_discosnp_sub_admixture.bim</span>, <span style="color: #0000BB;">/tmp/RtmpIFO8G0/vaillantii_discosnp_sub_admixture.fam</span></span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Chromosome names were recoded as integers for PLINK compatibility; mapping written to <span style="color: #0000BB;">/tmp/RtmpwH1gTm/vaillantii_discosnp_sub_admixture.chrommap</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> PLINK binary fileset written to <span style="color: #0000BB;">/tmp/RtmpwH1gTm/vaillantii_discosnp_sub_admixture.bed</span>, <span style="color: #0000BB;">/tmp/RtmpwH1gTm/vaillantii_discosnp_sub_admixture.bim</span>, <span style="color: #0000BB;">/tmp/RtmpwH1gTm/vaillantii_discosnp_sub_admixture.fam</span></span></span>
 <span><span class="co"># PLINK .bed https://www.cog-genomics.org/plink/1.9/formats#bed</span></span>
 <span><span class="fu"><a href="../reference/vcf2plink_bed.html">vcf2plink_bed</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'_plink'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Building PLINK: 1734 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing PLINK files...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Chromosome names were recoded as integers for PLINK compatibility; mapping written to <span style="color: #0000BB;">/tmp/RtmpIFO8G0/vaillantii_discosnp_sub_plink.chrommap</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> PLINK binary fileset written to <span style="color: #0000BB;">/tmp/RtmpIFO8G0/vaillantii_discosnp_sub_plink.bed</span>, <span style="color: #0000BB;">/tmp/RtmpIFO8G0/vaillantii_discosnp_sub_plink.bim</span>, <span style="color: #0000BB;">/tmp/RtmpIFO8G0/vaillantii_discosnp_sub_plink.fam</span></span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Chromosome names were recoded as integers for PLINK compatibility; mapping written to <span style="color: #0000BB;">/tmp/RtmpwH1gTm/vaillantii_discosnp_sub_plink.chrommap</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> PLINK binary fileset written to <span style="color: #0000BB;">/tmp/RtmpwH1gTm/vaillantii_discosnp_sub_plink.bed</span>, <span style="color: #0000BB;">/tmp/RtmpwH1gTm/vaillantii_discosnp_sub_plink.bim</span>, <span style="color: #0000BB;">/tmp/RtmpwH1gTm/vaillantii_discosnp_sub_plink.fam</span></span></span>
 <span><span class="co"># PLINK .ped https://www.cog-genomics.org/plink/1.9/formats#ped</span></span>
 <span><span class="fu"><a href="../reference/vcf2plink_ped.html">vcf2plink_ped</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'_plink'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Accumulating PLINK .ped: 1734 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing PLINK file...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Chromosome names were recoded as integers for PLINK compatibility; mapping written to <span style="color: #0000BB;">/tmp/RtmpIFO8G0/vaillantii_discosnp_sub_plink.chrommap</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> PLINK text fileset written to <span style="color: #0000BB;">/tmp/RtmpIFO8G0/vaillantii_discosnp_sub_plink.ped</span>, <span style="color: #0000BB;">/tmp/RtmpIFO8G0/vaillantii_discosnp_sub_plink.map</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Chromosome names were recoded as integers for PLINK compatibility; mapping written to <span style="color: #0000BB;">/tmp/RtmpwH1gTm/vaillantii_discosnp_sub_plink.chrommap</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> PLINK text fileset written to <span style="color: #0000BB;">/tmp/RtmpwH1gTm/vaillantii_discosnp_sub_plink.ped</span>, <span style="color: #0000BB;">/tmp/RtmpwH1gTm/vaillantii_discosnp_sub_plink.map</span></span></span>
 <span><span class="co"># eigenstrat https://github.com/DReichLab/EIG/tree/master</span></span>
 <span><span class="fu"><a href="../reference/vcf2eigenstrat.html">vcf2eigenstrat</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'_eigenstrat'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Building EIGENSTRAT: 1734 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing EIGENSTRAT files...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> EIGENSTRAT fileset written to <span style="color: #0000BB;">/tmp/RtmpIFO8G0/vaillantii_discosnp_sub_eigenstrat.geno</span>, <span style="color: #0000BB;">/tmp/RtmpIFO8G0/vaillantii_discosnp_sub_eigenstrat.ind</span>, <span style="color: #0000BB;">/tmp/RtmpIFO8G0/vaillantii_discosnp_sub_eigenstrat.snp</span></span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> EIGENSTRAT fileset written to <span style="color: #0000BB;">/tmp/RtmpwH1gTm/vaillantii_discosnp_sub_eigenstrat.geno</span>, <span style="color: #0000BB;">/tmp/RtmpwH1gTm/vaillantii_discosnp_sub_eigenstrat.ind</span>, <span style="color: #0000BB;">/tmp/RtmpwH1gTm/vaillantii_discosnp_sub_eigenstrat.snp</span></span></span>
 <span><span class="co"># genepop https://gitlab.mbb.univ-montp2.fr/francois/genepop</span></span>
 <span><span class="fu"><a href="../reference/vcf2genepop.html">vcf2genepop</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'.gen'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Accumulating Genepop: 1734 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing Genepop file...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Genepop file written to <span style="color: #0000BB;">/tmp/RtmpIFO8G0/vaillantii_discosnp_sub.gen</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Genepop file written to <span style="color: #0000BB;">/tmp/RtmpwH1gTm/vaillantii_discosnp_sub.gen</span></span></span>
 <span><span class="co"># smartsnp https://github.com/ChristianHuber/smartsnp</span></span>
 <span><span class="fu"><a href="../reference/vcf2smartsnp.html">vcf2smartsnp</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'.smartsnp'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Building SmartSNP: 1734 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing SmartSNP file...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> SmartSNP file written to <span style="color: #0000BB;">/tmp/RtmpIFO8G0/vaillantii_discosnp_sub.smartsnp</span></span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> SmartSNP file written to <span style="color: #0000BB;">/tmp/RtmpwH1gTm/vaillantii_discosnp_sub.smartsnp</span></span></span>
 <span><span class="co"># bayescan https://github.com/mfoll/BayeScan</span></span>
 <span><span class="fu"><a href="../reference/vcf2bayescan.html">vcf2bayescan</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'.bayescan'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Accumulating BayesScan: 1734 variants x 4 pops (<span style="font-weight: bold;">0</span> MiB raw storage, vs 0 MiB with integer matrices)</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing BayesScan file...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> BayesScan file written to <span style="color: #0000BB;">/tmp/RtmpIFO8G0/vaillantii_discosnp_sub.bayescan</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> BayesScan file written to <span style="color: #0000BB;">/tmp/RtmpwH1gTm/vaillantii_discosnp_sub.bayescan</span></span></span>
 <span><span class="co"># bayesass https://github.com/brannala/BA3</span></span>
 <span><span class="fu"><a href="../reference/vcf2bayesass.html">vcf2bayesass</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'.bayesass'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Accumulating BayesAss: 1734 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing BayesAss file...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> BayesAss file written to <span style="color: #0000BB;">/tmp/RtmpIFO8G0/vaillantii_discosnp_sub.bayesass</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> BayesAss file written to <span style="color: #0000BB;">/tmp/RtmpwH1gTm/vaillantii_discosnp_sub.bayesass</span></span></span>
 <span><span class="co"># treemix https://bitbucket.org/nygcresearch/treemix/wiki/Home</span></span>
 <span><span class="fu"><a href="../reference/vcf2treemix.html">vcf2treemix</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'.treemix'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Building Treemix: 1734 variants x 4 pops (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing Treemix file...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Treemix file written to <span style="color: #0000BB;">/tmp/RtmpIFO8G0/vaillantii_discosnp_sub.treemix</span></span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Treemix file written to <span style="color: #0000BB;">/tmp/RtmpwH1gTm/vaillantii_discosnp_sub.treemix</span></span></span>
 <span><span class="co"># apparent https://github.com/halelab/apparent/tree/master</span></span>
 <span><span class="fu"><a href="../reference/vcf2apparent.html">vcf2apparent</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'.apparent'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Accumulating Apparent: 1734 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing Apparent file...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Apparent file written to <span style="color: #0000BB;">/tmp/RtmpIFO8G0/vaillantii_discosnp_sub.apparent</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Apparent file written to <span style="color: #0000BB;">/tmp/RtmpwH1gTm/vaillantii_discosnp_sub.apparent</span></span></span>
 <span><span class="co"># related https://github.com/timothyfrasier/related</span></span>
 <span><span class="fu"><a href="../reference/vcf2related.html">vcf2related</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'.related'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Accumulating Related: 1734 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing Related file...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Related file written to <span style="color: #0000BB;">/tmp/RtmpIFO8G0/vaillantii_discosnp_sub.related</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Related file written to <span style="color: #0000BB;">/tmp/RtmpwH1gTm/vaillantii_discosnp_sub.related</span></span></span>
 <span><span class="co"># long tidy dataframe of genotypes</span></span>
 <span><span class="fu"><a href="../reference/vcf2gt_long.html">vcf2gt_long</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'.csv'</span><span class="op">)</span><span class="op">)</span>, format <span class="op">=</span> <span class="st">'csv'</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing gt_long: 1734 variants x 18 samples</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> gt_long table written to <span style="color: #0000BB;">/tmp/RtmpIFO8G0/vaillantii_discosnp_sub.csv</span></span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(setup$feather_files[[1L]], col_select = read_cols, : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(task$fpath, col_select = shared$read_cols, : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> gt_long table written to <span style="color: #0000BB;">/tmp/RtmpwH1gTm/vaillantii_discosnp_sub.csv</span></span></span>
 <span><span class="co"># snapp https://www.beast2.org/snapp/</span></span>
 <span><span class="fu"><a href="../reference/vcf2snapp.html">vcf2snapp</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'_snapp.nex'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Accumulating SNAPP: 1734 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing SNAPP file...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> SNAPP file written to <span style="color: #0000BB;">/tmp/RtmpIFO8G0/vaillantii_discosnp_sub_snapp.nex</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> SNAPP file written to <span style="color: #0000BB;">/tmp/RtmpwH1gTm/vaillantii_discosnp_sub_snapp.nex</span></span></span>
 <span><span class="co"># nexus - only SNPs, meant for SVDq analyses https://www.asc.ohio-state.edu/kubatko.2/software/SVDquartets/</span></span>
 <span><span class="fu"><a href="../reference/vcf2nexus.html">vcf2nexus</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'_sdvq.nex'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Accumulating Nexus: 1734 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing Nexus file...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Nexus file written to <span style="color: #0000BB;">/tmp/RtmpIFO8G0/vaillantii_discosnp_sub_sdvq.nex</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Nexus file written to <span style="color: #0000BB;">/tmp/RtmpwH1gTm/vaillantii_discosnp_sub_sdvq.nex</span></span></span>
 <span><span class="co"># fasta https://www.ncbi.nlm.nih.gov/genbank/fastaformat/</span></span>
 <span><span class="fu"><a href="../reference/vcf2fasta.html">vcf2fasta</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'.fna'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Accumulating FASTA: 1734 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing FASTA file...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> FASTA file written to <span style="color: #0000BB;">/tmp/RtmpIFO8G0/vaillantii_discosnp_sub.fna</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> FASTA file written to <span style="color: #0000BB;">/tmp/RtmpwH1gTm/vaillantii_discosnp_sub.fna</span></span></span>
 <span></span>
 <span><span class="co"># genlight object https://www.rdocumentation.org/packages/adegenet/versions/2.0.0/topics/genlight-class</span></span>
 <span><span class="co"># (requires the suggested package adegenet)</span></span>
@@ -914,11 +1256,17 @@ importing the genlight object. <code><a href="../reference/vcf2genlight.html">vc
 <span>  <span class="va">genlight</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/vcf2genlight.html">vcf2genlight</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'_genlight.rds'</span><span class="op">)</span><span class="op">)</span>, save <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Accumulating Genlight: 1734 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Building Genlight object...</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Accumulating Genlight: 1734 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Building Genlight object...</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing Genlight object...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Genlight object written to <span style="color: #0000BB;">/tmp/RtmpIFO8G0/vaillantii_discosnp_sub_genlight.rds</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Genlight object written to <span style="color: #0000BB;">/tmp/RtmpwH1gTm/vaillantii_discosnp_sub_genlight.rds</span></span></span>
 <span></span>
 <span><span class="co">##########</span></span>
 <span><span class="co"># datasets for analyses with linked SNPs</span></span>
@@ -930,7 +1278,10 @@ importing the genlight object. <code><a href="../reference/vcf2genlight.html">vc
 <span><span class="fu"><a href="../reference/vcf2fineradstructure.html">vcf2fineradstructure</a></span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">res_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">project</span>, <span class="va">postfix</span>, <span class="va">fltr</span>, <span class="st">'.finerad'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Building fineRADstructure: 0 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing fineRADstructure file...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> fineRADstructure file written to <span style="color: #0000BB;">/tmp/RtmpIFO8G0/vaillantii_discosnp_sub.finerad</span></span></span></code></pre></div>
+<span><span class="co">#&gt; Warning in arrow::read_feather(fpath, col_select = c(".row_id", "sample", : 'arrow::read_feather' is deprecated.</span></span>
+<span><span class="co">#&gt; Use 'read_ipc_file' instead.</span></span>
+<span><span class="co">#&gt; See help("Deprecated")</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> fineRADstructure file written to <span style="color: #0000BB;">/tmp/RtmpwH1gTm/vaillantii_discosnp_sub.finerad</span></span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

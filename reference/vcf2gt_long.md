@@ -62,8 +62,16 @@ f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
                  package = "VCFArrow")
 vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 #> ℹ VCF is being read in chunks of 50000 variants
+#> Warning: write_feather(version = 2) has been superseded by write_ipc_file().
+#> Warning: `format = "feather"` is deprecated; use `format = "ipc"` instead.
 #> ✔ VCF successfully read into a VCFArrow object
 vcf2gt_long(vcf, out_file = tempfile(), format = "csv")
 #> ℹ Writing gt_long: 9313 variants x 18 samples
-#> ✔ gt_long table written to /tmp/RtmpkqNpJr/file36217dd4328d.csv
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> ✔ gt_long table written to /tmp/Rtmpmnning/file36707812fe2a.csv
 ```

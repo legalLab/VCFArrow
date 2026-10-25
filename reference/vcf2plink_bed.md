@@ -68,10 +68,15 @@ f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
                  package = "VCFArrow")
 vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 #> ℹ VCF is being read in chunks of 50000 variants
+#> Warning: write_feather(version = 2) has been superseded by write_ipc_file().
+#> Warning: `format = "feather"` is deprecated; use `format = "ipc"` instead.
 #> ✔ VCF successfully read into a VCFArrow object
 vcf2plink_bed(vcf, out_file = file.path(tempdir(), "plink_out"))
 #> ℹ Building PLINK: 9313 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing PLINK files...
-#> ℹ Chromosome names were recoded as integers for PLINK compatibility; mapping written to /tmp/RtmpkqNpJr/plink_out.chrommap
-#> ✔ PLINK binary fileset written to /tmp/RtmpkqNpJr/plink_out.bed, /tmp/RtmpkqNpJr/plink_out.bim, /tmp/RtmpkqNpJr/plink_out.fam
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> ℹ Chromosome names were recoded as integers for PLINK compatibility; mapping written to /tmp/Rtmpmnning/plink_out.chrommap
+#> ✔ PLINK binary fileset written to /tmp/Rtmpmnning/plink_out.bed, /tmp/Rtmpmnning/plink_out.bim, /tmp/Rtmpmnning/plink_out.fam
 ```

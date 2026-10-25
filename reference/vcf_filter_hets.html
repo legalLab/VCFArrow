@@ -76,9 +76,14 @@ High heterozigosities are indicative of potential paralogs.</p>
 <span class="r-in"><span>                 package <span class="op">=</span> <span class="st">"VCFArrow"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">vcf</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_vcf.html">read_vcf</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="set_vcf_groups.html">set_vcf_groups</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">dirname</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> VCF is being read in chunks of 50000 variants</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>write_feather(version = 2) has been superseded by write_ipc_file().</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>`format = "feather"` is deprecated; use `format = "ipc"` instead.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> VCF successfully read into a VCFArrow object</span>
 <span class="r-in"><span><span class="fu">vcf_filter_hets</span><span class="op">(</span><span class="va">vcf</span>, threshold <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Applying heterozygosity filter</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'arrow::read_feather' is deprecated.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Retained 8508 / 10000 variants (heterozygosity rate &lt; 0.5)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> An object of class "VCFArrow"</span>
@@ -93,10 +98,10 @@ High heterozigosities are indicative of potential paralogs.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Phased genotypes: FALSE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Storage:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Path: /tmp/RtmpkqNpJr/arrow_vcf_36216b7814bc </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Path: /tmp/Rtmpmnning/arrow_vcf_36701e06b338 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Genotype storage (Arrow):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> FileSystemDataset with 1 Feather file</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> FileSystemDataset with 1 Arrow IPC file</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 9 columns</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> .row_id: int32</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> sample: string</span>

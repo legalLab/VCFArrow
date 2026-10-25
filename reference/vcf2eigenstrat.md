@@ -50,9 +50,14 @@ f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
                  package = "VCFArrow")
 vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 #> ℹ VCF is being read in chunks of 50000 variants
+#> Warning: write_feather(version = 2) has been superseded by write_ipc_file().
+#> Warning: `format = "feather"` is deprecated; use `format = "ipc"` instead.
 #> ✔ VCF successfully read into a VCFArrow object
 vcf2eigenstrat(vcf, out_file = file.path(tempdir(), "eigenstrat_in"))
 #> ℹ Building EIGENSTRAT: 9313 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing EIGENSTRAT files...
-#> ✔ EIGENSTRAT fileset written to /tmp/RtmpkqNpJr/eigenstrat_in.geno, /tmp/RtmpkqNpJr/eigenstrat_in.ind, /tmp/RtmpkqNpJr/eigenstrat_in.snp
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> ✔ EIGENSTRAT fileset written to /tmp/Rtmpmnning/eigenstrat_in.geno, /tmp/Rtmpmnning/eigenstrat_in.ind, /tmp/Rtmpmnning/eigenstrat_in.snp
 ```

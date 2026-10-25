@@ -51,14 +51,22 @@ f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
                  package = "VCFArrow")
 vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 #> ℹ VCF is being read in chunks of 50000 variants
+#> Warning: write_feather(version = 2) has been superseded by write_ipc_file().
+#> Warning: `format = "feather"` is deprecated; use `format = "ipc"` instead.
 #> ✔ VCF successfully read into a VCFArrow object
 vcf2structure(vcf, out_file = tempfile(fileext = ".str"))
 #> ℹ Accumulating Structure: 9313 variants x 18 samples (0 MiB raw storage)
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Writing Structure file...
-#> ✔ Structure file written to /tmp/RtmpkqNpJr/file362154afebf8.str
+#> ✔ Structure file written to /tmp/Rtmpmnning/file36706e38b6cf.str
 vcf2structure(vcf, out_file = tempfile(fileext = ".fstr"),
               method = "F")
 #> ℹ Accumulating Structure: 9313 variants x 18 samples (0 MiB raw storage)
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Writing Structure file...
-#> ✔ Structure file written to /tmp/RtmpkqNpJr/file36215be94282.fstr
+#> ✔ Structure file written to /tmp/Rtmpmnning/file3670407e7848.fstr
 ```

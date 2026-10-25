@@ -45,9 +45,14 @@ f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
                  package = "VCFArrow")
 vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 #> ℹ VCF is being read in chunks of 50000 variants
+#> Warning: write_feather(version = 2) has been superseded by write_ipc_file().
+#> Warning: `format = "feather"` is deprecated; use `format = "ipc"` instead.
 #> ✔ VCF successfully read into a VCFArrow object
 vcf2nexus(vcf, out_file = tempfile(fileext = ".nex"))
 #> ℹ Accumulating Nexus: 9313 variants x 18 samples (0 MiB raw storage)
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
 #> ℹ Writing Nexus file...
-#> ✔ Nexus file written to /tmp/RtmpkqNpJr/file362135430ccf.nex
+#> ✔ Nexus file written to /tmp/Rtmpmnning/file36703529d8f2.nex
 ```
