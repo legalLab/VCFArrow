@@ -37,15 +37,18 @@ jobs:
           extra-packages: any::pkgdown, local::.
           needs: website
       - name: Update home page
-        # pkgdown builds the home page from pkgdown/index.md: the README's logo
-        # heading and badges, then the vignette (vignettes/VCFArrow.md) without
-        # its title block, with the photo taken from man/figures
+        # pkgdown builds the home page from pkgdown/index.md: the vignette
+        # (vignettes/VCFArrow.md) with its title but without author and date,
+        # the photo taken from man/figures, and the README's badges, which
+        # pkgdown shows in the sidebar (Dev status)
         run: |
           mkdir -p pkgdown
           {
             echo '<!-- pkgdown/index.md (the pkgdown home page) is generated from vignettes/VCFArrow.md; see the "Update home page" step in .github/workflows/pkgdown.yaml -->'
             echo
-            sed -n '/^# VCFArrow/,/badges: end/p' README.md
+            echo "# $(head -1 vignettes/VCFArrow.md)"
+            echo
+            sed -n '/badges: start/,/badges: end/p' README.md
             echo
             sed -n '/^# /,$p' vignettes/VCFArrow.md | sed 's#](P_vaillantii.jpeg)#](man/figures/P_vaillantii.jpeg)#'
           } > pkgdown/index.md
