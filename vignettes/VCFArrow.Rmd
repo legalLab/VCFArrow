@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 
 This package has six main functionalities: (1) reading in and writing out VCF data files, including precalculation of diverse metrics used in the filtering functions; (2) data filtering functions; (3) merging VCFs; (4) subsetting VCFs; (5) generation of summary statistics and graphs; and (6) data transformation and writing out of other data formats (population genetic and phylogenetic formats) for downstream analyses.
 It has been designed to be fast, implementing shared, C++ backed APIs and functions, which have been parallelized when possible, and memory efficient, implementing the lazy-loaded [Apache Arrow](https://arrow.apache.org/) data scheme.
-This package is, therefore, capable of processing VCFs comprising tens of millions of SNVs and hundreds of individuals in a matter of seconds to minutes with minimal RAM overhead.
+This package is, therefore, capable of processing VCFs comprising tens of millions of SNVs and hundreds of individuals in a matter of [seconds to minutes with minimal RAM overhead](https://github.com/legalLab/VCFArrow/blob/main/comparison/tool_comparison.md).
 
 
 # How to use the functions of this package
