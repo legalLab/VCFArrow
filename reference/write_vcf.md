@@ -49,9 +49,9 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 #> ✔ VCF successfully read into a VCFArrow object
 write_vcf(vcf, out_file = tempfile(fileext = ".vcf"))
 #> ℹ VCF is being written in 1 chunk
-#> ✔ VCFArrow object successfully written to /tmp/RtmpYJTNRJ/file20413d40607d.vcf
+#> ✔ VCFArrow object successfully written to /tmp/RtmpCIcMwq/file369b4ac1ed4f.vcf
 write_vcf(vcf, out_file = tempfile(fileext = ".vcf.gz"),
           gzip = TRUE)
 #> ℹ VCF is being written in 1 chunk
-#> ✔ VCFArrow object successfully written to /tmp/RtmpYJTNRJ/file20414a0f7c4e.vcf.gz
+#> ✔ VCFArrow object successfully written to /tmp/RtmpCIcMwq/file369b3a3bc3ee.vcf.gz
 ```

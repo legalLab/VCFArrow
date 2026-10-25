@@ -77,7 +77,7 @@ vcf_filter_paralogs(vcf, threshold_rk = 0.2, threshold_rpt = 0.5)
 #> Phased genotypes: FALSE 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpYJTNRJ/arrow_vcf_204142187eed 
+#>   Path: /tmp/RtmpCIcMwq/arrow_vcf_369b23e71e91 
 #> 
 #> Genotype storage (Arrow):
 #> FileSystemDataset with 1 Feather file

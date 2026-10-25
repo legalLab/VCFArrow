@@ -81,7 +81,7 @@ vcf_extract_groups(vcf, groups = c("GS", "BS"))
 #> Phased genotypes: FALSE 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpYJTNRJ/arrow_vcf_samp_20412dfdb5bd 
+#>   Path: /tmp/RtmpCIcMwq/arrow_vcf_samp_369b3ae72733 
 #> 
 #> Genotype storage (Arrow):
 #> FileSystemDataset with 1 Feather file
@@ -150,7 +150,7 @@ vcf_extract_groups(vcf, groups = "OG", keep = FALSE)
 #> Phased genotypes: FALSE 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpYJTNRJ/arrow_vcf_samp_204138e9a618 
+#>   Path: /tmp/RtmpCIcMwq/arrow_vcf_samp_369b64e14c86 
 #> 
 #> Genotype storage (Arrow):
 #> FileSystemDataset with 1 Feather file

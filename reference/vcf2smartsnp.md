@@ -49,5 +49,5 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf2smartsnp(vcf, out_file = tempfile(fileext = ".txt"))
 #> ℹ Building SmartSNP: 9313 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing SmartSNP file...
-#> ✔ SmartSNP file written to /tmp/RtmpYJTNRJ/file2041275d29ae.txt
+#> ✔ SmartSNP file written to /tmp/RtmpCIcMwq/file369b33be14d5.txt
 ```

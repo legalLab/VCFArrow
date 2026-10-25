@@ -65,5 +65,5 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 #> ✔ VCF successfully read into a VCFArrow object
 vcf2gt_long(vcf, out_file = tempfile(), format = "csv")
 #> ℹ Writing gt_long: 9313 variants x 18 samples
-#> ✔ gt_long table written to /tmp/RtmpYJTNRJ/file204110c2a2ba.csv
+#> ✔ gt_long table written to /tmp/RtmpCIcMwq/file369bc972127.csv
 ```

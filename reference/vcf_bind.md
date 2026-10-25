@@ -138,7 +138,7 @@ vcf_bind(ingroup, outgroup, mode = "intersect")
 #> Phased genotypes: FALSE 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpYJTNRJ/arrow_vcf_bind_2041791d9162 
+#>   Path: /tmp/RtmpCIcMwq/arrow_vcf_bind_369b5fecb2d5 
 #> 
 #> Genotype storage (Arrow):
 #> FileSystemDataset with 1 Feather file
@@ -202,7 +202,7 @@ vcf_bind(ingroup, outgroup, mode = "union", absent_as = "missing")
 #> Phased genotypes: FALSE 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpYJTNRJ/arrow_vcf_bind_20413b99c292 
+#>   Path: /tmp/RtmpCIcMwq/arrow_vcf_bind_369b39722e21 
 #> 
 #> Genotype storage (Arrow):
 #> FileSystemDataset with 1 Feather file
@@ -269,7 +269,7 @@ vcf_bind(vcf_filter_missingness(ingroup, 0.2), outgroup, outgroup = TRUE,
 #> Phased genotypes: FALSE 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpYJTNRJ/arrow_vcf_bind_20417f66350f 
+#>   Path: /tmp/RtmpCIcMwq/arrow_vcf_bind_369b4485a04d 
 #> 
 #> Genotype storage (Arrow):
 #> FileSystemDataset with 1 Feather file

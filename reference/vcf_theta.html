@@ -9,7 +9,7 @@ and for sample groups from VCFArrow format data."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">VCFArrow</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,6 +67,14 @@ and for sample groups from VCFArrow format data.</p>
     <p>This function calculates Watterson's theta and pi for the entire VCFArrow
 object, and for groups of individuals whose grouping is indicated by
 the groups slot in the VCFArrow object.
+Only biallelic SNVs are used, and a site is used for a group (valid) when
+at least two of its samples are called. With n called alleles and ALT
+allele frequency p at a site, the site's nucleotide diversity is
+n / (n - 1) * 2p(1 - p), the proportion of differing pairs among all pairs
+of called alleles (the unbiased estimator, as in vcftools –site-pi), and
+its Watterson contribution is 1 / a1 if the site is segregating, with
+a1 = sum(1 / i) for i = 1 .. n - 1. pi and theta are the means of these
+values over the valid sites.
 The statistics are accumulated chunk by chunk as running sums per group,
 so memory use does not grow with the number of variants, and chunks are
 processed in parallel when workers are set with vcf_set_workers().</p>
@@ -85,31 +93,31 @@ processed in parallel when workers are set with vcf_set_workers().</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> VCF successfully read into a VCFArrow object</span>
 <span class="r-in"><span><span class="fu">vcf_theta</span><span class="op">(</span><span class="va">vcf</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $pi</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.3065724</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.3415246</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $theta_w</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.3225428</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $theta_g</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    sample group n_ind   theta_w        pi</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1   Pv120    WA     5 0.2113146 0.1897392</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2   Pv126    GS     5 0.1916500 0.1751468</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3    Pv13    BS     5 0.1842761 0.1692308</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4    Pv14    GS     5 0.1916500 0.1751468</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5    Pv27    GS     5 0.1916500 0.1751468</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6    Pv28    GS     5 0.1916500 0.1751468</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7     Pv2    WA     5 0.2113146 0.1897392</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8    Pv31    WA     5 0.2113146 0.1897392</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9    Pv56    WA     5 0.2113146 0.1897392</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10   Pv62    BS     5 0.1842761 0.1692308</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11   Pv68    BS     5 0.1842761 0.1692308</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12   Pv73    BS     5 0.1842761 0.1692308</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13   Pv78    GS     5 0.1916500 0.1751468</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14   Pv79    BS     5 0.1842761 0.1692308</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15   Pv93    WA     5 0.2113146 0.1897392</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16  Pb2Jp    OG     3 0.1712101 0.1498553</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17 Pb2Scx    OG     3 0.1712101 0.1498553</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18  Pb1Rd    OG     3 0.1712101 0.1498553</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   Pv120    WA     5 0.2113146 0.2231487</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   Pv126    GS     5 0.1916500 0.2045097</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3    Pv13    BS     5 0.1842761 0.1979007</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4    Pv14    GS     5 0.1916500 0.2045097</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5    Pv27    GS     5 0.1916500 0.2045097</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6    Pv28    GS     5 0.1916500 0.2045097</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7     Pv2    WA     5 0.2113146 0.2231487</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8    Pv31    WA     5 0.2113146 0.2231487</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9    Pv56    WA     5 0.2113146 0.2231487</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10   Pv62    BS     5 0.1842761 0.1979007</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11   Pv68    BS     5 0.1842761 0.1979007</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12   Pv73    BS     5 0.1842761 0.1979007</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13   Pv78    GS     5 0.1916500 0.2045097</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14   Pv79    BS     5 0.1842761 0.1979007</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15   Pv93    WA     5 0.2113146 0.2231487</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16  Pb2Jp    OG     3 0.1712101 0.1854309</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17 Pb2Scx    OG     3 0.1712101 0.1854309</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18  Pb1Rd    OG     3 0.1712101 0.1854309</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

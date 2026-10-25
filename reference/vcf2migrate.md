@@ -75,5 +75,5 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf2migrate(vcf, out_file = tempfile(fileext = ".txt"))
 #> ℹ Accumulating Migrate-N (S): 9313 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing Migrate-N (S) file...
-#> ✔ Migrate-N file written to /tmp/RtmpYJTNRJ/file20416b2d4e66.txt
+#> ✔ Migrate-N file written to /tmp/RtmpCIcMwq/file369b743bea0c.txt
 ```

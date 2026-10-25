@@ -51,7 +51,7 @@ vcf_filter_indels(vcf)
 #> Phased genotypes: FALSE 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpYJTNRJ/arrow_vcf_20417af4b227 
+#>   Path: /tmp/RtmpCIcMwq/arrow_vcf_369b13923a04 
 #> 
 #> Genotype storage (Arrow):
 #> FileSystemDataset with 1 Feather file

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">VCFArrow</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,6 +33,13 @@
       <small>Source: <a href="https://github.com/legalLab/VCFArrow/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.1" id="vcfarrow-091">VCFArrow 0.9.1<a class="anchor" aria-label="anchor" href="#vcfarrow-091"></a></h2>
+<ul><li>
+<code><a href="../reference/vcf_theta.html">vcf_theta()</a></code> (and <code>vcf_stats(theta = TRUE)</code>): per-site nucleotide diversity now uses the unbiased estimator n/(n - 1) * 2p(1 - p) for n called alleles, as vcftools (<code>--site-pi</code>) and tidypopgen (<code>loci_pi()</code>) do. Values of pi are therefore higher than in 0.9.0 by the factor n/(n - 1), most for small groups; Watterson’s theta is unchanged.</li>
+<li>
+<code><a href="../reference/vcf_stats.html">vcf_stats()</a></code> reports each sample’s inbreeding coefficient F, the method-of-moments estimate of vcftools and PLINK (<code>--het</code>), with the numbers of sites and of observed and expected homozygotes it is based on, and the mean F of each sample group (columns <code>F</code>, <code>F_sites</code>, <code>F_hom_obs</code>, <code>F_hom_exp</code> and <code>F_group_mean</code>). The new argument <code>f_ref</code> takes the allele frequencies from all samples (<code>"all"</code>, the default) or from each sample’s group (<code>"group"</code>).</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.0" id="vcfarrow-090">VCFArrow 0.9.0<a class="anchor" aria-label="anchor" href="#vcfarrow-090"></a></h2><p class="text-muted">CRAN release: 2026-10-16</p>
 <ul><li>Initial CRAN submission.</li>

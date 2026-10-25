@@ -54,5 +54,5 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf2eigenstrat(vcf, out_file = file.path(tempdir(), "eigenstrat_in"))
 #> ℹ Building EIGENSTRAT: 9313 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing EIGENSTRAT files...
-#> ✔ EIGENSTRAT fileset written to /tmp/RtmpYJTNRJ/eigenstrat_in.geno, /tmp/RtmpYJTNRJ/eigenstrat_in.ind, /tmp/RtmpYJTNRJ/eigenstrat_in.snp
+#> ✔ EIGENSTRAT fileset written to /tmp/RtmpCIcMwq/eigenstrat_in.geno, /tmp/RtmpCIcMwq/eigenstrat_in.ind, /tmp/RtmpCIcMwq/eigenstrat_in.snp
 ```
