@@ -44,15 +44,14 @@ vcf_filter_invariant <- function(vcf_arrow) {
 
   pass <- n_pass > 0L & n_pass * s2 != s1 * s1
   keep <- vcf_arrow@variants$.row_id[pass]
-
-  n_removed <- idx$n_var - length(keep)
-  if (n_removed > 0L)
-    cli::cli_alert_info(
-      "Removed {n_removed} invariant variant{?s}; {length(keep)} retained."
-    )
+  
+  cli::cli_alert_info(
+    "Retained {length(keep)} / {idx$n_var} variant{?s}"
+  )
 
   # Record the removed variants, with their metadata and INFO, so they stay
   # recoverable (e.g. by vcf_bind(), which treats them as the object's own).
+  n_removed <- idx$n_var - length(keep)
   if (n_removed > 0L) {
     removed <- as.data.frame(vcf_arrow@variants)[!pass, , drop = FALSE]
     if (length(vcf_arrow@info) == nrow(vcf_arrow@variants))
