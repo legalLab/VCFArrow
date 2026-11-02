@@ -1,7 +1,8 @@
 #' @title vcf_filter_adr
 #'
 #' @description
-#' Correct or remove genotypes with > % ALT/REF ratio from a VCFArrow object
+#' Correct or remove genotypes with allele imbalance greater than a threshold 
+#' from a VCFArrow object
 #'
 #' @author Tomas Hrbek April 2026
 #'
@@ -13,14 +14,18 @@
 #' @return subsetted VCFArrow object
 #'
 #' @details
-#' This function either changes genotypes or makes genotypes missing in
-#' a VCFArrow object if they have above/below threshold normalized ADR ratio,
-#' returning a new VCFArrow object.
-#' The ADR is calculated as ADR = ALT / (REF + ALT).
-#' If ADR > threshold, the genotype becomes ALT homozygous.
-#' If ADR < threshold, the genotype becomes REF homozygous.
+#' This function either changes heterozygous genotypes or makes them missing
+#' in a VCFArrow object if they have above/below threshold normalized ADR
+#' ratio, returning a new VCFArrow object.
+#' The ADR is calculated as ADR = ALT / (REF + ALT), from the AD field.
+#' Only called heterozygous genotypes are affected; homozygous and missing
+#' genotypes are left unchanged, even where AD gives them an ADR.
+#' In 'correct' mode, a heterozygote with ADR < threshold becomes REF
+#' homozygous, and one with 1 - ADR < threshold becomes ALT homozygous.
+#' In 'remove' mode, these heterozygotes become missing.
+#' The number of genotypes corrected or removed is reported.
 #' By default will remove any loci that may have become invariant as the
-#' result of the change/removal of genotypes
+#' result of the change/removal of genotypes.
 #'
 #' @examples
 #' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
@@ -31,8 +36,8 @@
 #' @export
 #'
 
-vcf_filter_adr <- function(vcf_arrow, mode = c("correct", "remove"),
-                           threshold = 0.1, f_invar = TRUE) {
+vcf_filter_adr <- function(vcf_arrow, threshold = 0.1, 
+                           mode = c("correct", "remove"), f_invar = TRUE) {
 
   mode <- match.arg(mode)
 
@@ -53,8 +58,18 @@ vcf_filter_adr <- function(vcf_arrow, mode = c("correct", "remove"),
   tasks <- lapply(seq_along(ffiles), function(i) list(
     fpath = ffiles[[i]], out = file.path(tmp_dir, paste0("chunk_", i, ".arrow"))
   ))
-  .map_chunks(tasks, .adr_chunk, shared = list(mode = mode, threshold = threshold),
-              label = "Rewriting chunk")
+  counts <- .map_chunks(tasks, .adr_chunk, shared = list(mode = mode, threshold = threshold),
+                        label = "Rewriting chunk")
+  counts <- Reduce(`+`, counts)
+  if (mode == "correct") {
+    cli::cli_alert_info(
+      "Corrected {counts[['changed']]} / {counts[['called']]} genotype{?s}"
+    )
+  } else {
+    cli::cli_alert_info(
+      "Removed {counts[['changed']]} / {counts[['called']]} genotype{?s} (set to missing)"
+    )
+  }
 
   gt_arrow <- suppressWarnings(arrow::open_dataset(tmp_dir, format = "feather"))
 
@@ -77,6 +92,8 @@ vcf_filter_adr <- function(vcf_arrow, mode = c("correct", "remove"),
 }
 
 # Apply the ADR correction/removal to one chunk and write it to task$out.
+# Returns the number of genotypes changed (a1 or a2 differs from before) and
+# of genotypes called before the change.
 # The chunk stays an Arrow Table and only ADR, a1 and a2 are converted to R:
 # converting the other columns (notably the per-sample FORMAT strings) to R
 # and back is the dominant cost.
@@ -87,13 +104,17 @@ vcf_filter_adr <- function(vcf_arrow, mode = c("correct", "remove"),
   adr <- as.vector(chunk$ADR)
   a1 <- as.vector(chunk$a1)
   a2 <- as.vector(chunk$a2)
+  a1_old <- a1
+  a2_old <- a2
 
-  # adr_flag: TRUE only where ADR is actually observed AND outside bounds.
-  # NA ADR → FALSE (genotype passes through untouched) — this is the fix.
-  adr_flag <- !is.na(adr) &
+  # adr_flag: TRUE only for called heterozygotes whose ADR is observed and
+  # outside bounds. Missing genotypes can have an ADR (AD is written for
+  # uncalled genotypes too) and homozygotes have ADR near 0 or 1, so both are
+  # excluded; NA ADR → FALSE (genotype passes through untouched).
+  adr_flag <- !is.na(a1) & !is.na(a2) & a1 != a2 & !is.na(adr) &
     (adr < threshold | adr > (1 - threshold))
-  adr_dir  <- ifelse(adr <= threshold, 0L,
-                     ifelse(adr >= (1 - threshold), 1L, NA_integer_))
+  adr_dir <- ifelse(adr <= threshold, 0L,
+                    ifelse(adr >= (1 - threshold), 1L, NA_integer_))
 
   if (shared$mode == "correct") {
     a1[adr_flag] <- adr_dir[adr_flag]
@@ -104,6 +125,9 @@ vcf_filter_adr <- function(vcf_arrow, mode = c("correct", "remove"),
   }
   chunk[["a1"]] <- a1
   chunk[["a2"]] <- a2
+  differs <- function(x, y) is.na(x) != is.na(y) | (!is.na(x) & !is.na(y) & x != y)
+  counts <- c(changed = sum(differs(a1_old, a1) | differs(a2_old, a2)),
+              called = sum(!is.na(a1_old) & !is.na(a2_old)))
 
   # Keep the per-sample FORMAT strings (written by write_vcf()) consistent:
   # replace the GT field of every changed genotype, keeping its separator.
@@ -123,5 +147,5 @@ vcf_filter_adr <- function(vcf_arrow, mode = c("correct", "remove"),
   arrow::write_feather(chunk, task$out)
   chunk <- NULL
   .release_arrow_memory()
-  invisible(NULL)
+  counts
 }

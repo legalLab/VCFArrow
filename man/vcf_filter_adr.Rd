@@ -6,17 +6,17 @@
 \usage{
 vcf_filter_adr(
   vcf_arrow,
-  mode = c("correct", "remove"),
   threshold = 0.1,
+  mode = c("correct", "remove"),
   f_invar = TRUE
 )
 }
 \arguments{
 \item{vcf_arrow}{-> VCFArrow object}
 
-\item{mode}{-> switch between 'correct' or 'remove' mode (character)}
-
 \item{threshold}{-> decimal missing threshold, default 0.1 (numeric)}
+
+\item{mode}{-> switch between 'correct' or 'remove' mode (character)}
 
 \item{f_invar}{-> filter invariant loci flag, default TRUE (Boolean)}
 }
@@ -24,17 +24,22 @@ vcf_filter_adr(
 subsetted VCFArrow object
 }
 \description{
-Correct or remove genotypes with > \% ALT/REF ratio from a VCFArrow object
+Correct or remove genotypes with allele imbalance greater than a threshold
+from a VCFArrow object
 }
 \details{
-This function either changes genotypes or makes genotypes missing in
-a VCFArrow object if they have above/below threshold normalized ADR ratio,
-returning a new VCFArrow object.
-The ADR is calculated as ADR = ALT / (REF + ALT).
-If ADR > threshold, the genotype becomes ALT homozygous.
-If ADR < threshold, the genotype becomes REF homozygous.
+This function either changes heterozygous genotypes or makes them missing
+in a VCFArrow object if they have above/below threshold normalized ADR
+ratio, returning a new VCFArrow object.
+The ADR is calculated as ADR = ALT / (REF + ALT), from the AD field.
+Only called heterozygous genotypes are affected; homozygous and missing
+genotypes are left unchanged, even where AD gives them an ADR.
+In 'correct' mode, a heterozygote with ADR < threshold becomes REF
+homozygous, and one with 1 - ADR < threshold becomes ALT homozygous.
+In 'remove' mode, these heterozygotes become missing.
+The number of genotypes corrected or removed is reported.
 By default will remove any loci that may have become invariant as the
-result of the change/removal of genotypes
+result of the change/removal of genotypes.
 }
 \examples{
 f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
