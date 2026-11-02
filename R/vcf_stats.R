@@ -21,6 +21,7 @@
 #' This function calculates average read depth, heterozygosity
 #' number of heterozygotes, number of reference and alternative homozygotes,
 #' missing data and total number SNPs of each sample in an VCFArrow object.
+#' The average read depth is the mean DP of the sample's called genotypes.
 #' Optionally calls vcf_theta() to get total and group Watterson's theta and pi.
 #'
 #' The inbreeding coefficient F of each sample is the method-of-moments
@@ -135,9 +136,7 @@ vcf_stats <- function(vcf_arrow, res_path, project, theta = FALSE,
   # Assemble per-sample stats (equivalent to the original collect() output) ────
   sample_stats <- tibble::tibble(
     sample = samples,
-    read_depth = dp_sum[samples] / dp_n[samples],  # NaN if dp_n == 0, matches
-    # mean(DP, na.rm=TRUE) on
-    # an all-NA input
+    read_depth = dp_sum[samples] / dp_n[samples],  # NaN if no called genotype has DP
     homo_ref = hom_ref_n[samples],
     homo_alt = hom_alt_n[samples],
     hetero = het_n[samples],

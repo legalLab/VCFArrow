@@ -37,6 +37,7 @@ the inbreeding coefficient F, Watterson's theta and pi.
 This function calculates average read depth, heterozygosity
 number of heterozygotes, number of reference and alternative homozygotes,
 missing data and total number SNPs of each sample in an VCFArrow object.
+The average read depth is the mean DP of the sample's called genotypes.
 Optionally calls vcf_theta() to get total and group Watterson's theta and pi.
 
 The inbreeding coefficient F of each sample is the method-of-moments

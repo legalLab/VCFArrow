@@ -14,7 +14,7 @@
 # Per-chunk work of .scan_vcf_gt(): per-sample totals and missing counts
 # (missing = either allele NA, consistent with .pop_counts_from_chunk()
 # elsewhere in this package, which treats a1/a2 symmetrically), plus an
-# optional random subsample of (sample, DP) pairs.
+# optional random subsample of (sample, DP) pairs of called genotypes.
 
 .scan_chunk <- function(task, shared) {
   cols <- if (shared$collect_dp) c("a1", "a2", "DP") else c("a1", "a2")
@@ -23,7 +23,8 @@
   out <- list(total = cnt$total, missing = cnt$total - cnt$called, dp = NULL)
 
   if (shared$collect_dp) {
-    dp_ok <- !is.na(ch$DP)
+    # DP of called genotypes only: DP can also be written for missing ones
+    dp_ok <- !is.na(ch$DP) & !is.na(ch$a1) & !is.na(ch$a2)
     if (any(dp_ok)) {
       sub <- tibble::tibble(sample = shared$samples[ch$s[dp_ok]], DP = ch$DP[dp_ok])
       if (shared$keep_p < 1) {

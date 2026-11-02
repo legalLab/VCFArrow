@@ -40,10 +40,12 @@ List sample_counts_cpp(const IntegerVector& s, const IntegerVector& a1,
       if (x != y) ++het[k];
       else if (x == 0) ++hom_ref[k];
       else if (x == 1) ++hom_alt[k];
-    }
-    if (use_dp && !std::isnan(dp[i])) {
-      ++dp_n[k];
-      dp_sum[k] += dp[i];
+      // read depth of called genotypes only: DP is also written for missing
+      // genotypes (often 0), which would lower the mean
+      if (use_dp && !std::isnan(dp[i])) {
+        ++dp_n[k];
+        dp_sum[k] += dp[i];
+      }
     }
   }
 
