@@ -319,7 +319,8 @@ vcf_gc <- function(force = FALSE, verbose = TRUE) {
 #' @param format     One of "individual" (Structure, Arlequin, FASTA, ...) or
 #'                   "pop" (BayesScan, Treemix, Migrate-N C, ...) or
 #'                   "chunk" (SmartSNP, fineRADstructure, sNMF, EIGENSTRAT, ...).
-#' @param chunk_size Feather chunk size used at read_vcf() time.
+#' @param chunk_size Feather chunk size used at read_vcf() time, default 50000
+#'                   (as in read_vcf()).
 #' @param lowmem     If TRUE, estimate uses raw-byte matrices (vcf2*() lowmem
 #'                   variants); otherwise integer matrices.
 #'
@@ -342,7 +343,7 @@ vcf_gc <- function(force = FALSE, verbose = TRUE) {
 vcf_memory_estimate <- function(vcf_arrow,
                                 keep_groups = NULL,
                                 format = c("individual", "pop", "chunk"),
-                                chunk_size = 100000L,
+                                chunk_size = 50000L,
                                 lowmem = FALSE) {
   format <- match.arg(format)
 
@@ -360,8 +361,9 @@ vcf_memory_estimate <- function(vcf_arrow,
 
   mb <- function(x) paste0(round(x / 1024^2, 1), " MiB")
 
-  # Arrow C++ pool: one chunk fully materialised per read_feather() call.
-  # ~5 columns (row_id, sample, a1, a2, phased) × 4 bytes each.
+  # Arrow C++ pool: one chunk per read_feather() call.  Exporters read only
+  # .row_id, sample, a1 and a2: about 20 bytes per genotype (4 each for the
+  # integers, 4 + name length for sample), approximated as 5 x 4 bytes.
   chunk_arrow_mb <- chunk_size * n_samples * 5L * 4L
   # Accumulation matrix (a1 + a2)
   mat_bytes <- 2L * n_samples * n_var * bytes_per_el  # individual
@@ -412,27 +414,64 @@ vcf_memory_estimate <- function(vcf_arrow,
 #'
 #' @param available_gb RAM available in gigabytes.
 #' @param n_samples    Number of samples.
-#' @param n_columns    Number of columns per gt row (default 5: row_id, sample,
-#'                     a1, a2, phased).
+#' @param fmt_chars    Average length in characters of a sample's FORMAT text
+#'                     in the VCF (e.g. 24 for "0/1:12,8:20:99:200,0,300"),
+#'                     default 25.  Longer FORMAT fields (e.g. PL with many
+#'                     alleles) need more memory.
+#' @param sample_chars Average length of the sample names, default 10.
+#' @param workers      Number of worker processes read_vcf() will use (see
+#'                     vcf_set_workers()), default the number currently set.
+#' @param n_columns    Deprecated and ignored: the size of a genotype row is
+#'                     now computed from its columns.
 #'
-#' @return Invisibly, the suggested chunk size (numeric).
+#' @return Invisibly, the suggested chunk size (integer).
+#'
+#' @details
+#' Half of `available_gb` is left for the operating system, R and later
+#' operations; the other half is shared by the chunks read_vcf() holds at
+#' once (one per worker).  A chunk holds one row per variant and sample, of
+#' about 44 + sample_chars + fmt_chars bytes in memory: .row_id, a1 and a2
+#' (4 bytes each), the sample name and the sample's FORMAT text (each 4
+#' bytes plus its characters), phased (1 bit), and DP, GQ and ADR (8 bytes
+#' each).  The FORMAT text is kept so write_vcf() can write the sample fields
+#' unchanged; it is often the largest column.  With workers, each chunk's
+#' raw VCF lines (about fmt_chars + 1 bytes per genotype) are also held, by
+#' the main process and by the worker parsing them.  The result is limited to
+#' between 1,000 and 500,000 variants.
 #'
 #' @examples
 #' vcf_suggest_chunk_size(available_gb = 8, n_samples = 100)
 #'
 #' @export
 
-vcf_suggest_chunk_size <- function(available_gb, n_samples, n_columns = 5L) {
-  # Leave half for OS + R overhead + accumulation matrices
-  arrow_budget <- available_gb * 1024^3 / 2
-  bytes_per_variant <- n_samples * n_columns * 4L
-  chunk <- floor(arrow_budget / bytes_per_variant)
-  chunk <- max(1000L, min(chunk, 500000L))
+vcf_suggest_chunk_size <- function(available_gb, n_samples, fmt_chars = 25,
+                                   sample_chars = 10, workers = .vcf_workers(),
+                                   n_columns = NULL) {
+  if (!is.null(n_columns))
+    cli::cli_warn(c(
+      "{.arg n_columns} is deprecated and ignored.",
+      "i" = "The size of a genotype row is computed from its columns; set \\
+             {.arg fmt_chars} to the length of the samples' FORMAT text."
+    ))
+  workers <- max(1L, as.integer(workers))
+
+  # Leave half for OS + R overhead + accumulation matrices; the rest is
+  # shared by the chunks held at once (one per worker)
+  arrow_budget <- available_gb * 1024^3 / 2 / workers
+  # bytes per genotype of a chunk in Arrow memory: .row_id, a1, a2 (int32),
+  # sample and fmt (4-byte offset + text), phased (1 bit), DP, GQ, ADR
+  # (double).  Measured on the example data: 71 bytes, of which fmt 26.5.
+  bytes_per_gt <- 3 * 4 + (4 + sample_chars) + (4 + fmt_chars) + 1 / 8 + 3 * 8
+  # with workers, the chunk's raw VCF lines are held by the main process and
+  # by the worker parsing them
+  if (workers > 1L) bytes_per_gt <- bytes_per_gt + 2 * (fmt_chars + 1)
+  chunk <- floor(arrow_budget / (n_samples * bytes_per_gt))
+  chunk <- as.integer(max(1000, min(chunk, 500000)))
   cli::cli_alert_info(
-    "For {available_gb} GB RAM and {n_samples} sample{?s}, \\
-     recommended chunk_size = {format(chunk, big.mark=',')}
-     (use: read_vcf(vcf_file, chunk_size = {format(chunk, big.mark=',')}))"
+    "For {available_gb} GB RAM, {n_samples} sample{?s} and {workers} \\
+     worker{?s}, recommended chunk_size = {format(chunk, big.mark=',')}
+     (use: read_vcf(vcf_file, chunk_size = {chunk}))"
   )
-  
+
   invisible(chunk)
 }

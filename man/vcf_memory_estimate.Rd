@@ -8,7 +8,7 @@ vcf_memory_estimate(
   vcf_arrow,
   keep_groups = NULL,
   format = c("individual", "pop", "chunk"),
-  chunk_size = 100000L,
+  chunk_size = 50000L,
   lowmem = FALSE
 )
 }
@@ -21,7 +21,8 @@ vcf_memory_estimate(
 "pop" (BayesScan, Treemix, Migrate-N C, ...) or
 "chunk" (SmartSNP, fineRADstructure, sNMF, EIGENSTRAT, ...).}
 
-\item{chunk_size}{Feather chunk size used at read_vcf() time.}
+\item{chunk_size}{Feather chunk size used at read_vcf() time, default 50000
+(as in read_vcf()).}
 
 \item{lowmem}{If TRUE, estimate uses raw-byte matrices (vcf2*() lowmem
 variants); otherwise integer matrices.}
