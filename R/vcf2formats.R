@@ -9,12 +9,11 @@
 # with arrow::read_feather() — the same approach as write_vcf().
 #
 # Memory modes
-#   Chunk-by-chunk O(chunk):               SmartSNP, Treemix*, fineRADstructure
+#   Chunk-by-chunk O(chunk):               SmartSNP, Treemix, fineRADstructure
 #   Accumulate individuals O(S × V × 4B):  Structure, Arlequin, Genepop,
 #                                          BayesAss, Genlight, Related,
 #                                          Apparent, FASTA, Nexus, SNAPP
-#   Accumulate pop counts  O(P × V × 4B):  BayesScan, Migrate, Treemix*
-#   (* Treemix uses chunk path when inc_missing = TRUE, pop-count path otherwise)
+#   Accumulate pop counts  O(P × V × 4B):  BayesScan, Migrate
 #
 # S = n_samples, V = n_var, P = n_pops
 # For the example dataset (80 × 1.57M):  O(S×V) ≈ 1 GB per integer matrix
@@ -193,12 +192,6 @@
     alt = setup$P %*% (a1_alt + a2_alt),
     nobs = setup$P %*% (a1_obs + a2_obs)  # FIXED: was !is.na(a1) + !is.na(a2)
   )
-}
-
-# ── Complete-variant mask (for inc_missing = FALSE) ───────────────────────────
-
-.complete_var_mask <- function(nobs_full, setup) {
-  colSums(nobs_full) == 2L * setup$n_samples
 }
 
 

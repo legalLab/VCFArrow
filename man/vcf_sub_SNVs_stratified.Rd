@@ -2,7 +2,7 @@
 % Please edit documentation in R/vcf_sub_SNVs_stratified.R
 \name{vcf_sub_SNVs_stratified}
 \alias{vcf_sub_SNVs_stratified}
-\title{vcf_sub_loci_stratified}
+\title{vcf_sub_SNVs_stratified}
 \usage{
 vcf_sub_SNVs_stratified(vcf_arrow, n_SNVs = 1000, seed = NULL)
 }

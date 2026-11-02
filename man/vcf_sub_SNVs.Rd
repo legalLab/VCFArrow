@@ -2,7 +2,7 @@
 % Please edit documentation in R/vcf_sub_SNVs.R
 \name{vcf_sub_SNVs}
 \alias{vcf_sub_SNVs}
-\title{vcf_sub_loci}
+\title{vcf_sub_SNVs}
 \usage{
 vcf_sub_SNVs(vcf_arrow, n_SNVs = 10000, seed = NULL)
 }

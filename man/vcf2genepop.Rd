@@ -20,7 +20,7 @@ Invisibly returns the input VCFArrow object; called for its side effect of writi
 Converts a VCFArrow object to a Genepop format infile
 }
 \details{
-This function converts a VCFArrow object to an external Genpop formatted file.
+This function converts a VCFArrow object to an external Genepop formatted file.
 Writing occurs in chunks whose size is determined by the read_vcf() function.
 Larger chunks result in faster writing speeds.
 If no groups are defined, the default behavior is to use all groups.

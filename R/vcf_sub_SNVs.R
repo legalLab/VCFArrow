@@ -1,4 +1,4 @@
-#' @title vcf_sub_loci
+#' @title vcf_sub_SNVs
 #'
 #' @description
 #' Randomly subsets SNVs from a VCFArrow object

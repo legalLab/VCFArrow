@@ -43,7 +43,6 @@
 #   Format:  n_pops n_loci
 #            max_obs pop_name
 #            ref_count alt_count   (one line per variant)
-#   inc_missing = FALSE drops variants where any sample has missing data.
 #
 # method = "S"  (nucleotide sequences, individual-level, fixed blocks)
 #   Alleles are written as single nucleotide characters (REF or ALT).

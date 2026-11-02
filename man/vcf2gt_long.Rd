@@ -30,7 +30,7 @@ Invisibly returns the path of the written file.
 Converts a VCFArrow object to tidy long format infile
 }
 \details{
-This function converts a VCFArrow object to an external SmartSNP formatted file.
+This function converts a VCFArrow object to an external tidy long-format genotype file.
 Writing occurs in chunks whose size is determined by the read_vcf() function.
 Larger chunks result in faster writing speeds.
 If no groups are defined, the default behavior is to use all groups.
