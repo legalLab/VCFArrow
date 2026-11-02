@@ -15,7 +15,9 @@
 #' @return violin plot of read depth for each sample in VCF
 #'
 #' @details
-#' This function generates a violin plot of read depths per sample.
+#' This function generates a violin plot of read depths (DP) per sample,
+#' from the sample's called genotypes; the DP of missing genotypes is not
+#' used. Each violin ends at the sample's lowest and highest plotted depth.
 #'
 #' @examples
 #' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
@@ -44,7 +46,7 @@ assess_vcf_coverage <- function(vcf_arrow, res_path, species, project,
   dp_df <- scan$dp_df
 
   if (is.null(dp_df) || nrow(dp_df) == 0L)
-    cli::cli_abort("No non-missing DP values found - cannot build coverage plot.")
+    cli::cli_abort("No DP values of called genotypes found - cannot build coverage plot.")
 
   dp_df <- dp_df |>
     dplyr::left_join(group_df, by = "sample")
@@ -65,7 +67,7 @@ assess_vcf_coverage <- function(vcf_arrow, res_path, species, project,
     dp_df,
     ggplot2::aes(x = factor(sample, levels = ordr), y = log10(DP), fill = group, color = group)
   ) +
-    ggplot2::geom_violin(trim = FALSE, linewidth = 0.5) +
+    ggplot2::geom_violin(trim = TRUE, linewidth = 0.5) +
     ggplot2::theme(
       axis.text.x = ggplot2::element_text(
         angle = 90, vjust = 0.5, hjust = 1, size = ggplot2::rel(0.8)

@@ -33,7 +33,9 @@ violin plot of read depth for each sample in VCF
 Quantifying read depth of all samples in VCF
 }
 \details{
-This function generates a violin plot of read depths per sample.
+This function generates a violin plot of read depths (DP) per sample,
+from the sample's called genotypes; the DP of missing genotypes is not
+used. Each violin ends at the sample's lowest and highest plotted depth.
 }
 \examples{
 f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
