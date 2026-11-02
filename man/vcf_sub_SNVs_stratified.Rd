@@ -23,6 +23,11 @@ Randomly subsets SNVs from a VCFArrow object
 This function subsets a VCFArrow object to specific number of SNVs,
 returning new VCFArrow object.
 The subsampling is stratified, i.e. the same proportion of SNVs per CHROM.
+Each CHROM contributes its proportional share of n_SNVs, rounded down;
+the SNVs still needed to reach n_SNVs come one each from the CHROMs with
+the largest remainders (ties broken at random), so exactly n_SNVs SNVs
+are returned. When most CHROMs hold a single variant (e.g. DiscoSnp-RAD
+output), this amounts to simple random sampling.
 The seed for random number generator is automatically generated unless
 specified.
 }
