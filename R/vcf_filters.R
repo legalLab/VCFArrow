@@ -286,6 +286,15 @@
   )
 }
 
+# Percentage of missing genotypes (either allele NA) over the current
+# variants and samples, from one scan of a1/a2 (see .scan_vcf_gt()).
+
+.missing_percent <- function(vcf_arrow) {
+  scan <- .scan_vcf_gt(vcf_arrow, collect_dp = FALSE)
+  total <- sum(as.numeric(scan$total_loci))
+  if (total > 0) 100 * sum(as.numeric(scan$missing_n)) / total else NA_real_
+}
+
 # ── Shared chunk-reading helper ────────────────────────────────────────────────
 #
 # Reads every feather file directly, filtering each chunk to the VCFArrow's

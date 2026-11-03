@@ -116,9 +116,13 @@
   if (verbose) {
     if (length(removed) > 0L)
       cli::cli_alert_info("Removed samples: {removed}")
+    # % missing data of the result: one more scan, as removing samples and
+    # then invariant variants both change it
+    pct <- .missing_percent(vcf_arrow)
     cli::cli_alert_info(
       "Variants retained: {nrow(vcf_arrow@variants)} | \\
-       Samples retained: {length(vcf_arrow@samples)}"
+       Samples retained: {length(vcf_arrow@samples)} | \\
+       Missing data: {sprintf('%.2f', pct)}%"
     )
   }
 

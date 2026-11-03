@@ -23,6 +23,9 @@ Remove loci above missingness threshold from a VCFArrow object
 This function removes loci above missingness threshold from a VCFArrow object,
 returning a new VCFArrow object.
 Missingness is a locus focused metric, i.e. missing data per locus.
+With verbose = TRUE, the number of retained variants and the final \%
+missing data (missing genotypes over the retained variants and samples)
+are reported.
 }
 \examples{
 f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",

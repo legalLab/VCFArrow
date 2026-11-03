@@ -15,6 +15,9 @@
 #' This function removes loci above missingness threshold from a VCFArrow object,
 #' returning a new VCFArrow object.
 #' Missingness is a locus focused metric, i.e. missing data per locus.
+#' With verbose = TRUE, the number of retained variants and the final %
+#' missing data (missing genotypes over the retained variants and samples)
+#' are reported.
 #'
 #' @examples
 #' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
@@ -47,11 +50,15 @@ vcf_filter_missingness <- function(vcf_arrow, threshold = 0.1, verbose = TRUE) {
   # apply filter using unified API
   vcf_arrow <- .vcf_filter_rows(vcf_arrow, keep)
 
-  if (verbose)
+  if (verbose) {
+    # final % missing data, from the counts of the kept variants
+    pct <- 100 * sum(as.numeric(miss_n[keep_pos])) / sum(as.numeric(total_n[keep_pos]))
     cli::cli_alert_info(
       "Retained {length(keep)} / {idx$n_var} variant{?s} \\
-       (per-variant missingness <= {threshold})"
+       (per-variant missingness <= {threshold}) | \\
+       Missing data: {sprintf('%.2f', pct)}%"
     )
+  }
 
   return(vcf_arrow)
 }

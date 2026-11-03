@@ -8,7 +8,8 @@
 #' @param vcf_arrow -> VCFArrow object
 #' @param threshold -> decimal missing threshold, default 0.5 (numeric)
 #' @param f_invar -> filter invariant loci flag, default TRUE (Boolean)
-#' @param verbose -> report filtering stats, default TRUE (Boolean)
+#' @param verbose -> report removed samples, numbers of retained variants and
+#'   samples, and the final % missing data, default TRUE (Boolean)
 #' @param strict_poly -> when removing invariant loci, polymorphism at the
 #'   genotype level (TRUE) or the allele level (FALSE), see
 #'   vcf_filter_invariant(), default FALSE (Boolean)
@@ -22,6 +23,9 @@
 #' result of the removal of samples.
 #' By default will report removed samples, final % missing data, and number of
 #' retained samples after sample filtering.
+#' The final % missing data is the percentage of missing genotypes over the
+#' retained variants and samples; computing it reads the genotypes once
+#' more, which verbose = FALSE avoids.
 #'
 #' @examples
 #' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",

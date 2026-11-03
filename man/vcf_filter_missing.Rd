@@ -19,7 +19,8 @@ vcf_filter_missing(
 
 \item{f_invar}{-> filter invariant loci flag, default TRUE (Boolean)}
 
-\item{verbose}{-> report filtering stats, default TRUE (Boolean)}
+\item{verbose}{-> report removed samples, numbers of retained variants and
+samples, and the final \% missing data, default TRUE (Boolean)}
 
 \item{strict_poly}{-> when removing invariant loci, polymorphism at the
 genotype level (TRUE) or the allele level (FALSE), see
@@ -38,6 +39,9 @@ By default will remove any loci that may have become invariant as the
 result of the removal of samples.
 By default will report removed samples, final \% missing data, and number of
 retained samples after sample filtering.
+The final \% missing data is the percentage of missing genotypes over the
+retained variants and samples; computing it reads the genotypes once
+more, which verbose = FALSE avoids.
 }
 \examples{
 f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",

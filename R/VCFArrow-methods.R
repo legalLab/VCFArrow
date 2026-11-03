@@ -13,10 +13,12 @@
 #' This function is a method of the VCFArrow S4 class.
 #' It prints the numbers of variants and samples, the numbers of biallelic
 #' SNVs, multiallelic variants and indels, the samples per group, the
-#' number of phased genotypes, the storage location, and the first five
-#' variants with their INFO and FORMAT fields and the first five samples.
-#' Phased genotypes are counted in one genotype chunk file only, the first
-#' that holds current variants and samples, so that printing stays fast.
+#' percentage of missing genotypes and the number of phased genotypes, the
+#' storage location, and the first five variants with their INFO and FORMAT
+#' fields and the first five samples.
+#' Missing and phased genotypes are counted in one genotype chunk file only,
+#' the first that holds current variants and samples, so that printing stays
+#' fast.
 #'
 #' @examples
 #' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
@@ -61,19 +63,22 @@ setMethod(
       print(grp)
     }
 
-    # --- phased genotypes: counted in one chunk file only, the first that
-    # holds current variants and samples (filtering can leave the first files
-    # without any), so that printing stays fast (counting all genotypes would
-    # read every chunk file) ---
+    # --- missing and phased genotypes: counted in one chunk file only, the
+    # first that holds current variants and samples (filtering can leave the
+    # first files without any), so that printing stays fast (counting all
+    # genotypes would read every chunk file) ---
     if (n_var > 0 && length(ffiles) > 0) {
       live <- list(pos = .row_id_pos(v$.row_id), samples = object@samples)
       for (fpath in .get_sorted_feather_files(object@path)) {
-        ch <- .read_live_chunk(fpath, "phased", live)
+        ch <- .read_live_chunk(fpath, c("a1", "a2", "phased"), live)
         if (length(ch$phased)) break
       }
-      if (length(ch$phased))
-        cat("\nPhased genotypes (first chunk with variants):",
-            sum(ch$phased, na.rm = TRUE), "of", length(ch$phased), "\n")
+      if (length(ch$phased)) {
+        n_gt <- length(ch$phased)
+        cat("\nGenotypes (first chunk with variants):", n_gt, "\n")
+        cat("  Missing:", sprintf("%.2f%%", 100 * mean(is.na(ch$a1) | is.na(ch$a2))), "\n")
+        cat("  Phased: ", sum(ch$phased, na.rm = TRUE), "\n")
+      }
     }
 
     # --- storage ---
