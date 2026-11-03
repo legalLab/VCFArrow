@@ -4,28 +4,41 @@
 \alias{vcf_filter_coverage}
 \title{vcf_filter_coverage}
 \usage{
-vcf_filter_coverage(vcf_arrow, threshold = 10)
+vcf_filter_coverage(vcf_arrow, threshold = 10, strict = TRUE)
 }
 \arguments{
 \item{vcf_arrow}{-> VCFArrow object}
 
 \item{threshold}{-> DP threshold, default 10 (integer)}
+
+\item{strict}{-> set called genotypes with DP below the threshold to
+missing, default TRUE (Boolean)}
 }
 \value{
 subsetted VCFArrow object
 }
 \description{
-Remove genotypes below read DP threshold from a VCFArrow object
+Remove genotypes and variants below a read depth (DP) threshold from a
+VCFArrow object
 }
 \details{
-This function removes genotypes below a DP threshold from a VCFArrow object,
-returning a new VCFArrow object.
+This function keeps the variants that have at least two called genotypes
+with DP >= threshold and are polymorphic among them, returning a new
+VCFArrow object.
+With strict = TRUE (the default), called genotypes with DP below the
+threshold, or without DP, are also set to missing (as vcftools --minDP
+does), so every called genotype of the result has DP >= threshold; the
+number of genotypes set to missing is reported.  With strict = FALSE the
+genotypes are not changed, and the kept variants can still contain called
+genotypes with DP below the threshold.
 }
 \examples{
 f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
                  package = "VCFArrow")
 vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf_filter_coverage(vcf, threshold = 10)
+# keep the genotypes, filter variants only
+vcf_filter_coverage(vcf, threshold = 10, strict = FALSE)
 
 }
 \author{

@@ -192,6 +192,26 @@
   out
 }
 
+# Keep the per-sample FORMAT strings (written by write_vcf()) consistent with
+# changed genotypes: in the Arrow Table `chunk`, replace the GT field of the
+# rows where `flag` is TRUE with the homozygous genotype a1[flag]/a1[flag]
+# ("./." where a1 is NA), keeping each string's separator ("/" or "|") and
+# its other fields.  Only those strings are converted to R.
+
+.set_fmt_gt <- function(chunk, flag, a1) {
+  if (!any(flag)) return(chunk)
+  fmt <- chunk$fmt
+  fmt <- if (fmt$num_chunks == 1L) fmt$chunk(0L) else do.call(arrow::concat_arrays, fmt$chunks)
+  old <- as.vector(fmt$Take(arrow::Array$create(which(flag) - 1L)))
+  sep <- ifelse(substr(old, 2L, 2L) == "|", "|", "/")
+  allele <- ifelse(is.na(a1[flag]), ".", as.character(a1[flag]))
+  new <- paste0(allele, sep, allele, sub("^[^:]*", "", old))
+  chunk[["fmt"]] <- arrow::call_function(
+    "replace_with_mask", fmt, arrow::Array$create(flag), arrow::Array$create(new)
+  )
+  chunk
+}
+
 # Counts (.range_count) or sums of w (.range_sum) per position, covering only
 # the range of positions present in this chunk.  Returns list($at, $value);
 # accumulate with  acc[r$at] <- acc[r$at] + r$value  in the caller's own frame,

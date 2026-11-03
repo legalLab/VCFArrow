@@ -1,29 +1,41 @@
 #' @title vcf_filter_coverage
 #'
 #' @description
-#' Remove genotypes below read DP threshold from a VCFArrow object
+#' Remove genotypes and variants below a read depth (DP) threshold from a
+#' VCFArrow object
 #'
 #' @author Tomas Hrbek April 2026
 #'
 #' @param vcf_arrow -> VCFArrow object
 #' @param threshold -> DP threshold, default 10 (integer)
+#' @param strict -> set called genotypes with DP below the threshold to
+#'   missing, default TRUE (Boolean)
 #'
 #' @return subsetted VCFArrow object
 #'
 #' @details
-#' This function removes genotypes below a DP threshold from a VCFArrow object,
-#' returning a new VCFArrow object.
+#' This function keeps the variants that have at least two called genotypes
+#' with DP >= threshold and are polymorphic among them, returning a new
+#' VCFArrow object.
+#' With strict = TRUE (the default), called genotypes with DP below the
+#' threshold, or without DP, are also set to missing (as vcftools --minDP
+#' does), so every called genotype of the result has DP >= threshold; the
+#' number of genotypes set to missing is reported.  With strict = FALSE the
+#' genotypes are not changed, and the kept variants can still contain called
+#' genotypes with DP below the threshold.
 #'
 #' @examples
 #' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
 #'                  package = "VCFArrow")
 #' vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 #' vcf_filter_coverage(vcf, threshold = 10)
+#' # keep the genotypes, filter variants only
+#' vcf_filter_coverage(vcf, threshold = 10, strict = FALSE)
 #'
 #' @export
 #'
 
-vcf_filter_coverage <- function(vcf_arrow, threshold = 10) {
+vcf_filter_coverage <- function(vcf_arrow, threshold = 10, strict = TRUE) {
 
   if (!inherits(vcf_arrow, "VCFArrow"))
     cli::cli_abort("Expecting a VCFArrow object")
@@ -33,9 +45,36 @@ vcf_filter_coverage <- function(vcf_arrow, threshold = 10) {
 
   cli::cli_alert_info("Applying read coverage filter")
 
-  parts <- .map_chunks(ffiles, .coverage_chunk,
-                       shared = c(idx[c("pos", "samples")], threshold = threshold),
-                       label = "Scanning chunk")
+  shared <- c(idx[c("pos", "samples")], threshold = threshold)
+  if (strict) {
+    tmp_dir <- tempfile("arrow_vcf_coverage_")
+    dir.create(tmp_dir)
+    tasks <- lapply(seq_along(ffiles), function(i) list(
+      fpath = ffiles[[i]], out = file.path(tmp_dir, paste0("chunk_", i, ".arrow"))
+    ))
+    parts <- .map_chunks(tasks, .coverage_strict_chunk, shared = shared,
+                         label = "Rewriting chunk")
+    masked <- sum(vapply(parts, `[[`, numeric(1), "masked"))
+    called <- sum(vapply(parts, `[[`, numeric(1), "called"))
+    cli::cli_alert_info(
+      "Set {masked} / {called} called genotype{?s} with DP < {threshold} to missing"
+    )
+    vcf_arrow <- .new_vcfarrow(
+      header = vcf_arrow@header,
+      info = vcf_arrow@info,
+      format = vcf_arrow@format,
+      variants = vcf_arrow@variants,
+      gt = suppressWarnings(arrow::open_dataset(tmp_dir, format = "feather")),
+      samples = vcf_arrow@samples,
+      groups = vcf_arrow@groups,
+      path = tmp_dir,
+      invariant_removed = vcf_arrow@invariant_removed,
+      loci = vcf_arrow@loci
+    )
+  } else {
+    parts <- .map_chunks(ffiles, .coverage_chunk, shared = shared,
+                         label = "Scanning chunk")
+  }
   # Per variant: count of DP-passing called genotypes, and sum and sum of
   # squares of their allele_sum: all values of a variant are equal
   # (min == max) exactly when n * sum(x^2) == sum(x)^2.
@@ -66,4 +105,35 @@ vcf_filter_coverage <- function(vcf_arrow, threshold = 10) {
   pos <- ch$pos[ok]
   gs <- ch$a1[ok] + ch$a2[ok]   # 0/1/2 for hom-ref/het/hom-alt
   list(n = .range_count(pos), s1 = .range_sum(pos, gs), s2 = .range_sum(pos, gs * gs))
+}
+
+# As .coverage_chunk(), and also rewrite the chunk to task$out with the called
+# genotypes with DP < threshold (or without DP) set to missing, so that the
+# called genotypes left are exactly those counted.  All rows are rewritten;
+# the counts (and the numbers of called and masked genotypes) cover only the
+# rows of live variants and retained samples.
+.coverage_strict_chunk <- function(task, shared) {
+  chunk <- arrow::read_feather(task$fpath, as_data_frame = FALSE)
+  a1 <- as.vector(chunk$a1)
+  a2 <- as.vector(chunk$a2)
+  dp <- as.vector(chunk$DP)
+  called <- !is.na(a1) & !is.na(a2)
+  mask <- called & (is.na(dp) | dp < shared$threshold)
+  pos <- .match_row_id(as.vector(chunk$.row_id), shared$pos)
+  live <- !is.na(pos) & !is.na(.sample_index(chunk, shared$samples))
+  ok <- live & called & !mask
+  gs <- a1[ok] + a2[ok]   # 0/1/2 for hom-ref/het/hom-alt
+  out <- list(n = .range_count(pos[ok]), s1 = .range_sum(pos[ok], gs),
+              s2 = .range_sum(pos[ok], gs * gs),
+              masked = sum(live & mask), called = sum(live & called))
+
+  a1[mask] <- NA_integer_
+  a2[mask] <- NA_integer_
+  chunk[["a1"]] <- a1
+  chunk[["a2"]] <- a2
+  chunk <- .set_fmt_gt(chunk, mask, a1)
+  arrow::write_feather(chunk, task$out)
+  chunk <- NULL
+  .release_arrow_memory()
+  out
 }
