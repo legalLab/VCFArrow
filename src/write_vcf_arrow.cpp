@@ -24,9 +24,11 @@ inline void buf_cstr(std::vector<char>& b, const char* s) {
   while (*s) b.push_back(*s++);
 }
 
-inline void buf_int(std::vector<char>& b, int v) {
-  char tmp[16];
-  int len = snprintf(tmp, sizeof(tmp), "%d", v);
+// writes a position (a whole number stored as double; NA as ".")
+inline void buf_pos(std::vector<char>& b, double v) {
+  if (ISNAN(v)) { b.push_back('.'); return; }
+  char tmp[32];
+  int len = snprintf(tmp, sizeof(tmp), "%.0f", v);
   b.insert(b.end(), tmp, tmp + len);
 }
 
@@ -100,7 +102,7 @@ List arrow_c_alloc_cpp() {
 void write_vcf_chunk_cpp(
     std::string output_file,
     CharacterVector chrom,
-    IntegerVector pos,
+    NumericVector pos,
     CharacterVector id,
     CharacterVector ref,
     CharacterVector alt,
@@ -150,7 +152,7 @@ void write_vcf_chunk_cpp(
   for (int i = 0; i < n_chroms; i++) {
 
     buf_rstr(buf, chrom[i]); buf_char(buf, '\t');
-    buf_int (buf, pos[i]); buf_char(buf, '\t');
+    buf_pos (buf, pos[i]); buf_char(buf, '\t');
     buf_rstr(buf, id[i]); buf_char(buf, '\t');
     buf_rstr(buf, ref[i]); buf_char(buf, '\t');
     buf_rstr(buf, alt[i]); buf_char(buf, '\t');

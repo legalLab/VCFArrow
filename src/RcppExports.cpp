@@ -524,13 +524,13 @@ BEGIN_RCPP
 END_RCPP
 }
 // write_vcf_chunk_cpp
-void write_vcf_chunk_cpp(std::string output_file, CharacterVector chrom, IntegerVector pos, CharacterVector id, CharacterVector ref, CharacterVector alt, CharacterVector qual, CharacterVector filter_col, CharacterVector info, CharacterVector format_col, SEXP fmt_array, SEXP fmt_schema, int n_samples, bool gzip);
+void write_vcf_chunk_cpp(std::string output_file, CharacterVector chrom, NumericVector pos, CharacterVector id, CharacterVector ref, CharacterVector alt, CharacterVector qual, CharacterVector filter_col, CharacterVector info, CharacterVector format_col, SEXP fmt_array, SEXP fmt_schema, int n_samples, bool gzip);
 RcppExport SEXP _VCFArrow_write_vcf_chunk_cpp(SEXP output_fileSEXP, SEXP chromSEXP, SEXP posSEXP, SEXP idSEXP, SEXP refSEXP, SEXP altSEXP, SEXP qualSEXP, SEXP filter_colSEXP, SEXP infoSEXP, SEXP format_colSEXP, SEXP fmt_arraySEXP, SEXP fmt_schemaSEXP, SEXP n_samplesSEXP, SEXP gzipSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< std::string >::type output_file(output_fileSEXP);
     Rcpp::traits::input_parameter< CharacterVector >::type chrom(chromSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type pos(posSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type pos(posSEXP);
     Rcpp::traits::input_parameter< CharacterVector >::type id(idSEXP);
     Rcpp::traits::input_parameter< CharacterVector >::type ref(refSEXP);
     Rcpp::traits::input_parameter< CharacterVector >::type alt(altSEXP);
