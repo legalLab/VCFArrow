@@ -69,7 +69,14 @@ vcf2genlight <- function(vcf_arrow, out_file = NULL, keep_groups = NULL,
   )
   adegenet::indNames(x) <- setup$samples
   adegenet::chromosome(x) <- setup$variants$CHROM
-  adegenet::position(x) <- setup$variants$POS
+  # genlight stores positions as integers: those beyond R's integer range
+  # become NA
+  pos <- setup$variants$POS
+  big <- !is.na(pos) & pos > .Machine$integer.max
+  if (any(big))
+    cli::cli_warn("{sum(big)} position{?s} beyond 2,147,483,647 stored as NA in the genlight object.")
+  pos[big] <- NA
+  adegenet::position(x) <- as.integer(pos)
   adegenet::locNames(x) <- setup$loci
   adegenet::pop(x) <- factor(setup$samples_groups, levels = setup$group_names)
   adegenet::ploidy(x) <- ploidy
