@@ -192,7 +192,7 @@
   cols <- c("CHROM", "POS", "REF", "ALT")
   ids <- variants$.row_id
   n <- if (length(ids)) max(ids) else 0L
-  loci <- data.frame(CHROM = rep(NA_character_, n), POS = rep(NA_integer_, n),
+  loci <- data.frame(CHROM = rep(NA_character_, n), POS = rep(NA_real_, n),
                      REF = rep(NA_character_, n), ALT = rep(NA_character_, n),
                      stringsAsFactors = FALSE)
   for (col in cols) loci[[col]][ids] <- variants[[col]]

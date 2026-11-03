@@ -88,7 +88,7 @@
   loci <- if (!all(is.na(variants$ID))) {
     variants$ID
   } else {
-    paste0(variants$CHROM, "_", variants$POS)
+    paste0(variants$CHROM, "_", sprintf("%.0f", variants$POS))  # no 1e+05
   }
 
   # Feather files in natural numeric chunk order

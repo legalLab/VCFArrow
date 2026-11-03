@@ -118,8 +118,9 @@ vcf2eigenstrat <- function(vcf_arrow, out_file, keep_groups = NULL,
   utils::write.table(
     data.frame(ID = setup$loci,
                CHROM = setup$variants$CHROM,
-               rel_pos = rel_pos_vec,
-               POS = setup$variants$POS,
+               # formatted here: write.table() would write e.g. 1e+05
+               rel_pos = sprintf("%.8f", rel_pos_vec),
+               POS = sprintf("%.0f", setup$variants$POS),
                REF = setup$variants$REF,
                ALT = setup$variants$ALT,
                stringsAsFactors = FALSE),

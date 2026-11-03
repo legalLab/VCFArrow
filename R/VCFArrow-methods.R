@@ -89,7 +89,9 @@ setMethod(
     # --- variants preview ---
     if (n_var > 0) {
       cat("\nVariants (first 5 rows):\n")
-      print(utils::head(v, 5))
+      v5 <- utils::head(v, 5)
+      v5$POS <- format(v5$POS, scientific = FALSE, trim = TRUE)  # no 2.5e+09
+      print(v5)
       if (n_var > 5) cat("  ...", n_var - 5, "more\n")
     } else {
       cat("\nVariants: <empty>\n")
