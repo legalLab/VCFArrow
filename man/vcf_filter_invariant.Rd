@@ -4,10 +4,13 @@
 \alias{vcf_filter_invariant}
 \title{vcf_filter_invariant}
 \usage{
-vcf_filter_invariant(vcf_arrow)
+vcf_filter_invariant(vcf_arrow, strict_poly = FALSE)
 }
 \arguments{
 \item{vcf_arrow}{-> VCFArrow object}
+
+\item{strict_poly}{-> polymorphism at the genotype level (TRUE) or the
+allele level (FALSE), default FALSE (Boolean)}
 }
 \value{
 subsetted VCFArrow object
@@ -19,12 +22,22 @@ Remove invariant loci from a VCFArrow object
 This function removes invariant loci from a VCFArrow object,
 returning a new VCFArrow object.
 This might be desirable after subsetting a VCFArrow object by individuals.
+A variant is kept if it has at least one called genotype and is
+polymorphic among its called genotypes.  With strict_poly = FALSE (the
+default), polymorphic means that not all called alleles are the same,
+e.g. both REF and ALT alleles occur; a variant with a single called
+heterozygote is kept.  With strict_poly = TRUE, polymorphic means that not
+all called genotypes are the same, so a variant where every called sample
+is heterozygous is removed although both alleles occur (such sites are
+often paralogs).
 }
 \examples{
 f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
                  package = "VCFArrow")
 vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf_filter_invariant(vcf)
+# also remove variants where all called genotypes are heterozygous
+vcf_filter_invariant(vcf, strict_poly = TRUE)
 
 }
 \author{

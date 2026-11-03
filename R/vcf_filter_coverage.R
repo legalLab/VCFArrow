@@ -10,6 +10,8 @@
 #' @param threshold -> DP threshold, default 10 (integer)
 #' @param strict -> set called genotypes with DP below the threshold to
 #'   missing, default TRUE (Boolean)
+#' @param strict_poly -> polymorphism at the genotype level (TRUE) or the
+#'   allele level (FALSE), default FALSE (Boolean)
 #'
 #' @return subsetted VCFArrow object
 #'
@@ -23,6 +25,11 @@
 #' number of genotypes set to missing is reported.  With strict = FALSE the
 #' genotypes are not changed, and the kept variants can still contain called
 #' genotypes with DP below the threshold.
+#' With strict_poly = FALSE (the default), polymorphic means that not all
+#' of these genotypes' alleles are the same, e.g. both REF and ALT alleles
+#' occur.  With strict_poly = TRUE, it means that not all of these genotypes
+#' are the same, so a variant whose genotypes with DP >= threshold are all
+#' heterozygous is removed although both alleles occur.
 #'
 #' @examples
 #' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
@@ -31,11 +38,14 @@
 #' vcf_filter_coverage(vcf, threshold = 10)
 #' # keep the genotypes, filter variants only
 #' vcf_filter_coverage(vcf, threshold = 10, strict = FALSE)
+#' # also remove variants whose well-covered genotypes are all heterozygous
+#' vcf_filter_coverage(vcf, threshold = 10, strict_poly = TRUE)
 #'
 #' @export
 #'
 
-vcf_filter_coverage <- function(vcf_arrow, threshold = 10, strict = TRUE) {
+vcf_filter_coverage <- function(vcf_arrow, threshold = 10, strict = TRUE,
+                                strict_poly = FALSE) {
 
   if (!inherits(vcf_arrow, "VCFArrow"))
     cli::cli_abort("Expecting a VCFArrow object")
@@ -45,7 +55,8 @@ vcf_filter_coverage <- function(vcf_arrow, threshold = 10, strict = TRUE) {
 
   cli::cli_alert_info("Applying read coverage filter")
 
-  shared <- c(idx[c("pos", "samples")], threshold = threshold)
+  shared <- c(idx[c("pos", "samples")], threshold = threshold,
+              strict_poly = strict_poly)
   if (strict) {
     tmp_dir <- tempfile("arrow_vcf_coverage_")
     dir.create(tmp_dir)
@@ -75,20 +86,21 @@ vcf_filter_coverage <- function(vcf_arrow, threshold = 10, strict = TRUE) {
     parts <- .map_chunks(ffiles, .coverage_chunk, shared = shared,
                          label = "Scanning chunk")
   }
-  # Per variant: count of DP-passing called genotypes, and sum and sum of
-  # squares of their allele_sum: all values of a variant are equal
-  # (min == max) exactly when n * sum(x^2) == sum(x)^2.
+  # Per variant: count of DP-passing called genotypes, sum of their
+  # allele_sum and sum of squares (of genotypes or alleles, see
+  # .is_polymorphic())
   dp_pass <- .merge_ranges(parts, "n", integer(idx$n_var))
   s1 <- .merge_ranges(parts, "s1", numeric(idx$n_var))
   s2 <- .merge_ranges(parts, "s2", numeric(idx$n_var))
 
   # Pass: at least 2 DP-passing called genotypes AND not monomorphic
-  pass <- dp_pass >= 2L & dp_pass * s2 != s1 * s1
+  pass <- dp_pass >= 2L & .is_polymorphic(dp_pass, s1, s2, strict_poly)
   keep <- vcf_arrow@variants$.row_id[pass]
 
   cli::cli_alert_info(
     "Retained {length(keep)} / {idx$n_var} variant{?s} \\
-     (polymorphic with DP >= {threshold})"
+     (polymorphic at the {if (strict_poly) 'genotype' else 'allele'} level \\
+     with DP >= {threshold})"
   )
 
   # apply filter using unified API
@@ -97,14 +109,17 @@ vcf_filter_coverage <- function(vcf_arrow, threshold = 10, strict = TRUE) {
   return(vcf_arrow)
 }
 
-# Per-chunk count, sum and sum of squares of allele_sum per variant, over
-# called genotypes with DP >= threshold
+# Per-chunk count, sum of allele_sum and sum of squares (of genotypes or
+# alleles, see .poly_squares()) per variant, over called genotypes with
+# DP >= threshold
 .coverage_chunk <- function(fpath, shared) {
   ch <- .read_live_chunk(fpath, c("a1", "a2", "DP"), shared)
   ok <- !is.na(ch$a1) & !is.na(ch$a2) & !is.na(ch$DP) & ch$DP >= shared$threshold
   pos <- ch$pos[ok]
-  gs <- ch$a1[ok] + ch$a2[ok]   # 0/1/2 for hom-ref/het/hom-alt
-  list(n = .range_count(pos), s1 = .range_sum(pos, gs), s2 = .range_sum(pos, gs * gs))
+  a1 <- ch$a1[ok]
+  a2 <- ch$a2[ok]
+  list(n = .range_count(pos), s1 = .range_sum(pos, a1 + a2),
+       s2 = .range_sum(pos, .poly_squares(a1, a2, shared$strict_poly)))
 }
 
 # As .coverage_chunk(), and also rewrite the chunk to task$out with the called
@@ -122,9 +137,8 @@ vcf_filter_coverage <- function(vcf_arrow, threshold = 10, strict = TRUE) {
   pos <- .match_row_id(as.vector(chunk$.row_id), shared$pos)
   live <- !is.na(pos) & !is.na(.sample_index(chunk, shared$samples))
   ok <- live & called & !mask
-  gs <- a1[ok] + a2[ok]   # 0/1/2 for hom-ref/het/hom-alt
-  out <- list(n = .range_count(pos[ok]), s1 = .range_sum(pos[ok], gs),
-              s2 = .range_sum(pos[ok], gs * gs),
+  out <- list(n = .range_count(pos[ok]), s1 = .range_sum(pos[ok], a1[ok] + a2[ok]),
+              s2 = .range_sum(pos[ok], .poly_squares(a1[ok], a2[ok], shared$strict_poly)),
               masked = sum(live & mask), called = sum(live & called))
 
   a1[mask] <- NA_integer_

@@ -4,7 +4,12 @@
 \alias{vcf_filter_coverage}
 \title{vcf_filter_coverage}
 \usage{
-vcf_filter_coverage(vcf_arrow, threshold = 10, strict = TRUE)
+vcf_filter_coverage(
+  vcf_arrow,
+  threshold = 10,
+  strict = TRUE,
+  strict_poly = FALSE
+)
 }
 \arguments{
 \item{vcf_arrow}{-> VCFArrow object}
@@ -13,6 +18,9 @@ vcf_filter_coverage(vcf_arrow, threshold = 10, strict = TRUE)
 
 \item{strict}{-> set called genotypes with DP below the threshold to
 missing, default TRUE (Boolean)}
+
+\item{strict_poly}{-> polymorphism at the genotype level (TRUE) or the
+allele level (FALSE), default FALSE (Boolean)}
 }
 \value{
 subsetted VCFArrow object
@@ -31,6 +39,11 @@ does), so every called genotype of the result has DP >= threshold; the
 number of genotypes set to missing is reported.  With strict = FALSE the
 genotypes are not changed, and the kept variants can still contain called
 genotypes with DP below the threshold.
+With strict_poly = FALSE (the default), polymorphic means that not all
+of these genotypes' alleles are the same, e.g. both REF and ALT alleles
+occur.  With strict_poly = TRUE, it means that not all of these genotypes
+are the same, so a variant whose genotypes with DP >= threshold are all
+heterozygous is removed although both alleles occur.
 }
 \examples{
 f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
@@ -39,6 +52,8 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf_filter_coverage(vcf, threshold = 10)
 # keep the genotypes, filter variants only
 vcf_filter_coverage(vcf, threshold = 10, strict = FALSE)
+# also remove variants whose well-covered genotypes are all heterozygous
+vcf_filter_coverage(vcf, threshold = 10, strict_poly = TRUE)
 
 }
 \author{

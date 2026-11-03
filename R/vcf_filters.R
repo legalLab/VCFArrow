@@ -249,6 +249,26 @@
   acc
 }
 
+# ── Polymorphism test (vcf_filter_invariant(), vcf_filter_coverage()) ──────────
+#
+# A variant's counted genotypes are summarised by n (their number), s1 (the
+# sum of g = a1 + a2) and s2 (a sum of squares, see .poly_squares()).  Values
+# are all equal exactly when count * sum(x^2) == sum(x)^2, so:
+#   genotype level (strict_poly = TRUE): not all genotypes equal, over the n
+#     genotype values g:      n * sum(g^2)  != sum(g)^2
+#     (a variant where every sample is heterozygous is not polymorphic)
+#   allele level (strict_poly = FALSE): not all alleles equal, over the 2n
+#     allele codes a:         2n * sum(a^2) != sum(a)^2
+#     (some REF and some ALT alleles; also correct for multiallelic sites)
+
+.poly_squares <- function(a1, a2, strict_poly) {
+  if (strict_poly) (a1 + a2)^2 else a1 * a1 + a2 * a2
+}
+
+.is_polymorphic <- function(n, s1, s2, strict_poly) {
+  if (strict_poly) n * s2 != s1 * s1 else 2 * n * s2 != s1 * s1
+}
+
 # Build the two fast-lookup structures used by every filter's chunk loop.
 # Returns a list with $lv (logical vector for row_id membership) and
 # $pos (integer vector: row_id → 1-based position, see .row_id_pos()).
