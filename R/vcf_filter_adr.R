@@ -129,20 +129,7 @@ vcf_filter_adr <- function(vcf_arrow, threshold = 0.1,
   counts <- c(changed = sum(differs(a1_old, a1) | differs(a2_old, a2)),
               called = sum(!is.na(a1_old) & !is.na(a2_old)))
 
-  # Keep the per-sample FORMAT strings (written by write_vcf()) consistent:
-  # replace the GT field of every changed genotype, keeping its separator.
-  # Only those strings are converted to R.
-  if (any(adr_flag)) {
-    fmt <- chunk$fmt
-    fmt <- if (fmt$num_chunks == 1L) fmt$chunk(0L) else do.call(arrow::concat_arrays, fmt$chunks)
-    old <- as.vector(fmt$Take(arrow::Array$create(which(adr_flag) - 1L)))
-    sep <- ifelse(substr(old, 2L, 2L) == "|", "|", "/")
-    allele <- ifelse(is.na(a1[adr_flag]), ".", as.character(a1[adr_flag]))
-    new <- paste0(allele, sep, allele, sub("^[^:]*", "", old))
-    chunk[["fmt"]] <- arrow::call_function(
-      "replace_with_mask", fmt, arrow::Array$create(adr_flag), arrow::Array$create(new)
-    )
-  }
+  chunk <- .set_fmt_gt(chunk, adr_flag, a1)
 
   arrow::write_feather(chunk, task$out)
   chunk <- NULL
