@@ -14,6 +14,7 @@
 #include <algorithm>
 #include <climits>
 #include <cstdint>
+#include <cstdlib>
 #include <cstring>
 #include <string>
 #include <vector>
@@ -337,6 +338,77 @@ inline double fast_atof(const char* p, const char* end) {
   return val;
 }
 
+// ---- non-negative number: fast_atof(), or strtod() for other notations ----
+// fast_atof() stops at the first character other than a digit or '.', so a
+// value such as "-1" or "1e2" would be read wrongly; such (rare) values are
+// parsed with strtod(), and negative or unparsable values are NA.
+inline double parse_num(const char* p, const char* end) {
+  double v = fast_atof(p, end);
+  if (R_IsNA(v)) return v;
+  const char* q = p;
+  while (q < end && ((*q >= '0' && *q <= '9') || *q == '.')) ++q;
+  if (q == end) return v;
+  std::string s(p, end);
+  char* e;
+  double w = std::strtod(s.c_str(), &e);
+  if (e != s.c_str() + s.size() || !(w >= 0)) return NA_REAL;
+  return w;
+}
+
+// ---- GT value [p, end) ----
+// Alleles are non-negative integers of any length, or '.', separated by '/'
+// (unphased) or '|' (phased).  Sets a1/a2 (NA if missing) and phased, and
+// returns:
+//   GT_DIPLOID    two alleles, both called or both missing
+//   GT_HAPLOID    one allele, stored as homozygous (a1 = a2)
+//   GT_HALF       two alleles, one missing (./1): stored as missing
+//   GT_POLYPLOID  three or more alleles: stored as missing
+//   GT_MALFORMED  anything else: stored as missing
+enum { GT_DIPLOID, GT_HAPLOID, GT_HALF, GT_POLYPLOID, GT_MALFORMED };
+
+inline int parse_gt(const char* p, const char* end, int& a1, int& a2, bool& phased) {
+  a1 = a2 = NA_INTEGER;
+  phased = false;
+  int allele[2] = {NA_INTEGER, NA_INTEGER};
+  int n = 0;
+  while (true) {
+    if (p >= end) return GT_MALFORMED;  // empty allele
+    int a;
+    if (*p == '.') {
+      a = NA_INTEGER;
+      ++p;
+    } else if (*p >= '0' && *p <= '9') {
+      long v = 0;
+      while (p < end && *p >= '0' && *p <= '9') {
+        v = v * 10 + (*p - '0');
+        if (v > 1000000) return GT_MALFORMED;
+        ++p;
+      }
+      a = static_cast<int>(v);
+    } else {
+      return GT_MALFORMED;
+    }
+    if (n < 2) allele[n] = a;
+    ++n;
+    if (p == end) break;
+    if (*p != '/' && *p != '|') return GT_MALFORMED;
+    if (n == 1) phased = (*p == '|');
+    ++p;
+  }
+  if (n > 2) {
+    phased = false;
+    return GT_POLYPLOID;
+  }
+  if (n == 1) {
+    a1 = a2 = allele[0];
+    return GT_HAPLOID;
+  }
+  if ((allele[0] == NA_INTEGER) != (allele[1] == NA_INTEGER)) return GT_HALF;
+  a1 = allele[0];
+  a2 = allele[1];
+  return GT_DIPLOID;
+}
+
 // ---- compare token without allocating ----
 inline bool token_eq(const char* start, const char* end, const char* str) {
   size_t len = end - start;
@@ -376,6 +448,10 @@ static List parse_chunk(NextLine next_line, int chunk_size,
   char* line;
   std::size_t line_len;
 
+  // genotypes not stored as read (see parse_gt()) and malformed lines
+  double n_haploid = 0, n_half = 0, n_poly = 0, n_malformed = 0;
+  double n_short = 0, n_no_gt = 0;
+
   try {
     while (n < chunk_size && next_line(&line, &line_len)) {
 
@@ -400,7 +476,7 @@ static List parse_chunk(NextLine next_line, int chunk_size,
       for (int k = 0; k < 9; k++) fixed[k].emplace_back(fields[k]);
 
       // ---- parse FORMAT keys (pointer-based) ----
-      int dp_pos = -1, gq_pos = -1, ad_pos = -1;
+      int gt_pos = -1, dp_pos = -1, gq_pos = -1, ad_pos = -1;
 
       int key_idx = 0;
       const char* p = fields[8];
@@ -408,7 +484,8 @@ static List parse_chunk(NextLine next_line, int chunk_size,
 
       while (true) {
         if (*p == ':' || *p == '\0') {
-          if (token_eq(key_start, p, "DP")) dp_pos = key_idx;
+          if (token_eq(key_start, p, "GT")) gt_pos = key_idx;
+          else if (token_eq(key_start, p, "DP")) dp_pos = key_idx;
           else if (token_eq(key_start, p, "GQ")) gq_pos = key_idx;
           else if (token_eq(key_start, p, "AD")) ad_pos = key_idx;
 
@@ -420,6 +497,12 @@ static List parse_chunk(NextLine next_line, int chunk_size,
       }
 
       const int32_t row_id = row_offset + n + 1;
+      if (gt_pos < 0) ++n_no_gt;  // no GT: all genotypes missing
+
+      // ADR (ALT / (REF + ALT) from AD) only at biallelic sites: elsewhere the
+      // first two AD values need not be the genotype's alleles
+      const bool biallelic = std::strchr(fields[4], ',') == nullptr;
+      bool line_ended = false;  // fewer sample columns than samples
 
       // ---- samples ----
       for (int j = 0; j < nsamples; j++) {
@@ -442,41 +525,36 @@ static List parse_chunk(NextLine next_line, int chunk_size,
         double gq_val = NA_REAL;
         double ad_ratio = NA_REAL;
 
-        // GT parsing
         int a1 = NA_INTEGER, a2 = NA_INTEGER;
         bool phased = false;
-        if (field_end - field_start >= 3) {
-          char c1 = field_start[0];
-          char sep = field_start[1];
-          char c2 = field_start[2];
-
-          phased = (sep == '|');
-
-          if (c1 != '.' && c2 != '.') {
-            a1 = c1 - '0';
-            a2 = c2 - '0';
-          }
-        }
-        d->a1.append(a1, a1 != NA_INTEGER);
-        d->a2.append(a2, a2 != NA_INTEGER);
-        d->phased.set(cell, phased);
 
         while (true) {
 
           if (v == field_end || *v == ':') {
 
+            // --- GT ---  (absent sample columns stay missing, uncounted)
+            if (val_idx == gt_pos && !line_ended) {
+              switch (parse_gt(val_start, v, a1, a2, phased)) {
+                case GT_HAPLOID: ++n_haploid; break;
+                case GT_HALF: ++n_half; break;
+                case GT_POLYPLOID: ++n_poly; break;
+                case GT_MALFORMED: ++n_malformed; break;
+                default: break;
+              }
+            }
+
             // --- DP ---
             if (val_idx == dp_pos) {
-              dp_val = fast_atof(val_start, v);
+              dp_val = parse_num(val_start, v);
             }
 
             // --- GQ ---
             if (val_idx == gq_pos) {
-              gq_val = fast_atof(val_start, v);
+              gq_val = parse_num(val_start, v);
             }
 
             // --- AD (compute ratio inline) ---
-            if (val_idx == ad_pos) {
+            if (val_idx == ad_pos && biallelic) {
 
               const char* a = val_start;
               const char* b = val_start;
@@ -485,8 +563,8 @@ static List parse_chunk(NextLine next_line, int chunk_size,
               while (b < v && *b != ',') b++;
 
               if (b < v) {
-                double ref = fast_atof(a, b);
-                double alt = fast_atof(b + 1, v);
+                double ref = parse_num(a, b);
+                double alt = parse_num(b + 1, v);
 
                 if (!R_IsNA(ref) && !R_IsNA(alt) && (ref + alt) > 0.0) {
                   ad_ratio = alt / (ref + alt);
@@ -502,11 +580,19 @@ static List parse_chunk(NextLine next_line, int chunk_size,
           v++;
         }
 
+        d->a1.append(a1, a1 != NA_INTEGER);
+        d->a2.append(a2, a2 != NA_INTEGER);
+        d->phased.set(cell, phased);
         d->DP.append(dp_val, !R_IsNA(dp_val));
         d->GQ.append(gq_val, !R_IsNA(gq_val));
         d->ADR.append(ad_ratio, !R_IsNA(ad_ratio));
 
-        if (*ptr == '\t') ptr++;
+        if (*ptr == '\t') {
+          ptr++;
+        } else if (!line_ended) {
+          line_ended = true;
+          if (j < nsamples - 1) ++n_short;
+        }
       }
       n++;
     }
@@ -534,6 +620,10 @@ static List parse_chunk(NextLine next_line, int chunk_size,
     Named("variants") = variants,
     Named("info") = info,
     Named("format") = format,
+    Named("gt_counts") = NumericVector::create(
+      Named("haploid") = n_haploid, Named("half_missing") = n_half,
+      Named("polyploid") = n_poly, Named("malformed") = n_malformed,
+      Named("short_lines") = n_short, Named("no_gt_lines") = n_no_gt),
     Named("array") = VECTOR_ELT(batch, 0),
     Named("schema") = VECTOR_ELT(batch, 1)
   );

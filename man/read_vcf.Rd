@@ -22,6 +22,15 @@ This function read a VCF file into an S4 class object in chunks,
 returning a VCFArrow object.
 It accepts both uncompressed and gz compressed files.
 The GT field is stored as an Apache Arrow in Long format.
+Genotypes are read from the GT field, wherever it is in FORMAT, as two
+allele numbers (0 = REF, 1 = first ALT, ...; alleles of any number of
+digits).  Haploid genotypes (e.g. "1") are stored as homozygous ("1/1").
+Genotypes with one missing allele (e.g. "./1"), with more than two
+alleles, or that cannot be read are stored as missing, as are all
+genotypes of lines without a GT field; a warning reports how many there
+were, and how many lines had fewer sample columns than samples.
+The allele depth ratio ADR = ALT / (REF + ALT) is computed from AD at
+biallelic sites only (NA elsewhere).
 Various metrics are precalculated for fast and easy filtering.
 GT slot content stored in a TEMP directory for lazy loading.
 }
