@@ -10,6 +10,9 @@
 #' @param keep -> retain (TRUE) or drop (FALSE) individuals flag, default TRUE (Boolean)
 #' @param f_invar -> filter invariant loci flag, default TRUE (Boolean)
 #' @param verbose -> report filtering stats, default TRUE (Boolean)
+#' @param strict_poly -> when removing invariant loci, polymorphism at the
+#'   genotype level (TRUE) or the allele level (FALSE), see
+#'   vcf_filter_invariant(), default FALSE (Boolean)
 #'
 #' @return subsetted VCFArrow object
 #'
@@ -33,7 +36,8 @@
 #' @export
 #'
 
-vcf_extract_samples <- function(vcf_arrow, samples, keep = TRUE, f_invar = TRUE, verbose = TRUE) {
+vcf_extract_samples <- function(vcf_arrow, samples, keep = TRUE, f_invar = TRUE, verbose = TRUE,
+                                strict_poly = FALSE) {
 
   if (!inherits(vcf_arrow, "VCFArrow")) {
     cli::cli_abort("Expecting a VCFArrow object")
@@ -67,11 +71,13 @@ vcf_extract_samples <- function(vcf_arrow, samples, keep = TRUE, f_invar = TRUE,
 
   # apply filter using unified API
   if (length(keep_samples) > 1) {
-    vcf_arrow <- .vcf_filter_columns(vcf_arrow, keep_samples, f_invar, verbose)
+    vcf_arrow <- .vcf_filter_columns(vcf_arrow, keep_samples, f_invar, verbose,
+                                     strict_poly)
   } else {
-    # f_invar forced FALSE with 1 sample: with a single individual, every
-    # locus trivially has exactly one observed genotype state, so invariant
-    # filtering would remove everything.
+    # f_invar forced FALSE with 1 sample: a single individual has one
+    # genotype per locus, so invariant filtering at the genotype level would
+    # remove everything (and at the allele level keep only its heterozygous
+    # loci).
     vcf_arrow <- .vcf_filter_columns(vcf_arrow, keep_samples, f_invar = FALSE, verbose)
   }
 

@@ -4,7 +4,13 @@
 \alias{vcf_filter_missing}
 \title{vcf_filter_missing}
 \usage{
-vcf_filter_missing(vcf_arrow, threshold = 0.5, f_invar = TRUE, verbose = TRUE)
+vcf_filter_missing(
+  vcf_arrow,
+  threshold = 0.5,
+  f_invar = TRUE,
+  verbose = TRUE,
+  strict_poly = FALSE
+)
 }
 \arguments{
 \item{vcf_arrow}{-> VCFArrow object}
@@ -14,6 +20,10 @@ vcf_filter_missing(vcf_arrow, threshold = 0.5, f_invar = TRUE, verbose = TRUE)
 \item{f_invar}{-> filter invariant loci flag, default TRUE (Boolean)}
 
 \item{verbose}{-> report filtering stats, default TRUE (Boolean)}
+
+\item{strict_poly}{-> when removing invariant loci, polymorphism at the
+genotype level (TRUE) or the allele level (FALSE), see
+vcf_filter_invariant(), default FALSE (Boolean)}
 }
 \value{
 subsetted VCFArrow object

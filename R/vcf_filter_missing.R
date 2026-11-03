@@ -9,6 +9,9 @@
 #' @param threshold -> decimal missing threshold, default 0.5 (numeric)
 #' @param f_invar -> filter invariant loci flag, default TRUE (Boolean)
 #' @param verbose -> report filtering stats, default TRUE (Boolean)
+#' @param strict_poly -> when removing invariant loci, polymorphism at the
+#'   genotype level (TRUE) or the allele level (FALSE), see
+#'   vcf_filter_invariant(), default FALSE (Boolean)
 #'
 #' @return subsetted VCFArrow object
 #'
@@ -32,7 +35,8 @@
 #'
 
 vcf_filter_missing <- function(vcf_arrow, threshold = 0.5,
-                               f_invar = TRUE, verbose = TRUE) {
+                               f_invar = TRUE, verbose = TRUE,
+                               strict_poly = FALSE) {
 
   if (!inherits(vcf_arrow, "VCFArrow"))
     cli::cli_abort("Expecting a VCFArrow object")
@@ -58,7 +62,7 @@ vcf_filter_missing <- function(vcf_arrow, threshold = 0.5,
   if (length(keep) == 0L)
     cli::cli_abort("All samples removed by vcf_filter_missing(threshold = {threshold})")
 
-  vcf_arrow <- .vcf_filter_columns(vcf_arrow, keep, f_invar, verbose)
+  vcf_arrow <- .vcf_filter_columns(vcf_arrow, keep, f_invar, verbose, strict_poly)
 
   return(vcf_arrow)
 }

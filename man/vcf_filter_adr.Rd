@@ -8,7 +8,8 @@ vcf_filter_adr(
   vcf_arrow,
   threshold = 0.1,
   mode = c("correct", "remove"),
-  f_invar = TRUE
+  f_invar = TRUE,
+  strict_poly = FALSE
 )
 }
 \arguments{
@@ -19,6 +20,10 @@ vcf_filter_adr(
 \item{mode}{-> switch between 'correct' or 'remove' mode (character)}
 
 \item{f_invar}{-> filter invariant loci flag, default TRUE (Boolean)}
+
+\item{strict_poly}{-> when removing invariant loci, polymorphism at the
+genotype level (TRUE) or the allele level (FALSE), see
+vcf_filter_invariant(), default FALSE (Boolean)}
 }
 \value{
 subsetted VCFArrow object

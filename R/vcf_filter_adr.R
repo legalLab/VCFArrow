@@ -10,6 +10,9 @@
 #' @param mode -> switch between 'correct' or 'remove' mode (character)
 #' @param threshold -> decimal missing threshold, default 0.1 (numeric)
 #' @param f_invar -> filter invariant loci flag, default TRUE (Boolean)
+#' @param strict_poly -> when removing invariant loci, polymorphism at the
+#'   genotype level (TRUE) or the allele level (FALSE), see
+#'   vcf_filter_invariant(), default FALSE (Boolean)
 #'
 #' @return subsetted VCFArrow object
 #'
@@ -37,7 +40,8 @@
 #'
 
 vcf_filter_adr <- function(vcf_arrow, threshold = 0.1, 
-                           mode = c("correct", "remove"), f_invar = TRUE) {
+                           mode = c("correct", "remove"), f_invar = TRUE,
+                           strict_poly = FALSE) {
 
   mode <- match.arg(mode)
 
@@ -86,7 +90,7 @@ vcf_filter_adr <- function(vcf_arrow, threshold = 0.1,
     loci = vcf_arrow@loci
   )
 
-  if (f_invar) new_vcfarrow <- vcf_filter_invariant(new_vcfarrow)
+  if (f_invar) new_vcfarrow <- vcf_filter_invariant(new_vcfarrow, strict_poly = strict_poly)
 
   return(new_vcfarrow)
 }

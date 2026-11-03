@@ -9,6 +9,9 @@
 #' @param keep -> rows to keep (numeric or logical)
 #' @param f_invar -> filter invariant loci flag, default TRUE (Boolean)
 #' @param verbose -> report removed samples and final % missing data, default TRUE (Boolean)
+#' @param strict_poly -> when removing invariant loci, polymorphism at the
+#'   genotype level (TRUE) or the allele level (FALSE), see
+#'   vcf_filter_invariant(), default FALSE (Boolean)
 #'
 #' @return subsetted VCFArrow object
 #'
@@ -30,7 +33,8 @@
 #' @noRd
 #'
 
-.vcf_filter_columns <- function(vcf_arrow, keep, f_invar = TRUE, verbose = TRUE) {
+.vcf_filter_columns <- function(vcf_arrow, keep, f_invar = TRUE, verbose = TRUE,
+                                strict_poly = FALSE) {
 
   if (!inherits(vcf_arrow, "VCFArrow"))
     cli::cli_abort("Expecting a VCFArrow object")
@@ -106,7 +110,8 @@
   }
 
   # only filter invariants if samples were removed
-  if (f_invar && length(removed) > 0L) vcf_arrow <- vcf_filter_invariant(vcf_arrow)
+  if (f_invar && length(removed) > 0L)
+    vcf_arrow <- vcf_filter_invariant(vcf_arrow, strict_poly = strict_poly)
 
   if (verbose) {
     if (length(removed) > 0L)
