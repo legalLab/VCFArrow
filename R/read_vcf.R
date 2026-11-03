@@ -178,7 +178,13 @@ read_vcf <- function(vcf_file, chunk_size = 50000) {
   # combine metadata
   variants_df <- as.data.frame(do.call(rbind, variant_buffer), stringsAsFactors = FALSE)
   colnames(variants_df) <- c("CHROM","POS","ID","REF","ALT","QUAL","FILTER")
-  variants_df$POS <- suppressWarnings(as.integer(variants_df$POS))
+  # POS as a double: exact up to 2^53, so positions beyond R's integer range
+  # (2,147,483,647, exceeded by some chromosomes) are kept; anything but a
+  # whole non-negative number is NA
+  variants_df$POS <- suppressWarnings(as.numeric(variants_df$POS))
+  variants_df$POS[!is.finite(variants_df$POS) | variants_df$POS < 0 |
+                    variants_df$POS != floor(variants_df$POS) |
+                    variants_df$POS > 2^53] <- NA_real_
   info_vec <- unlist(info_buffer, use.names = FALSE)
 
   # DiscoSNP-RAD paralog metrics from INFO: RANK (Rk) and REPEAT (RPT);
