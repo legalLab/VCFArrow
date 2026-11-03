@@ -515,9 +515,9 @@ vcf_bind_sparse <- function(...,
   if (!length(miss)) return(w)
 
   fill_a <- if (absent_as == "hom_ref") 0L else NA_integer_
-  # per-sample FORMAT text, as write_vcf() writes it: "0/0", or missing
-  # (written as ".")
-  fill_fmt <- if (absent_as == "hom_ref") "0/0" else NA_character_
+  # per-sample FORMAT text, as write_vcf() writes it: "0/0", or "./." (a
+  # missing diploid genotype, like the other missing calls)
+  fill_fmt <- if (absent_as == "hom_ref") "0/0" else "./."
   new_id <- win_lo + (miss - 1L) %/% n_s
   s <- (miss - 1L) %% n_s + 1L
   n <- length(miss)
