@@ -10,8 +10,13 @@
 #'   a summary.
 #'
 #' @details
-#' This function is a method of the VCFArrow S4 class
-#' Method to show object content summary
+#' This function is a method of the VCFArrow S4 class.
+#' It prints the numbers of variants and samples, the numbers of biallelic
+#' SNVs, multiallelic variants and indels, the samples per group, the
+#' number of phased genotypes, the storage location, and the first five
+#' variants with their INFO and FORMAT fields and the first five samples.
+#' Phased genotypes are counted in one genotype chunk file only, the first
+#' that holds current variants and samples, so that printing stays fast.
 #'
 #' @examples
 #' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
@@ -27,61 +32,82 @@ setMethod(
   "VCFArrow",
   function(object) {
 
+    v <- object@variants
+    n_var <- nrow(v)
+    ffiles <- list.files(object@path, pattern = "\\.arrow$", full.names = TRUE)
+
     cat("\nAn object of class \"VCFArrow\"\n")
 
     # --- basic dimensions ---
-    n_var <- tryCatch(nrow(object@variants), error = function(e) NA_integer_)
-    n_samp <- length(object@samples)
-
     cat("\nDimensions:\n")
     cat("  Variants:", n_var, "\n")
-    cat("  Samples: ", n_samp, "\n")
+    cat("  Samples: ", length(object@samples), "\n")
 
-    cat("\nQuick stats:\n")
-    cat("  Non-missing variants:", sum(!is.na(object@variants$POS)), "\n")
+    # --- variant types (from @variants, no genotype reading) ---
+    if (n_var > 0) {
+      cat("\nVariant types:\n")
+      cat("  Biallelic SNVs:", sum(v$is_biallelic & !v$is_indel, na.rm = TRUE), "\n")
+      cat("  Multiallelic:  ", sum(!v$is_biallelic, na.rm = TRUE), "\n")
+      cat("  Indels:        ", sum(v$is_indel, na.rm = TRUE), "\n")
+      if (any(is.na(v$POS))) cat("  Without a valid POS:", sum(is.na(v$POS)), "\n")
+    }
 
-    has_phased <- any(grepl("_phased$", names(object@gt$schema)))
-    cat("\nPhased genotypes:", has_phased, "\n")
+    # --- groups ---
+    if (all(is.na(object@groups))) {
+      cat("\nGroups: not set (use set_vcf_groups())\n")
+    } else {
+      grp <- table(object@groups, useNA = "ifany")
+      cat("\nGroups:", length(grp), "\n")
+      print(grp)
+    }
 
-    # --- path info ---
+    # --- phased genotypes: counted in one chunk file only, the first that
+    # holds current variants and samples (filtering can leave the first files
+    # without any), so that printing stays fast (counting all genotypes would
+    # read every chunk file) ---
+    if (n_var > 0 && length(ffiles) > 0) {
+      live <- list(pos = .row_id_pos(v$.row_id), samples = object@samples)
+      for (fpath in .get_sorted_feather_files(object@path)) {
+        ch <- .read_live_chunk(fpath, "phased", live)
+        if (length(ch$phased)) break
+      }
+      if (length(ch$phased))
+        cat("\nPhased genotypes (first chunk with variants):",
+            sum(ch$phased, na.rm = TRUE), "of", length(ch$phased), "\n")
+    }
+
+    # --- storage ---
     cat("\nStorage:\n")
     cat("  Path:", object@path, "\n")
-
-    # --- Arrow dataset summary (no collect) ---
-    cat("\nGenotype storage (Arrow):\n")
-    print(object@gt)
+    cat("  Genotype chunk files:", length(ffiles), "\n")
 
     # --- variants preview ---
-    if (!is.null(object@variants) && nrow(object@variants) > 0) {
+    if (n_var > 0) {
       cat("\nVariants (first 5 rows):\n")
-      print(utils::head(object@variants, 5))
+      print(utils::head(v, 5))
+      if (n_var > 5) cat("  ...", n_var - 5, "more\n")
     } else {
       cat("\nVariants: <empty>\n")
     }
 
-    if (!is.null(object@variants) && nrow(object@variants) > 5) {
-      cat("  ...", nrow(object@variants) - 5, "more\n")
-    }
-
-    # --- INFO preview ---
+    # --- INFO and FORMAT of the same 5 variants (@format is not subset by
+    # filters; it is looked up by .row_id) ---
     if (length(object@info) > 0) {
       cat("\nINFO (first 5):\n")
       print(utils::head(object@info, 5))
     }
-
-    # --- FORMAT preview ---
-    if (length(object@info) > 0) {
+    if (nrow(object@format) > 0 && n_var > 0) {
+      ids <- utils::head(v$.row_id, 5)
+      fmt <- object@format$FORMAT[.match_row_id(ids, .row_id_pos(object@format$.row_id))]
       cat("\nFORMAT (first 5):\n")
-      print(utils::head(object@format, 5))
+      print(data.frame(.row_id = ids, FORMAT = fmt), row.names = FALSE)
     }
 
     # --- samples preview ---
     cat("\nSamples (first 5):\n")
     print(utils::head(object@samples, 5))
-
-    if (length(object@samples) > 5) {
+    if (length(object@samples) > 5)
       cat("  ...", length(object@samples) - 5, "more\n")
-    }
 
     invisible(object)
   }

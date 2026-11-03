@@ -17,8 +17,13 @@ a summary.
 Print a summary of a VCFArrow object
 }
 \details{
-This function is a method of the VCFArrow S4 class
-Method to show object content summary
+This function is a method of the VCFArrow S4 class.
+It prints the numbers of variants and samples, the numbers of biallelic
+SNVs, multiallelic variants and indels, the samples per group, the
+number of phased genotypes, the storage location, and the first five
+variants with their INFO and FORMAT fields and the first five samples.
+Phased genotypes are counted in one genotype chunk file only, the first
+that holds current variants and samples, so that printing stays fast.
 }
 \examples{
 f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
