@@ -4,7 +4,7 @@
 \alias{vcf2genepop}
 \title{vcf2genepop}
 \usage{
-vcf2genepop(vcf_arrow, out_file, keep_groups = NULL)
+vcf2genepop(vcf_arrow, out_file, keep_groups = NULL, pop_names = FALSE)
 }
 \arguments{
 \item{vcf_arrow}{-> VCFArrow object}
@@ -12,6 +12,9 @@ vcf2genepop(vcf_arrow, out_file, keep_groups = NULL)
 \item{out_file}{-> name of file to output, no default (character)}
 
 \item{keep_groups}{-> groups to retain, default NULL (character)}
+
+\item{pop_names}{-> write the group name after Pop on the line that starts
+each population ('pop WA') instead of Pop alone, default FALSE (Boolean)}
 }
 \value{
 Invisibly returns the input VCFArrow object; called for its side effect of writing \code{out_file}.
@@ -24,6 +27,12 @@ This function converts a VCFArrow object to an external Genepop formatted file.
 Writing occurs in chunks whose size is determined by the read_vcf() function.
 Larger chunks result in faster writing speeds.
 If no groups are defined, the default behavior is to use all groups.
+Each population starts with a line holding the word Pop alone, as the
+GENEPOP documentation shows it; GENEPOP itself names each population
+after its last individual.  Some readers, e.g. adegenet::read.genepop(),
+accept only this form.  With pop_names = TRUE, the line also holds the
+group name ('pop WA'), which other programs may read as the population
+name.
 }
 \examples{
 f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
