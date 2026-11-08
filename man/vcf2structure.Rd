@@ -4,7 +4,7 @@
 \alias{vcf2structure}
 \title{vcf2structure}
 \usage{
-vcf2structure(vcf_arrow, out_file, keep_groups = NULL, method = "S")
+vcf2structure(vcf_arrow, out_file, keep_groups = NULL, method = c("S", "F"))
 }
 \arguments{
 \item{vcf_arrow}{-> VCFArrow object}
@@ -29,13 +29,20 @@ Larger chunks result in faster writing speeds.
 If no groups are defined, the default behavior is to use all groups.
 The flag parameter controls whether Structure (flag = 'S') or
 FastStructure (flag = 'F') formatted output is written out.
+Each sample is written on two lines (one per allele copy): its name, its
+group number and, for FastStructure, four columns of 0 (FastStructure
+ignores the first six columns), then one allele per SNP: 0 (REF), 1 (ALT)
+or -9 (missing).
+FastStructure adds the extension '.str' to the name given with --input,
+so give out_file the extension .str (e.g. "data.str", read with
+--input=data --format=str).
 }
 \examples{
 f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
                  package = "VCFArrow")
 vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf2structure(vcf, out_file = tempfile(fileext = ".str"))
-vcf2structure(vcf, out_file = tempfile(fileext = ".fstr"),
+vcf2structure(vcf, out_file = tempfile(fileext = ".str"),
               method = "F")
 
 }

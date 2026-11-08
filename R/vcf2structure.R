@@ -20,24 +20,31 @@
 #' If no groups are defined, the default behavior is to use all groups.
 #' The flag parameter controls whether Structure (flag = 'S') or
 #' FastStructure (flag = 'F') formatted output is written out.
+#' Each sample is written on two lines (one per allele copy): its name, its
+#' group number and, for FastStructure, four columns of 0 (FastStructure
+#' ignores the first six columns), then one allele per SNP: 0 (REF), 1 (ALT)
+#' or -9 (missing).
+#' FastStructure adds the extension '.str' to the name given with --input,
+#' so give out_file the extension .str (e.g. "data.str", read with
+#' --input=data --format=str).
 #'
 #' @examples
 #' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
 #'                  package = "VCFArrow")
 #' vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 #' vcf2structure(vcf, out_file = tempfile(fileext = ".str"))
-#' vcf2structure(vcf, out_file = tempfile(fileext = ".fstr"),
+#' vcf2structure(vcf, out_file = tempfile(fileext = ".str"),
 #'               method = "F")
 #'
 #' @export
 #'
 
 vcf2structure <- function(vcf_arrow, out_file, keep_groups = NULL,
-                          method = "S") {
+                          method = c("S", "F")) {
 
   if (missing(out_file)) cli::cli_abort("{.arg out_file} must be supplied.")
 
-  method <- match.arg(method, c("S", "F"))
+  method <- match.arg(method)
 
   setup <- .vcf_export_setup(vcf_arrow, keep_groups)
   acc <- .accumulate_individuals(setup, "Structure")
