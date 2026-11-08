@@ -17,7 +17,8 @@ efficient, implementing the lazy-loaded [Apache
 Arrow](https://arrow.apache.org/) data scheme. This package is,
 therefore, capable of processing VCFs comprising tens of millions of
 SNVs and hundreds of individuals in a matter of [seconds to minutes with
-minimal RAM overhead](https://github.com/legalLab/VCFArrow/blob/main/comparison/tool_comparison.md).
+minimal RAM
+overhead](https://github.com/legalLab/VCFArrow/blob/main/comparison/tool_comparison.md).
 
 # How to use the functions of this package
 
@@ -61,11 +62,13 @@ so the code above is not run here.
 
 First we need to read in the VCF. If one has information on the grouping
 of individuals, this information can also be put into the VCFArrow
-object. This grouping information is stored in a ‘strata’ file (a
-tab-separated text file with two columns with an ‘id’ and ‘pop’
-headers). The grouping of individuals can be used in filtering steps,
-and it is necessary for transformation of the VCFArrow object to other
-population genetic formats, many of which require it.
+object. This grouping information is stored in a ‘strata’ file (a text
+file with a header line and at least two columns, ‘id’ and ‘pop’,
+separated by tabs or by spaces; with tabs, names may contain spaces).
+Samples not listed in the file get no group (NA), with a warning. The
+grouping of individuals can be used in filtering steps, and it is
+necessary for transformation of the VCFArrow object to other population
+genetic formats, many of which require it.
 
 The data used in this example are from ([Mota et
 al., 2026](https://doi.org/10.1080/14772000.2026.2692965))—a population
@@ -101,28 +104,23 @@ vcf
 #>   Variants: 10000 
 #>   Samples:  18 
 #> 
-#> Quick stats:
-#>   Non-missing variants: 10000 
+#> Variant types:
+#>   Biallelic SNVs: 9313 
+#>   Multiallelic:   0 
+#>   Indels:         687 
 #> 
-#> Phased genotypes: FALSE 
+#> Groups: 4 
+#> 
+#> BS GS OG WA 
+#>  5  5  3  5 
+#> 
+#> Genotypes (first chunk with variants): 180000 
+#>   Missing: 47.09% 
+#>   Phased:  45612 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpGMhoCe/arrow_vcf_e428d329e63ad 
-#> 
-#> Genotype storage (Arrow):
-#> FileSystemDataset with 1 Feather file
-#> 9 columns
-#> .row_id: int32
-#> sample: string
-#> a1: int32
-#> a2: int32
-#> phased: bool
-#> fmt: string
-#> DP: double
-#> GQ: double
-#> ADR: double
-#> 
-#> See $metadata for additional Schema metadata
+#>   Path: /tmp/RtmpBBa9FL/arrow_vcf_14f5fe41013d70 
+#>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):
 #>                     CHROM POS        ID REF ALT QUAL FILTER Rk RPT n_alt
@@ -147,23 +145,32 @@ vcf
 #> [5] "Ty=SNP;Rk=1.0;UL=3;UR=7;CL=3;CR=7;Genome=.;Sd=.;Cluster=10880986;ClSize=5"   
 #> 
 #> FORMAT (first 5):
-#>           FORMAT .row_id
-#> 1 GT:DP:PL:AD:HQ       1
-#> 2 GT:DP:PL:AD:HQ       2
-#> 3 GT:DP:PL:AD:HQ       3
-#> 4 GT:DP:PL:AD:HQ       4
-#> 5 GT:DP:PL:AD:HQ       5
+#>  .row_id         FORMAT
+#>        1 GT:DP:PL:AD:HQ
+#>        2 GT:DP:PL:AD:HQ
+#>        3 GT:DP:PL:AD:HQ
+#>        4 GT:DP:PL:AD:HQ
+#>        5 GT:DP:PL:AD:HQ
 #> 
 #> Samples (first 5):
 #> [1] "Pv120" "Pv126" "Pv13"  "Pv14"  "Pv27" 
 #>   ... 13 more
+```
 
-# read individuals to include
-# if indivs is blank, the default is to use all individuals
-indivs <- read.table(file.path(data_path, "indivs_b"), header = TRUE)$id
-  
-# check if all samples are in VCF sample names
-if (any(!(indivs %in% vcf@samples))) stop(paste("Some individuals in list not in VCF"))
+Samples can be renamed with `rename_vcf_samples()`, from a named vector
+(`c(old = "new")`), a data frame or a file with the columns ‘id’
+(current name) and ‘new\_id’ (new name). By default each sample keeps
+its group; with `update_groups = TRUE` the groups are taken from a ‘pop’
+column. Renaming creates a new object, as the sample names are stored
+with the genotypes; the object `vcf` used in the rest of this tutorial
+keeps the original names.
+
+``` r
+# rename two samples, keeping their groups
+vcf_renamed <- rename_vcf_samples(vcf, c(Pv120 = "WA_Pv120", Pv13 = "WA_Pv13"))
+#> ℹ Renamed 2 samples; group assignments kept.
+head(vcf_renamed@samples)
+#> [1] "WA_Pv120" "Pv126"    "WA_Pv13"  "Pv14"     "Pv27"     "Pv28"
 ```
 
 ## Assessment of missing data
@@ -255,26 +262,26 @@ indivs1 <- c("Pv14", "Pv27", "Pv28", "Pv78", "Pv126")
 vcf1 <- vcf_extract_samples(vcf, indivs1)
 #> ℹ Compacting GT: 18 -> 5 samples across 1 chunk
 #> ℹ Applying invariant filter
-#> ℹ Removed 7220 invariant variants; 2780 retained.
+#> ℹ Retained 3352 / 10000 variants (polymorphic at the allele level)
 #> ℹ Removed samples: Pv120, Pv13, Pv2, Pv31, Pv56, Pv62, Pv68, Pv73, Pv79, Pv93, Pb2Jp, Pb2Scx, and Pb1Rd
-#> ℹ Variants retained: 2780 | Samples retained: 5
+#> ℹ Variants retained: 3352 | Samples retained: 5 | Missing data: 22.04%
 
 # see how many variants remained
 nrow(vcf1@variants)
-#> [1] 2780
+#> [1] 3352
 
 # subset VCF by groups (default keep = TRUE, remove invariants f_invar = TRUE)
 groups1 <- c("GS", "BS", "WA")
 vcf1 <- vcf_extract_groups(vcf, groups1)
 #> ℹ Compacting GT: 18 -> 15 samples across 1 chunk
 #> ℹ Applying invariant filter
-#> ℹ Removed 1705 invariant variants; 8295 retained.
+#> ℹ Retained 8421 / 10000 variants (polymorphic at the allele level)
 #> ℹ Removed samples: Pb2Jp, Pb2Scx, and Pb1Rd
-#> ℹ Variants retained: 8295 | Samples retained: 15
+#> ℹ Variants retained: 8421 | Samples retained: 15 | Missing data: 40.00%
 
 # see how many variants remained
 nrow(vcf1@variants)
-#> [1] 8295
+#> [1] 8421
 
 # subset VCF by a random  number of variants (default n_SNVs = 10000)
 vcf1 <- vcf_sub_SNVs(vcf, n_SNVs = 5000)
@@ -289,7 +296,7 @@ vcf1 <- vcf_sub_SNVs_stratified(vcf, n_SNVs = 5000)
 
 # see how many variants remained
 nrow(vcf1@variants)
-#> [1] 4
+#> [1] 5000
 ```
 
 ### Filtering
@@ -311,29 +318,34 @@ threshold (repeat is also specific to DiscoSnpRad VCFs; high values
 indicate paralogs), `vcf_filter_paralogs()` applies both the rank and
 the repeat filter, `vcf_filter_adr()` either removes (make genotype
 missing) or corrects (make genotype homozygous) genotypes with allele
-ratio imbalance, `vcf_filter_coverage()` removes SNVs below a specific
-coverage (make genotypes missing), and `vcf_filter_biallelic()` removes
-all variants that are not biallelic. Finally the
-`vcf_filter_invariant()` removes invariant SNVs (SNVs may become
-invariant after subsetting and filtering). The function
-`vcf_filter_indels()` removes indels from the VCF, retaining only SNPs.
-The functions `vcf_filter_oneSNV()` and `vcf_filter_multiSNV()` filter
-the VCF to remove linked SNVs (retain only unlinked SNPs) or retain only
-linked SNVs, respectively. In general, all analyses assume that SNVs are
+ratio imbalance, `vcf_filter_coverage()` sets genotypes with a read
+depth (DP) below a threshold to missing (default `strict = TRUE`), or
+with `strict = FALSE` leaves the genotypes unchanged and removes SNVs
+with fewer than two polymorphic genotypes at or above the threshold, and
+`vcf_filter_biallelic()` removes all variants that are not biallelic.
+Finally the `vcf_filter_invariant()` removes invariant SNVs (SNVs may
+become invariant after subsetting and filtering); by default a SNV is
+invariant if all its alleles are the same, and with `strict_poly = TRUE`
+if all its genotypes are the same, which also removes SNVs where every
+sample is heterozygous. The function `vcf_filter_indels()` removes
+indels from the VCF, retaining only SNPs. The functions
+`vcf_filter_oneSNV()` and `vcf_filter_multiSNV()` filter the VCF to
+remove linked SNVs (retain only unlinked SNPs) or retain only linked
+SNVs, respectively. In general, all analyses assume that SNVs are
 unlinked, however, some analyses such as FineRadStructure work with
 linked SNVs.
 
 ``` r
 # filter VCF for analyses (unlinked SNPs)
-vcf_oneSNP <- vcf_extract_samples(vcf, indivs) |>
+vcf_oneSNP <- vcf |>
   vcf_filter_indels() |>
   vcf_filter_biallelic() |>
   vcf_filter_maf(.03) |>
   vcf_filter_coverage(10) |>
   vcf_filter_missingness(.2) |>
   vcf_filter_missing(.3) |>
+  vcf_filter_invariant() |>
   vcf_filter_oneSNV()
-#> ℹ No samples to keep or remove - keeping all samples
 #> ℹ Applying indel filter
 #> ℹ Retained 9313 / 10000 variants (non-Indels)
 #> ℹ Applying biallelic filter
@@ -341,28 +353,30 @@ vcf_oneSNP <- vcf_extract_samples(vcf, indivs) |>
 #> ℹ Applying MAF filter
 #> ℹ Retained 9069 / 9313 variants (MAF >= 0.03)
 #> ℹ Applying read coverage filter
-#> ℹ Retained 5171 / 9069 variants (polymorphic with DP >= 10)
+#> ℹ Set 32198 / 84246 called genotypes with DP < 10 to missing
 #> ℹ Applying locus missingness filter
-#> ℹ Retained 1734 / 5171 variants (per-variant missingness <= 0.2)
+#> ℹ Retained 910 / 9069 variants (per-variant missingness <= 0.2) | Missing data: 8.02%
 #> ℹ Applying sample missingness filter
-#> ℹ Variants retained: 1734 | Samples retained: 18
+#> ℹ Variants retained: 910 | Samples retained: 18 | Missing data: 8.02%
+#> ℹ Applying invariant filter
+#> ℹ Retained 899 / 910 variants (polymorphic at the allele level)
 #> ℹ Applying unlinked SNV filter
-#> ℹ Retained 1734 / 1734 variants (unlinked SNVs)
+#> ℹ Retained 899 / 899 variants (unlinked SNVs)
 
 # see how many variants remained
 nrow(vcf_oneSNP@variants)
-#> [1] 1734
+#> [1] 899
 
 # filter VCF for analyses (linked SNPs)
-vcf_multiSNP <- vcf_extract_samples(vcf, indivs) |>
+vcf_multiSNP <- vcf |>
   vcf_filter_indels() |>
   vcf_filter_biallelic() |>
   vcf_filter_maf(.03) |>
   vcf_filter_coverage(10) |>
   vcf_filter_missingness(.2) |>
   vcf_filter_missing(.3) |>
+  vcf_filter_invariant() |>
   vcf_filter_multiSNV()
-#> ℹ No samples to keep or remove - keeping all samples
 #> ℹ Applying indel filter
 #> ℹ Retained 9313 / 10000 variants (non-Indels)
 #> ℹ Applying biallelic filter
@@ -370,18 +384,30 @@ vcf_multiSNP <- vcf_extract_samples(vcf, indivs) |>
 #> ℹ Applying MAF filter
 #> ℹ Retained 9069 / 9313 variants (MAF >= 0.03)
 #> ℹ Applying read coverage filter
-#> ℹ Retained 5171 / 9069 variants (polymorphic with DP >= 10)
+#> ℹ Set 32198 / 84246 called genotypes with DP < 10 to missing
 #> ℹ Applying locus missingness filter
-#> ℹ Retained 1734 / 5171 variants (per-variant missingness <= 0.2)
+#> ℹ Retained 910 / 9069 variants (per-variant missingness <= 0.2) | Missing data: 8.02%
 #> ℹ Applying sample missingness filter
-#> ℹ Variants retained: 1734 | Samples retained: 18
+#> ℹ Variants retained: 910 | Samples retained: 18 | Missing data: 8.02%
+#> ℹ Applying invariant filter
+#> ℹ Retained 899 / 910 variants (polymorphic at the allele level)
 #> ℹ Applying linked SNV filter
-#> ℹ Retained 0 / 1734 variants (linked SNVs)
+#> ℹ Retained 0 / 899 variants (linked SNVs)
 
 # see how many variants remained
 nrow(vcf_multiSNP@variants)
 #> [1] 0
 ```
+
+No linked SNVs remain here because of how the tutorial dataset was made.
+It is a random sample of 10000 of the 18579683 SNVs, and with
+DiscoSnpRad data, where nearly every locus is its own CHROM, a random
+sample of SNVs rarely includes two from the same locus: only four loci
+have two SNVs, and none of these pairs survives the filters.
+`vcf_filter_multiSNV()` therefore retains no SNVs, and the
+fineRADstructure file written below contains no loci. With the complete
+dataset, in which loci can have several SNVs, the same pipeline retains
+the linked SNVs that pass the filters.
 
 ### Extracting and binding
 
@@ -412,14 +438,14 @@ indivs1 <- c("Pb2Jp", "Pb2Scx", "Pb1Rd") # the outgroup
 vcf_ingrp <- vcf_extract_samples(vcf, indivs1, keep = FALSE, f_invar = FALSE)
 #> ℹ Compacting GT: 18 -> 15 samples across 1 chunk
 #> ℹ Removed samples: Pb2Jp, Pb2Scx, and Pb1Rd
-#> ℹ Variants retained: 10000 | Samples retained: 15
+#> ℹ Variants retained: 10000 | Samples retained: 15 | Missing data: 44.06%
 # see how many variants remained
 nrow(vcf_ingrp@variants)
 #> [1] 10000
 vcf_outgrp <- vcf_extract_samples(vcf, indivs1, f_invar = FALSE)
 #> ℹ Compacting GT: 18 -> 3 samples across 1 chunk
 #> ℹ Removed samples: Pv120, Pv126, Pv13, Pv14, Pv27, Pv28, Pv2, Pv31, Pv56, Pv62, Pv68, Pv73, Pv78, Pv79, and Pv93
-#> ℹ Variants retained: 10000 | Samples retained: 3
+#> ℹ Variants retained: 10000 | Samples retained: 3 | Missing data: 62.22%
 # see how many variants remained
 nrow(vcf_outgrp@variants)
 #> [1] 10000
@@ -441,14 +467,14 @@ groups1 <- c("GS", "BS", "WA") # the ingroup
 vcf_ingrp <- vcf_extract_groups(vcf, groups1, f_invar = FALSE)
 #> ℹ Compacting GT: 18 -> 15 samples across 1 chunk
 #> ℹ Removed samples: Pb2Jp, Pb2Scx, and Pb1Rd
-#> ℹ Variants retained: 10000 | Samples retained: 15
+#> ℹ Variants retained: 10000 | Samples retained: 15 | Missing data: 44.06%
 # see how many variants remained
 nrow(vcf_ingrp@variants)
 #> [1] 10000
 vcf_outgrp <- vcf_extract_groups(vcf, groups1, keep = FALSE, f_invar = FALSE)
 #> ℹ Compacting GT: 18 -> 3 samples across 1 chunk
 #> ℹ Removed samples: Pv120, Pv126, Pv13, Pv14, Pv27, Pv28, Pv2, Pv31, Pv56, Pv62, Pv68, Pv73, Pv78, Pv79, and Pv93
-#> ℹ Variants retained: 10000 | Samples retained: 3
+#> ℹ Variants retained: 10000 | Samples retained: 3 | Missing data: 62.22%
 # see how many variants remained
 nrow(vcf_outgrp@variants)
 #> [1] 10000
@@ -470,29 +496,29 @@ groups1 <- c("GS", "BS", "WA") # the ingroup
 vcf_ingrp <- vcf_extract_groups(vcf, groups1)
 #> ℹ Compacting GT: 18 -> 15 samples across 1 chunk
 #> ℹ Applying invariant filter
-#> ℹ Removed 1705 invariant variants; 8295 retained.
+#> ℹ Retained 8421 / 10000 variants (polymorphic at the allele level)
 #> ℹ Removed samples: Pb2Jp, Pb2Scx, and Pb1Rd
-#> ℹ Variants retained: 8295 | Samples retained: 15
+#> ℹ Variants retained: 8421 | Samples retained: 15 | Missing data: 40.00%
 # see how many variants remained
 nrow(vcf_ingrp@variants)
-#> [1] 8295
+#> [1] 8421
 vcf_outgrp <- vcf_extract_groups(vcf, groups1, keep = FALSE)
 #> ℹ Compacting GT: 18 -> 3 samples across 1 chunk
 #> ℹ Applying invariant filter
-#> ℹ Removed 8904 invariant variants; 1096 retained.
+#> ℹ Retained 1559 / 10000 variants (polymorphic at the allele level)
 #> ℹ Removed samples: Pv120, Pv126, Pv13, Pv14, Pv27, Pv28, Pv2, Pv31, Pv56, Pv62, Pv68, Pv73, Pv78, Pv79, and Pv93
-#> ℹ Variants retained: 1096 | Samples retained: 3
+#> ℹ Variants retained: 1559 | Samples retained: 3 | Missing data: 13.53%
 # see how many variants remained
 nrow(vcf_outgrp@variants)
-#> [1] 1096
+#> [1] 1559
 
 # bind vcf_outgrp and vcf_ingrp (intersection - variable SNVs in all objects)
 vcf1 <- vcf_bind(vcf_ingrp, vcf_outgrp, mode = "intersect")
-#> ℹ Binding 2 VCFArrow objects (intersect): 421 variants, 18 total samples.
+#> ℹ Binding 2 VCFArrow objects (intersect): 765 variants, 18 total samples.
 
 # see how many variants remained
 nrow(vcf1@variants)
-#> [1] 421
+#> [1] 765
 ```
 
 #### Extracting groups - remove invariant loci; binding - union & missing genotypes
@@ -503,21 +529,21 @@ groups1 <- c("GS", "BS", "WA") # the ingroup
 vcf_ingrp <- vcf_extract_groups(vcf, groups1)
 #> ℹ Compacting GT: 18 -> 15 samples across 1 chunk
 #> ℹ Applying invariant filter
-#> ℹ Removed 1705 invariant variants; 8295 retained.
+#> ℹ Retained 8421 / 10000 variants (polymorphic at the allele level)
 #> ℹ Removed samples: Pb2Jp, Pb2Scx, and Pb1Rd
-#> ℹ Variants retained: 8295 | Samples retained: 15
+#> ℹ Variants retained: 8421 | Samples retained: 15 | Missing data: 40.00%
 # see how many variants remained
 nrow(vcf_ingrp@variants)
-#> [1] 8295
+#> [1] 8421
 vcf_outgrp <- vcf_extract_groups(vcf, groups1, keep = FALSE)
 #> ℹ Compacting GT: 18 -> 3 samples across 1 chunk
 #> ℹ Applying invariant filter
-#> ℹ Removed 8904 invariant variants; 1096 retained.
+#> ℹ Retained 1559 / 10000 variants (polymorphic at the allele level)
 #> ℹ Removed samples: Pv120, Pv126, Pv13, Pv14, Pv27, Pv28, Pv2, Pv31, Pv56, Pv62, Pv68, Pv73, Pv78, Pv79, and Pv93
-#> ℹ Variants retained: 1096 | Samples retained: 3
+#> ℹ Variants retained: 1559 | Samples retained: 3 | Missing data: 13.53%
 # see how many variants remained
 nrow(vcf_outgrp@variants)
-#> [1] 1096
+#> [1] 1559
 
 # bind vcf_outgrp and vcf_ingrp (union - variable SNVs in any object)
 vcf1 <- vcf_bind(vcf_ingrp, vcf_outgrp, mode = "union")
@@ -541,21 +567,21 @@ groups1 <- c("GS", "BS", "WA") # the ingroup
 vcf_ingrp <- vcf_extract_groups(vcf, groups1)
 #> ℹ Compacting GT: 18 -> 15 samples across 1 chunk
 #> ℹ Applying invariant filter
-#> ℹ Removed 1705 invariant variants; 8295 retained.
+#> ℹ Retained 8421 / 10000 variants (polymorphic at the allele level)
 #> ℹ Removed samples: Pb2Jp, Pb2Scx, and Pb1Rd
-#> ℹ Variants retained: 8295 | Samples retained: 15
+#> ℹ Variants retained: 8421 | Samples retained: 15 | Missing data: 40.00%
 # see how many variants remained
 nrow(vcf_ingrp@variants)
-#> [1] 8295
+#> [1] 8421
 vcf_outgrp <- vcf_extract_groups(vcf, groups1, keep = FALSE)
 #> ℹ Compacting GT: 18 -> 3 samples across 1 chunk
 #> ℹ Applying invariant filter
-#> ℹ Removed 8904 invariant variants; 1096 retained.
+#> ℹ Retained 1559 / 10000 variants (polymorphic at the allele level)
 #> ℹ Removed samples: Pv120, Pv126, Pv13, Pv14, Pv27, Pv28, Pv2, Pv31, Pv56, Pv62, Pv68, Pv73, Pv78, Pv79, and Pv93
-#> ℹ Variants retained: 1096 | Samples retained: 3
+#> ℹ Variants retained: 1559 | Samples retained: 3 | Missing data: 13.53%
 # see how many variants remained
 nrow(vcf_outgrp@variants)
-#> [1] 1096
+#> [1] 1559
 
 # bind vcf_outgrp and vcf_ingrp (union - variable SNVs in any object)
 vcf1 <- vcf_bind(vcf_ingrp, vcf_outgrp, mode = "union", absent_as = "hom_ref")
@@ -608,9 +634,9 @@ groups1 <- "OG"
 vcf_outgrp <- vcf_extract_groups(vcf, groups1)
 #> ℹ Compacting GT: 18 -> 3 samples across 1 chunk
 #> ℹ Applying invariant filter
-#> ℹ Removed 8904 invariant variants; 1096 retained.
+#> ℹ Retained 1559 / 10000 variants (polymorphic at the allele level)
 #> ℹ Removed samples: Pv120, Pv126, Pv13, Pv14, Pv27, Pv28, Pv2, Pv31, Pv56, Pv62, Pv68, Pv73, Pv78, Pv79, and Pv93
-#> ℹ Variants retained: 1096 | Samples retained: 3
+#> ℹ Variants retained: 1559 | Samples retained: 3 | Missing data: 13.53%
 
 # filter VCFArrow ingroup, then bind outgroups
 vcf1 <- vcf_extract_groups(vcf, groups1, keep = FALSE) |>
@@ -619,31 +645,34 @@ vcf1 <- vcf_extract_groups(vcf, groups1, keep = FALSE) |>
   vcf_filter_coverage(10) |>
   vcf_filter_missingness(.2) |>
   vcf_filter_missing(.3) |>
+  vcf_filter_invariant() |>
   vcf_filter_oneSNV() |>
   vcf_bind(vcf_outgrp, outgroup = TRUE, absent_as = "missing")
 #> ℹ Compacting GT: 18 -> 15 samples across 1 chunk
 #> ℹ Applying invariant filter
-#> ℹ Removed 1705 invariant variants; 8295 retained.
+#> ℹ Retained 8421 / 10000 variants (polymorphic at the allele level)
 #> ℹ Removed samples: Pb2Jp, Pb2Scx, and Pb1Rd
-#> ℹ Variants retained: 8295 | Samples retained: 15
+#> ℹ Variants retained: 8421 | Samples retained: 15 | Missing data: 40.00%
 #> ℹ Applying indel filter
-#> ℹ Retained 7706 / 8295 variants (non-Indels)
+#> ℹ Retained 7816 / 8421 variants (non-Indels)
 #> ℹ Applying biallelic filter
-#> ℹ Retained 7706 / 7706 variants (biallelic SNVs)
+#> ℹ Retained 7816 / 7816 variants (biallelic SNVs)
 #> ℹ Applying read coverage filter
-#> ℹ Retained 4483 / 7706 variants (polymorphic with DP >= 10)
+#> ℹ Set 26207 / 70192 called genotypes with DP < 10 to missing
 #> ℹ Applying locus missingness filter
-#> ℹ Retained 2409 / 4483 variants (per-variant missingness <= 0.2)
+#> ℹ Retained 1396 / 7816 variants (per-variant missingness <= 0.2) | Missing data: 8.17%
 #> ℹ Applying sample missingness filter
-#> ℹ Variants retained: 2409 | Samples retained: 15
+#> ℹ Variants retained: 1396 | Samples retained: 15 | Missing data: 8.17%
+#> ℹ Applying invariant filter
+#> ℹ Retained 1371 / 1396 variants (polymorphic at the allele level)
 #> ℹ Applying unlinked SNV filter
-#> ℹ Retained 2409 / 2409 variants (unlinked SNVs)
-#> ℹ Binding 2 VCFArrow objects (outgroup): 2409 variants, 18 total samples.
+#> ℹ Retained 1371 / 1371 variants (unlinked SNVs)
+#> ℹ Binding 2 VCFArrow objects (outgroup): 1371 variants, 18 total samples.
 #> ℹ Absent genotypes will be filled as: missing
 
 # see how many variants remained
 nrow(vcf1@variants)
-#> [1] 2409
+#> [1] 1371
 
 # filter - filter parameters in file name
 fltr <- "_ingroup_filter"
@@ -658,23 +687,26 @@ vcf1 <- vcf |>
   vcf_filter_coverage(10) |>
   vcf_filter_missingness(.2) |>
   vcf_filter_missing(.3) |>
+  vcf_filter_invariant() |>
   vcf_filter_oneSNV()
 #> ℹ Applying indel filter
 #> ℹ Retained 9313 / 10000 variants (non-Indels)
 #> ℹ Applying biallelic filter
 #> ℹ Retained 9313 / 9313 variants (biallelic SNVs)
 #> ℹ Applying read coverage filter
-#> ℹ Retained 5388 / 9313 variants (polymorphic with DP >= 10)
+#> ℹ Set 32834 / 88565 called genotypes with DP < 10 to missing
 #> ℹ Applying locus missingness filter
-#> ℹ Retained 1951 / 5388 variants (per-variant missingness <= 0.2)
+#> ℹ Retained 1071 / 9313 variants (per-variant missingness <= 0.2) | Missing data: 7.61%
 #> ℹ Applying sample missingness filter
-#> ℹ Variants retained: 1951 | Samples retained: 18
+#> ℹ Variants retained: 1071 | Samples retained: 18 | Missing data: 7.61%
+#> ℹ Applying invariant filter
+#> ℹ Retained 1052 / 1071 variants (polymorphic at the allele level)
 #> ℹ Applying unlinked SNV filter
-#> ℹ Retained 1951 / 1951 variants (unlinked SNVs)
+#> ℹ Retained 1052 / 1052 variants (unlinked SNVs)
 
 # see how many variants remained
 nrow(vcf1@variants)
-#> [1] 1951
+#> [1] 1052
 
 # filter - filter parameters in file name
 fltr <- "_all_filter"
@@ -685,22 +717,28 @@ assess_vcf_missing_data(vcf1, res_path, species, paste0(project, postfix, fltr))
 
 ## Saving and copying VCFArrow objects
 
-The filtering steps never actually remove any sample or SNVs from the GT
-matrix which is a design decision. If you want a new VCFArrow object
-that only has the post filtering samples and SNVs, you can use the
-function `vcf_copy()` which creates a new object and removes any
-filtered samples and SNVs. After filtering the VCFArrow object you will
-also want to save it as a VCF. This is accomplished using the function
-`write_vcf()`, which, by default will save an uncompressed VCF, but
-setting the ‘gzip’ flag to TRUE will gzip compress the VCF. With large
-VCFArrow objects this has a large overhead, so it is more efficient to
-save an uncompressed VCF and then compress it later.
+Filters that remove SNVs do not change the genotype files on disk, which
+is a design decision: they only change which SNVs the object includes,
+so they are fast and the filtered objects share the genotype files.
+Functions that remove samples (`vcf_extract_samples()`,
+`vcf_extract_groups()`, `vcf_filter_missing()`) or change genotypes
+(`vcf_filter_adr()`, `vcf_filter_coverage()`) write new genotype files
+holding only the retained samples and SNVs. The function `vcf_copy()`
+creates a new object with its own copy of the genotype files, unchanged.
+After filtering the VCFArrow object you will also want to save it as a
+VCF. This is accomplished using the function `write_vcf()`, which writes
+the retained samples and SNVs, updates the INFO fields AC, AN, AF and NS
+where present, and compresses the VCF with gzip when the file name ends
+in ‘.gz’ (or when the ‘gzip’ flag is TRUE). With large VCFArrow objects
+compression has a large overhead, so it is more efficient to save an
+uncompressed VCF and then compress it later, for example with `bgzip`,
+which also allows indexing it with tabix.
 
 ``` r
-# write the VCFArrow object as a VCF (and compress it using gzip)
-write_vcf(vcf1, out_file = file.path(res_path, paste0(project, postfix, "_filtered.vcf.gz")), gzip = TRUE)
+# write the VCFArrow object as a VCF (compressed with gzip, as the file name ends in .gz)
+write_vcf(vcf1, out_file = file.path(res_path, paste0(project, postfix, "_filtered.vcf.gz")))
 #> ℹ VCF is being written in 1 chunk
-#> ✔ VCFArrow object successfully written to '/tmp/RtmpGMhoCe/vaillantii_discosnp_sub_filtered.vcf.gz'
+#> ✔ VCFArrow object successfully written to '/tmp/RtmpBBa9FL/vaillantii_discosnp_sub_filtered.vcf.gz'
 ```
 
 ## Converting a VCF file to other population genetic and phylogenetic formats
@@ -729,108 +767,116 @@ vcf <- vcf_oneSNP
 # export data formats
 # migrate-n https://peterbeerli.com/migrate-html5/
 vcf2migrate(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_migrate.txt')))
-#> ℹ Accumulating Migrate-N (S): 1734 variants x 18 samples (0 MiB raw storage)
-#> ℹ Writing Migrate-N (S) file...
-#> ✔ Migrate-N file written to '/tmp/RtmpGMhoCe/vaillantii_discosnp_sub_migrate.txt'
+#> ℹ Accumulating Migrate-N (S): 899 variants x 18 samples (0 MiB raw storage)
+#> ℹ Writing Migrate-N (S) file: 9 loci...
+#> ✔ Migrate-N file written to '/tmp/RtmpBBa9FL/vaillantii_discosnp_sub_migrate.txt'
 # arlequin http://cmpg.unibe.ch/software/arlequin35/
 vcf2arlequin(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.arp')))
-#> ℹ Accumulating Arlequin: 1734 variants x 18 samples (0 MiB raw storage)
+#> ℹ Accumulating Arlequin: 899 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing Arlequin file...
-#> ✔ Arlequin file written to '/tmp/RtmpGMhoCe/vaillantii_discosnp_sub.arp'
+#> ✔ Arlequin file written to '/tmp/RtmpBBa9FL/vaillantii_discosnp_sub.arp'
 # structure https://web.stanford.edu/group/pritchardlab/structure.html
 vcf2structure(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.str')))
-#> ℹ Accumulating Structure: 1734 variants x 18 samples (0 MiB raw storage)
+#> ℹ Accumulating Structure: 899 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing Structure file...
-#> ✔ Structure file written to '/tmp/RtmpGMhoCe/vaillantii_discosnp_sub.str'
+#> ✔ Structure file written to '/tmp/RtmpBBa9FL/vaillantii_discosnp_sub.str'
 # faststructure http://rajanil.github.io/fastStructure/
-vcf2structure(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.fstr')), method = "F")
-#> ℹ Accumulating Structure: 1734 variants x 18 samples (0 MiB raw storage)
+# fastStructure adds .str to its --input name, so the file must end in .str
+# (here read with --input=vaillantii_discosnp_sub_fs --format=str)
+vcf2fstructure(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_fs.str')))
+#> ℹ Accumulating Structure: 899 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing Structure file...
-#> ✔ Structure file written to '/tmp/RtmpGMhoCe/vaillantii_discosnp_sub.fstr'
+#> ✔ Structure file written to '/tmp/RtmpBBa9FL/vaillantii_discosnp_sub_fs.str'
 # sNMF http://membres-timc.imag.fr/Olivier.Francois/snmf/index.htm
 vcf2snmf(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.geno')))
-#> ℹ Formatting sNMF: 1734 variants x 18 samples (0 MiB raw storage)
+#> ℹ Formatting sNMF: 899 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing sNMF file...
-#> ✔ sNMF file written to '/tmp/RtmpGMhoCe/vaillantii_discosnp_sub.geno'
+#> ✔ sNMF file written to '/tmp/RtmpBBa9FL/vaillantii_discosnp_sub.geno'
 # Admixture https://dalexander.github.io/admixture/index.html
 # takes as input binary PLINK (.bed), ordinary PLINK (.ped), or EIGENSTRAT (.geno) formatted files
 # so a thin wrapper around vcf2plink_bed() plus optional generation of known-ancestry reference populations
 vcf2admixture(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_admixture')))
-#> ℹ Building PLINK: 1734 variants x 18 samples (0 MiB raw storage)
+#> ℹ Building PLINK: 899 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing PLINK files...
-#> ℹ Chromosome names were recoded as integers for PLINK compatibility; mapping written to '/tmp/RtmpGMhoCe/vaillantii_discosnp_sub_admixture.chrommap'
-#> ✔ PLINK binary fileset written to '/tmp/RtmpGMhoCe/vaillantii_discosnp_sub_admixture.bed', '/tmp/RtmpGMhoCe/vaillantii_discosnp_sub_admixture.bim', '/tmp/RtmpGMhoCe/vaillantii_discosnp_sub_admixture.fam'
+#> ℹ Chromosome names were recoded as integers; mapping written to '/tmp/RtmpBBa9FL/vaillantii_discosnp_sub_admixture.chrommap'
+#> ✔ PLINK binary fileset written to '/tmp/RtmpBBa9FL/vaillantii_discosnp_sub_admixture.bed', '/tmp/RtmpBBa9FL/vaillantii_discosnp_sub_admixture.bim', '/tmp/RtmpBBa9FL/vaillantii_discosnp_sub_admixture.fam'
 # PLINK .bed https://www.cog-genomics.org/plink/1.9/formats#bed
 vcf2plink_bed(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_plink')))
-#> ℹ Building PLINK: 1734 variants x 18 samples (0 MiB raw storage)
+#> ℹ Building PLINK: 899 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing PLINK files...
-#> ℹ Chromosome names were recoded as integers for PLINK compatibility; mapping written to '/tmp/RtmpGMhoCe/vaillantii_discosnp_sub_plink.chrommap'
-#> ✔ PLINK binary fileset written to '/tmp/RtmpGMhoCe/vaillantii_discosnp_sub_plink.bed', '/tmp/RtmpGMhoCe/vaillantii_discosnp_sub_plink.bim', '/tmp/RtmpGMhoCe/vaillantii_discosnp_sub_plink.fam'
+#> ℹ Chromosome names were recoded as integers; mapping written to '/tmp/RtmpBBa9FL/vaillantii_discosnp_sub_plink.chrommap'
+#> ✔ PLINK binary fileset written to '/tmp/RtmpBBa9FL/vaillantii_discosnp_sub_plink.bed', '/tmp/RtmpBBa9FL/vaillantii_discosnp_sub_plink.bim', '/tmp/RtmpBBa9FL/vaillantii_discosnp_sub_plink.fam'
 # PLINK .ped https://www.cog-genomics.org/plink/1.9/formats#ped
 vcf2plink_ped(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_plink')))
-#> ℹ Accumulating PLINK .ped: 1734 variants x 18 samples (0 MiB raw storage)
+#> ℹ Accumulating PLINK .ped: 899 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing PLINK file...
-#> ℹ Chromosome names were recoded as integers for PLINK compatibility; mapping written to '/tmp/RtmpGMhoCe/vaillantii_discosnp_sub_plink.chrommap'
-#> ✔ PLINK text fileset written to '/tmp/RtmpGMhoCe/vaillantii_discosnp_sub_plink.ped', '/tmp/RtmpGMhoCe/vaillantii_discosnp_sub_plink.map'
+#> ℹ Chromosome names were recoded as integers; mapping written to '/tmp/RtmpBBa9FL/vaillantii_discosnp_sub_plink.chrommap'
+#> ✔ PLINK text fileset written to '/tmp/RtmpBBa9FL/vaillantii_discosnp_sub_plink.ped', '/tmp/RtmpBBa9FL/vaillantii_discosnp_sub_plink.map'
 # eigenstrat https://github.com/DReichLab/EIG/tree/master
 vcf2eigenstrat(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_eigenstrat')))
-#> ℹ Building EIGENSTRAT: 1734 variants x 18 samples (0 MiB raw storage)
+#> ℹ Building EIGENSTRAT: 899 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing EIGENSTRAT files...
-#> ✔ EIGENSTRAT fileset written to '/tmp/RtmpGMhoCe/vaillantii_discosnp_sub_eigenstrat.geno', '/tmp/RtmpGMhoCe/vaillantii_discosnp_sub_eigenstrat.ind', '/tmp/RtmpGMhoCe/vaillantii_discosnp_sub_eigenstrat.snp'
+#> ℹ Chromosome names were recoded as integers; mapping written to '/tmp/RtmpBBa9FL/vaillantii_discosnp_sub_eigenstrat.chrommap'
+#> Warning: Chromosome codes go up to 899: EIGENSOFT reads chromosomes above its numchrom
+#> parameter (default 22) as X, Y, ...
+#> ℹ Set `numchrom: 899` (or higher) in the parameter file.
+#> ✔ EIGENSTRAT fileset written to '/tmp/RtmpBBa9FL/vaillantii_discosnp_sub_eigenstrat.geno', '/tmp/RtmpBBa9FL/vaillantii_discosnp_sub_eigenstrat.ind', '/tmp/RtmpBBa9FL/vaillantii_discosnp_sub_eigenstrat.snp'
 # genepop https://gitlab.mbb.univ-montp2.fr/francois/genepop
 vcf2genepop(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.gen')))
-#> ℹ Accumulating Genepop: 1734 variants x 18 samples (0 MiB raw storage)
+#> ℹ Accumulating Genepop: 899 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing Genepop file...
-#> ✔ Genepop file written to '/tmp/RtmpGMhoCe/vaillantii_discosnp_sub.gen'
+#> ✔ Genepop file written to '/tmp/RtmpBBa9FL/vaillantii_discosnp_sub.gen'
 # smartsnp https://github.com/ChristianHuber/smartsnp
+# also writes the samples and their groups to <name>_samples.smartsnp,
+# for smartsnp's sample_group argument
 vcf2smartsnp(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.smartsnp')))
-#> ℹ Building SmartSNP: 1734 variants x 18 samples (0 MiB raw storage)
+#> ℹ Building SmartSNP: 899 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing SmartSNP file...
-#> ✔ SmartSNP file written to '/tmp/RtmpGMhoCe/vaillantii_discosnp_sub.smartsnp'
+#> ✔ SmartSNP files written to '/tmp/RtmpBBa9FL/vaillantii_discosnp_sub.smartsnp' and '/tmp/RtmpBBa9FL/vaillantii_discosnp_sub_samples.smartsnp'
 # bayescan https://github.com/mfoll/BayeScan
 vcf2bayescan(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.bayescan')))
-#> ℹ Accumulating BayesScan: 1734 variants x 4 pops (0 MiB raw storage, vs 0 MiB with integer matrices)
+#> ℹ Accumulating BayesScan: 899 variants x 4 pops (0 MiB raw storage, vs 0 MiB with integer matrices)
 #> ℹ Writing BayesScan file...
-#> ✔ BayesScan file written to '/tmp/RtmpGMhoCe/vaillantii_discosnp_sub.bayescan'
+#> ✔ BayesScan file written to '/tmp/RtmpBBa9FL/vaillantii_discosnp_sub.bayescan'
 # bayesass https://github.com/brannala/BA3
 vcf2bayesass(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.bayesass')))
-#> ℹ Accumulating BayesAss: 1734 variants x 18 samples (0 MiB raw storage)
+#> ℹ Accumulating BayesAss: 899 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing BayesAss file...
-#> ✔ BayesAss file written to '/tmp/RtmpGMhoCe/vaillantii_discosnp_sub.bayesass'
+#> ✔ BayesAss file written to '/tmp/RtmpBBa9FL/vaillantii_discosnp_sub.bayesass'
 # treemix https://bitbucket.org/nygcresearch/treemix/wiki/Home
 vcf2treemix(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.treemix')))
-#> ℹ Building Treemix: 1734 variants x 4 pops (0 MiB raw storage)
+#> ℹ Building Treemix: 899 variants x 4 pops (0 MiB raw storage)
 #> ℹ Writing Treemix file...
-#> ✔ Treemix file written to '/tmp/RtmpGMhoCe/vaillantii_discosnp_sub.treemix'
+#> ✔ Treemix file written to '/tmp/RtmpBBa9FL/vaillantii_discosnp_sub.treemix'
 # apparent https://github.com/halelab/apparent/tree/master
 vcf2apparent(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.apparent')))
-#> ℹ Accumulating Apparent: 1734 variants x 18 samples (0 MiB raw storage)
+#> ℹ Accumulating Apparent: 899 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing Apparent file...
-#> ✔ Apparent file written to '/tmp/RtmpGMhoCe/vaillantii_discosnp_sub.apparent'
+#> ✔ Apparent file written to '/tmp/RtmpBBa9FL/vaillantii_discosnp_sub.apparent'
 # related https://github.com/timothyfrasier/related
 vcf2related(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.related')))
-#> ℹ Accumulating Related: 1734 variants x 18 samples (0 MiB raw storage)
+#> ℹ Accumulating Related: 899 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing Related file...
-#> ✔ Related file written to '/tmp/RtmpGMhoCe/vaillantii_discosnp_sub.related'
+#> ✔ Related file written to '/tmp/RtmpBBa9FL/vaillantii_discosnp_sub.related'
 # long tidy dataframe of genotypes
 vcf2gt_long(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.csv')), format = 'csv')
-#> ℹ Writing gt_long: 1734 variants x 18 samples
-#> ✔ gt_long table written to '/tmp/RtmpGMhoCe/vaillantii_discosnp_sub.csv'
+#> ℹ Writing gt_long: 899 variants x 18 samples
+#> ✔ gt_long table written to '/tmp/RtmpBBa9FL/vaillantii_discosnp_sub.csv'
 # snapp https://www.beast2.org/snapp/
 vcf2snapp(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_snapp.nex')))
-#> ℹ Accumulating SNAPP: 1734 variants x 18 samples (0 MiB raw storage)
+#> ℹ Accumulating SNAPP: 899 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing SNAPP file...
-#> ✔ SNAPP file written to '/tmp/RtmpGMhoCe/vaillantii_discosnp_sub_snapp.nex'
+#> ✔ SNAPP file written to '/tmp/RtmpBBa9FL/vaillantii_discosnp_sub_snapp.nex'
 # nexus - only SNPs, meant for SVDq analyses https://www.asc.ohio-state.edu/kubatko.2/software/SVDquartets/
 vcf2nexus(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_sdvq.nex')))
-#> ℹ Accumulating Nexus: 1734 variants x 18 samples (0 MiB raw storage)
+#> ℹ Accumulating Nexus: 899 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing Nexus file...
-#> ✔ Nexus file written to '/tmp/RtmpGMhoCe/vaillantii_discosnp_sub_sdvq.nex'
+#> ✔ Nexus file written to '/tmp/RtmpBBa9FL/vaillantii_discosnp_sub_sdvq.nex'
 # fasta https://www.ncbi.nlm.nih.gov/genbank/fastaformat/
 vcf2fasta(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.fna')))
-#> ℹ Accumulating FASTA: 1734 variants x 18 samples (0 MiB raw storage)
+#> ℹ Accumulating FASTA: 899 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing FASTA file...
-#> ✔ FASTA file written to '/tmp/RtmpGMhoCe/vaillantii_discosnp_sub.fna'
+#> ✔ FASTA file written to '/tmp/RtmpBBa9FL/vaillantii_discosnp_sub.fna'
 
 # genlight object https://www.rdocumentation.org/packages/adegenet/versions/2.0.0/topics/genlight-class
 # (requires the suggested package adegenet)
@@ -839,22 +885,23 @@ if (requireNamespace("adegenet", quietly = TRUE)) {
   # genlight object with an optional save
   genlight <- vcf2genlight(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '_genlight.rds')), save = TRUE)
 }
-#> ℹ Accumulating Genlight: 1734 variants x 18 samples (0 MiB raw storage)
+#> ℹ Accumulating Genlight: 899 variants x 18 samples (0 MiB raw storage)
 #> ℹ Building Genlight object...
-#> ℹ Accumulating Genlight: 1734 variants x 18 samples (0 MiB raw storage)
+#> ℹ Accumulating Genlight: 899 variants x 18 samples (0 MiB raw storage)
 #> ℹ Building Genlight object...
 #> ℹ Writing Genlight object...
-#> ✔ Genlight object written to '/tmp/RtmpGMhoCe/vaillantii_discosnp_sub_genlight.rds'
+#> ✔ Genlight object written to '/tmp/RtmpBBa9FL/vaillantii_discosnp_sub_genlight.rds'
 
 ##########
 # datasets for analyses with linked SNPs
+# (no linked SNVs in the tutorial dataset, see Filtering)
 vcf <- vcf_multiSNP
 
 ##########
 # export data formats
 # fineRadStructure https://github.com/millanek/fineRADstructure
 vcf2fineradstructure(vcf, out_file = file.path(res_path, paste0(project, postfix, fltr, '.finerad')))
-#> ℹ Building fineRADstructure: 0 variants x 18 samples (0 MiB raw storage)
-#> ℹ Writing fineRADstructure file...
-#> ✔ fineRADstructure file written to '/tmp/RtmpGMhoCe/vaillantii_discosnp_sub.finerad'
+#> ℹ Accumulating fineRADstructure: 0 variants x 18 samples (0 MiB raw storage)
+#> ℹ Writing fineRADstructure file: 0 loci from 0 SNVs...
+#> ✔ fineRADstructure file written to '/tmp/RtmpBBa9FL/vaillantii_discosnp_sub.finerad'
 ```

@@ -15,10 +15,36 @@ status](https://www.r-pkg.org/badges/version/VCFArrow)](https://cran.r-project.o
 The released version can be installed from CRAN with
 `install.packages("VCFArrow")`, and the development version from GitHub
 with `pak::pak("legalLab/VCFArrow")` or
-`devtools::install_github("legalLab/VCFArrow")`. Two packages are
-optional and only needed for specific functions: `adegenet`, for
-`vcf2genlight()`, and `svglite`, for SVG plots (without it, SVG plots
-are written with R’s own Cairo device). Install them with
+`devtools::install_github("legalLab/VCFArrow")`.
+
+Installing from GitHub compiles the package’s C++ code, which needs a
+compiler: [Rtools](https://cran.r-project.org/bin/windows/Rtools/) on
+Windows, or the Xcode command line tools on macOS (`xcode-select
+--install`). Without one, use a precompiled binary instead. Each [GitHub
+release](https://github.com/legalLab/VCFArrow/releases) provides two:
+
+  - `VCFArrow_<version>.zip` for Windows;
+  - `VCFArrow_<version>.tgz` for macOS on Apple silicon (M1 and later).
+
+Both are built for the current R release. A binary contains the latest
+tagged version, which can be older than the code on GitHub. Its
+dependencies are not installed with it, so install them first. Then
+install the binary file:
+
+``` r
+# if necessary install dependencies
+install.packages(c("Rcpp", "arrow", "cli", "dplyr", "ggplot2", "stringr", "tibble", "vctrs"))
+# then install directly from Github
+install.packages("https://github.com/legalLab/VCFArrow/releases/download/v0.10.0/VCFArrow_0.10.0.zip", repos = NULL, type = "win.binary")  # Windows
+install.packages("https://github.com/legalLab/VCFArrow/releases/download/v0.10.0/VCFArrow_0.10.0.tgz", repos = NULL, type = "mac.binary")  # macOS
+# or your download folder if you downloaded it
+install.packages("~/Downloads/VCFArrow_0.10.0.zip", repos = NULL)  # Windows
+install.packages("~/Downloads/VCFArrow_0.10.0.tgz", repos = NULL)  # macOS
+```
+
+Two packages are optional and only needed for specific functions:
+`adegenet`, for `vcf2genlight()`, and `svglite`, for SVG plots (without
+it, SVG plots are written with R’s own Cairo device). Install them with
 `install.packages(c("adegenet", "svglite"))`.
 
 The package is built around [Apache Arrow](https://arrow.apache.org/),
@@ -68,8 +94,8 @@ workflows is available in the
 
 ## News
 
-The Github version is ahead of CRAN. It updates `vcf_theta()` and
-`vcf_stats()` with the small-sample correction n/(n - 1) when
-calculating Pi, and adds to `vcf_stats()` each sample’s inbreeding
-coefficient F (the method-of-moments estimate of vcftools and PLINK) and
-its mean per sample group.
+The Github version is ahead of CRAN. It has a new function
+`rename_vcf_samples()`, a new alias function `vcf2fstructure()`, plus it
+updates a number of filters and exporters. See
+[NEWS](https://github.com/legalLab/VCFArrow/blob/main/NEWS.md) for
+details.
