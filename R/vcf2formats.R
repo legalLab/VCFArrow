@@ -9,10 +9,11 @@
 # with arrow::read_feather() — the same approach as write_vcf().
 #
 # Memory modes
-#   Chunk-by-chunk O(chunk):               SmartSNP, Treemix, fineRADstructure
+#   Chunk-by-chunk O(chunk):               SmartSNP, Treemix
 #   Accumulate individuals O(S × V × 4B):  Structure, Arlequin, Genepop,
 #                                          BayesAss, Genlight, Related,
-#                                          Apparent, FASTA, Nexus, SNAPP
+#                                          Apparent, FASTA, Nexus, SNAPP,
+#                                          fineRADstructure
 #   Accumulate pop counts  O(P × V × 4B):  BayesScan, Migrate
 #
 # S = n_samples, V = n_var, P = n_pops
@@ -85,11 +86,12 @@
     dplyr::filter(.row_id %in% valid_row_ids) |>
     dplyr::arrange(.row_id)
 
-  loci <- if (!all(is.na(variants$ID))) {
-    variants$ID
-  } else {
-    paste0(variants$CHROM, "_", sprintf("%.0f", variants$POS))  # no 1e+05
-  }
+  # locus names: the ID, or CHROM_POS where the ID is missing, empty or "."
+  # (VCFs without IDs have "." in every row)
+  loci <- variants$ID
+  no_id <- is.na(loci) | loci %in% c("", ".")
+  loci[no_id] <- paste0(variants$CHROM[no_id], "_",
+                        sprintf("%.0f", variants$POS[no_id]))  # no 1e+05
 
   # Feather files in natural numeric chunk order
   feather_files <- list.files(vcf_arrow@path, pattern = "\\.arrow$", full.names = TRUE)
@@ -466,8 +468,9 @@
     cli::cli_abort(c(
       "PLINK fields cannot contain whitespace, but some {label} do.",
       "x" = "Offending value{?s}: {.val {unique(x[bad])}}",
-      "i" = "Rename with {.fn set_vcf_groups} / {.fn vcf_rename_samples}, \\
-             or substitute underscores."
+      "i" = "Replace the spaces, e.g. with underscores: sample names with \\
+             {.fn rename_vcf_samples}, group labels in the strata file read by \\
+             {.fn set_vcf_groups}."
     ))
   
   invisible(TRUE)
@@ -620,7 +623,7 @@
     row.names = FALSE
   )
   cli::cli_alert_info(
-    "Chromosome names were recoded as integers for PLINK compatibility; \\
+    "Chromosome names were recoded as integers; \\
      mapping written to {.file {map_file}}"
   )
   
