@@ -24,6 +24,11 @@ This function converts a VCFArrow object to an external SNAPP/SNAPPER formatted 
 Writing occurs in chunks whose size is determined by the read_vcf() function.
 Larger chunks result in faster writing speeds.
 If no groups are defined, the default behavior is to use all groups.
+Genotypes are coded as SNAPP expects for diploid data: 0 (REF
+homozygote), 1 (heterozygote), 2 (ALT homozygote), ? (missing), in a
+NEXUS file declared as integer data with symbols 0, 1 and 2
+(FORMAT DATATYPE=INTEGERDATA SYMBOLS="012"), which BEAUti imports with 3
+states.
 }
 \examples{
 f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
