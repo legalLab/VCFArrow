@@ -9,7 +9,8 @@
 #' @param out_file -> name of .rds file to write, required when save = TRUE,
 #'   default NULL (character)
 #' @param keep_groups -> groups to retain, default NULL (character)
-#' @param ploidy -> ploidy level, default = 2 (integer)
+#' @param ploidy -> ploidy level; the genotypes are always diploid, so only 2
+#'   is used, default = 2 (integer)
 #' @param save ->  save as R data object, default = FALSE (Boolean)
 #'
 #' @return An adegenet `genlight` object.
@@ -20,7 +21,8 @@
 #' it with `install.packages("adegenet")` to use this function.
 #' Genotypes are read in chunks whose size is determined by the read_vcf() function.
 #' If no groups are defined, the default behavior is to use all groups.
-#' Genlight objects can encode polyploid genomes, by default diploid genomes are assumed.
+#' Genlight objects can encode polyploid genomes, but VCFArrow stores diploid
+#' genotypes, so the ploidy is always 2.
 #' Genlight objects are in-memory S4 objects and are always returned; if
 #' save = TRUE, the object is also written to out_file with saveRDS().
 #' Unlike the other exporters, out_file is optional because nothing is written
@@ -47,6 +49,8 @@ vcf2genlight <- function(vcf_arrow, out_file = NULL, keep_groups = NULL,
       "i" = "Install it with {.code install.packages(\"adegenet\")}."
     ))
   }
+  if (!identical(as.integer(ploidy), 2L))
+    cli::cli_warn("VCFArrow genotypes are diploid; {.arg ploidy} set to 2.")
   if (save && is.null(out_file)) {
     cli::cli_abort("{.arg out_file} must be supplied when {.code save = TRUE}.")
   }
@@ -79,7 +83,7 @@ vcf2genlight <- function(vcf_arrow, out_file = NULL, keep_groups = NULL,
   adegenet::position(x) <- as.integer(pos)
   adegenet::locNames(x) <- setup$loci
   adegenet::pop(x) <- factor(setup$samples_groups, levels = setup$group_names)
-  adegenet::ploidy(x) <- ploidy
+  adegenet::ploidy(x) <- 2L
   adegenet::strata(x) <- data.frame(pop = adegenet::pop(x))
 
   if (save) {

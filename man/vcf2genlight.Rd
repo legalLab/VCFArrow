@@ -20,7 +20,8 @@ default NULL (character)}
 
 \item{keep_groups}{-> groups to retain, default NULL (character)}
 
-\item{ploidy}{-> ploidy level, default = 2 (integer)}
+\item{ploidy}{-> ploidy level; the genotypes are always diploid, so only 2
+is used, default = 2 (integer)}
 
 \item{save}{->  save as R data object, default = FALSE (Boolean)}
 }
@@ -36,7 +37,8 @@ It requires the 'adegenet' package, which VCFArrow only suggests: install
 it with \code{install.packages("adegenet")} to use this function.
 Genotypes are read in chunks whose size is determined by the read_vcf() function.
 If no groups are defined, the default behavior is to use all groups.
-Genlight objects can encode polyploid genomes, by default diploid genomes are assumed.
+Genlight objects can encode polyploid genomes, but VCFArrow stores diploid
+genotypes, so the ploidy is always 2.
 Genlight objects are in-memory S4 objects and are always returned; if
 save = TRUE, the object is also written to out_file with saveRDS().
 Unlike the other exporters, out_file is optional because nothing is written
