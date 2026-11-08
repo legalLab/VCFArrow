@@ -9,6 +9,10 @@
 #' @param out_file -> output file prefix; extensions are added automatically, no default (character)
 #' @param keep_groups -> groups to retain, default NULL (character)
 #' @param sex -> sex of the individual, default = U (undefined) (character)
+#' @param chrom_code -> how CHROM is written in the .snp file: "auto" (keep
+#'   CHROM if it is numeric, otherwise number the contigs 1, 2, 3, ...),
+#'   "index" (number the contigs 1, 2, 3, ... in order of first appearance)
+#'   or "keep" (verbatim), default "auto" (character)
 #'
 #' @return Invisibly returns the input VCFArrow object; called for its side effect of writing `out_file`.
 #'
@@ -17,6 +21,17 @@
 #' Writing occurs in chunks whose size is determined by the read_vcf() function.
 #' Larger chunks result in faster writing speeds.
 #' If no groups are defined, the default behavior is to use all groups.
+#' In the .geno file, each digit is the number of copies of the reference
+#' allele, as EIGENSTRAT defines it: the REF allele, given in column 5 of
+#' the .snp file (2 = REF homozygote, 1 = heterozygote, 0 = ALT
+#' homozygote, 9 = missing).
+#' EIGENSOFT needs integer chromosome codes and removes SNPs on chromosome
+#' 0, so contig names (e.g. from de novo SNP calling) are numbered 1, 2,
+#' 3, ... in order of first appearance (chrom_code = "auto" or "index"),
+#' and the correspondence is written to <out_file>.chrommap.  EIGENSOFT
+#' reads chromosomes above its numchrom parameter (default 22) as X, Y, ...,
+#' so with more than 22 codes set numchrom to at least the largest code in
+#' the parameter file; a warning gives the value.
 #'
 #' @examples
 #' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
@@ -28,10 +43,11 @@
 #'
 
 vcf2eigenstrat <- function(vcf_arrow, out_file, keep_groups = NULL,
-                           sex = NULL) {
+                           sex = NULL, chrom_code = c("auto", "index", "keep")) {
 
   if (missing(out_file)) cli::cli_abort("{.arg out_file} must be supplied.")
 
+  chrom_code <- match.arg(chrom_code)
   setup <- .vcf_export_setup(vcf_arrow, keep_groups)
 
   # ── sex vector ─────────────────────────────────────────────────────────────
@@ -115,9 +131,35 @@ vcf2eigenstrat <- function(vcf_arrow, out_file, keep_groups = NULL,
 
   snp_file <- paste0(out_file, ".snp")
 
+  # chromosome codes: EIGENSOFT needs positive integers (chromosome 0 is
+  # removed), so non-numeric CHROM (e.g. contig names) is numbered 1, 2, ...
+  # in order of first appearance
+  chrom <- as.character(setup$variants$CHROM)
+  stripped <- sub("^(chr|Chr|CHR)[_.-]?", "", chrom)
+  numeric <- all(grepl("^[0-9]+$", stripped)) &&
+    all(suppressWarnings(as.numeric(stripped)) >= 1)
+  chrom_out <- switch(chrom_code,
+    keep = chrom,
+    auto = if (numeric) as.character(as.numeric(stripped)) else as.character(match(chrom, unique(chrom))),
+    index = as.character(match(chrom, unique(chrom))))
+  if (chrom_code != "keep") {
+    first <- !duplicated(chrom)
+    .write_chrom_map(list(recoded = !identical(chrom_out, chrom),
+                          chrom_map = data.frame(CHROM = chrom[first], code = chrom_out[first],
+                                                 stringsAsFactors = FALSE)),
+                     out_file)
+    max_code <- suppressWarnings(max(as.numeric(chrom_out), 0))
+    if (max_code > 22)
+      cli::cli_warn(c(
+        "Chromosome codes go up to {max_code}: EIGENSOFT reads chromosomes above \\
+         its numchrom parameter (default 22) as X, Y, ...",
+        "i" = "Set {.code numchrom: {max_code}} (or higher) in the parameter file."
+      ))
+  }
+
   utils::write.table(
     data.frame(ID = setup$loci,
-               CHROM = setup$variants$CHROM,
+               CHROM = chrom_out,
                # formatted here: write.table() would write e.g. 1e+05
                rel_pos = sprintf("%.8f", rel_pos_vec),
                POS = sprintf("%.0f", setup$variants$POS),

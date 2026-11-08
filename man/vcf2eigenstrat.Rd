@@ -4,7 +4,13 @@
 \alias{vcf2eigenstrat}
 \title{vcf2eigenstrat}
 \usage{
-vcf2eigenstrat(vcf_arrow, out_file, keep_groups = NULL, sex = NULL)
+vcf2eigenstrat(
+  vcf_arrow,
+  out_file,
+  keep_groups = NULL,
+  sex = NULL,
+  chrom_code = c("auto", "index", "keep")
+)
 }
 \arguments{
 \item{vcf_arrow}{-> VCFArrow object}
@@ -14,6 +20,11 @@ vcf2eigenstrat(vcf_arrow, out_file, keep_groups = NULL, sex = NULL)
 \item{keep_groups}{-> groups to retain, default NULL (character)}
 
 \item{sex}{-> sex of the individual, default = U (undefined) (character)}
+
+\item{chrom_code}{-> how CHROM is written in the .snp file: "auto" (keep
+CHROM if it is numeric, otherwise number the contigs 1, 2, 3, ...),
+"index" (number the contigs 1, 2, 3, ... in order of first appearance)
+or "keep" (verbatim), default "auto" (character)}
 }
 \value{
 Invisibly returns the input VCFArrow object; called for its side effect of writing \code{out_file}.
@@ -26,6 +37,17 @@ This function converts a VCFArrow object to an external EIGENSTRAT formatted fil
 Writing occurs in chunks whose size is determined by the read_vcf() function.
 Larger chunks result in faster writing speeds.
 If no groups are defined, the default behavior is to use all groups.
+In the .geno file, each digit is the number of copies of the reference
+allele, as EIGENSTRAT defines it: the REF allele, given in column 5 of
+the .snp file (2 = REF homozygote, 1 = heterozygote, 0 = ALT
+homozygote, 9 = missing).
+EIGENSOFT needs integer chromosome codes and removes SNPs on chromosome
+0, so contig names (e.g. from de novo SNP calling) are numbered 1, 2,
+3, ... in order of first appearance (chrom_code = "auto" or "index"),
+and the correspondence is written to <out_file>.chrommap.  EIGENSOFT
+reads chromosomes above its numchrom parameter (default 22) as X, Y, ...,
+so with more than 22 codes set numchrom to at least the largest code in
+the parameter file; a warning gives the value.
 }
 \examples{
 f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
