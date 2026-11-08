@@ -318,7 +318,7 @@ vcf_gc <- function(force = FALSE, verbose = TRUE) {
 #' @param keep_groups Groups to export (NULL = all).
 #' @param format     One of "individual" (Structure, Arlequin, FASTA, ...) or
 #'                   "pop" (BayesScan, Treemix, Migrate-N C, ...) or
-#'                   "chunk" (SmartSNP, fineRADstructure, sNMF, EIGENSTRAT, ...).
+#'                   "chunk" (SmartSNP, sNMF, EIGENSTRAT, ...).
 #' @param chunk_size Feather chunk size used at read_vcf() time, default 50000
 #'                   (as in read_vcf()).
 #' @param lowmem     If TRUE, estimate uses raw-byte matrices (vcf2*() lowmem
