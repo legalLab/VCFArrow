@@ -123,16 +123,6 @@ static inline char iupac_het(char r, char a) {
 // III.  SmartSNP
 // ═══════════════════════════════════════════════════════════════════════════════
 
-// Write the sample-names header for a SmartSNP file (creates / truncates)
-// [[Rcpp::export]]
-void write_smartsnp_header_cpp(const CharacterVector& samples,
-                               const std::string& out_file) {
-  WFile w(out_file, false);
-  const int n = samples.size();
-  for (int i = 0; i < n; ++i) { if (i) wf(w, ' '); wf(w, CHAR(STRING_ELT(samples, i))); }
-  wf(w, '\n');
-}
-
 // Encode (0/1/2/9) and append one chunk of variants to a SmartSNP file
 // a1_mat / a2_mat: integer matrices (n_samples x n_chunk_var)
 // [[Rcpp::export]]
@@ -248,6 +238,7 @@ void write_genepop_cpp(const IntegerMatrix& a1_mat,
                        const CharacterVector& group_names,
                        const IntegerVector& group_sizes,
                        const CharacterVector& loci,
+                       bool pop_names,
                        const std::string& out_file) {
   const int nv = a1_mat.ncol(), ng = group_names.size();
   WFile w(out_file, false);
@@ -259,7 +250,11 @@ void write_genepop_cpp(const IntegerMatrix& a1_mat,
   int off = 0;
   for (int g = 0; g < ng; ++g) {
     const int gsz = group_sizes[g];
-    wf(w, "pop "); wf(w, CHAR(STRING_ELT(group_names,g))); wf(w, '\n');
+    // "Pop" alone on its line, as GENEPOP documents it (some readers, e.g.
+    // adegenet::read.genepop(), accept nothing else); or "pop <name>"
+    if (pop_names) { wf(w, "pop "); wf(w, CHAR(STRING_ELT(group_names,g))); }
+    else wf(w, "Pop");
+    wf(w, '\n');
     for (int i = 0; i < gsz; ++i) {
       const int s = off + i;
       wf(w, CHAR(STRING_ELT(samples,s))); wf(w, ", ");
@@ -284,33 +279,49 @@ void write_genepop_cpp(const IntegerMatrix& a1_mat,
 // VII.  fineRADstructure
 // ═══════════════════════════════════════════════════════════════════════════════
 
-// Write the sample-names header for a fineRADstructure file (creates / truncates)
+// Write a fineRADstructure (RADpainter) input file: a first line of sample
+// names, then one line per RAD locus with each sample's haplotypes in
+// RADpainter's syntax.  Each locus is a run of SNVs; the genotypes are taken
+// as phased, so a1 of the locus's SNVs forms one haplotype and a2 the other
+// (e.g. "TGAT/CGAT"), written once if both are the same ("TGAT").  A sample
+// missing at any SNV of the locus gets an empty cell.
+//
+// a1_mat / a2_mat: integer matrices (n_samples x n_var); REF / ALT per
+// variant (SNVs, so their first character is the allele); cols: 1-based
+// variant columns in output order; starts: 1-based position in cols of the
+// first SNV of each locus.
 // [[Rcpp::export]]
-void write_fineradstructure_header_cpp(const CharacterVector& samples,
-                                       const std::string& out_file) {
+void write_fineradstructure_cpp(const IntegerMatrix& a1_mat,
+                                const IntegerMatrix& a2_mat,
+                                const CharacterVector& REF,
+                                const CharacterVector& ALT,
+                                const CharacterVector& samples,
+                                const IntegerVector& cols,
+                                const IntegerVector& starts,
+                                const std::string& out_file) {
+  const int ns = a1_mat.nrow(), nl = starts.size(), nc = cols.size();
   WFile w(out_file, false);
-  const int n = samples.size();
-  for (int i = 0; i < n; ++i) { if (i) wf(w,'\t'); wf(w, CHAR(STRING_ELT(samples,i))); }
+  for (int s = 0; s < ns; ++s) { if (s) wf(w,'\t'); wf(w, CHAR(STRING_ELT(samples,s))); }
   wf(w, '\n');
-}
 
-// Encode and append one chunk to a fineRADstructure file
-// REF and ALT here are per-chunk (length n_chunk_var).
-// [[Rcpp::export]]
-void write_fineradstructure_chunk_cpp(const IntegerMatrix& a1_mat,
-                                      const IntegerMatrix& a2_mat,
-                                      const CharacterVector& REF,
-                                      const CharacterVector& ALT,
-                                      const std::string& out_file) {
-  const int ns = a1_mat.nrow(), nv = a1_mat.ncol();
-  WFile w(out_file, true);
-  for (int v = 0; v < nv; ++v) {
-    const char* rp = CHAR(STRING_ELT(REF,v)), *ap = CHAR(STRING_ELT(ALT,v));
+  std::string h1, h2;
+  for (int l = 0; l < nl; ++l) {
+    const int lo = starts[l] - 1, hi = (l + 1 < nl) ? starts[l + 1] - 1 : nc;
     for (int s = 0; s < ns; ++s) {
       if (s) wf(w, '\t');
-      const int v1 = a1_mat(s,v), v2 = a2_mat(s,v);
-      if (v1 == NA_INTEGER || v2 == NA_INTEGER) { wf(w, "NA,NA"); continue; }
-      wf(w, (v1==0) ? rp : ap); wf(w, ','); wf(w, (v2==0) ? rp : ap);
+      h1.clear(); h2.clear();
+      bool missing = false;
+      for (int k = lo; k < hi; ++k) {
+        const int v = cols[k] - 1;
+        const int x = a1_mat(s, v), y = a2_mat(s, v);
+        if (x == NA_INTEGER || y == NA_INTEGER) { missing = true; break; }
+        const char r = CHAR(STRING_ELT(REF, v))[0], a = CHAR(STRING_ELT(ALT, v))[0];
+        h1.push_back(x == 0 ? r : a);
+        h2.push_back(y == 0 ? r : a);
+      }
+      if (missing) continue;  // empty cell
+      w.put(h1.data(), h1.size());
+      if (h1 != h2) { wf(w, '/'); w.put(h2.data(), h2.size()); }
     }
     wf(w, '\n');
   }
@@ -368,6 +379,8 @@ void write_bayescan_cpp(const IntegerMatrix& ref_mat,
   for (int p = 0; p < np; ++p) {
     wf(w,'\n'); wf(w,"[pop]="); wf_int(w,p+1); wf(w,'\n');
     for (int v = 0; v < nv; ++v) {
+      // locus number, number of genes, number of alleles, allele counts
+      wf_int(w,v+1); wf(w,'\t');
       wf_int(w,n_obs_mat(p,v)); wf(w,"\t2\t");
       wf_int(w,ref_mat(p,v)); wf(w,'\t');
       wf_int(w,alt_mat(p,v)); wf(w,'\n');
@@ -380,7 +393,10 @@ void write_bayescan_cpp(const IntegerMatrix& ref_mat,
 // X.  BayesAss
 // ═══════════════════════════════════════════════════════════════════════════════
 
-// Write a BayesAss3 (.immanc) input file
+// Write a BA3 (BayesAss 3) input file in its native format: one line per
+// individual and locus, "indivID popID locID allele1 allele2", separated by
+// spaces.  Alleles are labelled 1 (REF) and 2 (ALT); a missing genotype is
+// "0 0" (BA3's missing allele label).  Individuals in group order.
 // [[Rcpp::export]]
 void write_bayesass_cpp(const IntegerMatrix& a1_mat,
                         const IntegerMatrix& a2_mat,
@@ -393,23 +409,20 @@ void write_bayesass_cpp(const IntegerMatrix& a1_mat,
                         const std::string& out_file) {
   const int nv = a1_mat.ncol(), np = group_names.size();
   WFile w(out_file, false);
-  std::vector<const char*> rp(nv), ap(nv);
-  for (int v = 0; v < nv; ++v) { rp[v]=CHAR(STRING_ELT(REF,v)); ap[v]=CHAR(STRING_ELT(ALT,v)); }
 
-  wf(w,"N\t"); wf_int(w,np); wf(w,'\t'); wf_int(w,nv); wf(w,'\n');
-  for (int v = 0; v < nv; ++v) { if (v) wf(w,'\t'); wf(w,'1'); }
-  wf(w,'\n');
-
-  int off = 0;
+  int s = 0;
   for (int g = 0; g < np; ++g) {
-    const int gsz = group_sizes[g];
-    wf_int(w, 2*gsz); wf(w,'\t'); wf(w, CHAR(STRING_ELT(group_names,g))); wf(w,'\n');
-    for (int v = 0; v < nv; ++v) {
-      wf(w, CHAR(STRING_ELT(loci,v))); wf(w,'\n');
-      for (int i = 0; i < gsz; ++i) { wf_allele(w,a1_mat(off+i,v),rp[v],ap[v],"?"); wf(w,'\n'); }
-      for (int i = 0; i < gsz; ++i) { wf_allele(w,a2_mat(off+i,v),rp[v],ap[v],"?"); wf(w,'\n'); }
+    const char* gname = CHAR(STRING_ELT(group_names, g));
+    for (int i = 0; i < group_sizes[g]; ++i, ++s) {
+      const char* sname = CHAR(STRING_ELT(samples, s));
+      for (int v = 0; v < nv; ++v) {
+        wf(w, sname); wf(w, ' '); wf(w, gname); wf(w, ' ');
+        wf(w, CHAR(STRING_ELT(loci, v))); wf(w, ' ');
+        const int v1 = a1_mat(s, v), v2 = a2_mat(s, v);
+        if (v1 == NA_INTEGER || v2 == NA_INTEGER) { wf(w, "0 0\n"); continue; }
+        wf(w, v1 == 0 ? '1' : '2'); wf(w, ' '); wf(w, v2 == 0 ? '1' : '2'); wf(w, '\n');
+      }
     }
-    off += gsz;
   }
 }
 
@@ -418,55 +431,59 @@ void write_bayesass_cpp(const IntegerMatrix& a1_mat,
 // XI.  Migrate-N
 // ═══════════════════════════════════════════════════════════════════════════════
 
-// ── XIa.  Count format (method "C") ──────────────────────────────────────────
- 
-// Write a Migrate-N allele-count input file (method "C")
-//
+// ── XIa.  Allele counts: HapMap format (method "C") ───────────────────────────
+
+// Write a Migrate-N SNP allele-count file in its HapMap format (data type H):
+//   H <n_pops> <n_loci> <title>
+//   <number> <pop_name>                    (one header per population)
+//   <position> TAB <allele> TAB <count> TAB <allele> TAB <count> TAB <total>
+// one line per SNP, with the REF and ALT nucleotides and their counts (allele
+// copies) in the population; <number> is the population's number of allele
+// copies (2 x its samples).
 // ref_mat / alt_mat / n_obs_mat: integer matrices (n_pops x n_var).
-// n_obs_mat[p, v] = total chromosomes sampled for pop p at variant v.
-// Format:
-//   n_pops n_loci
-//   max_obs_chromosomes pop_name   (one header per pop)
-//   ref_count alt_count            (one line per variant)
 // [[Rcpp::export]]
 void write_migrate_cpp(const IntegerMatrix& ref_mat,
                        const IntegerMatrix& alt_mat,
                        const IntegerMatrix& n_obs_mat,
                        const CharacterVector& pop_names,
-                       const CharacterVector& loci,
+                       const IntegerVector& group_sizes,
+                       const NumericVector& pos,
+                       const CharacterVector& REF,
+                       const CharacterVector& ALT,
+                       const std::string& title,
                        const std::string& out_file) {
   const int np = ref_mat.nrow(), nv = ref_mat.ncol();
   WFile w(out_file, false);
-  wf_int(w,np); wf(w,' '); wf_int(w,nv); wf(w,'\n');
+  wf(w, "H "); wf_int(w, np); wf(w, ' '); wf_int(w, nv); wf(w, ' '); wf(w, title.c_str()); wf(w, '\n');
+  char num[32];
   for (int p = 0; p < np; ++p) {
-    int mx = 0;
-    for (int v = 0; v < nv; ++v) if (n_obs_mat(p,v) > mx) mx = n_obs_mat(p,v);
-    wf_int(w,mx); wf(w,' '); wf(w, CHAR(STRING_ELT(pop_names,p))); wf(w,'\n');
+    wf_int(w, 2 * group_sizes[p]); wf(w, ' '); wf(w, CHAR(STRING_ELT(pop_names, p))); wf(w, '\n');
     for (int v = 0; v < nv; ++v) {
-      wf_int(w,ref_mat(p,v)); wf(w,' '); wf_int(w,alt_mat(p,v)); wf(w,'\n');
+      const int len = std::snprintf(num, sizeof(num), "%.0f", pos[v]);
+      w.put(num, static_cast<std::size_t>(len));
+      wf(w, '\t'); wf(w, CHAR(STRING_ELT(REF, v))[0]); wf(w, '\t'); wf_int(w, ref_mat(p, v));
+      wf(w, '\t'); wf(w, CHAR(STRING_ELT(ALT, v))[0]); wf(w, '\t'); wf_int(w, alt_mat(p, v));
+      wf(w, '\t'); wf_int(w, n_obs_mat(p, v)); wf(w, '\n');
     }
   }
 }
 
 // ── XIb.  Sequence format (methods "S" and "N") ──────────────────────────────
- 
-// Write a Migrate-N nucleotide-sequence input file (methods "S" or "N")
+
+// Write a Migrate-N sequence-format data file (methods "S" and "N")
 //
-// File structure:
-//   Global header:  " \t n_pops \t n_loci"
-//   Block header:   "(s100)\t(s100)\t(n76)"   [one label per block, tab-sep]
-//   Per population: "n_haplotypes \t pop_name"
-//   Per individual: two lines (haplotype 1, haplotype 2) of the form
-//                   "ind_name_1 \t ACGT..."
-//                   nucleotides are concatenated with NO separator between
-//                   positions — the string is treated as a sequence.
+// File structure (Migrate-N manual, "Improved (new) format"):
+//   Line 1:  [<datatype letter>] <n_pops> <n_loci> <title>
+//            (the letter, e.g. "N" for SNP data, forces the data model; if
+//            empty the parmfile decides)
+//   Line 2:  the locus labels, one per locus (block), e.g. "(s100) (s100) (s13)"
+//   Per population: "<n_haplotypes> <pop_name>"
+//   Per individual: two lines (haplotype 1, haplotype 2): the name in a fixed
+//                   field of name_width characters (Migrate's nmlength,
+//                   default 10), then the nucleotides of all loci
+//                   concatenated without separators.
 //
-// block_labels: pre-computed CharacterVector of "(s{n})" or "(n{n})" strings,
-//   one per block.  Computed in R from block_size (method S) or from
-//   chromosome position intervals (method N).
-//
-// Missing allele (NA_integer_): written as '?', the Migrate-N missing marker.
-//
+// Missing allele (NA_integer_): written as '?'.
 // a1_mat / a2_mat: integer matrices (n_samples x n_var), group-ordered rows.
 // [[Rcpp::export]]
 void write_migrate_seq_cpp(const IntegerMatrix& a1_mat,
@@ -477,51 +494,55 @@ void write_migrate_seq_cpp(const IntegerMatrix& a1_mat,
                            const CharacterVector& group_names,
                            const IntegerVector& group_sizes,
                            const CharacterVector& block_labels,
+                           const std::string& datatype,
+                           const std::string& title,
+                           int name_width,
                            const std::string& out_file) {
   const int nv = a1_mat.ncol();
   const int np = group_names.size(), nb = block_labels.size();
   WFile w(out_file, false);
- 
+
   // Cache allele first-character pointers (REF/ALT are SNPs, so first char suffices)
   std::vector<char> ref_c(nv), alt_c(nv);
   for (int v = 0; v < nv; ++v) {
     ref_c[v] = CHAR(STRING_ELT(REF, v))[0];
     alt_c[v] = CHAR(STRING_ELT(ALT, v))[0];
   }
- 
-  // ── Global header: " \t n_pops \t n_loci" ─────────────────────────────────
-  wf(w, " \t"); wf_int(w, np); wf(w, '\t'); wf_int(w, nv); wf(w, '\n');
- 
-  // ── Block header: "(s100)\t(s100)\t...\t(n76)" ────────────────────────────
+
+  // ── Line 1: [datatype] n_pops n_loci title ───────────────────────────────
+  if (!datatype.empty()) { wf(w, datatype.c_str()); wf(w, ' '); }
+  wf_int(w, np); wf(w, ' '); wf_int(w, nb); wf(w, ' '); wf(w, title.c_str()); wf(w, '\n');
+
+  // ── Line 2: locus labels ─────────────────────────────────────────────────
   for (int b = 0; b < nb; ++b) {
-    if (b) wf(w, '\t');
+    if (b) wf(w, ' ');
     wf(w, CHAR(STRING_ELT(block_labels, b)));
   }
   wf(w, '\n');
- 
+
+  // name in a fixed field of name_width characters
+  auto write_name = [&](const char* sname, const char* suffix) {
+    std::string nm = std::string(sname) + suffix;
+    if (static_cast<int>(nm.size()) < name_width) nm.append(name_width - nm.size(), ' ');
+    w.put(nm.data(), nm.size());
+  };
+
   // ── Per-population sequence data ──────────────────────────────────────────
   int off = 0;
   for (int g = 0; g < np; ++g) {
     const int gsz = group_sizes[g];
- 
-    // Population header: "n_haplotypes \t pop_name"
-    wf_int(w, 2 * gsz); wf(w, '\t');
+    wf_int(w, 2 * gsz); wf(w, ' ');
     wf(w, CHAR(STRING_ELT(group_names, g))); wf(w, '\n');
- 
     for (int i = 0; i < gsz; ++i) {
       const int s = off + i;
       const char* sname = CHAR(STRING_ELT(samples, s));
- 
-      // Haplotype 1: "ind_name_1\tACGT..."
-      wf(w, sname); wf(w, "_1\t");
+      write_name(sname, "_1");
       for (int v = 0; v < nv; ++v) {
         const int a = a1_mat(s, v);
         wf(w, (a == NA_INTEGER) ? '?' : (a == 0) ? ref_c[v] : alt_c[v]);
       }
       wf(w, '\n');
- 
-      // Haplotype 2: "ind_name_2\tACGT..."
-      wf(w, sname); wf(w, "_2\t");
+      write_name(sname, "_2");
       for (int v = 0; v < nv; ++v) {
         const int a = a2_mat(s, v);
         wf(w, (a == NA_INTEGER) ? '?' : (a == 0) ? ref_c[v] : alt_c[v]);
@@ -539,11 +560,11 @@ void write_migrate_seq_cpp(const IntegerMatrix& a1_mat,
 
 // Write a Related input file
 //
-// One tab-delimited line per sample.  Each locus contributes two adjacent
-// tab-separated columns (allele1 code, allele2 code), interleaved across all
-// loci:  a1_L1 \\t a2_L1 \\t a1_L2 \\t a2_L2 ...
+// One tab-delimited line per sample: the sample name, then two adjacent
+// columns per locus (allele1 code, allele2 code), interleaved across all
+// loci:  ID \\t a1_L1 \\t a2_L1 \\t a1_L2 \\t a2_L2 ...
 // Nucleotide codes: A=01 C=02 G=03 T=04, canonical order (lower first).
-// Missing allele: NA.
+// Missing allele: 0 (as related expects).
 // [[Rcpp::export]]
 void write_related_cpp(const IntegerMatrix& a1_mat,
                        const IntegerMatrix& a2_mat,
@@ -555,41 +576,30 @@ void write_related_cpp(const IntegerMatrix& a1_mat,
   WFile w(out_file, false);
 
   for (int s = 0; s < ns; ++s) {
-    if (s) wf(w, '\n');
-    bool first = true;
+    wf(w, CHAR(STRING_ELT(samples, s)));
     for (int v = 0; v < nv; ++v) {
       const int v1 = a1_mat(s,v), v2 = a2_mat(s,v);
       const char* rp = CHAR(STRING_ELT(REF,v));
       const char* ap = CHAR(STRING_ELT(ALT,v));
 
-      // Resolve allele characters (NA stays as NA marker)
-      const char* c1;
-      const char* c2;
-      if (v1 == NA_INTEGER) {
-        c1 = "NA";
-      } else {
+      // Resolve allele codes; a missing genotype, or an allele that is not
+      // A/C/G/T, is "0 0"
+      const char* c1 = "0";
+      const char* c2 = "0";
+      if (v1 != NA_INTEGER && v2 != NA_INTEGER) {
         c1 = nuc_to_digit((v1==0) ? rp[0] : ap[0]);
-        // map "00" (unknown nuc) to "NA"
-        if (c1[0] == '0' && c1[1] == '0') c1 = "NA";
-      }
-      if (v2 == NA_INTEGER) {
-        c2 = "NA";
-      } else {
         c2 = nuc_to_digit((v2==0) ? rp[0] : ap[0]);
-        if (c2[0] == '0' && c2[1] == '0') c2 = "NA";
+        if (std::strcmp(c1, "00") == 0 || std::strcmp(c2, "00") == 0) {
+          c1 = c2 = "0";
+        } else if (std::strcmp(c1,c2) > 0) {  // lower code first
+          const char* t = c1; c1 = c2; c2 = t;
+        }
       }
 
-      // Canonical ordering: lower numeric code first (only when both known)
-      if (c1[0] != 'N' && c2[0] != 'N' && std::strcmp(c1,c2) > 0) {
-        const char* t = c1; c1 = c2; c2 = t;
-      }
-
-      if (!first) wf(w, '\t');
-      wf(w, c1); wf(w, '\t'); wf(w, c2);
-      first = false;
+      wf(w, '\t'); wf(w, c1); wf(w, '\t'); wf(w, c2);
     }
+    wf(w, '\n');
   }
-  wf(w, '\n');
 }
 
 
@@ -599,10 +609,10 @@ void write_related_cpp(const IntegerMatrix& a1_mat,
 
 // Write an Apparent input file
 //
-// One tab-delimited line per sample.
-// Format: key \\t locus1 \\t locus2 ...
+// One tab-delimited line per sample, no header.
+// Format: ID \\t key \\t locus1 \\t locus2 ...
 // Each locus cell: "allele1/allele2" nucleotide strings, canonical
-// (alphabetically lower allele first).  Missing: "?/?".
+// (alphabetically lower allele first).  Missing: "-/-" (as apparent expects).
 // [[Rcpp::export]]
 void write_apparent_cpp(const IntegerMatrix& a1_mat,
                         const IntegerMatrix& a2_mat,
@@ -615,13 +625,14 @@ void write_apparent_cpp(const IntegerMatrix& a1_mat,
   WFile w(out_file, false);
 
   for (int s = 0; s < ns; ++s) {
+    wf(w, CHAR(STRING_ELT(samples, s))); wf(w, '\t');
     wf(w, key.c_str());
     for (int v = 0; v < nv; ++v) {
       wf(w, '\t');
       const int v1 = a1_mat(s,v), v2 = a2_mat(s,v);
       const char* rp = CHAR(STRING_ELT(REF,v));
       const char* ap = CHAR(STRING_ELT(ALT,v));
-      if (v1 == NA_INTEGER || v2 == NA_INTEGER) { wf(w,"?/?"); continue; }
+      if (v1 == NA_INTEGER || v2 == NA_INTEGER) { wf(w,"-/-"); continue; }
       const char* a1s = (v1==0) ? rp : ap;
       const char* a2s = (v2==0) ? rp : ap;
       // Canonical alphabetical order
@@ -706,7 +717,13 @@ void write_nexus_cpp(const IntegerMatrix& a1_mat,
   wf(w, "BEGIN DATA;\n");
   wf(w, "  DIMENSIONS NTAX="); wf_int(w,ns);
   wf(w, " NCHAR="); wf_int(w,nv); wf(w,";\n");
-  wf(w, "  FORMAT DATATYPE=DNA MISSING=? GAP=- INTERLEAVE=NO;\n");
+  // SNAPP: integer data with symbols 0/1/2 (BEAST 2 reads DATATYPE=DNA as
+  // nucleotides, whose alphabet has no 0/1/2; with SYMBOLS="012" it sets the
+  // integer data type with 3 states, as diploid SNAPP data needs)
+  if (format_int == 1)
+    wf(w, "  FORMAT DATATYPE=INTEGERDATA SYMBOLS=\"012\" MISSING=? GAP=- INTERLEAVE=NO;\n");
+  else
+    wf(w, "  FORMAT DATATYPE=DNA MISSING=? GAP=- INTERLEAVE=NO;\n");
   wf(w, "  MATRIX\n");
 
   for (int s = 0; s < ns; ++s) {
@@ -749,7 +766,9 @@ void write_nexus_cpp(const IntegerMatrix& a1_mat,
 //
 // EIGENSTRAT .geno is variant-major: one line per variant, samples as a
 // concatenated string of digits (no delimiter) in the same order as the .ind
-// file.  Encoding: 0 = hom-ref, 1 = het, 2 = hom-alt, 9 = missing.
+// file.  Encoding: the number of copies of the reference allele (REF, column
+// 5 of the .snp file), as EIGENSTRAT defines it: 2 = hom-ref, 1 = het,
+// 0 = hom-alt, 9 = missing.
 // This function creates (or truncates) the file; subsequent calls to
 // write_eigenstrat_chunk_cpp() append to it.
 // [[Rcpp::export]]
@@ -776,8 +795,8 @@ void write_eigenstrat_chunk_cpp(const IntegerMatrix& a1_mat,
     for (int s = 0; s < ns; ++s) {
       const int v1 = a1_mat(s, v), v2 = a2_mat(s, v);
       if (v1 == NA_INTEGER || v2 == NA_INTEGER) wf(w, '9');
-      else if (v1 == 0 && v2 == 0) wf(w, '0');
-      else if (v1 == 1 && v2 == 1) wf(w, '2');
+      else if (v1 == 0 && v2 == 0) wf(w, '2');  // copies of REF
+      else if (v1 == 1 && v2 == 1) wf(w, '0');
       else wf(w, '1');
     }
     wf(w, '\n');
@@ -837,15 +856,15 @@ void write_snmf_cpp(const IntegerMatrix& a1_mat,
 //
 // Allele1/allele2 mapping note: PLINK's docs say allele1 is "usually minor"
 // but this is a convention, not a requirement — what matters is consistency
-// between .bed and .bim. Here allele1 = REF (a=0, clear bits) and
-// allele2 = ALT (a=1, set bits), which is the natural mapping given this
-// package's existing a1/a2 encoding.
+// between .bed and .bim. Here allele1 = ALT (a=1, clear bits) and
+// allele2 = REF (a=0, set bits), as in the files PLINK itself writes from a
+// VCF (plink --vcf), so that A1 counts refer to ALT.
  
 // 2-bit genotype code for one (a1, a2) pair.
 static inline unsigned char plink_geno_code(int a1, int a2) {
   if (a1 == NA_INTEGER || a2 == NA_INTEGER) return 1;  // 01 = missing
-  if (a1 == 0 && a2 == 0) return 0;  // 00 = hom REF
-  if (a1 == 1 && a2 == 1) return 3;  // 11 = hom ALT
+  if (a1 == 1 && a2 == 1) return 0;  // 00 = hom allele1 (ALT)
+  if (a1 == 0 && a2 == 0) return 3;  // 11 = hom allele2 (REF)
   return 2;  // 10 = het
 }
  
