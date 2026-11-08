@@ -19,7 +19,7 @@ vcf_memory_estimate(
 
 \item{format}{One of "individual" (Structure, Arlequin, FASTA, ...) or
 "pop" (BayesScan, Treemix, Migrate-N C, ...) or
-"chunk" (SmartSNP, fineRADstructure, sNMF, EIGENSTRAT, ...).}
+"chunk" (SmartSNP, sNMF, EIGENSTRAT, ...).}
 
 \item{chunk_size}{Feather chunk size used at read_vcf() time, default 50000
 (as in read_vcf()).}
