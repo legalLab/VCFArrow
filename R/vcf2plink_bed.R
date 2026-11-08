@@ -22,6 +22,11 @@
 #' Larger chunks result in faster writing speeds.
 #' If no groups are defined, the default behavior is to use all groups.
 #' Sex and phenotype vectors are optional. If not defined sex = 0, pheno = -9.
+#' Allele 1 (column 5 of the .bim file) is ALT and allele 2 (column 6) is
+#' REF, as in the files PLINK writes from a VCF (plink --vcf), so PLINK's A1
+#' counts and frequencies refer to ALT.  PLINK 1.9 makes the minor allele A1
+#' when it loads the files unless run with --keep-allele-order; PLINK 2 keeps
+#' this order.
 #'
 #' @examples
 #' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
@@ -41,8 +46,9 @@
 #   <out_file>.bim  – variant metadata (CHROM, ID, cM, POS, allele1, allele2)
 #   <out_file>.fam  – sample metadata (FID, IID, PAT, MAT, SEX, PHENOTYPE)
 #
-# allele1 = REF (clear bits in .bed), allele2 = ALT (set bits) — see the
-# mapping note in write_plink_bed_chunk_cpp()'s header comment.
+# allele1 = ALT (clear bits in .bed), allele2 = REF (set bits), as plink --vcf
+# writes them — see the mapping note in write_plink_bed_chunk_cpp()'s header
+# comment.
 # Memory: O(chunk), identical pattern to vcf2smartsnp().
 #
 # Columns 1-4 of the .bim are built by .plink_variant_fields(), shared with
@@ -78,14 +84,14 @@ vcf2plink_bed <- function(vcf_arrow, out_file, keep_groups = NULL,
 
   # ── .bim ─────────────────────────────────────────────────────────────────
   # Six fields, no header: CHROM, ID, genetic distance (dummy 0), POS,
-  # allele1 (REF, clear bits), allele2 (ALT, set bits).
+  # allele1 (ALT, clear bits), allele2 (REF, set bits).
   utils::write.table(
     data.frame(CHROM = vfields$chrom,
                ID = vfields$id,
                cM = vfields$cm,
                POS = vfields$pos,
-               allele1 = setup$variants$REF,
-               allele2 = setup$variants$ALT,
+               allele1 = setup$variants$ALT,
+               allele2 = setup$variants$REF,
                stringsAsFactors = FALSE),
     file = paste0(out_file, ".bim"),
     quote = FALSE,

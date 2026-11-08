@@ -40,6 +40,11 @@ Writing occurs in chunks whose size is determined by the read_vcf() function.
 Larger chunks result in faster writing speeds.
 If no groups are defined, the default behavior is to use all groups.
 Sex and phenotype vectors are optional. If not defined sex = 0, pheno = -9.
+Allele 1 (column 5 of the .bim file) is ALT and allele 2 (column 6) is
+REF, as in the files PLINK writes from a VCF (plink --vcf), so PLINK's A1
+counts and frequencies refer to ALT.  PLINK 1.9 makes the minor allele A1
+when it loads the files unless run with --keep-allele-order; PLINK 2 keeps
+this order.
 }
 \examples{
 f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",

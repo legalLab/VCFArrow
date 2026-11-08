@@ -13,6 +13,9 @@
 #' @param chrom_code -> how CHROM is written: "auto" (keep numeric CHROM,
 #'   otherwise 0), "index" (1..n by first appearance), "zero" (all 0) or
 #'   "keep" (verbatim), default "auto" (character)
+#' @param allele_code -> how alleles are written in the .ped file:
+#'   "nucleotide" (the REF and ALT bases) or "12" (1 = ALT, 2 = REF, as
+#'   ADMIXTURE requires for .ped input), default "nucleotide" (character)
 #'
 #' @return Invisibly returns the input VCFArrow object; called for its side effect of writing `out_file`.
 #'
@@ -22,6 +25,13 @@
 #' Larger chunks result in faster writing speeds.
 #' If no groups are defined, the default behavior is to use all groups.
 #' Sex and phenotype vectors are optional. If not defined sex = 0, pheno = -9.
+#' Missing alleles are written as 0.  In the "12" coding allele 1 is ALT and
+#' allele 2 is REF, as in vcf2plink_bed().  With either coding, PLINK 1.9
+#' makes the minor allele A1 when it loads a .ped file; PLINK 2 (and PLINK
+#' 1.9 with --keep-allele-order) take the "12" coding's 1 as A1.
+#' PLINK reads both allele codings;
+#' ADMIXTURE reads .ped files only in the "12" coding (allele_code = "12"),
+#' and needs integer chromosome codes (chrom_code), as for .bed input.
 #'
 #' @examples
 #' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
@@ -50,11 +60,13 @@
 
 vcf2plink_ped <- function(vcf_arrow, out_file, keep_groups = NULL,
                           sex = NULL, pheno = NULL,
-                          chrom_code = c("auto", "index", "zero", "keep")) {
+                          chrom_code = c("auto", "index", "zero", "keep"),
+                          allele_code = c("nucleotide", "12")) {
 
   if (missing(out_file)) cli::cli_abort("{.arg out_file} must be supplied.")
 
   chrom_code <- match.arg(chrom_code)
+  allele_code <- match.arg(allele_code)
   
   if (!inherits(vcf_arrow, "VCFArrow"))
     cli::cli_abort("Expecting a VCFArrow object")
@@ -65,9 +77,13 @@ vcf2plink_ped <- function(vcf_arrow, out_file, keep_groups = NULL,
   acc <- .accumulate_individuals(setup, "PLINK .ped")
 
   cli::cli_alert_info("Writing PLINK file...")
+  # the writer writes the first character of the REF / ALT given per variant;
+  # "12" coding: 1 = ALT (allele 1), 2 = REF, as in vcf2plink_bed()'s .bim
+  ref <- if (allele_code == "12") rep("2", setup$n_var) else setup$variants$REF
+  alt <- if (allele_code == "12") rep("1", setup$n_var) else setup$variants$ALT
   write_plink_ped_cpp(
     acc$a1, acc$a2,
-    setup$variants$REF, setup$variants$ALT,
+    ref, alt,
     setup$samples,
     fields$fid, fields$pat, fields$mat, fields$sex, fields$pheno,
     paste0(out_file, ".ped")

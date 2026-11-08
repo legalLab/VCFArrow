@@ -10,7 +10,8 @@ vcf2plink_ped(
   keep_groups = NULL,
   sex = NULL,
   pheno = NULL,
-  chrom_code = c("auto", "index", "zero", "keep")
+  chrom_code = c("auto", "index", "zero", "keep"),
+  allele_code = c("nucleotide", "12")
 )
 }
 \arguments{
@@ -27,6 +28,10 @@ vcf2plink_ped(
 \item{chrom_code}{-> how CHROM is written: "auto" (keep numeric CHROM,
 otherwise 0), "index" (1..n by first appearance), "zero" (all 0) or
 "keep" (verbatim), default "auto" (character)}
+
+\item{allele_code}{-> how alleles are written in the .ped file:
+"nucleotide" (the REF and ALT bases) or "12" (1 = ALT, 2 = REF, as
+ADMIXTURE requires for .ped input), default "nucleotide" (character)}
 }
 \value{
 Invisibly returns the input VCFArrow object; called for its side effect of writing \code{out_file}.
@@ -40,6 +45,13 @@ Writing occurs in chunks whose size is determined by the read_vcf() function.
 Larger chunks result in faster writing speeds.
 If no groups are defined, the default behavior is to use all groups.
 Sex and phenotype vectors are optional. If not defined sex = 0, pheno = -9.
+Missing alleles are written as 0.  In the "12" coding allele 1 is ALT and
+allele 2 is REF, as in vcf2plink_bed().  With either coding, PLINK 1.9
+makes the minor allele A1 when it loads a .ped file; PLINK 2 (and PLINK
+1.9 with --keep-allele-order) take the "12" coding's 1 as A1.
+PLINK reads both allele codings;
+ADMIXTURE reads .ped files only in the "12" coding (allele_code = "12"),
+and needs integer chromosome codes (chrom_code), as for .bed input.
 }
 \examples{
 f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
