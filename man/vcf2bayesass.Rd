@@ -24,6 +24,12 @@ This function converts a VCFArrow object to an external BayesAss formatted file.
 Writing occurs in chunks whose size is determined by the read_vcf() function.
 Larger chunks result in faster writing speeds.
 If no groups are defined, the default behavior is to use all groups.
+The file is in BA3's native format: one line per individual and locus,
+'indivID popID locID allele1 allele2', separated by spaces, with the
+alleles labelled 1 (REF) and 2 (ALT) and a missing genotype as '0 0'.
+Sample names, group labels and locus names must not contain spaces.
+BA3 accepts at most 100,000 loci, 100 populations and 20,000
+individuals; a warning is given above these limits.
 }
 \examples{
 f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
