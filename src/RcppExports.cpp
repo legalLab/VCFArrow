@@ -189,17 +189,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// write_smartsnp_header_cpp
-void write_smartsnp_header_cpp(const CharacterVector& samples, const std::string& out_file);
-RcppExport SEXP _VCFArrow_write_smartsnp_header_cpp(SEXP samplesSEXP, SEXP out_fileSEXP) {
-BEGIN_RCPP
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const CharacterVector& >::type samples(samplesSEXP);
-    Rcpp::traits::input_parameter< const std::string& >::type out_file(out_fileSEXP);
-    write_smartsnp_header_cpp(samples, out_file);
-    return R_NilValue;
-END_RCPP
-}
 // write_smartsnp_chunk_cpp
 void write_smartsnp_chunk_cpp(const IntegerMatrix& a1_mat, const IntegerMatrix& a2_mat, const std::string& out_file);
 RcppExport SEXP _VCFArrow_write_smartsnp_chunk_cpp(SEXP a1_matSEXP, SEXP a2_matSEXP, SEXP out_fileSEXP) {
@@ -245,8 +234,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // write_genepop_cpp
-void write_genepop_cpp(const IntegerMatrix& a1_mat, const IntegerMatrix& a2_mat, const CharacterVector& REF, const CharacterVector& ALT, const CharacterVector& samples, const CharacterVector& group_names, const IntegerVector& group_sizes, const CharacterVector& loci, const std::string& out_file);
-RcppExport SEXP _VCFArrow_write_genepop_cpp(SEXP a1_matSEXP, SEXP a2_matSEXP, SEXP REFSEXP, SEXP ALTSEXP, SEXP samplesSEXP, SEXP group_namesSEXP, SEXP group_sizesSEXP, SEXP lociSEXP, SEXP out_fileSEXP) {
+void write_genepop_cpp(const IntegerMatrix& a1_mat, const IntegerMatrix& a2_mat, const CharacterVector& REF, const CharacterVector& ALT, const CharacterVector& samples, const CharacterVector& group_names, const IntegerVector& group_sizes, const CharacterVector& loci, bool pop_names, const std::string& out_file);
+RcppExport SEXP _VCFArrow_write_genepop_cpp(SEXP a1_matSEXP, SEXP a2_matSEXP, SEXP REFSEXP, SEXP ALTSEXP, SEXP samplesSEXP, SEXP group_namesSEXP, SEXP group_sizesSEXP, SEXP lociSEXP, SEXP pop_namesSEXP, SEXP out_fileSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const IntegerMatrix& >::type a1_mat(a1_matSEXP);
@@ -257,33 +246,26 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const CharacterVector& >::type group_names(group_namesSEXP);
     Rcpp::traits::input_parameter< const IntegerVector& >::type group_sizes(group_sizesSEXP);
     Rcpp::traits::input_parameter< const CharacterVector& >::type loci(lociSEXP);
+    Rcpp::traits::input_parameter< bool >::type pop_names(pop_namesSEXP);
     Rcpp::traits::input_parameter< const std::string& >::type out_file(out_fileSEXP);
-    write_genepop_cpp(a1_mat, a2_mat, REF, ALT, samples, group_names, group_sizes, loci, out_file);
+    write_genepop_cpp(a1_mat, a2_mat, REF, ALT, samples, group_names, group_sizes, loci, pop_names, out_file);
     return R_NilValue;
 END_RCPP
 }
-// write_fineradstructure_header_cpp
-void write_fineradstructure_header_cpp(const CharacterVector& samples, const std::string& out_file);
-RcppExport SEXP _VCFArrow_write_fineradstructure_header_cpp(SEXP samplesSEXP, SEXP out_fileSEXP) {
-BEGIN_RCPP
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const CharacterVector& >::type samples(samplesSEXP);
-    Rcpp::traits::input_parameter< const std::string& >::type out_file(out_fileSEXP);
-    write_fineradstructure_header_cpp(samples, out_file);
-    return R_NilValue;
-END_RCPP
-}
-// write_fineradstructure_chunk_cpp
-void write_fineradstructure_chunk_cpp(const IntegerMatrix& a1_mat, const IntegerMatrix& a2_mat, const CharacterVector& REF, const CharacterVector& ALT, const std::string& out_file);
-RcppExport SEXP _VCFArrow_write_fineradstructure_chunk_cpp(SEXP a1_matSEXP, SEXP a2_matSEXP, SEXP REFSEXP, SEXP ALTSEXP, SEXP out_fileSEXP) {
+// write_fineradstructure_cpp
+void write_fineradstructure_cpp(const IntegerMatrix& a1_mat, const IntegerMatrix& a2_mat, const CharacterVector& REF, const CharacterVector& ALT, const CharacterVector& samples, const IntegerVector& cols, const IntegerVector& starts, const std::string& out_file);
+RcppExport SEXP _VCFArrow_write_fineradstructure_cpp(SEXP a1_matSEXP, SEXP a2_matSEXP, SEXP REFSEXP, SEXP ALTSEXP, SEXP samplesSEXP, SEXP colsSEXP, SEXP startsSEXP, SEXP out_fileSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const IntegerMatrix& >::type a1_mat(a1_matSEXP);
     Rcpp::traits::input_parameter< const IntegerMatrix& >::type a2_mat(a2_matSEXP);
     Rcpp::traits::input_parameter< const CharacterVector& >::type REF(REFSEXP);
     Rcpp::traits::input_parameter< const CharacterVector& >::type ALT(ALTSEXP);
+    Rcpp::traits::input_parameter< const CharacterVector& >::type samples(samplesSEXP);
+    Rcpp::traits::input_parameter< const IntegerVector& >::type cols(colsSEXP);
+    Rcpp::traits::input_parameter< const IntegerVector& >::type starts(startsSEXP);
     Rcpp::traits::input_parameter< const std::string& >::type out_file(out_fileSEXP);
-    write_fineradstructure_chunk_cpp(a1_mat, a2_mat, REF, ALT, out_file);
+    write_fineradstructure_cpp(a1_mat, a2_mat, REF, ALT, samples, cols, starts, out_file);
     return R_NilValue;
 END_RCPP
 }
@@ -343,23 +325,27 @@ BEGIN_RCPP
 END_RCPP
 }
 // write_migrate_cpp
-void write_migrate_cpp(const IntegerMatrix& ref_mat, const IntegerMatrix& alt_mat, const IntegerMatrix& n_obs_mat, const CharacterVector& pop_names, const CharacterVector& loci, const std::string& out_file);
-RcppExport SEXP _VCFArrow_write_migrate_cpp(SEXP ref_matSEXP, SEXP alt_matSEXP, SEXP n_obs_matSEXP, SEXP pop_namesSEXP, SEXP lociSEXP, SEXP out_fileSEXP) {
+void write_migrate_cpp(const IntegerMatrix& ref_mat, const IntegerMatrix& alt_mat, const IntegerMatrix& n_obs_mat, const CharacterVector& pop_names, const IntegerVector& group_sizes, const NumericVector& pos, const CharacterVector& REF, const CharacterVector& ALT, const std::string& title, const std::string& out_file);
+RcppExport SEXP _VCFArrow_write_migrate_cpp(SEXP ref_matSEXP, SEXP alt_matSEXP, SEXP n_obs_matSEXP, SEXP pop_namesSEXP, SEXP group_sizesSEXP, SEXP posSEXP, SEXP REFSEXP, SEXP ALTSEXP, SEXP titleSEXP, SEXP out_fileSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const IntegerMatrix& >::type ref_mat(ref_matSEXP);
     Rcpp::traits::input_parameter< const IntegerMatrix& >::type alt_mat(alt_matSEXP);
     Rcpp::traits::input_parameter< const IntegerMatrix& >::type n_obs_mat(n_obs_matSEXP);
     Rcpp::traits::input_parameter< const CharacterVector& >::type pop_names(pop_namesSEXP);
-    Rcpp::traits::input_parameter< const CharacterVector& >::type loci(lociSEXP);
+    Rcpp::traits::input_parameter< const IntegerVector& >::type group_sizes(group_sizesSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type pos(posSEXP);
+    Rcpp::traits::input_parameter< const CharacterVector& >::type REF(REFSEXP);
+    Rcpp::traits::input_parameter< const CharacterVector& >::type ALT(ALTSEXP);
+    Rcpp::traits::input_parameter< const std::string& >::type title(titleSEXP);
     Rcpp::traits::input_parameter< const std::string& >::type out_file(out_fileSEXP);
-    write_migrate_cpp(ref_mat, alt_mat, n_obs_mat, pop_names, loci, out_file);
+    write_migrate_cpp(ref_mat, alt_mat, n_obs_mat, pop_names, group_sizes, pos, REF, ALT, title, out_file);
     return R_NilValue;
 END_RCPP
 }
 // write_migrate_seq_cpp
-void write_migrate_seq_cpp(const IntegerMatrix& a1_mat, const IntegerMatrix& a2_mat, const CharacterVector& REF, const CharacterVector& ALT, const CharacterVector& samples, const CharacterVector& group_names, const IntegerVector& group_sizes, const CharacterVector& block_labels, const std::string& out_file);
-RcppExport SEXP _VCFArrow_write_migrate_seq_cpp(SEXP a1_matSEXP, SEXP a2_matSEXP, SEXP REFSEXP, SEXP ALTSEXP, SEXP samplesSEXP, SEXP group_namesSEXP, SEXP group_sizesSEXP, SEXP block_labelsSEXP, SEXP out_fileSEXP) {
+void write_migrate_seq_cpp(const IntegerMatrix& a1_mat, const IntegerMatrix& a2_mat, const CharacterVector& REF, const CharacterVector& ALT, const CharacterVector& samples, const CharacterVector& group_names, const IntegerVector& group_sizes, const CharacterVector& block_labels, const std::string& datatype, const std::string& title, int name_width, const std::string& out_file);
+RcppExport SEXP _VCFArrow_write_migrate_seq_cpp(SEXP a1_matSEXP, SEXP a2_matSEXP, SEXP REFSEXP, SEXP ALTSEXP, SEXP samplesSEXP, SEXP group_namesSEXP, SEXP group_sizesSEXP, SEXP block_labelsSEXP, SEXP datatypeSEXP, SEXP titleSEXP, SEXP name_widthSEXP, SEXP out_fileSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const IntegerMatrix& >::type a1_mat(a1_matSEXP);
@@ -370,8 +356,11 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const CharacterVector& >::type group_names(group_namesSEXP);
     Rcpp::traits::input_parameter< const IntegerVector& >::type group_sizes(group_sizesSEXP);
     Rcpp::traits::input_parameter< const CharacterVector& >::type block_labels(block_labelsSEXP);
+    Rcpp::traits::input_parameter< const std::string& >::type datatype(datatypeSEXP);
+    Rcpp::traits::input_parameter< const std::string& >::type title(titleSEXP);
+    Rcpp::traits::input_parameter< int >::type name_width(name_widthSEXP);
     Rcpp::traits::input_parameter< const std::string& >::type out_file(out_fileSEXP);
-    write_migrate_seq_cpp(a1_mat, a2_mat, REF, ALT, samples, group_names, group_sizes, block_labels, out_file);
+    write_migrate_seq_cpp(a1_mat, a2_mat, REF, ALT, samples, group_names, group_sizes, block_labels, datatype, title, name_width, out_file);
     return R_NilValue;
 END_RCPP
 }
@@ -561,19 +550,17 @@ static const R_CallMethodDef CallEntries[] = {
     {"_VCFArrow_f_allele_counts_cpp", (DL_FUNC) &_VCFArrow_f_allele_counts_cpp, 7},
     {"_VCFArrow_f_hom_cpp", (DL_FUNC) &_VCFArrow_f_hom_cpp, 11},
     {"_VCFArrow_theta_chunk_cpp", (DL_FUNC) &_VCFArrow_theta_chunk_cpp, 7},
-    {"_VCFArrow_write_smartsnp_header_cpp", (DL_FUNC) &_VCFArrow_write_smartsnp_header_cpp, 2},
     {"_VCFArrow_write_smartsnp_chunk_cpp", (DL_FUNC) &_VCFArrow_write_smartsnp_chunk_cpp, 3},
     {"_VCFArrow_write_structure_cpp", (DL_FUNC) &_VCFArrow_write_structure_cpp, 6},
     {"_VCFArrow_write_arlequin_cpp", (DL_FUNC) &_VCFArrow_write_arlequin_cpp, 8},
-    {"_VCFArrow_write_genepop_cpp", (DL_FUNC) &_VCFArrow_write_genepop_cpp, 9},
-    {"_VCFArrow_write_fineradstructure_header_cpp", (DL_FUNC) &_VCFArrow_write_fineradstructure_header_cpp, 2},
-    {"_VCFArrow_write_fineradstructure_chunk_cpp", (DL_FUNC) &_VCFArrow_write_fineradstructure_chunk_cpp, 5},
+    {"_VCFArrow_write_genepop_cpp", (DL_FUNC) &_VCFArrow_write_genepop_cpp, 10},
+    {"_VCFArrow_write_fineradstructure_cpp", (DL_FUNC) &_VCFArrow_write_fineradstructure_cpp, 8},
     {"_VCFArrow_write_treemix_header_cpp", (DL_FUNC) &_VCFArrow_write_treemix_header_cpp, 2},
     {"_VCFArrow_write_treemix_chunk_cpp", (DL_FUNC) &_VCFArrow_write_treemix_chunk_cpp, 3},
     {"_VCFArrow_write_bayescan_cpp", (DL_FUNC) &_VCFArrow_write_bayescan_cpp, 5},
     {"_VCFArrow_write_bayesass_cpp", (DL_FUNC) &_VCFArrow_write_bayesass_cpp, 9},
-    {"_VCFArrow_write_migrate_cpp", (DL_FUNC) &_VCFArrow_write_migrate_cpp, 6},
-    {"_VCFArrow_write_migrate_seq_cpp", (DL_FUNC) &_VCFArrow_write_migrate_seq_cpp, 9},
+    {"_VCFArrow_write_migrate_cpp", (DL_FUNC) &_VCFArrow_write_migrate_cpp, 10},
+    {"_VCFArrow_write_migrate_seq_cpp", (DL_FUNC) &_VCFArrow_write_migrate_seq_cpp, 12},
     {"_VCFArrow_write_related_cpp", (DL_FUNC) &_VCFArrow_write_related_cpp, 6},
     {"_VCFArrow_write_apparent_cpp", (DL_FUNC) &_VCFArrow_write_apparent_cpp, 7},
     {"_VCFArrow_write_fasta_cpp", (DL_FUNC) &_VCFArrow_write_fasta_cpp, 6},

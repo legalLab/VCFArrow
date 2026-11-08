@@ -53,10 +53,6 @@ theta_chunk_cpp <- function(var, grp, a1, a2, n_var, n_pops, harmonic) {
     .Call(`_VCFArrow_theta_chunk_cpp`, var, grp, a1, a2, n_var, n_pops, harmonic)
 }
 
-write_smartsnp_header_cpp <- function(samples, out_file) {
-    invisible(.Call(`_VCFArrow_write_smartsnp_header_cpp`, samples, out_file))
-}
-
 write_smartsnp_chunk_cpp <- function(a1_mat, a2_mat, out_file) {
     invisible(.Call(`_VCFArrow_write_smartsnp_chunk_cpp`, a1_mat, a2_mat, out_file))
 }
@@ -69,16 +65,12 @@ write_arlequin_cpp <- function(a1_mat, a2_mat, REF, ALT, samples, group_names, g
     invisible(.Call(`_VCFArrow_write_arlequin_cpp`, a1_mat, a2_mat, REF, ALT, samples, group_names, group_sizes, out_file))
 }
 
-write_genepop_cpp <- function(a1_mat, a2_mat, REF, ALT, samples, group_names, group_sizes, loci, out_file) {
-    invisible(.Call(`_VCFArrow_write_genepop_cpp`, a1_mat, a2_mat, REF, ALT, samples, group_names, group_sizes, loci, out_file))
+write_genepop_cpp <- function(a1_mat, a2_mat, REF, ALT, samples, group_names, group_sizes, loci, pop_names, out_file) {
+    invisible(.Call(`_VCFArrow_write_genepop_cpp`, a1_mat, a2_mat, REF, ALT, samples, group_names, group_sizes, loci, pop_names, out_file))
 }
 
-write_fineradstructure_header_cpp <- function(samples, out_file) {
-    invisible(.Call(`_VCFArrow_write_fineradstructure_header_cpp`, samples, out_file))
-}
-
-write_fineradstructure_chunk_cpp <- function(a1_mat, a2_mat, REF, ALT, out_file) {
-    invisible(.Call(`_VCFArrow_write_fineradstructure_chunk_cpp`, a1_mat, a2_mat, REF, ALT, out_file))
+write_fineradstructure_cpp <- function(a1_mat, a2_mat, REF, ALT, samples, cols, starts, out_file) {
+    invisible(.Call(`_VCFArrow_write_fineradstructure_cpp`, a1_mat, a2_mat, REF, ALT, samples, cols, starts, out_file))
 }
 
 write_treemix_header_cpp <- function(pop_names, out_file) {
@@ -97,12 +89,12 @@ write_bayesass_cpp <- function(a1_mat, a2_mat, REF, ALT, samples, group_names, g
     invisible(.Call(`_VCFArrow_write_bayesass_cpp`, a1_mat, a2_mat, REF, ALT, samples, group_names, group_sizes, loci, out_file))
 }
 
-write_migrate_cpp <- function(ref_mat, alt_mat, n_obs_mat, pop_names, loci, out_file) {
-    invisible(.Call(`_VCFArrow_write_migrate_cpp`, ref_mat, alt_mat, n_obs_mat, pop_names, loci, out_file))
+write_migrate_cpp <- function(ref_mat, alt_mat, n_obs_mat, pop_names, group_sizes, pos, REF, ALT, title, out_file) {
+    invisible(.Call(`_VCFArrow_write_migrate_cpp`, ref_mat, alt_mat, n_obs_mat, pop_names, group_sizes, pos, REF, ALT, title, out_file))
 }
 
-write_migrate_seq_cpp <- function(a1_mat, a2_mat, REF, ALT, samples, group_names, group_sizes, block_labels, out_file) {
-    invisible(.Call(`_VCFArrow_write_migrate_seq_cpp`, a1_mat, a2_mat, REF, ALT, samples, group_names, group_sizes, block_labels, out_file))
+write_migrate_seq_cpp <- function(a1_mat, a2_mat, REF, ALT, samples, group_names, group_sizes, block_labels, datatype, title, name_width, out_file) {
+    invisible(.Call(`_VCFArrow_write_migrate_seq_cpp`, a1_mat, a2_mat, REF, ALT, samples, group_names, group_sizes, block_labels, datatype, title, name_width, out_file))
 }
 
 write_related_cpp <- function(a1_mat, a2_mat, REF, ALT, samples, out_file) {
