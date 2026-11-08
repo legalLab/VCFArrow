@@ -15,7 +15,7 @@
 #'   (all samples, default, as vcftools and PLINK) or "group" (the sample's
 #'   own group) (character)
 #'
-#' @return table of statistics
+#' @return Invisibly returns the input VCFArrow object; called for its side effect of writing `<project>_stats.csv` in `res_path`.
 #'
 #' @details
 #' This function calculates average read depth, heterozygosity
@@ -39,6 +39,17 @@
 #' with f_ref = "group", or a sample without a group). The table gives F with
 #' N, O and E (F_sites, F_hom_obs, F_hom_exp), and for each sample the mean F
 #' of its group (F_group_mean; over the group's samples with an F).
+#'
+#' The CSV file has one row per sample, sorted by group and sample, with the
+#' columns: sample; read_depth (mean DP of the called genotypes);
+#' heterozygosity (heterozygotes / called genotypes); heterozygotes;
+#' homozygotes, homozygotes_ref and homozygotes_alt; missing_p (proportion of
+#' missing genotypes), missing_n and non_missing; total_loci; F and
+#' F_group_mean; F_sites, F_hom_obs and F_hom_exp (N, O and E above).  With
+#' theta = TRUE they are followed by theta_total and pi_total (Watterson's
+#' theta and pi of all samples) and theta_w and pi (of the sample's group).
+#' Then follow group and, with theta = TRUE, n_ind (the number of samples in
+#' the group).
 #'
 #' @examples
 #' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
@@ -175,7 +186,8 @@ vcf_stats <- function(vcf_arrow, res_path, project, theta = FALSE,
       pi_total = theta_$pi
     )
     # explicit group join instead of relying on theta_$theta_g implicitly
-    out <- dplyr::left_join(out, theta_$theta_g, by = "sample")
+    out <- dplyr::left_join(out, theta_$theta_g, by = "sample") |>
+      dplyr::relocate("theta_w", "pi", .before = "group")
   } else {
     # final table
     out <- data.frame(
@@ -204,7 +216,8 @@ vcf_stats <- function(vcf_arrow, res_path, project, theta = FALSE,
   f_mean <- tapply(out$F, out$group, function(x) if (all(is.na(x))) NA_real_ else mean(x, na.rm = TRUE))
   out$F_group_mean <- unname(f_mean[match(out$group, names(f_mean))])
 
-  out <- dplyr::arrange(out, group, sample)
+  out <- dplyr::arrange(out, group, sample) |>
+    dplyr::relocate("F_group_mean", .after = "F") # ensure F is column name not FALSE
 
   utils::write.table(
     out,
