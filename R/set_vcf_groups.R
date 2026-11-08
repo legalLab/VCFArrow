@@ -46,20 +46,7 @@ set_vcf_groups <- function(vcf_arrow, data_path, strt = "strata") {
   }
 
   strata_file <- file.path(data_path, strt)
-  if (!file.exists(strata_file))
-    cli::cli_abort("Strata file {.file {strata_file}} not found.")
-
-  # tab-separated if the header line has a tab, otherwise separated by
-  # whitespace; every column read as text (so ids such as "007" are not
-  # turned into numbers), empty fields as missing
-  header <- readLines(strata_file, n = 1L, warn = FALSE)
-  if (length(header) == 0L)
-    cli::cli_abort("Strata file {.file {strata_file}} is empty.")
-  strata_df <- utils::read.table(strata_file, header = TRUE,
-                                 sep = if (grepl("\t", header, fixed = TRUE)) "\t" else "",
-                                 colClasses = "character", strip.white = TRUE,
-                                 na.strings = c("", "NA"), quote = "\"",
-                                 comment.char = "")
+  strata_df <- .read_sample_table(strata_file, "Strata file")
 
   missing_cols <- setdiff(c("id", "pop"), names(strata_df))
   if (length(missing_cols))
@@ -94,4 +81,21 @@ set_vcf_groups <- function(vcf_arrow, data_path, strt = "strata") {
   vcf_arrow@groups <- groups
 
   return(vcf_arrow)
+}
+
+# Read a table of samples (a header line, then one row per sample): tab-
+# separated if the header line has a tab, otherwise separated by whitespace;
+# every column read as text (so ids such as "007" are not turned into
+# numbers), empty fields as missing.  Used by set_vcf_groups() and
+# rename_vcf_samples(); `what` names the file in error messages.
+.read_sample_table <- function(file, what = "File") {
+  if (!file.exists(file))
+    cli::cli_abort("{what} {.file {file}} not found.")
+  header <- readLines(file, n = 1L, warn = FALSE)
+  if (length(header) == 0L)
+    cli::cli_abort("{what} {.file {file}} is empty.")
+  utils::read.table(file, header = TRUE,
+                    sep = if (grepl("\t", header, fixed = TRUE)) "\t" else "",
+                    colClasses = "character", strip.white = TRUE,
+                    na.strings = c("", "NA"), quote = "\"", comment.char = "")
 }
