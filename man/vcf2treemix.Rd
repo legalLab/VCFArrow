@@ -4,7 +4,12 @@
 \alias{vcf2treemix}
 \title{vcf2treemix}
 \usage{
-vcf2treemix(vcf_arrow, out_file, keep_groups = NULL)
+vcf2treemix(
+  vcf_arrow,
+  out_file,
+  keep_groups = NULL,
+  gzip = grepl("\\\\.gz$", out_file)
+)
 }
 \arguments{
 \item{vcf_arrow}{-> VCFArrow object}
@@ -12,6 +17,9 @@ vcf2treemix(vcf_arrow, out_file, keep_groups = NULL)
 \item{out_file}{-> name of file to output, no default (character)}
 
 \item{keep_groups}{-> groups to retain, default NULL (character)}
+
+\item{gzip}{-> compress the file with gzip, as TreeMix expects, default TRUE
+if out_file ends in ".gz" (Boolean)}
 }
 \value{
 Invisibly returns the input VCFArrow object; called for its side effect of writing \code{out_file}.
@@ -24,12 +32,16 @@ This function converts a VCFArrow object to an external Treemix formatted file.
 Writing occurs in chunks whose size is determined by the read_vcf() function.
 Larger chunks result in faster writing speeds.
 If no groups are defined, the default behavior is to use all groups.
+The first line holds the group names; each further line one SNP, with the
+REF and ALT allele counts of each group as "ref,alt", separated by spaces.
+TreeMix reads gzip-compressed input (treemix -i file.gz): name out_file
+with the extension .gz to compress it.
 }
 \examples{
 f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
                  package = "VCFArrow")
 vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
-vcf2treemix(vcf, out_file = tempfile(fileext = ".txt"))
+vcf2treemix(vcf, out_file = tempfile(fileext = ".gz"))
 
 }
 \author{
