@@ -9,7 +9,7 @@ vcf2migrate(
   out_file,
   keep_groups = NULL,
   block_size = 100L,
-  method = "S"
+  method = c("S", "N", "C")
 )
 }
 \arguments{
@@ -22,8 +22,9 @@ vcf2migrate(
 \item{block_size}{-> number of SNPs (method S) or base pairs (method N) per
 linked block, default 100 (integer)}
 
-\item{method}{-> "C" (allele counts), "S" (sequences, fixed blocks) or
-"N" (sequences, chromosome intervals), default "S" (character)}
+\item{method}{-> "C" (allele counts, HapMap format), "S" (sequences, loci
+of block_size SNPs, "(sK)") or "N" (SNPs, loci of block_size bp per
+CHROM, "(nK)"), default "S" (character)}
 }
 \value{
 Invisibly returns the input VCFArrow object; called for its side effect of writing \code{out_file}.
@@ -36,15 +37,28 @@ This function converts a VCFArrow object to an external MIGRATE-N formatted file
 Writing occurs in chunks whose size is determined by the read_vcf() function.
 Larger chunks result in faster writing speeds.
 If no groups are defined, the default behavior is to use all groups.
-The function implements two different SNP formats,
-new (un)linked SNPs (S) - fixed blocks, and new (un)linked SNPs (N) - chromosome intervals.
-Alleles are sequence data when SNPs are mapped to a reference.
-The S option generates blocks of a specific number of SNPs and treats them as linked;
-this is appropriate if SNPs are extracted without a reference.
-The N format extracts all SNPs within a chromosome, within the block size and treats them as linked;
-this is appropriate if SNPs are mapped against a reference.
-The size of the linked block is determined by the block_size parameter.
-See the Migrate-N documentation (\url{https://peterbeerli.com/migrate-html5/}) for format detail.
+The data file follows the Migrate-N manual (section 4, "Data file
+specification",
+\url{https://peterbeerli.com/downloads/migrate/docs/migratedoc.pdf}).
+Method "S" writes sequence data: each sample as two haplotypes
+(\if{html}{\out{<name>}}_1, \if{html}{\out{<name>}}_2) of the SNPs' nucleotides ('?' if missing), cut into
+loci of block_size consecutive SNPs, labelled "(sK)" (a sequence locus of
+K sites).
+Method "N" writes the same sequences cut into loci of the SNPs on one
+CHROM within the same interval of block_size bp, labelled "(nK)" (K linked
+SNPs), with the data type N (SNPs) on the first line.
+Method "C" writes the allele counts of each population in Migrate-N's
+HapMap format (data type H): for each SNP its position, REF and ALT
+nucleotides with their counts, and the total; the manual describes this
+format as preliminary.  SNPs without called alleles in some population are
+left out (with a warning), as Migrate-N cannot compute their allele
+frequencies there.
+The first line gives the number of populations and of loci.  Individual
+names are written in a fixed field of 10 characters, Migrate-N's default;
+if longer names are needed, a warning gives the nmlength to set in the
+parmfile.  Population names must not start with a number.
+Whether loci of SNPs should be treated as linked depends on whether the
+SNPs were mapped (so that linkage is known) or called de novo.
 }
 \examples{
 f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
