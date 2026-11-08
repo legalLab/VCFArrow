@@ -203,7 +203,7 @@
   fmt <- chunk$fmt
   fmt <- if (fmt$num_chunks == 1L) fmt$chunk(0L) else do.call(arrow::concat_arrays, fmt$chunks)
   old <- as.vector(fmt$Take(arrow::Array$create(which(flag) - 1L)))
-  sep <- ifelse(substr(old, 2L, 2L) == "|", "|", "/")
+  sep <- ifelse(grepl("^[^:]*\\|", old), "|", "/")
   allele <- ifelse(is.na(a1[flag]), ".", as.character(a1[flag]))
   new <- paste0(allele, sep, allele, sub("^[^:]*", "", old))
   chunk[["fmt"]] <- arrow::call_function(
