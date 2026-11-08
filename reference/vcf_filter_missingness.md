@@ -31,7 +31,9 @@ subsetted VCFArrow object
 
 This function removes loci above missingness threshold from a VCFArrow
 object, returning a new VCFArrow object. Missingness is a locus focused
-metric, i.e. missing data per locus.
+metric, i.e. missing data per locus. With verbose = TRUE, the number of
+retained variants and the final % missing data (missing genotypes over
+the retained variants and samples) are reported.
 
 ## Author
 
@@ -52,7 +54,7 @@ vcf_filter_missingness(vcf, threshold = 0.2)
 #> Warning: 'arrow::read_feather' is deprecated.
 #> Use 'read_ipc_file' instead.
 #> See help("Deprecated")
-#> ℹ Retained 2317 / 10000 variants (per-variant missingness <= 0.2)
+#> ℹ Retained 2317 / 10000 variants (per-variant missingness <= 0.2) | Missing data: 7.68%
 #> 
 #> An object of class "VCFArrow"
 #> 
@@ -60,28 +62,26 @@ vcf_filter_missingness(vcf, threshold = 0.2)
 #>   Variants: 2317 
 #>   Samples:  18 
 #> 
-#> Quick stats:
-#>   Non-missing variants: 2317 
+#> Variant types:
+#>   Biallelic SNVs: 2139 
+#>   Multiallelic:   0 
+#>   Indels:         178 
 #> 
-#> Phased genotypes: FALSE 
+#> Groups: 4 
+#> 
+#> BS GS OG WA 
+#>  5  5  3  5 
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> 
+#> Genotypes (first chunk with variants): 41706 
+#>   Missing: 7.68% 
+#>   Phased:  9756 
 #> 
 #> Storage:
-#>   Path: /tmp/Rtmpmnning/arrow_vcf_36704ba41f1c 
-#> 
-#> Genotype storage (Arrow):
-#> FileSystemDataset with 1 Arrow IPC file
-#> 9 columns
-#> .row_id: int32
-#> sample: string
-#> a1: int32
-#> a2: int32
-#> phased: bool
-#> fmt: string
-#> DP: double
-#> GQ: double
-#> ADR: double
-#> 
-#> See $metadata for additional Schema metadata
+#>   Path: /tmp/RtmpVdrUAs/arrow_vcf_315316fafbb4 
+#>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):
 #>                       CHROM POS        ID REF ALT QUAL FILTER Rk RPT n_alt
@@ -106,12 +106,12 @@ vcf_filter_missingness(vcf, threshold = 0.2)
 #> [5] "Ty=SNP;Rk=1.0;UL=2;UR=5;CL=2;CR=5;Genome=.;Sd=.;Cluster=18749679;ClSize=2"  
 #> 
 #> FORMAT (first 5):
-#>           FORMAT .row_id
-#> 1 GT:DP:PL:AD:HQ       1
-#> 2 GT:DP:PL:AD:HQ       2
-#> 3 GT:DP:PL:AD:HQ       3
-#> 4 GT:DP:PL:AD:HQ       4
-#> 5 GT:DP:PL:AD:HQ       5
+#>  .row_id         FORMAT
+#>        4 GT:DP:PL:AD:HQ
+#>       77 GT:DP:PL:AD:HQ
+#>      136 GT:DP:PL:AD:HQ
+#>      193 GT:DP:PL:AD:HQ
+#>      195 GT:DP:PL:AD:HQ
 #> 
 #> Samples (first 5):
 #> [1] "Pv120" "Pv126" "Pv13"  "Pv14"  "Pv27" 

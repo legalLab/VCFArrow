@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">VCFArrow</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.10.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -89,28 +89,26 @@ vcf_filter_pass() defaults to passing the locus.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Variants: 10000 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Samples:  18 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Quick stats:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Non-missing variants: 10000 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Variant types:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Biallelic SNVs: 9313 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Multiallelic:   0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Indels:         687 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Phased genotypes: FALSE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Groups: 4 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BS GS OG WA </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  5  5  3  5 </span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'arrow::read_feather' is deprecated.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Genotypes (first chunk with variants): 180000 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Missing: 47.09% </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Phased:  45612 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Storage:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Path: /tmp/Rtmpmnning/arrow_vcf_36709f26415 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Genotype storage (Arrow):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> FileSystemDataset with 1 Arrow IPC file</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9 columns</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> .row_id: int32</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> sample: string</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> a1: int32</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> a2: int32</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> phased: bool</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> fmt: string</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> DP: double</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> GQ: double</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ADR: double</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> See $metadata for additional Schema metadata</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Path: /tmp/RtmpVdrUAs/arrow_vcf_31537b15ead1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Genotype chunk files: 1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Variants (first 5 rows):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                     CHROM POS        ID REF ALT QUAL FILTER Rk RPT n_alt</span>
@@ -135,12 +133,12 @@ vcf_filter_pass() defaults to passing the locus.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [5] "Ty=SNP;Rk=1.0;UL=3;UR=7;CL=3;CR=7;Genome=.;Sd=.;Cluster=10880986;ClSize=5"   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> FORMAT (first 5):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           FORMAT .row_id</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 GT:DP:PL:AD:HQ       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 GT:DP:PL:AD:HQ       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 GT:DP:PL:AD:HQ       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 GT:DP:PL:AD:HQ       4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 GT:DP:PL:AD:HQ       5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .row_id         FORMAT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        1 GT:DP:PL:AD:HQ</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        2 GT:DP:PL:AD:HQ</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        3 GT:DP:PL:AD:HQ</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        4 GT:DP:PL:AD:HQ</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        5 GT:DP:PL:AD:HQ</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Samples (first 5):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Pv120" "Pv126" "Pv13"  "Pv14"  "Pv27" </span>

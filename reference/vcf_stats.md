@@ -42,13 +42,15 @@ vcf_stats(
 
 ## Value
 
-table of statistics
+Invisibly returns the input VCFArrow object; called for its side effect
+of writing `<project>_stats.csv` in `res_path`.
 
 ## Details
 
 This function calculates average read depth, heterozygosity number of
 heterozygotes, number of reference and alternative homozygotes, missing
-data and total number SNPs of each sample in an VCFArrow object.
+data and total number SNPs of each sample in an VCFArrow object. The
+average read depth is the mean DP of the sample's called genotypes.
 Optionally calls vcf_theta() to get total and group Watterson's theta
 and pi.
 
@@ -68,6 +70,17 @@ sites (e.g. a group of one sample with f_ref = "group", or a sample
 without a group). The table gives F with N, O and E (F_sites, F_hom_obs,
 F_hom_exp), and for each sample the mean F of its group (F_group_mean;
 over the group's samples with an F).
+
+The CSV file has one row per sample, sorted by group and sample, with
+the columns: sample; read_depth (mean DP of the called genotypes);
+heterozygosity (heterozygotes / called genotypes); heterozygotes;
+homozygotes, homozygotes_ref and homozygotes_alt; missing_p (proportion
+of missing genotypes), missing_n and non_missing; total_loci; F and
+F_group_mean; F_sites, F_hom_obs and F_hom_exp (N, O and E above). With
+theta = TRUE they are followed by theta_total and pi_total (Watterson's
+theta and pi of all samples) and theta_w and pi (of the sample's group).
+Then follow group and, with theta = TRUE, n_ind (the number of samples
+in the group).
 
 ## Author
 

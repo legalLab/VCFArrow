@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">VCFArrow</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.10.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,7 +40,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">vcf2structure</span><span class="op">(</span><span class="va">vcf_arrow</span>, <span class="va">out_file</span>, keep_groups <span class="op">=</span> <span class="cn">NULL</span>, method <span class="op">=</span> <span class="st">"S"</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">vcf2structure</span><span class="op">(</span><span class="va">vcf_arrow</span>, <span class="va">out_file</span>, keep_groups <span class="op">=</span> <span class="cn">NULL</span>, method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"S"</span>, <span class="st">"F"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -75,7 +75,14 @@ Writing occurs in chunks whose size is determined by the read_vcf() function.
 Larger chunks result in faster writing speeds.
 If no groups are defined, the default behavior is to use all groups.
 The flag parameter controls whether Structure (flag = 'S') or
-FastStructure (flag = 'F') formatted output is written out.</p>
+FastStructure (flag = 'F') formatted output is written out.
+Each sample is written on two lines (one per allele copy): its name, its
+group number and, for FastStructure, four columns of 0 (FastStructure
+ignores the first six columns), then one allele per SNP: 0 (REF), 1 (ALT)
+or -9 (missing).
+FastStructure adds the extension '.str' to the name given with –input,
+so give out_file the extension .str (e.g. "data.str", read with
+–input=data –format=str).</p>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
@@ -97,15 +104,15 @@ FastStructure (flag = 'F') formatted output is written out.</p>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Writing Structure file...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Structure file written to <span style="color: #0000BB;">/tmp/Rtmpmnning/file36706e38b6cf.str</span></span>
-<span class="r-in"><span><span class="fu">vcf2structure</span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".fstr"</span><span class="op">)</span>,</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Structure file written to <span style="color: #0000BB;">/tmp/RtmpVdrUAs/file31535c7a1ff1.str</span></span>
+<span class="r-in"><span><span class="fu">vcf2structure</span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".str"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>              method <span class="op">=</span> <span class="st">"F"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Accumulating Structure: 9313 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'arrow::read_feather' is deprecated.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Writing Structure file...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Structure file written to <span style="color: #0000BB;">/tmp/Rtmpmnning/file3670407e7848.fstr</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Structure file written to <span style="color: #0000BB;">/tmp/RtmpVdrUAs/file31535d1ee9cf.str</span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

@@ -93,8 +93,8 @@ vcf2admixture(vcf, out_file = file.path(tempdir(), "admixture_in"))
 #> Warning: 'arrow::read_feather' is deprecated.
 #> Use 'read_ipc_file' instead.
 #> See help("Deprecated")
-#> ℹ Chromosome names were recoded as integers for PLINK compatibility; mapping written to /tmp/Rtmpmnning/admixture_in.chrommap
-#> ✔ PLINK binary fileset written to /tmp/Rtmpmnning/admixture_in.bed, /tmp/Rtmpmnning/admixture_in.bim, /tmp/Rtmpmnning/admixture_in.fam
+#> ℹ Chromosome names were recoded as integers; mapping written to /tmp/RtmpVdrUAs/admixture_in.chrommap
+#> ✔ PLINK binary fileset written to /tmp/RtmpVdrUAs/admixture_in.bed, /tmp/RtmpVdrUAs/admixture_in.bim, /tmp/RtmpVdrUAs/admixture_in.fam
 vcf2admixture(vcf, out_file = file.path(tempdir(), "admixture_sup"),
               supervised = TRUE,
               reference_groups = c("GS", "BS", "WA"))
@@ -103,8 +103,8 @@ vcf2admixture(vcf, out_file = file.path(tempdir(), "admixture_sup"),
 #> Warning: 'arrow::read_feather' is deprecated.
 #> Use 'read_ipc_file' instead.
 #> See help("Deprecated")
-#> ℹ Chromosome names were recoded as integers for PLINK compatibility; mapping written to /tmp/Rtmpmnning/admixture_sup.chrommap
-#> ✔ PLINK binary fileset written to /tmp/Rtmpmnning/admixture_sup.bed, /tmp/Rtmpmnning/admixture_sup.bim, /tmp/Rtmpmnning/admixture_sup.fam
-#> ✔ ADMIXTURE .pop file written to /tmp/Rtmpmnning/admixture_sup.pop
+#> ℹ Chromosome names were recoded as integers; mapping written to /tmp/RtmpVdrUAs/admixture_sup.chrommap
+#> ✔ PLINK binary fileset written to /tmp/RtmpVdrUAs/admixture_sup.bed, /tmp/RtmpVdrUAs/admixture_sup.bim, /tmp/RtmpVdrUAs/admixture_sup.fam
+#> ✔ ADMIXTURE .pop file written to /tmp/RtmpVdrUAs/admixture_sup.pop
 #> ℹ Supervised mode: 15 reference samples, 3 samples with ancestry to be estimated.
 ```

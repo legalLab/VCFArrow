@@ -27,8 +27,17 @@ VCFArrow object
 This function read a VCF file into an S4 class object in chunks,
 returning a VCFArrow object. It accepts both uncompressed and gz
 compressed files. The GT field is stored as an Apache Arrow in Long
-format. Various metrics are precalculated for fast and easy filtering.
-GT slot content stored in a TEMP directory for lazy loading.
+format. Genotypes are read from the GT field, wherever it is in FORMAT,
+as two allele numbers (0 = REF, 1 = first ALT, ...; alleles of any
+number of digits). Haploid genotypes (e.g. "1") are stored as homozygous
+("1/1"). Genotypes with one missing allele (e.g. "./1"), with more than
+two alleles, or that cannot be read are stored as missing, as are all
+genotypes of lines without a GT field; a warning reports how many there
+were, and how many lines had fewer sample columns than samples. The
+allele depth ratio ADR = ALT / (REF + ALT) is computed from AD at
+biallelic sites only (NA elsewhere). Various metrics are precalculated
+for fast and easy filtering. GT slot content stored in a TEMP directory
+for lazy loading.
 
 ## Author
 
@@ -52,28 +61,23 @@ vcf
 #>   Variants: 10000 
 #>   Samples:  18 
 #> 
-#> Quick stats:
-#>   Non-missing variants: 10000 
+#> Variant types:
+#>   Biallelic SNVs: 9313 
+#>   Multiallelic:   0 
+#>   Indels:         687 
 #> 
-#> Phased genotypes: FALSE 
+#> Groups: not set (use set_vcf_groups())
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> 
+#> Genotypes (first chunk with variants): 180000 
+#>   Missing: 47.09% 
+#>   Phased:  45612 
 #> 
 #> Storage:
-#>   Path: /tmp/Rtmpmnning/arrow_vcf_367073d22a1f 
-#> 
-#> Genotype storage (Arrow):
-#> FileSystemDataset with 1 Arrow IPC file
-#> 9 columns
-#> .row_id: int32
-#> sample: string
-#> a1: int32
-#> a2: int32
-#> phased: bool
-#> fmt: string
-#> DP: double
-#> GQ: double
-#> ADR: double
-#> 
-#> See $metadata for additional Schema metadata
+#>   Path: /tmp/RtmpVdrUAs/arrow_vcf_31533f3682c8 
+#>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):
 #>                     CHROM POS        ID REF ALT QUAL FILTER Rk RPT n_alt
@@ -98,12 +102,12 @@ vcf
 #> [5] "Ty=SNP;Rk=1.0;UL=3;UR=7;CL=3;CR=7;Genome=.;Sd=.;Cluster=10880986;ClSize=5"   
 #> 
 #> FORMAT (first 5):
-#>           FORMAT .row_id
-#> 1 GT:DP:PL:AD:HQ       1
-#> 2 GT:DP:PL:AD:HQ       2
-#> 3 GT:DP:PL:AD:HQ       3
-#> 4 GT:DP:PL:AD:HQ       4
-#> 5 GT:DP:PL:AD:HQ       5
+#>  .row_id         FORMAT
+#>        1 GT:DP:PL:AD:HQ
+#>        2 GT:DP:PL:AD:HQ
+#>        3 GT:DP:PL:AD:HQ
+#>        4 GT:DP:PL:AD:HQ
+#>        5 GT:DP:PL:AD:HQ
 #> 
 #> Samples (first 5):
 #> [1] "Pv120" "Pv126" "Pv13"  "Pv14"  "Pv27" 

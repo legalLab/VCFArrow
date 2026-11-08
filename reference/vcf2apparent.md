@@ -33,12 +33,15 @@ of writing `out_file`.
 
 ## Details
 
-This function converts a VCFArrow object to an external SmartSNP
+This function converts a VCFArrow object to an external Apparent
 formatted file. Writing occurs in chunks whose size is determined by the
 read_vcf() function. Larger chunks result in faster writing speeds. If
 no groups are defined, the default behavior is to use all groups.
-Possible relationships defined by the parameter 'kee' are All, Pa, Mo,
-Fa, Off.
+Possible relationships defined by the parameter 'key' are All, Pa, Mo,
+Fa, Off. Each line (no header) holds the sample name, the key and one
+genotype per SNP as two nucleotides separated by '/', with '-/-' for a
+missing genotype, as apparent expects. The same key is given to every
+sample.
 
 ## Author
 
@@ -60,5 +63,5 @@ vcf2apparent(vcf, out_file = tempfile(fileext = ".txt"))
 #> Use 'read_ipc_file' instead.
 #> See help("Deprecated")
 #> ℹ Writing Apparent file...
-#> ✔ Apparent file written to /tmp/Rtmpmnning/file3670682662af.txt
+#> ✔ Apparent file written to /tmp/RtmpVdrUAs/file31534df44e53.txt
 ```

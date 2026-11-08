@@ -9,7 +9,7 @@ vcf_memory_estimate(
   vcf_arrow,
   keep_groups = NULL,
   format = c("individual", "pop", "chunk"),
-  chunk_size = 100000L,
+  chunk_size = 50000L,
   lowmem = FALSE
 )
 ```
@@ -27,12 +27,13 @@ vcf_memory_estimate(
 - format:
 
   One of "individual" (Structure, Arlequin, FASTA, ...) or "pop"
-  (BayesScan, Treemix, Migrate-N C, ...) or "chunk" (SmartSNP,
-  fineRADstructure, sNMF, EIGENSTRAT, ...).
+  (BayesScan, Treemix, Migrate-N C, ...) or "chunk" (SmartSNP, sNMF,
+  EIGENSTRAT, ...).
 
 - chunk_size:
 
-  Feather chunk size used at read_vcf() time.
+  Feather chunk size used at read_vcf() time, default 50000 (as in
+  read_vcf()).
 
 - lowmem:
 
@@ -72,11 +73,11 @@ vcf_memory_estimate(vcf, format = "individual")
 #> • Variants (filtered): 9313
 #> • Samples retained: 18
 #> • Populations: 4
-#> • Chunk size: 100,000 variants
+#> • Chunk size: 50,000 variants
 #> • Low-memory mode: FALSE
 #> 
 #> ── Per-operation footprint 
-#> • Arrow pool per chunk read: 34.3 MiB
+#> • Arrow pool per chunk read: 17.2 MiB
 #> • Accumulation matrices (a1+a2): 1.3 MiB [4 B/cell]
-#> • Estimated peak RAM: 35.6 MiB
+#> • Estimated peak RAM: 18.4 MiB
 ```

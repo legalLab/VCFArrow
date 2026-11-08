@@ -54,5 +54,5 @@ vcf2arlequin(vcf, out_file = tempfile(fileext = ".arp"))
 #> Use 'read_ipc_file' instead.
 #> See help("Deprecated")
 #> ℹ Writing Arlequin file...
-#> ✔ Arlequin file written to /tmp/Rtmpmnning/file3670d074cee.arp
+#> ✔ Arlequin file written to /tmp/RtmpVdrUAs/file31532749040f.arp
 ```

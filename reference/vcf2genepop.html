@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">VCFArrow</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.10.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,7 +40,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">vcf2genepop</span><span class="op">(</span><span class="va">vcf_arrow</span>, <span class="va">out_file</span>, keep_groups <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">vcf2genepop</span><span class="op">(</span><span class="va">vcf_arrow</span>, <span class="va">out_file</span>, keep_groups <span class="op">=</span> <span class="cn">NULL</span>, pop_names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -58,6 +58,11 @@
 <dt id="arg-keep-groups">keep_groups<a class="anchor" aria-label="anchor" href="#arg-keep-groups"></a></dt>
 <dd><p>-&gt; groups to retain, default NULL (character)</p></dd>
 
+
+<dt id="arg-pop-names">pop_names<a class="anchor" aria-label="anchor" href="#arg-pop-names"></a></dt>
+<dd><p>-&gt; write the group name after Pop on the line that starts
+each population ('pop WA') instead of Pop alone, default FALSE (Boolean)</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -65,10 +70,16 @@
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>This function converts a VCFArrow object to an external Genpop formatted file.
+    <p>This function converts a VCFArrow object to an external Genepop formatted file.
 Writing occurs in chunks whose size is determined by the read_vcf() function.
 Larger chunks result in faster writing speeds.
-If no groups are defined, the default behavior is to use all groups.</p>
+If no groups are defined, the default behavior is to use all groups.
+Each population starts with a line holding the word Pop alone, as the
+GENEPOP documentation shows it; GENEPOP itself names each population
+after its last individual.  Some readers, e.g. adegenet::read.genepop(),
+accept only this form.  With pop_names = TRUE, the line also holds the
+group name ('pop WA'), which other programs may read as the population
+name.</p>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
@@ -90,7 +101,7 @@ If no groups are defined, the default behavior is to use all groups.</p>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Writing Genepop file...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Genepop file written to <span style="color: #0000BB;">/tmp/Rtmpmnning/file367063ce39a1.gen</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Genepop file written to <span style="color: #0000BB;">/tmp/RtmpVdrUAs/file315368e316f7.gen</span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

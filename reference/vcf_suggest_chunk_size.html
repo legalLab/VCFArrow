@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">VCFArrow</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.10.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,7 +40,14 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">vcf_suggest_chunk_size</span><span class="op">(</span><span class="va">available_gb</span>, <span class="va">n_samples</span>, n_columns <span class="op">=</span> <span class="fl">5L</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">vcf_suggest_chunk_size</span><span class="op">(</span></span>
+<span>  <span class="va">available_gb</span>,</span>
+<span>  <span class="va">n_samples</span>,</span>
+<span>  fmt_chars <span class="op">=</span> <span class="fl">25</span>,</span>
+<span>  sample_chars <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  workers <span class="op">=</span> <span class="fu">.vcf_workers</span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  n_columns <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -55,21 +62,51 @@
 <dd><p>Number of samples.</p></dd>
 
 
+<dt id="arg-fmt-chars">fmt_chars<a class="anchor" aria-label="anchor" href="#arg-fmt-chars"></a></dt>
+<dd><p>Average length in characters of a sample's FORMAT text
+in the VCF (e.g. 24 for "0/1:12,8:20:99:200,0,300"),
+default 25.  Longer FORMAT fields (e.g. PL with many
+alleles) need more memory.</p></dd>
+
+
+<dt id="arg-sample-chars">sample_chars<a class="anchor" aria-label="anchor" href="#arg-sample-chars"></a></dt>
+<dd><p>Average length of the sample names, default 10.</p></dd>
+
+
+<dt id="arg-workers">workers<a class="anchor" aria-label="anchor" href="#arg-workers"></a></dt>
+<dd><p>Number of worker processes read_vcf() will use (see
+vcf_set_workers()), default the number currently set.</p></dd>
+
+
 <dt id="arg-n-columns">n_columns<a class="anchor" aria-label="anchor" href="#arg-n-columns"></a></dt>
-<dd><p>Number of columns per gt row (default 5: row_id, sample,
-a1, a2, phased).</p></dd>
+<dd><p>Deprecated and ignored: the size of a genotype row is
+now computed from its columns.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>Invisibly, the suggested chunk size (numeric).</p>
+    <p>Invisibly, the suggested chunk size (integer).</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>Half of <code>available_gb</code> is left for the operating system, R and later
+operations; the other half is shared by the chunks read_vcf() holds at
+once (one per worker).  A chunk holds one row per variant and sample, of
+about 44 + sample_chars + fmt_chars bytes in memory: .row_id, a1 and a2
+(4 bytes each), the sample name and the sample's FORMAT text (each 4
+bytes plus its characters), phased (1 bit), and DP, GQ and ADR (8 bytes
+each).  The FORMAT text is kept so write_vcf() can write the sample fields
+unchanged; it is often the largest column.  With workers, each chunk's
+raw VCF lines (about fmt_chars + 1 bytes per genotype) are also held, by
+the main process and by the worker parsing them.  The result is limited to
+between 1,000 and 500,000 variants.</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">vcf_suggest_chunk_size</span><span class="op">(</span>available_gb <span class="op">=</span> <span class="fl">8</span>, n_samples <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> For 8 GB RAM and 100 samples, recommended chunk_size = 5e+05</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> (use: read_vcf(vcf_file, chunk_size = 5e+05))</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> For 8 GB RAM, 100 samples and 1 worker, recommended chunk_size = 500,000</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> (use: read_vcf(vcf_file, chunk_size = 500000))</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

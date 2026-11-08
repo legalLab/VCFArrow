@@ -13,6 +13,7 @@
 <url><loc>https://legallab.github.io/VCFArrow/reference/assess_vcf_missing_data.html</loc></url>
 <url><loc>https://legallab.github.io/VCFArrow/reference/index.html</loc></url>
 <url><loc>https://legallab.github.io/VCFArrow/reference/read_vcf.html</loc></url>
+<url><loc>https://legallab.github.io/VCFArrow/reference/rename_vcf_samples.html</loc></url>
 <url><loc>https://legallab.github.io/VCFArrow/reference/set_vcf_groups.html</loc></url>
 <url><loc>https://legallab.github.io/VCFArrow/reference/show-VCFArrow-method.html</loc></url>
 <url><loc>https://legallab.github.io/VCFArrow/reference/sub-VCFArrow-method.html</loc></url>
@@ -24,6 +25,7 @@
 <url><loc>https://legallab.github.io/VCFArrow/reference/vcf2eigenstrat.html</loc></url>
 <url><loc>https://legallab.github.io/VCFArrow/reference/vcf2fasta.html</loc></url>
 <url><loc>https://legallab.github.io/VCFArrow/reference/vcf2fineradstructure.html</loc></url>
+<url><loc>https://legallab.github.io/VCFArrow/reference/vcf2fstructure.html</loc></url>
 <url><loc>https://legallab.github.io/VCFArrow/reference/vcf2genepop.html</loc></url>
 <url><loc>https://legallab.github.io/VCFArrow/reference/vcf2genlight.html</loc></url>
 <url><loc>https://legallab.github.io/VCFArrow/reference/vcf2gt_long.html</loc></url>

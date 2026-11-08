@@ -56,6 +56,11 @@ formatted file. Writing occurs in chunks whose size is determined by the
 read_vcf() function. Larger chunks result in faster writing speeds. If
 no groups are defined, the default behavior is to use all groups. Sex
 and phenotype vectors are optional. If not defined sex = 0, pheno = -9.
+Allele 1 (column 5 of the .bim file) is ALT and allele 2 (column 6) is
+REF, as in the files PLINK writes from a VCF (plink –vcf), so PLINK's A1
+counts and frequencies refer to ALT. PLINK 1.9 makes the minor allele A1
+when it loads the files unless run with –keep-allele-order; PLINK 2
+keeps this order.
 
 ## Author
 
@@ -77,6 +82,6 @@ vcf2plink_bed(vcf, out_file = file.path(tempdir(), "plink_out"))
 #> Warning: 'arrow::read_feather' is deprecated.
 #> Use 'read_ipc_file' instead.
 #> See help("Deprecated")
-#> ℹ Chromosome names were recoded as integers for PLINK compatibility; mapping written to /tmp/Rtmpmnning/plink_out.chrommap
-#> ✔ PLINK binary fileset written to /tmp/Rtmpmnning/plink_out.bed, /tmp/Rtmpmnning/plink_out.bim, /tmp/Rtmpmnning/plink_out.fam
+#> ℹ Chromosome names were recoded as integers; mapping written to /tmp/RtmpVdrUAs/plink_out.chrommap
+#> ✔ PLINK binary fileset written to /tmp/RtmpVdrUAs/plink_out.bed, /tmp/RtmpVdrUAs/plink_out.bim, /tmp/RtmpVdrUAs/plink_out.fam
 ```

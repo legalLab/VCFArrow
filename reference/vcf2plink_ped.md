@@ -11,7 +11,8 @@ vcf2plink_ped(
   keep_groups = NULL,
   sex = NULL,
   pheno = NULL,
-  chrom_code = c("auto", "index", "zero", "keep")
+  chrom_code = c("auto", "index", "zero", "keep"),
+  allele_code = c("nucleotide", "12")
 )
 ```
 
@@ -44,6 +45,12 @@ vcf2plink_ped(
   "index" (1..n by first appearance), "zero" (all 0) or "keep"
   (verbatim), default "auto" (character)
 
+- allele_code:
+
+  -\> how alleles are written in the .ped file: "nucleotide" (the REF
+  and ALT bases) or "12" (1 = ALT, 2 = REF, as ADMIXTURE requires for
+  .ped input), default "nucleotide" (character)
+
 ## Value
 
 Invisibly returns the input VCFArrow object; called for its side effect
@@ -56,6 +63,13 @@ formatted file. Writing occurs in chunks whose size is determined by the
 read_vcf() function. Larger chunks result in faster writing speeds. If
 no groups are defined, the default behavior is to use all groups. Sex
 and phenotype vectors are optional. If not defined sex = 0, pheno = -9.
+Missing alleles are written as 0. In the "12" coding allele 1 is ALT and
+allele 2 is REF, as in vcf2plink_bed(). With either coding, PLINK 1.9
+makes the minor allele A1 when it loads a .ped file; PLINK 2 (and PLINK
+1.9 with –keep-allele-order) take the "12" coding's 1 as A1. PLINK reads
+both allele codings; ADMIXTURE reads .ped files only in the "12" coding
+(allele_code = "12"), and needs integer chromosome codes (chrom_code),
+as for .bed input.
 
 ## Author
 
@@ -77,6 +91,6 @@ vcf2plink_ped(vcf, out_file = file.path(tempdir(), "plink_out"))
 #> Use 'read_ipc_file' instead.
 #> See help("Deprecated")
 #> ℹ Writing PLINK file...
-#> ℹ Chromosome names were recoded as integers for PLINK compatibility; mapping written to /tmp/Rtmpmnning/plink_out.chrommap
-#> ✔ PLINK text fileset written to /tmp/Rtmpmnning/plink_out.ped, /tmp/Rtmpmnning/plink_out.map
+#> ℹ Chromosome names were recoded as integers; mapping written to /tmp/RtmpVdrUAs/plink_out.chrommap
+#> ✔ PLINK text fileset written to /tmp/RtmpVdrUAs/plink_out.ped, /tmp/RtmpVdrUAs/plink_out.map
 ```

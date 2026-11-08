@@ -49,7 +49,9 @@ violin plot of read depth for each sample in VCF
 
 ## Details
 
-This function generates a violin plot of read depths per sample.
+This function generates a violin plot of read depths (DP) per sample,
+from the sample's called genotypes; the DP of missing genotypes is not
+used. Each violin ends at the sample's lowest and highest plotted depth.
 
 ## Author
 

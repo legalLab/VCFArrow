@@ -25,14 +25,25 @@ vcf2smartsnp(vcf_arrow, out_file, keep_groups = NULL)
 ## Value
 
 Invisibly returns the input VCFArrow object; called for its side effect
-of writing `out_file`.
+of writing `out_file` and its sample file.
 
 ## Details
 
 This function converts a VCFArrow object to an external SmartSNP
 formatted file. Writing occurs in chunks whose size is determined by the
 read_vcf() function. Larger chunks result in faster writing speeds. If
-no groups are defined, the default behavior is to use all groups.
+no groups are defined, the default behavior is to use all groups. The
+genotype file has one line per SNP and one column per sample, separated
+by spaces: the number of ALT alleles (0, 1, 2), 9 if missing. It has no
+header line, as smartsnp requires ("without row names or column
+headings"). The samples and their groups, in the order of the columns,
+are written to a separate tab-separated file with a header line (sample,
+group), named after out_file without its extension plus
+'\_samples.smartsnp' (e.g. 'data.txt' gives 'data_samples.smartsnp').
+Its group column is what smartsnp's analyses take as sample_group, e.g.
+`s <- read.delim("data_samples.smartsnp")` then
+`smartsnp::smart_pca("data.txt", sample_group = s$group)` or
+`smartsnp::smart_permanova("data.txt", sample_group = s$group)`.
 
 ## Author
 
@@ -54,5 +65,5 @@ vcf2smartsnp(vcf, out_file = tempfile(fileext = ".txt"))
 #> Warning: 'arrow::read_feather' is deprecated.
 #> Use 'read_ipc_file' instead.
 #> See help("Deprecated")
-#> ✔ SmartSNP file written to /tmp/Rtmpmnning/file36703a3d0d1c.txt
+#> ✔ SmartSNP files written to /tmp/RtmpVdrUAs/file3153bf6b517.txt and /tmp/RtmpVdrUAs/file3153bf6b517_samples.smartsnp
 ```

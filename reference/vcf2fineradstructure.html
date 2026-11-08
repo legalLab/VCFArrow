@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">VCFArrow</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.10.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,7 +40,12 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">vcf2fineradstructure</span><span class="op">(</span><span class="va">vcf_arrow</span>, <span class="va">out_file</span>, keep_groups <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">vcf2fineradstructure</span><span class="op">(</span></span>
+<span>  <span class="va">vcf_arrow</span>,</span>
+<span>  <span class="va">out_file</span>,</span>
+<span>  keep_groups <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  block_size <span class="op">=</span> <span class="fl">10000</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -58,6 +63,11 @@
 <dt id="arg-keep-groups">keep_groups<a class="anchor" aria-label="anchor" href="#arg-keep-groups"></a></dt>
 <dd><p>-&gt; groups to retain, default NULL (character)</p></dd>
 
+
+<dt id="arg-block-size">block_size<a class="anchor" aria-label="anchor" href="#arg-block-size"></a></dt>
+<dd><p>-&gt; size in bp of the blocks that define RAD loci, as in
+vcf_filter_multiSNV(), default 10000 (integer)</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -65,10 +75,24 @@
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>This function converts a VCFArrow object to an external Treemix formatted file.
+    <p>This function converts a VCFArrow object to an external fineRADstructure formatted file.
 Writing occurs in chunks whose size is determined by the read_vcf() function.
 Larger chunks result in faster writing speeds.
-If no groups are defined, the default behavior is to use all groups.</p>
+If no groups are defined, the default behavior is to use all groups.
+The first line holds the sample names; each further line is one RAD
+locus, defined as in vcf_filter_multiSNV(): the SNVs on one CHROM within
+the same block of block_size bases (counted from the CHROM's first SNV).
+Each cell holds a sample's two haplotypes over the locus's SNVs in
+RADpainter's syntax, e.g. 'TGAT/CGAT', or 'TGAT' if both are the same; a
+sample missing at any SNV of the locus has an empty cell.
+The genotypes are taken as phased: the first allele of each SNV (a1)
+forms one haplotype and the second (a2) the other.  This holds for
+phased VCFs, and for loci reconstructed as phased genotypes such as the
+output of vcf_filter_multiSNV(); for unphased heterozygotes at several
+SNVs of a locus the haplotypes are arbitrary.
+Use the same block_size as in vcf_filter_multiSNV().
+All genotypes are held in memory while writing (2 bytes per sample and
+SNV, see vcf_memory_estimate(format = "individual")).</p>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
@@ -88,12 +112,12 @@ If no groups are defined, the default behavior is to use all groups.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Applying linked SNV filter</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Retained 8 / 10000 variants (linked SNVs)</span>
 <span class="r-in"><span><span class="fu">vcf2fineradstructure</span><span class="op">(</span><span class="va">vcf_linked</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".txt"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Building fineRADstructure: 8 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Writing fineRADstructure file...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Accumulating fineRADstructure: 8 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'arrow::read_feather' is deprecated.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> fineRADstructure file written to <span style="color: #0000BB;">/tmp/Rtmpmnning/file36707a1e126d.txt</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Writing fineRADstructure file: 4 loci from 8 SNVs...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> fineRADstructure file written to <span style="color: #0000BB;">/tmp/RtmpVdrUAs/file31532eb153b2.txt</span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

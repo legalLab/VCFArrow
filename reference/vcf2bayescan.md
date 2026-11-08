@@ -29,10 +29,13 @@ of writing `out_file`.
 
 ## Details
 
-This function converts a VCFArrow object to an external BayesAss
+This function converts a VCFArrow object to an external BayeScan
 formatted file. Writing occurs in chunks whose size is determined by the
 read_vcf() function. Larger chunks result in faster writing speeds. If
-no groups are defined, the default behavior is to use all groups.
+no groups are defined, the default behavior is to use all groups. For
+each population, each line gives the locus number, the number of called
+alleles (genes), the number of alleles (2) and the counts of the REF and
+ALT alleles, as BayeScan's SNP format requires.
 
 ## Author
 
@@ -54,5 +57,5 @@ vcf2bayescan(vcf, out_file = tempfile(fileext = ".txt"))
 #> Use 'read_ipc_file' instead.
 #> See help("Deprecated")
 #> ℹ Writing BayesScan file...
-#> ✔ BayesScan file written to /tmp/Rtmpmnning/file36707e74408c.txt
+#> ✔ BayesScan file written to /tmp/RtmpVdrUAs/file31532ccfd333.txt
 ```

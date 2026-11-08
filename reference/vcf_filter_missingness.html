@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">VCFArrow</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.10.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,7 +67,10 @@
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>This function removes loci above missingness threshold from a VCFArrow object,
 returning a new VCFArrow object.
-Missingness is a locus focused metric, i.e. missing data per locus.</p>
+Missingness is a locus focused metric, i.e. missing data per locus.
+With verbose = TRUE, the number of retained variants and the final %
+missing data (missing genotypes over the retained variants and samples)
+are reported.</p>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
@@ -88,7 +91,7 @@ Missingness is a locus focused metric, i.e. missing data per locus.</p>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'arrow::read_feather' is deprecated.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Retained 2317 / 10000 variants (per-variant missingness &lt;= 0.2)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Retained 2317 / 10000 variants (per-variant missingness &lt;= 0.2) | Missing data: 7.68%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> An object of class "VCFArrow"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -96,28 +99,26 @@ Missingness is a locus focused metric, i.e. missing data per locus.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Variants: 2317 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Samples:  18 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Quick stats:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Non-missing variants: 2317 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Variant types:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Biallelic SNVs: 2139 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Multiallelic:   0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Indels:         178 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Phased genotypes: FALSE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Groups: 4 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BS GS OG WA </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  5  5  3  5 </span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'arrow::read_feather' is deprecated.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Genotypes (first chunk with variants): 41706 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Missing: 7.68% </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Phased:  9756 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Storage:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Path: /tmp/Rtmpmnning/arrow_vcf_36704ba41f1c </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Genotype storage (Arrow):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> FileSystemDataset with 1 Arrow IPC file</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9 columns</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> .row_id: int32</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> sample: string</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> a1: int32</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> a2: int32</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> phased: bool</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> fmt: string</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> DP: double</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> GQ: double</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ADR: double</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> See $metadata for additional Schema metadata</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Path: /tmp/RtmpVdrUAs/arrow_vcf_315316fafbb4 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Genotype chunk files: 1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Variants (first 5 rows):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                       CHROM POS        ID REF ALT QUAL FILTER Rk RPT n_alt</span>
@@ -142,12 +143,12 @@ Missingness is a locus focused metric, i.e. missing data per locus.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [5] "Ty=SNP;Rk=1.0;UL=2;UR=5;CL=2;CR=5;Genome=.;Sd=.;Cluster=18749679;ClSize=2"  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> FORMAT (first 5):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           FORMAT .row_id</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 GT:DP:PL:AD:HQ       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 GT:DP:PL:AD:HQ       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 GT:DP:PL:AD:HQ       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 GT:DP:PL:AD:HQ       4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 GT:DP:PL:AD:HQ       5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .row_id         FORMAT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        4 GT:DP:PL:AD:HQ</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       77 GT:DP:PL:AD:HQ</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      136 GT:DP:PL:AD:HQ</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      193 GT:DP:PL:AD:HQ</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      195 GT:DP:PL:AD:HQ</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Samples (first 5):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Pv120" "Pv126" "Pv13"  "Pv14"  "Pv27" </span>

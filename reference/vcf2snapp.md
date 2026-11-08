@@ -33,6 +33,10 @@ This function converts a VCFArrow object to an external SNAPP/SNAPPER
 formatted file. Writing occurs in chunks whose size is determined by the
 read_vcf() function. Larger chunks result in faster writing speeds. If
 no groups are defined, the default behavior is to use all groups.
+Genotypes are coded as SNAPP expects for diploid data: 0 (REF
+homozygote), 1 (heterozygote), 2 (ALT homozygote), ? (missing), in a
+NEXUS file declared as integer data with symbols 0, 1 and 2 (FORMAT
+DATATYPE=INTEGERDATA SYMBOLS="012"), which BEAUti imports with 3 states.
 
 ## Author
 
@@ -54,5 +58,5 @@ vcf2snapp(vcf, out_file = tempfile(fileext = ".nex"))
 #> Use 'read_ipc_file' instead.
 #> See help("Deprecated")
 #> ℹ Writing SNAPP file...
-#> ✔ SNAPP file written to /tmp/Rtmpmnning/file3670466e9b42.nex
+#> ✔ SNAPP file written to /tmp/RtmpVdrUAs/file3153de55924.nex
 ```

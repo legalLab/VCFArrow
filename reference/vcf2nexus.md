@@ -54,5 +54,5 @@ vcf2nexus(vcf, out_file = tempfile(fileext = ".nex"))
 #> Use 'read_ipc_file' instead.
 #> See help("Deprecated")
 #> ℹ Writing Nexus file...
-#> ✔ Nexus file written to /tmp/Rtmpmnning/file36703529d8f2.nex
+#> ✔ Nexus file written to /tmp/RtmpVdrUAs/file315372cd903d.nex
 ```

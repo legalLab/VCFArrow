@@ -10,6 +10,8 @@
   : assess_vcf_missing_data
 - [`read_vcf()`](https://legallab.github.io/VCFArrow/reference/read_vcf.md)
   : read_vcf
+- [`rename_vcf_samples()`](https://legallab.github.io/VCFArrow/reference/rename_vcf_samples.md)
+  : rename_vcf_samples
 - [`set_vcf_groups()`](https://legallab.github.io/VCFArrow/reference/set_vcf_groups.md)
   : set_vcf_groups
 - [`show(`*`<VCFArrow>`*`)`](https://legallab.github.io/VCFArrow/reference/show-VCFArrow-method.md)
@@ -32,6 +34,8 @@
   : vcf2fasta
 - [`vcf2fineradstructure()`](https://legallab.github.io/VCFArrow/reference/vcf2fineradstructure.md)
   : vcf2fineradstructure
+- [`vcf2fstructure()`](https://legallab.github.io/VCFArrow/reference/vcf2fstructure.md)
+  : vcf2fstructure
 - [`vcf2genepop()`](https://legallab.github.io/VCFArrow/reference/vcf2genepop.md)
   : vcf2genepop
 - [`vcf2genlight()`](https://legallab.github.io/VCFArrow/reference/vcf2genlight.md)
@@ -107,9 +111,9 @@
 - [`vcf_stats()`](https://legallab.github.io/VCFArrow/reference/vcf_stats.md)
   : vcf_stats
 - [`vcf_sub_SNVs()`](https://legallab.github.io/VCFArrow/reference/vcf_sub_SNVs.md)
-  : vcf_sub_loci
+  : vcf_sub_SNVs
 - [`vcf_sub_SNVs_stratified()`](https://legallab.github.io/VCFArrow/reference/vcf_sub_SNVs_stratified.md)
-  : vcf_sub_loci_stratified
+  : vcf_sub_SNVs_stratified
 - [`vcf_suggest_chunk_size()`](https://legallab.github.io/VCFArrow/reference/vcf_suggest_chunk_size.md)
   : Suggest a chunk_size for read_vcf() given available RAM
 - [`vcf_theta()`](https://legallab.github.io/VCFArrow/reference/vcf_theta.md)

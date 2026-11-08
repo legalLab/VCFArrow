@@ -1,4 +1,4 @@
-# vcf_sub_loci_stratified
+# vcf_sub_SNVs_stratified
 
 Randomly subsets SNVs from a VCFArrow object
 
@@ -30,8 +30,13 @@ VCFArrow object
 
 This function subsets a VCFArrow object to specific number of SNVs,
 returning new VCFArrow object. The subsampling is stratified, i.e. the
-same proportion of SNVs per CHROM. The seed for random number generator
-is automatically generated unless specified.
+same proportion of SNVs per CHROM. Each CHROM contributes its
+proportional share of n_SNVs, rounded down; the SNVs still needed to
+reach n_SNVs come one each from the CHROMs with the largest remainders
+(ties broken at random), so exactly n_SNVs SNVs are returned. When most
+CHROMs hold a single variant (e.g. DiscoSnp-RAD output), this amounts to
+simple random sampling. The seed for random number generator is
+automatically generated unless specified.
 
 ## Author
 
@@ -52,33 +57,59 @@ vcf_sub_SNVs_stratified(vcf, n_SNVs = 1000, seed = 42)
 #> An object of class "VCFArrow"
 #> 
 #> Dimensions:
-#>   Variants: 0 
+#>   Variants: 1000 
 #>   Samples:  18 
 #> 
-#> Quick stats:
-#>   Non-missing variants: 0 
+#> Variant types:
+#>   Biallelic SNVs: 930 
+#>   Multiallelic:   0 
+#>   Indels:         70 
 #> 
-#> Phased genotypes: FALSE 
+#> Groups: 4 
+#> 
+#> BS GS OG WA 
+#>  5  5  3  5 
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> 
+#> Genotypes (first chunk with variants): 18000 
+#>   Missing: 47.37% 
+#>   Phased:  4788 
 #> 
 #> Storage:
-#>   Path: /tmp/Rtmpmnning/arrow_vcf_3670778e91ab 
+#>   Path: /tmp/RtmpVdrUAs/arrow_vcf_31535b005909 
+#>   Genotype chunk files: 1 
 #> 
-#> Genotype storage (Arrow):
-#> FileSystemDataset with 1 Arrow IPC file
-#> 9 columns
-#> .row_id: int32
-#> sample: string
-#> a1: int32
-#> a2: int32
-#> phased: bool
-#> fmt: string
-#> DP: double
-#> GQ: double
-#> ADR: double
+#> Variants (first 5 rows):
+#>                      CHROM POS        ID REF ALT QUAL FILTER Rk RPT n_alt
+#> 25 SNP_higher_path_9205279  41   9205279   T   G    .      .  1  NA     1
+#> 35 SNP_higher_path_8822666  30   8822666   C   G    .      .  1  NA     1
+#> 37  SNP_higher_path_869715  36    869715   A   G    .      .  1  NA     1
+#> 43 SNP_higher_path_8540263  44 8540263_2   A   G    .      .  1  NA     1
+#> 55 SNP_higher_path_8280643  41   8280643   A   G    .      .  1  NA     1
+#>    is_biallelic is_indel .row_id
+#> 25         TRUE    FALSE      25
+#> 35         TRUE    FALSE      35
+#> 37         TRUE    FALSE      37
+#> 43         TRUE    FALSE      43
+#> 55         TRUE    FALSE      55
+#>   ... 995 more
 #> 
-#> See $metadata for additional Schema metadata
+#> INFO (first 5):
+#> [1] "Ty=SNP;Rk=1.0;UL=11;UR=0;CL=11;CR=0;Genome=.;Sd=.;Cluster=12523492;ClSize=1"
+#> [2] "Ty=SNP;Rk=1.0;UL=0;UR=1;CL=0;CR=1;Genome=.;Sd=.;Cluster=17143733;ClSize=2"  
+#> [3] "Ty=SNP;Rk=1.0;UL=6;UR=4;CL=6;CR=4;Genome=.;Sd=.;Cluster=15447647;ClSize=3"  
+#> [4] "Ty=SNP;Rk=1.0;UL=8;UR=0;CL=8;CR=0;Genome=.;Sd=.;Cluster=18769025;ClSize=1"  
+#> [5] "Ty=SNP;Rk=1.0;UL=11;UR=0;CL=11;CR=0;Genome=.;Sd=.;Cluster=18237634;ClSize=1"
 #> 
-#> Variants: <empty>
+#> FORMAT (first 5):
+#>  .row_id         FORMAT
+#>       25 GT:DP:PL:AD:HQ
+#>       35 GT:DP:PL:AD:HQ
+#>       37 GT:DP:PL:AD:HQ
+#>       43 GT:DP:PL:AD:HQ
+#>       55 GT:DP:PL:AD:HQ
 #> 
 #> Samples (first 5):
 #> [1] "Pv120" "Pv126" "Pv13"  "Pv14"  "Pv27" 

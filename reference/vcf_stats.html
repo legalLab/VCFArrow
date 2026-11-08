@@ -11,7 +11,7 @@ the inbreeding coefficient F, Watterson's theta and pi."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">VCFArrow</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.10.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -83,13 +83,14 @@ own group) (character)</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>table of statistics</p>
+    <p>Invisibly returns the input VCFArrow object; called for its side effect of writing <code>&lt;project&gt;_stats.csv</code> in <code>res_path</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>This function calculates average read depth, heterozygosity
 number of heterozygotes, number of reference and alternative homozygotes,
 missing data and total number SNPs of each sample in an VCFArrow object.
+The average read depth is the mean DP of the sample's called genotypes.
 Optionally calls vcf_theta() to get total and group Watterson's theta and pi.</p>
 <p>The inbreeding coefficient F of each sample is the method-of-moments
 estimate of vcftools –het and plink –het, F = (O - E) / (N - E). It uses
@@ -106,6 +107,16 @@ effect). F is NA for samples without such sites (e.g. a group of one sample
 with f_ref = "group", or a sample without a group). The table gives F with
 N, O and E (F_sites, F_hom_obs, F_hom_exp), and for each sample the mean F
 of its group (F_group_mean; over the group's samples with an F).</p>
+<p>The CSV file has one row per sample, sorted by group and sample, with the
+columns: sample; read_depth (mean DP of the called genotypes);
+heterozygosity (heterozygotes / called genotypes); heterozygotes;
+homozygotes, homozygotes_ref and homozygotes_alt; missing_p (proportion of
+missing genotypes), missing_n and non_missing; total_loci; F and
+F_group_mean; F_sites, F_hom_obs and F_hom_exp (N, O and E above).  With
+theta = TRUE they are followed by theta_total and pi_total (Watterson's
+theta and pi of all samples) and theta_w and pi (of the sample's group).
+Then follow group and, with theta = TRUE, n_ind (the number of samples in
+the group).</p>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>

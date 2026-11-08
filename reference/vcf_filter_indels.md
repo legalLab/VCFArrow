@@ -47,28 +47,26 @@ vcf_filter_indels(vcf)
 #>   Variants: 9313 
 #>   Samples:  18 
 #> 
-#> Quick stats:
-#>   Non-missing variants: 9313 
+#> Variant types:
+#>   Biallelic SNVs: 9313 
+#>   Multiallelic:   0 
+#>   Indels:         0 
 #> 
-#> Phased genotypes: FALSE 
+#> Groups: 4 
+#> 
+#> BS GS OG WA 
+#>  5  5  3  5 
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> 
+#> Genotypes (first chunk with variants): 167634 
+#>   Missing: 47.17% 
+#>   Phased:  45612 
 #> 
 #> Storage:
-#>   Path: /tmp/Rtmpmnning/arrow_vcf_36705bdc329b 
-#> 
-#> Genotype storage (Arrow):
-#> FileSystemDataset with 1 Arrow IPC file
-#> 9 columns
-#> .row_id: int32
-#> sample: string
-#> a1: int32
-#> a2: int32
-#> phased: bool
-#> fmt: string
-#> DP: double
-#> GQ: double
-#> ADR: double
-#> 
-#> See $metadata for additional Schema metadata
+#>   Path: /tmp/RtmpVdrUAs/arrow_vcf_31536eb28a65 
+#>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):
 #>                     CHROM POS        ID REF ALT QUAL FILTER Rk RPT n_alt
@@ -93,12 +91,12 @@ vcf_filter_indels(vcf)
 #> [5] "Ty=SNP;Rk=1.0;UL=3;UR=7;CL=3;CR=7;Genome=.;Sd=.;Cluster=10880986;ClSize=5"   
 #> 
 #> FORMAT (first 5):
-#>           FORMAT .row_id
-#> 1 GT:DP:PL:AD:HQ       1
-#> 2 GT:DP:PL:AD:HQ       2
-#> 3 GT:DP:PL:AD:HQ       3
-#> 4 GT:DP:PL:AD:HQ       4
-#> 5 GT:DP:PL:AD:HQ       5
+#>  .row_id         FORMAT
+#>        1 GT:DP:PL:AD:HQ
+#>        2 GT:DP:PL:AD:HQ
+#>        3 GT:DP:PL:AD:HQ
+#>        4 GT:DP:PL:AD:HQ
+#>        5 GT:DP:PL:AD:HQ
 #> 
 #> Samples (first 5):
 #> [1] "Pv120" "Pv126" "Pv13"  "Pv14"  "Pv27" 

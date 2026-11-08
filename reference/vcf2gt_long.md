@@ -42,8 +42,8 @@ Invisibly returns the path of the written file.
 
 ## Details
 
-This function converts a VCFArrow object to an external SmartSNP
-formatted file. Writing occurs in chunks whose size is determined by the
+This function converts a VCFArrow object to an external tidy long-format
+genotype file. Writing occurs in chunks whose size is determined by the
 read_vcf() function. Larger chunks result in faster writing speeds. If
 no groups are defined, the default behavior is to use all groups. The
 tidy data can be saved in either Arrow, Parquet or CSV formats. File
@@ -73,5 +73,5 @@ vcf2gt_long(vcf, out_file = tempfile(), format = "csv")
 #> Warning: 'arrow::read_feather' is deprecated.
 #> Use 'read_ipc_file' instead.
 #> See help("Deprecated")
-#> ✔ gt_long table written to /tmp/Rtmpmnning/file36707812fe2a.csv
+#> ✔ gt_long table written to /tmp/RtmpVdrUAs/file31532817b514.csv
 ```

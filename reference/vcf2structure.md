@@ -5,7 +5,7 @@ Converts a VCFArrow object to a Structure or FastStructure infile
 ## Usage
 
 ``` r
-vcf2structure(vcf_arrow, out_file, keep_groups = NULL, method = "S")
+vcf2structure(vcf_arrow, out_file, keep_groups = NULL, method = c("S", "F"))
 ```
 
 ## Arguments
@@ -38,7 +38,13 @@ FastStructure formatted file. Writing occurs in chunks whose size is
 determined by the read_vcf() function. Larger chunks result in faster
 writing speeds. If no groups are defined, the default behavior is to use
 all groups. The flag parameter controls whether Structure (flag = 'S')
-or FastStructure (flag = 'F') formatted output is written out.
+or FastStructure (flag = 'F') formatted output is written out. Each
+sample is written on two lines (one per allele copy): its name, its
+group number and, for FastStructure, four columns of 0 (FastStructure
+ignores the first six columns), then one allele per SNP: 0 (REF), 1
+(ALT) or -9 (missing). FastStructure adds the extension '.str' to the
+name given with –input, so give out_file the extension .str (e.g.
+"data.str", read with –input=data –format=str).
 
 ## Author
 
@@ -60,13 +66,13 @@ vcf2structure(vcf, out_file = tempfile(fileext = ".str"))
 #> Use 'read_ipc_file' instead.
 #> See help("Deprecated")
 #> ℹ Writing Structure file...
-#> ✔ Structure file written to /tmp/Rtmpmnning/file36706e38b6cf.str
-vcf2structure(vcf, out_file = tempfile(fileext = ".fstr"),
+#> ✔ Structure file written to /tmp/RtmpVdrUAs/file31535c7a1ff1.str
+vcf2structure(vcf, out_file = tempfile(fileext = ".str"),
               method = "F")
 #> ℹ Accumulating Structure: 9313 variants x 18 samples (0 MiB raw storage)
 #> Warning: 'arrow::read_feather' is deprecated.
 #> Use 'read_ipc_file' instead.
 #> See help("Deprecated")
 #> ℹ Writing Structure file...
-#> ✔ Structure file written to /tmp/Rtmpmnning/file3670407e7848.fstr
+#> ✔ Structure file written to /tmp/RtmpVdrUAs/file31535d1ee9cf.str
 ```

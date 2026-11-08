@@ -5,7 +5,13 @@ Remove samples with \> % missing data from a VCFArrow object
 ## Usage
 
 ``` r
-vcf_filter_missing(vcf_arrow, threshold = 0.5, f_invar = TRUE, verbose = TRUE)
+vcf_filter_missing(
+  vcf_arrow,
+  threshold = 0.5,
+  f_invar = TRUE,
+  verbose = TRUE,
+  strict_poly = FALSE
+)
 ```
 
 ## Arguments
@@ -24,7 +30,14 @@ vcf_filter_missing(vcf_arrow, threshold = 0.5, f_invar = TRUE, verbose = TRUE)
 
 - verbose:
 
-  -\> report filtering stats, default TRUE (Boolean)
+  -\> report removed samples, numbers of retained variants and samples,
+  and the final % missing data, default TRUE (Boolean)
+
+- strict_poly:
+
+  -\> when removing invariant loci, polymorphism at the genotype level
+  (TRUE) or the allele level (FALSE), see vcf_filter_invariant(),
+  default FALSE (Boolean)
 
 ## Value
 
@@ -36,7 +49,10 @@ This function removes samples from a VCFArrow object if they have above
 threshold missing loci, returning a new VCFArrow object. By default will
 remove any loci that may have become invariant as the result of the
 removal of samples. By default will report removed samples, final %
-missing data, and number of retained samples after sample filtering.
+missing data, and number of retained samples after sample filtering. The
+final % missing data is the percentage of missing genotypes over the
+retained variants and samples; computing it reads the genotypes once
+more, which verbose = FALSE avoids.
 
 ## Author
 
@@ -59,12 +75,15 @@ vcf |>
 #> Warning: 'arrow::read_feather' is deprecated.
 #> Use 'read_ipc_file' instead.
 #> See help("Deprecated")
-#> ℹ Retained 2317 / 10000 variants (per-variant missingness <= 0.2)
+#> ℹ Retained 2317 / 10000 variants (per-variant missingness <= 0.2) | Missing data: 7.68%
 #> ℹ Applying sample missingness filter
 #> Warning: 'arrow::read_feather' is deprecated.
 #> Use 'read_ipc_file' instead.
 #> See help("Deprecated")
-#> ℹ Variants retained: 2317 | Samples retained: 18
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> ℹ Variants retained: 2317 | Samples retained: 18 | Missing data: 7.68%
 #> 
 #> An object of class "VCFArrow"
 #> 
@@ -72,28 +91,26 @@ vcf |>
 #>   Variants: 2317 
 #>   Samples:  18 
 #> 
-#> Quick stats:
-#>   Non-missing variants: 2317 
+#> Variant types:
+#>   Biallelic SNVs: 2139 
+#>   Multiallelic:   0 
+#>   Indels:         178 
 #> 
-#> Phased genotypes: FALSE 
+#> Groups: 4 
+#> 
+#> BS GS OG WA 
+#>  5  5  3  5 
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> 
+#> Genotypes (first chunk with variants): 41706 
+#>   Missing: 7.68% 
+#>   Phased:  9756 
 #> 
 #> Storage:
-#>   Path: /tmp/Rtmpmnning/arrow_vcf_367024faf1f9 
-#> 
-#> Genotype storage (Arrow):
-#> FileSystemDataset with 1 Arrow IPC file
-#> 9 columns
-#> .row_id: int32
-#> sample: string
-#> a1: int32
-#> a2: int32
-#> phased: bool
-#> fmt: string
-#> DP: double
-#> GQ: double
-#> ADR: double
-#> 
-#> See $metadata for additional Schema metadata
+#>   Path: /tmp/RtmpVdrUAs/arrow_vcf_3153216aa85c 
+#>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):
 #>                       CHROM POS        ID REF ALT QUAL FILTER Rk RPT n_alt
@@ -118,12 +135,12 @@ vcf |>
 #> [5] "Ty=SNP;Rk=1.0;UL=2;UR=5;CL=2;CR=5;Genome=.;Sd=.;Cluster=18749679;ClSize=2"  
 #> 
 #> FORMAT (first 5):
-#>           FORMAT .row_id
-#> 1 GT:DP:PL:AD:HQ       1
-#> 2 GT:DP:PL:AD:HQ       2
-#> 3 GT:DP:PL:AD:HQ       3
-#> 4 GT:DP:PL:AD:HQ       4
-#> 5 GT:DP:PL:AD:HQ       5
+#>  .row_id         FORMAT
+#>        4 GT:DP:PL:AD:HQ
+#>       77 GT:DP:PL:AD:HQ
+#>      136 GT:DP:PL:AD:HQ
+#>      193 GT:DP:PL:AD:HQ
+#>      195 GT:DP:PL:AD:HQ
 #> 
 #> Samples (first 5):
 #> [1] "Pv120" "Pv126" "Pv13"  "Pv14"  "Pv27" 

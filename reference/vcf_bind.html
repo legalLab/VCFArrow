@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">VCFArrow</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.10.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -160,9 +160,12 @@ are kept, so bound objects can be bound again.</p>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'arrow::read_feather' is deprecated.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Removed 1705 invariant variants; 8295 retained.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Retained 8421 / 10000 variants (polymorphic at the allele level)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Removed samples: Pb2Jp, Pb2Scx, and Pb1Rd</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Variants retained: 8295 | Samples retained: 15</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'arrow::read_feather' is deprecated.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Variants retained: 8421 | Samples retained: 15 | Missing data: 40.00%</span>
 <span class="r-in"><span><span class="va">outgroup</span> <span class="op">&lt;-</span> <span class="fu"><a href="vcf_extract_groups.html">vcf_extract_groups</a></span><span class="op">(</span><span class="va">vcf</span>, <span class="st">"OG"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Compacting GT: 18 -&gt; 3 samples across 1 chunk</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'arrow::read_feather' is deprecated.</span>
@@ -173,11 +176,14 @@ are kept, so bound objects can be bound again.</p>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'arrow::read_feather' is deprecated.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Removed 8904 invariant variants; 1096 retained.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Retained 1559 / 10000 variants (polymorphic at the allele level)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Removed samples: Pv120, Pv126, Pv13, Pv14, Pv27, Pv28, Pv2, Pv31, Pv56, Pv62, Pv68, Pv73, Pv78, Pv79, and Pv93</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Variants retained: 1096 | Samples retained: 3</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'arrow::read_feather' is deprecated.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Variants retained: 1559 | Samples retained: 3 | Missing data: 13.53%</span>
 <span class="r-in"><span><span class="fu">vcf_bind</span><span class="op">(</span><span class="va">ingroup</span>, <span class="va">outgroup</span>, mode <span class="op">=</span> <span class="st">"intersect"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Binding 2 VCFArrow objects (intersect): 421 variants, 18 total samples.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Binding 2 VCFArrow objects (intersect): 765 variants, 18 total samples.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'arrow::read_feather' is deprecated.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
@@ -198,29 +204,29 @@ are kept, so bound objects can be bound again.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> An object of class "VCFArrow"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Dimensions:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Variants: 421 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Variants: 765 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Samples:  18 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Quick stats:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Non-missing variants: 421 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Variant types:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Biallelic SNVs: 678 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Multiallelic:   0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Indels:         87 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Phased genotypes: FALSE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Groups: 4 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BS GS OG WA </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  5  5  3  5 </span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'arrow::read_feather' is deprecated.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Genotypes (first chunk with variants): 13770 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Missing: 24.08% </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Phased:  4284 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Storage:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Path: /tmp/Rtmpmnning/arrow_vcf_bind_3670628987b1 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Genotype storage (Arrow):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> FileSystemDataset with 1 Arrow IPC file</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9 columns</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> .row_id: int32</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> sample: string</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> a1: int32</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> a2: int32</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> phased: bool</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> fmt: string</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> DP: double</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> GQ: double</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ADR: double</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Path: /tmp/RtmpVdrUAs/arrow_vcf_bind_31536bf7c13e </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Genotype chunk files: 1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Variants (first 5 rows):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                         CHROM POS       ID REF ALT QUAL FILTER      Rk RPT</span>
@@ -235,7 +241,7 @@ are kept, so bound objects can be bound again.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2088     1         TRUE    FALSE    2088</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2315     1         TRUE    FALSE    2315</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2400     1         TRUE    FALSE    2400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ... 416 more</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ... 760 more</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> INFO (first 5):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Ty=SNP;Rk=0.99936;UL=0;UR=0;CL=0;CR=0;Genome=.;Sd=.;Cluster=11121508;ClSize=9"     </span>
@@ -245,12 +251,12 @@ are kept, so bound objects can be bound again.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [5] "Ty=SNP;Rk=0.97066;UL=12;UR=0;CL=72;CR=0;Genome=.;Sd=.;Cluster=12236649;ClSize=22"  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> FORMAT (first 5):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           FORMAT .row_id</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 GT:DP:PL:AD:HQ       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 GT:DP:PL:AD:HQ       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 GT:DP:PL:AD:HQ       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 GT:DP:PL:AD:HQ       4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 GT:DP:PL:AD:HQ       5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .row_id         FORMAT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     1707 GT:DP:PL:AD:HQ</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     1837 GT:DP:PL:AD:HQ</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     2088 GT:DP:PL:AD:HQ</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     2315 GT:DP:PL:AD:HQ</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     2400 GT:DP:PL:AD:HQ</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Samples (first 5):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Pv120" "Pv126" "Pv13"  "Pv14"  "Pv27" </span>
@@ -281,26 +287,26 @@ are kept, so bound objects can be bound again.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Variants: 10000 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Samples:  18 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Quick stats:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Non-missing variants: 10000 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Variant types:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Biallelic SNVs: 9313 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Multiallelic:   0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Indels:         687 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Phased genotypes: FALSE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Groups: 4 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BS GS OG WA </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  5  5  3  5 </span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'arrow::read_feather' is deprecated.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Genotypes (first chunk with variants): 180000 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Missing: 47.09% </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Phased:  45612 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Storage:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Path: /tmp/Rtmpmnning/arrow_vcf_bind_3670102791e6 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Genotype storage (Arrow):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> FileSystemDataset with 1 Arrow IPC file</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9 columns</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> .row_id: int32</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> sample: string</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> a1: int32</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> a2: int32</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> phased: bool</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> fmt: string</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> DP: double</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> GQ: double</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ADR: double</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Path: /tmp/RtmpVdrUAs/arrow_vcf_bind_31538f3ad9 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Genotype chunk files: 1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Variants (first 5 rows):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                     CHROM POS        ID REF ALT QUAL FILTER Rk RPT n_alt</span>
@@ -325,12 +331,12 @@ are kept, so bound objects can be bound again.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [5] "Ty=SNP;Rk=1.0;UL=3;UR=7;CL=3;CR=7;Genome=.;Sd=.;Cluster=10880986;ClSize=5"   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> FORMAT (first 5):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           FORMAT .row_id</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 GT:DP:PL:AD:HQ       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 GT:DP:PL:AD:HQ       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 GT:DP:PL:AD:HQ       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 GT:DP:PL:AD:HQ       4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 GT:DP:PL:AD:HQ       5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .row_id         FORMAT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        1 GT:DP:PL:AD:HQ</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        2 GT:DP:PL:AD:HQ</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        3 GT:DP:PL:AD:HQ</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        4 GT:DP:PL:AD:HQ</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        5 GT:DP:PL:AD:HQ</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Samples (first 5):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Pv120" "Pv126" "Pv13"  "Pv14"  "Pv27" </span>
@@ -341,8 +347,8 @@ are kept, so bound objects can be bound again.</p>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'arrow::read_feather' is deprecated.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Retained 3005 / 8295 variants (per-variant missingness &lt;= 0.2)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Binding 2 VCFArrow objects (outgroup): 3005 variants, 18 total samples.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Retained 3043 / 8421 variants (per-variant missingness &lt;= 0.2) | Missing data: 6.98%</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Binding 2 VCFArrow objects (outgroup): 3043 variants, 18 total samples.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Absent genotypes will be filled as: missing</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'arrow::read_feather' is deprecated.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
@@ -364,29 +370,29 @@ are kept, so bound objects can be bound again.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> An object of class "VCFArrow"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Dimensions:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Variants: 3005 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Variants: 3043 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Samples:  18 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Quick stats:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Non-missing variants: 3005 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Variant types:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Biallelic SNVs: 2802 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Multiallelic:   0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Indels:         241 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Phased genotypes: FALSE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Groups: 4 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BS GS OG WA </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  5  5  3  5 </span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'arrow::read_feather' is deprecated.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Genotypes (first chunk with variants): 54774 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Missing: 14.30% </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Phased:  11322 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Storage:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Path: /tmp/Rtmpmnning/arrow_vcf_bind_367078443e04 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Genotype storage (Arrow):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> FileSystemDataset with 1 Arrow IPC file</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9 columns</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> .row_id: int32</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> sample: string</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> a1: int32</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> a2: int32</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> phased: bool</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> fmt: string</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> DP: double</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> GQ: double</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ADR: double</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Path: /tmp/RtmpVdrUAs/arrow_vcf_bind_31537b59acf6 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Genotype chunk files: 1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Variants (first 5 rows):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                      CHROM POS      ID REF ALT QUAL FILTER Rk RPT n_alt</span>
@@ -401,7 +407,7 @@ are kept, so bound objects can be bound again.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 44         TRUE    FALSE      44</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 52         TRUE    FALSE      52</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 54         TRUE    FALSE      54</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ... 3000 more</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ... 3038 more</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> INFO (first 5):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Ty=SNP;Rk=1.0;UL=3;UR=7;CL=3;CR=7;Genome=.;Sd=.;Cluster=10880986;ClSize=5"   </span>
@@ -411,12 +417,12 @@ are kept, so bound objects can be bound again.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [5] "Ty=SNP;Rk=1.0;UL=12;UR=3;CL=12;CR=3;Genome=.;Sd=.;Cluster=10901796;ClSize=10"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> FORMAT (first 5):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           FORMAT .row_id</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 GT:DP:PL:AD:HQ       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 GT:DP:PL:AD:HQ       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 GT:DP:PL:AD:HQ       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 GT:DP:PL:AD:HQ       4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 GT:DP:PL:AD:HQ       5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .row_id         FORMAT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        5 GT:DP:PL:AD:HQ</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       27 GT:DP:PL:AD:HQ</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       44 GT:DP:PL:AD:HQ</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       52 GT:DP:PL:AD:HQ</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       54 GT:DP:PL:AD:HQ</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Samples (first 5):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Pv120" "Pv126" "Pv13"  "Pv14"  "Pv27" </span>

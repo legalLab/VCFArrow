@@ -54,5 +54,5 @@ vcf2snmf(vcf, out_file = tempfile(fileext = ".geno"))
 #> Warning: 'arrow::read_feather' is deprecated.
 #> Use 'read_ipc_file' instead.
 #> See help("Deprecated")
-#> ✔ sNMF file written to /tmp/Rtmpmnning/file36702cdacfc9.geno
+#> ✔ sNMF file written to /tmp/RtmpVdrUAs/file31535fe5c9e6.geno
 ```

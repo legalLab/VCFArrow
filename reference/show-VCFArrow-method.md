@@ -22,8 +22,14 @@ summary.
 
 ## Details
 
-This function is a method of the VCFArrow S4 class Method to show object
-content summary
+This function is a method of the VCFArrow S4 class. It prints the
+numbers of variants and samples, the numbers of biallelic SNVs,
+multiallelic variants and indels, the samples per group, the percentage
+of missing genotypes and the number of phased genotypes, the storage
+location, and the first five variants with their INFO and FORMAT fields
+and the first five samples. Missing and phased genotypes are counted in
+one genotype chunk file only, the first that holds current variants and
+samples, so that printing stays fast.
 
 ## Author
 
@@ -47,28 +53,23 @@ show(vcf)
 #>   Variants: 10000 
 #>   Samples:  18 
 #> 
-#> Quick stats:
-#>   Non-missing variants: 10000 
+#> Variant types:
+#>   Biallelic SNVs: 9313 
+#>   Multiallelic:   0 
+#>   Indels:         687 
 #> 
-#> Phased genotypes: FALSE 
+#> Groups: not set (use set_vcf_groups())
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> 
+#> Genotypes (first chunk with variants): 180000 
+#>   Missing: 47.09% 
+#>   Phased:  45612 
 #> 
 #> Storage:
-#>   Path: /tmp/Rtmpmnning/arrow_vcf_3670a5f15fd 
-#> 
-#> Genotype storage (Arrow):
-#> FileSystemDataset with 1 Arrow IPC file
-#> 9 columns
-#> .row_id: int32
-#> sample: string
-#> a1: int32
-#> a2: int32
-#> phased: bool
-#> fmt: string
-#> DP: double
-#> GQ: double
-#> ADR: double
-#> 
-#> See $metadata for additional Schema metadata
+#>   Path: /tmp/RtmpVdrUAs/arrow_vcf_315310ef1639 
+#>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):
 #>                     CHROM POS        ID REF ALT QUAL FILTER Rk RPT n_alt
@@ -93,12 +94,12 @@ show(vcf)
 #> [5] "Ty=SNP;Rk=1.0;UL=3;UR=7;CL=3;CR=7;Genome=.;Sd=.;Cluster=10880986;ClSize=5"   
 #> 
 #> FORMAT (first 5):
-#>           FORMAT .row_id
-#> 1 GT:DP:PL:AD:HQ       1
-#> 2 GT:DP:PL:AD:HQ       2
-#> 3 GT:DP:PL:AD:HQ       3
-#> 4 GT:DP:PL:AD:HQ       4
-#> 5 GT:DP:PL:AD:HQ       5
+#>  .row_id         FORMAT
+#>        1 GT:DP:PL:AD:HQ
+#>        2 GT:DP:PL:AD:HQ
+#>        3 GT:DP:PL:AD:HQ
+#>        4 GT:DP:PL:AD:HQ
+#>        5 GT:DP:PL:AD:HQ
 #> 
 #> Samples (first 5):
 #> [1] "Pv120" "Pv126" "Pv13"  "Pv14"  "Pv27" 

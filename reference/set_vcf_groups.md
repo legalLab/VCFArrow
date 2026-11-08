@@ -20,8 +20,8 @@ set_vcf_groups(vcf_arrow, data_path, strt = "strata")
 
 - strt:
 
-  -\> file with 2+ columns, one id column and one pop column (tsv file,
-  header = TRUE)
+  -\> file with 2+ columns, one id column and one pop column (tab- or
+  space-separated, with a header line), default 'strata'
 
 ## Value
 
@@ -29,10 +29,19 @@ vcf_arrow object with groups slot filled
 
 ## Details
 
-This function creates list of factors of sample-to-group assignments and
-groups based on a strata and group file. The strt is a tsv file with 2+
-columns, with 2 columns named 'id' and 'pop'. By default strt is named
-'strata' and found in the datapath where the VCF file is found.
+This function assigns each sample of a VCFArrow object to a group, based
+on a strata file. The strt is a file with a header line and 2+ columns,
+two of them named 'id' (sample name) and 'pop' (group); other columns
+are ignored. The file is read as tab-separated when its header line
+contains a tab, so fields may contain spaces and may be empty; otherwise
+its columns are separated by spaces (any whitespace). All columns are
+read as text, so ids such as '007' keep their leading zeros. Ids in the
+file that are not samples of the object are ignored. An id listed more
+than once with different groups is an error. Samples not in the file, or
+with an empty group, get the group NA and a warning lists them;
+functions that need groups (e.g. the exporters) stop until every sample
+has one. By default strt is named 'strata' and found in the datapath
+where the VCF file is found.
 
 ## Author
 

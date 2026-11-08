@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">VCFArrow</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.10.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,7 +67,8 @@ default NULL (character)</p></dd>
 
 
 <dt id="arg-ploidy">ploidy<a class="anchor" aria-label="anchor" href="#arg-ploidy"></a></dt>
-<dd><p>-&gt; ploidy level, default = 2 (integer)</p></dd>
+<dd><p>-&gt; ploidy level; the genotypes are always diploid, so only 2
+is used, default = 2 (integer)</p></dd>
 
 
 <dt id="arg-save">save<a class="anchor" aria-label="anchor" href="#arg-save"></a></dt>
@@ -85,7 +86,8 @@ It requires the 'adegenet' package, which VCFArrow only suggests: install
 it with <code>install.packages("adegenet")</code> to use this function.
 Genotypes are read in chunks whose size is determined by the read_vcf() function.
 If no groups are defined, the default behavior is to use all groups.
-Genlight objects can encode polyploid genomes, by default diploid genomes are assumed.
+Genlight objects can encode polyploid genomes, but VCFArrow stores diploid
+genotypes, so the ploidy is always 2.
 Genlight objects are in-memory S4 objects and are always returned; if
 save = TRUE, the object is also written to out_file with saveRDS().
 Unlike the other exporters, out_file is optional because nothing is written
@@ -138,7 +140,7 @@ unless save = TRUE.</p>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Building Genlight object...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Writing Genlight object...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Genlight object written to <span style="color: #0000BB;">/tmp/Rtmpmnning/file367075b50450.rds</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Genlight object written to <span style="color: #0000BB;">/tmp/RtmpVdrUAs/file31533bb69833.rds</span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

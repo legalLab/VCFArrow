@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">VCFArrow</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.10.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,7 +68,13 @@
     <p>This function converts a VCFArrow object to an external BayesAss formatted file.
 Writing occurs in chunks whose size is determined by the read_vcf() function.
 Larger chunks result in faster writing speeds.
-If no groups are defined, the default behavior is to use all groups.</p>
+If no groups are defined, the default behavior is to use all groups.
+The file is in BA3's native format: one line per individual and locus,
+'indivID popID locID allele1 allele2', separated by spaces, with the
+alleles labelled 1 (REF) and 2 (ALT) and a missing genotype as '0 0'.
+Sample names, group labels and locus names must not contain spaces.
+BA3 accepts at most 100,000 loci, 100 populations and 20,000
+individuals; a warning is given above these limits.</p>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
@@ -90,7 +96,7 @@ If no groups are defined, the default behavior is to use all groups.</p>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Writing BayesAss file...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> BayesAss file written to <span style="color: #0000BB;">/tmp/Rtmpmnning/file36709237188.immanc</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> BayesAss file written to <span style="color: #0000BB;">/tmp/RtmpVdrUAs/file315335cce7c9.immanc</span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

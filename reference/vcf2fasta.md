@@ -54,5 +54,5 @@ vcf2fasta(vcf, out_file = tempfile(fileext = ".fas"))
 #> Use 'read_ipc_file' instead.
 #> See help("Deprecated")
 #> ℹ Writing FASTA file...
-#> ✔ FASTA file written to /tmp/Rtmpmnning/file36707be1cad5.fas
+#> ✔ FASTA file written to /tmp/RtmpVdrUAs/file3153502a1e5e.fas
 ```

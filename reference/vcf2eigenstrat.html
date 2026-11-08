@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">VCFArrow</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.10.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,7 +40,13 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">vcf2eigenstrat</span><span class="op">(</span><span class="va">vcf_arrow</span>, <span class="va">out_file</span>, keep_groups <span class="op">=</span> <span class="cn">NULL</span>, sex <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">vcf2eigenstrat</span><span class="op">(</span></span>
+<span>  <span class="va">vcf_arrow</span>,</span>
+<span>  <span class="va">out_file</span>,</span>
+<span>  keep_groups <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sex <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  chrom_code <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"auto"</span>, <span class="st">"index"</span>, <span class="st">"keep"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -62,6 +68,13 @@
 <dt id="arg-sex">sex<a class="anchor" aria-label="anchor" href="#arg-sex"></a></dt>
 <dd><p>-&gt; sex of the individual, default = U (undefined) (character)</p></dd>
 
+
+<dt id="arg-chrom-code">chrom_code<a class="anchor" aria-label="anchor" href="#arg-chrom-code"></a></dt>
+<dd><p>-&gt; how CHROM is written in the .snp file: "auto" (keep
+CHROM if it is numeric, otherwise number the contigs 1, 2, 3, ...),
+"index" (number the contigs 1, 2, 3, ... in order of first appearance)
+or "keep" (verbatim), default "auto" (character)</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -69,10 +82,21 @@
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>This function converts a VCFArrow object to an external BayesAss formatted file.
+    <p>This function converts a VCFArrow object to an external EIGENSTRAT formatted fileset (.geno, .ind and .snp).
 Writing occurs in chunks whose size is determined by the read_vcf() function.
 Larger chunks result in faster writing speeds.
-If no groups are defined, the default behavior is to use all groups.</p>
+If no groups are defined, the default behavior is to use all groups.
+In the .geno file, each digit is the number of copies of the reference
+allele, as EIGENSTRAT defines it: the REF allele, given in column 5 of
+the .snp file (2 = REF homozygote, 1 = heterozygote, 0 = ALT
+homozygote, 9 = missing).
+EIGENSOFT needs integer chromosome codes and removes SNPs on chromosome
+0, so contig names (e.g. from de novo SNP calling) are numbered 1, 2,
+3, ... in order of first appearance (chrom_code = "auto" or "index"),
+and the correspondence is written to &lt;out_file&gt;.chrommap.  EIGENSOFT
+reads chromosomes above its numchrom parameter (default 22) as X, Y, ...,
+so with more than 22 codes set numchrom to at least the largest code in
+the parameter file; a warning gives the value.</p>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
@@ -94,7 +118,11 @@ If no groups are defined, the default behavior is to use all groups.</p>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'arrow::read_feather' is deprecated.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> EIGENSTRAT fileset written to <span style="color: #0000BB;">/tmp/Rtmpmnning/eigenstrat_in.geno</span>, <span style="color: #0000BB;">/tmp/Rtmpmnning/eigenstrat_in.ind</span>, <span style="color: #0000BB;">/tmp/Rtmpmnning/eigenstrat_in.snp</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Chromosome names were recoded as integers; mapping written to <span style="color: #0000BB;">/tmp/RtmpVdrUAs/eigenstrat_in.chrommap</span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Chromosome codes go up to 9309: EIGENSOFT reads chromosomes above its numchrom</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> parameter (default 22) as X, Y, ...</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Set `numchrom: 9309` (or higher) in the parameter file.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> EIGENSTRAT fileset written to <span style="color: #0000BB;">/tmp/RtmpVdrUAs/eigenstrat_in.geno</span>, <span style="color: #0000BB;">/tmp/RtmpVdrUAs/eigenstrat_in.ind</span>, <span style="color: #0000BB;">/tmp/RtmpVdrUAs/eigenstrat_in.snp</span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

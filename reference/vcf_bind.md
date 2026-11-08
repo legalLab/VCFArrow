@@ -123,9 +123,12 @@ ingroup <- vcf_extract_groups(vcf, c("GS", "BS", "WA"))
 #> Warning: 'arrow::read_feather' is deprecated.
 #> Use 'read_ipc_file' instead.
 #> See help("Deprecated")
-#> ℹ Removed 1705 invariant variants; 8295 retained.
+#> ℹ Retained 8421 / 10000 variants (polymorphic at the allele level)
 #> ℹ Removed samples: Pb2Jp, Pb2Scx, and Pb1Rd
-#> ℹ Variants retained: 8295 | Samples retained: 15
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> ℹ Variants retained: 8421 | Samples retained: 15 | Missing data: 40.00%
 outgroup <- vcf_extract_groups(vcf, "OG")
 #> ℹ Compacting GT: 18 -> 3 samples across 1 chunk
 #> Warning: 'arrow::read_feather' is deprecated.
@@ -136,11 +139,14 @@ outgroup <- vcf_extract_groups(vcf, "OG")
 #> Warning: 'arrow::read_feather' is deprecated.
 #> Use 'read_ipc_file' instead.
 #> See help("Deprecated")
-#> ℹ Removed 8904 invariant variants; 1096 retained.
+#> ℹ Retained 1559 / 10000 variants (polymorphic at the allele level)
 #> ℹ Removed samples: Pv120, Pv126, Pv13, Pv14, Pv27, Pv28, Pv2, Pv31, Pv56, Pv62, Pv68, Pv73, Pv78, Pv79, and Pv93
-#> ℹ Variants retained: 1096 | Samples retained: 3
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> ℹ Variants retained: 1559 | Samples retained: 3 | Missing data: 13.53%
 vcf_bind(ingroup, outgroup, mode = "intersect")
-#> ℹ Binding 2 VCFArrow objects (intersect): 421 variants, 18 total samples.
+#> ℹ Binding 2 VCFArrow objects (intersect): 765 variants, 18 total samples.
 #> Warning: 'arrow::read_feather' is deprecated.
 #> Use 'read_ipc_file' instead.
 #> See help("Deprecated")
@@ -161,29 +167,29 @@ vcf_bind(ingroup, outgroup, mode = "intersect")
 #> An object of class "VCFArrow"
 #> 
 #> Dimensions:
-#>   Variants: 421 
+#>   Variants: 765 
 #>   Samples:  18 
 #> 
-#> Quick stats:
-#>   Non-missing variants: 421 
+#> Variant types:
+#>   Biallelic SNVs: 678 
+#>   Multiallelic:   0 
+#>   Indels:         87 
 #> 
-#> Phased genotypes: FALSE 
+#> Groups: 4 
+#> 
+#> BS GS OG WA 
+#>  5  5  3  5 
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> 
+#> Genotypes (first chunk with variants): 13770 
+#>   Missing: 24.08% 
+#>   Phased:  4284 
 #> 
 #> Storage:
-#>   Path: /tmp/Rtmpmnning/arrow_vcf_bind_3670628987b1 
-#> 
-#> Genotype storage (Arrow):
-#> FileSystemDataset with 1 Arrow IPC file
-#> 9 columns
-#> .row_id: int32
-#> sample: string
-#> a1: int32
-#> a2: int32
-#> phased: bool
-#> fmt: string
-#> DP: double
-#> GQ: double
-#> ADR: double
+#>   Path: /tmp/RtmpVdrUAs/arrow_vcf_bind_31536bf7c13e 
+#>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):
 #>                         CHROM POS       ID REF ALT QUAL FILTER      Rk RPT
@@ -198,7 +204,7 @@ vcf_bind(ingroup, outgroup, mode = "intersect")
 #> 2088     1         TRUE    FALSE    2088
 #> 2315     1         TRUE    FALSE    2315
 #> 2400     1         TRUE    FALSE    2400
-#>   ... 416 more
+#>   ... 760 more
 #> 
 #> INFO (first 5):
 #> [1] "Ty=SNP;Rk=0.99936;UL=0;UR=0;CL=0;CR=0;Genome=.;Sd=.;Cluster=11121508;ClSize=9"     
@@ -208,12 +214,12 @@ vcf_bind(ingroup, outgroup, mode = "intersect")
 #> [5] "Ty=SNP;Rk=0.97066;UL=12;UR=0;CL=72;CR=0;Genome=.;Sd=.;Cluster=12236649;ClSize=22"  
 #> 
 #> FORMAT (first 5):
-#>           FORMAT .row_id
-#> 1 GT:DP:PL:AD:HQ       1
-#> 2 GT:DP:PL:AD:HQ       2
-#> 3 GT:DP:PL:AD:HQ       3
-#> 4 GT:DP:PL:AD:HQ       4
-#> 5 GT:DP:PL:AD:HQ       5
+#>  .row_id         FORMAT
+#>     1707 GT:DP:PL:AD:HQ
+#>     1837 GT:DP:PL:AD:HQ
+#>     2088 GT:DP:PL:AD:HQ
+#>     2315 GT:DP:PL:AD:HQ
+#>     2400 GT:DP:PL:AD:HQ
 #> 
 #> Samples (first 5):
 #> [1] "Pv120" "Pv126" "Pv13"  "Pv14"  "Pv27" 
@@ -244,26 +250,26 @@ vcf_bind(ingroup, outgroup, mode = "union", absent_as = "missing")
 #>   Variants: 10000 
 #>   Samples:  18 
 #> 
-#> Quick stats:
-#>   Non-missing variants: 10000 
+#> Variant types:
+#>   Biallelic SNVs: 9313 
+#>   Multiallelic:   0 
+#>   Indels:         687 
 #> 
-#> Phased genotypes: FALSE 
+#> Groups: 4 
+#> 
+#> BS GS OG WA 
+#>  5  5  3  5 
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> 
+#> Genotypes (first chunk with variants): 180000 
+#>   Missing: 47.09% 
+#>   Phased:  45612 
 #> 
 #> Storage:
-#>   Path: /tmp/Rtmpmnning/arrow_vcf_bind_3670102791e6 
-#> 
-#> Genotype storage (Arrow):
-#> FileSystemDataset with 1 Arrow IPC file
-#> 9 columns
-#> .row_id: int32
-#> sample: string
-#> a1: int32
-#> a2: int32
-#> phased: bool
-#> fmt: string
-#> DP: double
-#> GQ: double
-#> ADR: double
+#>   Path: /tmp/RtmpVdrUAs/arrow_vcf_bind_31538f3ad9 
+#>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):
 #>                     CHROM POS        ID REF ALT QUAL FILTER Rk RPT n_alt
@@ -288,12 +294,12 @@ vcf_bind(ingroup, outgroup, mode = "union", absent_as = "missing")
 #> [5] "Ty=SNP;Rk=1.0;UL=3;UR=7;CL=3;CR=7;Genome=.;Sd=.;Cluster=10880986;ClSize=5"   
 #> 
 #> FORMAT (first 5):
-#>           FORMAT .row_id
-#> 1 GT:DP:PL:AD:HQ       1
-#> 2 GT:DP:PL:AD:HQ       2
-#> 3 GT:DP:PL:AD:HQ       3
-#> 4 GT:DP:PL:AD:HQ       4
-#> 5 GT:DP:PL:AD:HQ       5
+#>  .row_id         FORMAT
+#>        1 GT:DP:PL:AD:HQ
+#>        2 GT:DP:PL:AD:HQ
+#>        3 GT:DP:PL:AD:HQ
+#>        4 GT:DP:PL:AD:HQ
+#>        5 GT:DP:PL:AD:HQ
 #> 
 #> Samples (first 5):
 #> [1] "Pv120" "Pv126" "Pv13"  "Pv14"  "Pv27" 
@@ -304,8 +310,8 @@ vcf_bind(vcf_filter_missingness(ingroup, 0.2), outgroup, outgroup = TRUE,
 #> Warning: 'arrow::read_feather' is deprecated.
 #> Use 'read_ipc_file' instead.
 #> See help("Deprecated")
-#> ℹ Retained 3005 / 8295 variants (per-variant missingness <= 0.2)
-#> ℹ Binding 2 VCFArrow objects (outgroup): 3005 variants, 18 total samples.
+#> ℹ Retained 3043 / 8421 variants (per-variant missingness <= 0.2) | Missing data: 6.98%
+#> ℹ Binding 2 VCFArrow objects (outgroup): 3043 variants, 18 total samples.
 #> ℹ Absent genotypes will be filled as: missing
 #> Warning: 'arrow::read_feather' is deprecated.
 #> Use 'read_ipc_file' instead.
@@ -327,29 +333,29 @@ vcf_bind(vcf_filter_missingness(ingroup, 0.2), outgroup, outgroup = TRUE,
 #> An object of class "VCFArrow"
 #> 
 #> Dimensions:
-#>   Variants: 3005 
+#>   Variants: 3043 
 #>   Samples:  18 
 #> 
-#> Quick stats:
-#>   Non-missing variants: 3005 
+#> Variant types:
+#>   Biallelic SNVs: 2802 
+#>   Multiallelic:   0 
+#>   Indels:         241 
 #> 
-#> Phased genotypes: FALSE 
+#> Groups: 4 
+#> 
+#> BS GS OG WA 
+#>  5  5  3  5 
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> 
+#> Genotypes (first chunk with variants): 54774 
+#>   Missing: 14.30% 
+#>   Phased:  11322 
 #> 
 #> Storage:
-#>   Path: /tmp/Rtmpmnning/arrow_vcf_bind_367078443e04 
-#> 
-#> Genotype storage (Arrow):
-#> FileSystemDataset with 1 Arrow IPC file
-#> 9 columns
-#> .row_id: int32
-#> sample: string
-#> a1: int32
-#> a2: int32
-#> phased: bool
-#> fmt: string
-#> DP: double
-#> GQ: double
-#> ADR: double
+#>   Path: /tmp/RtmpVdrUAs/arrow_vcf_bind_31537b59acf6 
+#>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):
 #>                      CHROM POS      ID REF ALT QUAL FILTER Rk RPT n_alt
@@ -364,7 +370,7 @@ vcf_bind(vcf_filter_missingness(ingroup, 0.2), outgroup, outgroup = TRUE,
 #> 44         TRUE    FALSE      44
 #> 52         TRUE    FALSE      52
 #> 54         TRUE    FALSE      54
-#>   ... 3000 more
+#>   ... 3038 more
 #> 
 #> INFO (first 5):
 #> [1] "Ty=SNP;Rk=1.0;UL=3;UR=7;CL=3;CR=7;Genome=.;Sd=.;Cluster=10880986;ClSize=5"   
@@ -374,12 +380,12 @@ vcf_bind(vcf_filter_missingness(ingroup, 0.2), outgroup, outgroup = TRUE,
 #> [5] "Ty=SNP;Rk=1.0;UL=12;UR=3;CL=12;CR=3;Genome=.;Sd=.;Cluster=10901796;ClSize=10"
 #> 
 #> FORMAT (first 5):
-#>           FORMAT .row_id
-#> 1 GT:DP:PL:AD:HQ       1
-#> 2 GT:DP:PL:AD:HQ       2
-#> 3 GT:DP:PL:AD:HQ       3
-#> 4 GT:DP:PL:AD:HQ       4
-#> 5 GT:DP:PL:AD:HQ       5
+#>  .row_id         FORMAT
+#>        5 GT:DP:PL:AD:HQ
+#>       27 GT:DP:PL:AD:HQ
+#>       44 GT:DP:PL:AD:HQ
+#>       52 GT:DP:PL:AD:HQ
+#>       54 GT:DP:PL:AD:HQ
 #> 
 #> Samples (first 5):
 #> [1] "Pv120" "Pv126" "Pv13"  "Pv14"  "Pv27" 

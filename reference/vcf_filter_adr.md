@@ -1,16 +1,17 @@
 # vcf_filter_adr
 
-Correct or remove genotypes with \> % ALT/REF ratio from a VCFArrow
-object
+Correct or remove genotypes with allele imbalance greater than a
+threshold from a VCFArrow object
 
 ## Usage
 
 ``` r
 vcf_filter_adr(
   vcf_arrow,
-  mode = c("correct", "remove"),
   threshold = 0.1,
-  f_invar = TRUE
+  mode = c("correct", "remove"),
+  f_invar = TRUE,
+  strict_poly = FALSE
 )
 ```
 
@@ -20,17 +21,23 @@ vcf_filter_adr(
 
   -\> VCFArrow object
 
-- mode:
-
-  -\> switch between 'correct' or 'remove' mode (character)
-
 - threshold:
 
   -\> decimal missing threshold, default 0.1 (numeric)
 
+- mode:
+
+  -\> switch between 'correct' or 'remove' mode (character)
+
 - f_invar:
 
   -\> filter invariant loci flag, default TRUE (Boolean)
+
+- strict_poly:
+
+  -\> when removing invariant loci, polymorphism at the genotype level
+  (TRUE) or the allele level (FALSE), see vcf_filter_invariant(),
+  default FALSE (Boolean)
 
 ## Value
 
@@ -38,13 +45,17 @@ subsetted VCFArrow object
 
 ## Details
 
-This function either changes genotypes or makes genotypes missing in a
-VCFArrow object if they have above/below threshold normalized ADR ratio,
-returning a new VCFArrow object. The ADR is calculated as ADR = ALT /
-(REF + ALT). If ADR \> threshold, the genotype becomes ALT homozygous.
-If ADR \< threshold, the genotype becomes REF homozygous. By default
-will remove any loci that may have become invariant as the result of the
-change/removal of genotypes
+This function either changes heterozygous genotypes or makes them
+missing in a VCFArrow object if they have above/below threshold
+normalized ADR ratio, returning a new VCFArrow object. The ADR is
+calculated as ADR = ALT / (REF + ALT), from the AD field. Only called
+heterozygous genotypes are affected; homozygous and missing genotypes
+are left unchanged, even where AD gives them an ADR. In 'correct' mode,
+a heterozygote with ADR \< threshold becomes REF homozygous, and one
+with 1 - ADR \< threshold becomes ALT homozygous. In 'remove' mode,
+these heterozygotes become missing. The number of genotypes corrected or
+removed is reported. By default will remove any loci that may have
+become invariant as the result of the change/removal of genotypes.
 
 ## Author
 
@@ -67,10 +78,12 @@ vcf_filter_adr(vcf, mode = "correct")
 #> Use 'read_ipc_file' instead.
 #> See help("Deprecated")
 #> Warning: write_feather(version = 2) has been superseded by write_ipc_file().
+#> ℹ Corrected 0 / 95245 genotypes
 #> ℹ Applying invariant filter
 #> Warning: 'arrow::read_feather' is deprecated.
 #> Use 'read_ipc_file' instead.
 #> See help("Deprecated")
+#> ℹ Retained 10000 / 10000 variants (polymorphic at the allele level)
 #> 
 #> An object of class "VCFArrow"
 #> 
@@ -78,28 +91,26 @@ vcf_filter_adr(vcf, mode = "correct")
 #>   Variants: 10000 
 #>   Samples:  18 
 #> 
-#> Quick stats:
-#>   Non-missing variants: 10000 
+#> Variant types:
+#>   Biallelic SNVs: 9313 
+#>   Multiallelic:   0 
+#>   Indels:         687 
 #> 
-#> Phased genotypes: FALSE 
+#> Groups: 4 
+#> 
+#> BS GS OG WA 
+#>  5  5  3  5 
+#> Warning: 'arrow::read_feather' is deprecated.
+#> Use 'read_ipc_file' instead.
+#> See help("Deprecated")
+#> 
+#> Genotypes (first chunk with variants): 180000 
+#>   Missing: 47.09% 
+#>   Phased:  45612 
 #> 
 #> Storage:
-#>   Path: /tmp/Rtmpmnning/arrow_vcf_adr_36704c6a36bc 
-#> 
-#> Genotype storage (Arrow):
-#> FileSystemDataset with 1 Arrow IPC file
-#> 9 columns
-#> .row_id: int32
-#> sample: string
-#> a1: int32
-#> a2: int32
-#> phased: bool
-#> fmt: string
-#> DP: double
-#> GQ: double
-#> ADR: double
-#> 
-#> See $metadata for additional Schema metadata
+#>   Path: /tmp/RtmpVdrUAs/arrow_vcf_adr_31534796c7a8 
+#>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):
 #>                     CHROM POS        ID REF ALT QUAL FILTER Rk RPT n_alt
@@ -124,12 +135,12 @@ vcf_filter_adr(vcf, mode = "correct")
 #> [5] "Ty=SNP;Rk=1.0;UL=3;UR=7;CL=3;CR=7;Genome=.;Sd=.;Cluster=10880986;ClSize=5"   
 #> 
 #> FORMAT (first 5):
-#>           FORMAT .row_id
-#> 1 GT:DP:PL:AD:HQ       1
-#> 2 GT:DP:PL:AD:HQ       2
-#> 3 GT:DP:PL:AD:HQ       3
-#> 4 GT:DP:PL:AD:HQ       4
-#> 5 GT:DP:PL:AD:HQ       5
+#>  .row_id         FORMAT
+#>        1 GT:DP:PL:AD:HQ
+#>        2 GT:DP:PL:AD:HQ
+#>        3 GT:DP:PL:AD:HQ
+#>        4 GT:DP:PL:AD:HQ
+#>        5 GT:DP:PL:AD:HQ
 #> 
 #> Samples (first 5):
 #> [1] "Pv120" "Pv126" "Pv13"  "Pv14"  "Pv27" 

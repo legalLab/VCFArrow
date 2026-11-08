@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">VCFArrow</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.10.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,7 +46,8 @@
 <span>  keep_groups <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  sex <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  pheno <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  chrom_code <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"auto"</span>, <span class="st">"index"</span>, <span class="st">"zero"</span>, <span class="st">"keep"</span><span class="op">)</span></span>
+<span>  chrom_code <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"auto"</span>, <span class="st">"index"</span>, <span class="st">"zero"</span>, <span class="st">"keep"</span><span class="op">)</span>,</span>
+<span>  allele_code <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"nucleotide"</span>, <span class="st">"12"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -79,6 +80,12 @@
 otherwise 0), "index" (1..n by first appearance), "zero" (all 0) or
 "keep" (verbatim), default "auto" (character)</p></dd>
 
+
+<dt id="arg-allele-code">allele_code<a class="anchor" aria-label="anchor" href="#arg-allele-code"></a></dt>
+<dd><p>-&gt; how alleles are written in the .ped file:
+"nucleotide" (the REF and ALT bases) or "12" (1 = ALT, 2 = REF, as
+ADMIXTURE requires for .ped input), default "nucleotide" (character)</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -90,7 +97,14 @@ otherwise 0), "index" (1..n by first appearance), "zero" (all 0) or
 Writing occurs in chunks whose size is determined by the read_vcf() function.
 Larger chunks result in faster writing speeds.
 If no groups are defined, the default behavior is to use all groups.
-Sex and phenotype vectors are optional. If not defined sex = 0, pheno = -9.</p>
+Sex and phenotype vectors are optional. If not defined sex = 0, pheno = -9.
+Missing alleles are written as 0.  In the "12" coding allele 1 is ALT and
+allele 2 is REF, as in vcf2plink_bed().  With either coding, PLINK 1.9
+makes the minor allele A1 when it loads a .ped file; PLINK 2 (and PLINK
+1.9 with –keep-allele-order) take the "12" coding's 1 as A1.
+PLINK reads both allele codings;
+ADMIXTURE reads .ped files only in the "12" coding (allele_code = "12"),
+and needs integer chromosome codes (chrom_code), as for .bed input.</p>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
@@ -112,8 +126,8 @@ Sex and phenotype vectors are optional. If not defined sex = 0, pheno = -9.</p>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Writing PLINK file...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Chromosome names were recoded as integers for PLINK compatibility; mapping written to <span style="color: #0000BB;">/tmp/Rtmpmnning/plink_out.chrommap</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> PLINK text fileset written to <span style="color: #0000BB;">/tmp/Rtmpmnning/plink_out.ped</span>, <span style="color: #0000BB;">/tmp/Rtmpmnning/plink_out.map</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Chromosome names were recoded as integers; mapping written to <span style="color: #0000BB;">/tmp/RtmpVdrUAs/plink_out.chrommap</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> PLINK text fileset written to <span style="color: #0000BB;">/tmp/RtmpVdrUAs/plink_out.ped</span>, <span style="color: #0000BB;">/tmp/RtmpVdrUAs/plink_out.map</span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
