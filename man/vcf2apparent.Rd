@@ -27,6 +27,9 @@ Writing occurs in chunks whose size is determined by the read_vcf() function.
 Larger chunks result in faster writing speeds.
 If no groups are defined, the default behavior is to use all groups.
 Possible relationships defined by the parameter 'key' are All, Pa, Mo, Fa, Off.
+Each line (no header) holds the sample name, the key and one genotype per
+SNP as two nucleotides separated by '/', with '-/-' for a missing
+genotype, as apparent expects.  The same key is given to every sample.
 }
 \examples{
 f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",

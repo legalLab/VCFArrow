@@ -24,6 +24,9 @@ This function converts a VCFArrow object to an external Related formatted file.
 Writing occurs in chunks whose size is determined by the read_vcf() function.
 Larger chunks result in faster writing speeds.
 If no groups are defined, the default behavior is to use all groups.
+Each line holds a sample name followed by two columns per locus, the
+alleles coded A = 1, C = 2, G = 3, T = 4 (written 01-04); a missing
+genotype is '0 0', as related's readgenotypedata() expects.
 }
 \examples{
 f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
