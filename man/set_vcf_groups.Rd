@@ -9,20 +9,22 @@ set_vcf_groups(vcf_arrow, data_path, strt = "strata")
 \arguments{
 \item{vcf_arrow}{-> VCFArrow object}
 
-\item{data_path}{-> path to data (where strata are located)}
+\item{data_path}{-> path to data (where strata are located); not needed
+when strt is a data frame}
 
 \item{strt}{-> file with 2+ columns, one id column and one pop column
-(tab- or space-separated, with a header line), default 'strata'}
+(tab- or space-separated, with a header line), or a data frame with
+these columns, default 'strata' (character or data.frame)}
 }
 \value{
 vcf_arrow object with groups slot filled
 }
 \description{
-Associate samples with group info based on "strt" file
+Associate samples with group info based on a "strt" file or data frame
 }
 \details{
 This function assigns each sample of a VCFArrow object to a group, based
-on a strata file.
+on a strata file or a data frame.
 The strt is a file with a header line and 2+ columns, two of them named
 'id' (sample name) and 'pop' (group); other columns are ignored.
 The file is read as tab-separated when its header line contains a tab, so
@@ -36,12 +38,21 @@ warning lists them; functions that need groups (e.g. the exporters) stop
 until every sample has one.
 By default strt is named 'strata' and found in the datapath where the
 VCF file is found.
+strt can also be a data frame (or tibble) with the columns 'id' and 'pop',
+e.g. a strata file already read into R; data_path is then not needed.  Its
+columns are used as text, as for a file: factors and numbers are converted
+to text (numbers lose leading zeros, so keep such ids as text), spaces at
+either end are removed, and empty values are missing.
 }
 \examples{
 f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
                  package = "VCFArrow")
 vcf <- set_vcf_groups(read_vcf(f), data_path = dirname(f),
                       strt = "strata")
+table(vcf@groups)
+# groups from a data frame
+strata_df <- data.frame(id = vcf@samples, pop = substr(vcf@samples, 1, 2))
+vcf <- set_vcf_groups(vcf, strt = strata_df)
 table(vcf@groups)
 
 }

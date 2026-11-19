@@ -35,7 +35,7 @@ variants without enough genotypes at or above it, in a VCFArrow object
 With strict = TRUE (the default), called genotypes with DP below the
 threshold, or without DP, are set to missing (as vcftools --minDP does),
 so every called genotype of the result has DP >= threshold; the number of
-genotypes set to missing is reported.  No variants are removed: variants
+genotypes set to missing is reported. No variants are removed: variants
 can become invariant or have much missing data, so follow with e.g.
 vcf_filter_invariant() and vcf_filter_missingness().
 With strict = FALSE the genotypes are not changed, and only the variants
@@ -43,10 +43,10 @@ that have at least two called genotypes with DP >= threshold and are
 polymorphic among them are kept; the kept variants can still contain
 called genotypes with DP below the threshold.
 With strict_poly = FALSE (the default), polymorphic means that not all
-of these genotypes' alleles are the same, e.g. both REF and ALT alleles
-occur.  With strict_poly = TRUE, it means that not all of these genotypes
+alleles of these genotypes are the same, e.g. both REF and ALT alleles
+occur. With strict_poly = TRUE, it means that not all of these genotypes
 are the same, so a variant whose genotypes with DP >= threshold are all
-heterozygous is removed although both alleles occur.  strict_poly is
+heterozygous is removed although both alleles occur. strict_poly is
 ignored with strict = TRUE.
 }
 \examples{

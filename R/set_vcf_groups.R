@@ -1,20 +1,22 @@
 #' @title set_vcf_groups
 #'
 #' @description
-#' Associate samples with group info based on "strt" file
+#' Associate samples with group info based on a "strt" file or data frame
 #'
 #' @author Tomas Hrbek April 2026
 #'
 #' @param vcf_arrow -> VCFArrow object
-#' @param data_path -> path to data (where strata are located)
+#' @param data_path -> path to data (where strata are located); not needed
+#'   when strt is a data frame
 #' @param strt -> file with 2+ columns, one id column and one pop column
-#'   (tab- or space-separated, with a header line), default 'strata'
+#'   (tab- or space-separated, with a header line), or a data frame with
+#'   these columns, default 'strata' (character or data.frame)
 #'
 #' @return vcf_arrow object with groups slot filled
 #'
 #' @details
 #' This function assigns each sample of a VCFArrow object to a group, based
-#' on a strata file.
+#' on a strata file or a data frame.
 #' The strt is a file with a header line and 2+ columns, two of them named
 #' 'id' (sample name) and 'pop' (group); other columns are ignored.
 #' The file is read as tab-separated when its header line contains a tab, so
@@ -28,12 +30,21 @@
 #' until every sample has one.
 #' By default strt is named 'strata' and found in the datapath where the
 #' VCF file is found.
+#' strt can also be a data frame (or tibble) with the columns 'id' and 'pop',
+#' e.g. a strata file already read into R; data_path is then not needed.  Its
+#' columns are used as text, as for a file: factors and numbers are converted
+#' to text (numbers lose leading zeros, so keep such ids as text), spaces at
+#' either end are removed, and empty values are missing.
 #'
 #' @examples
 #' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
 #'                  package = "VCFArrow")
 #' vcf <- set_vcf_groups(read_vcf(f), data_path = dirname(f),
 #'                       strt = "strata")
+#' table(vcf@groups)
+#' # groups from a data frame
+#' strata_df <- data.frame(id = vcf@samples, pop = substr(vcf@samples, 1, 2))
+#' vcf <- set_vcf_groups(vcf, strt = strata_df)
 #' table(vcf@groups)
 #'
 #' @export
@@ -45,13 +56,26 @@ set_vcf_groups <- function(vcf_arrow, data_path, strt = "strata") {
     cli::cli_abort("Expecting a VCFArrow object")
   }
 
-  strata_file <- file.path(data_path, strt)
-  strata_df <- .read_sample_table(strata_file, "Strata file")
+  # source of the groups, named in messages: the strata file or the data
+  # frame given as strt
+  if (is.data.frame(strt)) {
+    src <- "{.arg strt}"
+    strata_df <- .sample_table_df(strt)
+  } else if (is.character(strt) && length(strt) == 1L && !is.na(strt)) {
+    strata_file <- file.path(data_path, strt)
+    src <- "{.file {strata_file}}"
+    strata_df <- .read_sample_table(strata_file, "Strata file")
+  } else {
+    cli::cli_abort(c(
+      "{.arg strt} must be a file name or a data frame.",
+      "i" = "A data frame needs columns {.val id} and {.val pop}."
+    ))
+  }
 
   missing_cols <- setdiff(c("id", "pop"), names(strata_df))
   if (length(missing_cols))
     cli::cli_abort(c(
-      "{.file {strata_file}} must have columns {.val id} and {.val pop}.",
+      paste(src, "must have columns {.val id} and {.val pop}."),
       "x" = "Missing: {.val {missing_cols}}",
       "i" = "Columns found: {.val {names(strata_df)}}"
     ))
@@ -62,11 +86,11 @@ set_vcf_groups <- function(vcf_arrow, data_path, strt = "strata") {
   dup <- unique(strata_df$id[duplicated(strata_df$id)])
   if (length(dup))
     cli::cli_abort(c(
-      "Some ids are assigned to more than one group in {.file {strata_file}}.",
+      paste("Some ids are assigned to more than one group in", paste0(src, ".")),
       "x" = "{.val {dup}}"
     ))
 
-  # group of each sample, in sample order (NA if not in the file)
+  # group of each sample, in sample order (NA if not listed)
   groups <- strata_df$pop[match(vcf_arrow@samples, strata_df$id)]
 
   unassigned <- vcf_arrow@samples[is.na(groups)]
@@ -74,8 +98,8 @@ set_vcf_groups <- function(vcf_arrow, data_path, strt = "strata") {
     cli::cli_warn(c(
       "{length(unassigned)} sample{?s} not assigned to a group (group set to NA): \\
        {.val {unassigned}}",
-      "i" = "Add {?it/them} to {.file {strata_file}}, or remove {?it/them} with \\
-             {.code vcf_extract_samples(keep = FALSE)}."
+      "i" = paste0("{cli::qty(length(unassigned))}Add {?it/them} to ", src, ", or remove {?it/them} with \\
+             {.code vcf_extract_samples(keep = FALSE)}.")
     ))
 
   vcf_arrow@groups <- groups
@@ -98,4 +122,16 @@ set_vcf_groups <- function(vcf_arrow, data_path, strt = "strata") {
                     sep = if (grepl("\t", header, fixed = TRUE)) "\t" else "",
                     colClasses = "character", strip.white = TRUE,
                     na.strings = c("", "NA"), quote = "\"", comment.char = "")
+}
+
+# A data frame of samples as .read_sample_table() reads a file: every column
+# as text, spaces at either end removed, empty fields as missing.
+.sample_table_df <- function(df) {
+  df <- as.data.frame(df, stringsAsFactors = FALSE)
+  df[] <- lapply(df, function(x) {
+    x <- trimws(as.character(x))
+    x[x %in% c("", "NA")] <- NA_character_
+    x
+  })
+  df
 }
