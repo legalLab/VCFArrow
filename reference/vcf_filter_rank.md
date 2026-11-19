@@ -77,7 +77,7 @@ vcf_filter_rank(vcf, threshold = 0.5)
 #>   Phased:  39528 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpVdrUAs/arrow_vcf_315339d8c822 
+#>   Path: /tmp/RtmpzpcbET/arrow_vcf_1d4d626fa027 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):

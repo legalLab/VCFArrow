@@ -81,7 +81,7 @@ vcf_filter_multiSNV(vcf, block_size = 10000, minSNV = 2, maxSNV = 5)
 #>   Phased:  126 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpVdrUAs/arrow_vcf_31536cdb6dd3 
+#>   Path: /tmp/RtmpzpcbET/arrow_vcf_1d4d6c7f1387 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):

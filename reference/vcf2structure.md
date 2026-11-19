@@ -66,7 +66,7 @@ vcf2structure(vcf, out_file = tempfile(fileext = ".str"))
 #> Use 'read_ipc_file' instead.
 #> See help("Deprecated")
 #> ℹ Writing Structure file...
-#> ✔ Structure file written to /tmp/RtmpVdrUAs/file31535c7a1ff1.str
+#> ✔ Structure file written to /tmp/RtmpzpcbET/file1d4d17cc15f4.str
 vcf2structure(vcf, out_file = tempfile(fileext = ".str"),
               method = "F")
 #> ℹ Accumulating Structure: 9313 variants x 18 samples (0 MiB raw storage)
@@ -74,5 +74,5 @@ vcf2structure(vcf, out_file = tempfile(fileext = ".str"),
 #> Use 'read_ipc_file' instead.
 #> See help("Deprecated")
 #> ℹ Writing Structure file...
-#> ✔ Structure file written to /tmp/RtmpVdrUAs/file31535d1ee9cf.str
+#> ✔ Structure file written to /tmp/RtmpzpcbET/file1d4d23ee3cc.str
 ```

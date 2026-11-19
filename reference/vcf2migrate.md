@@ -91,5 +91,5 @@ vcf2migrate(vcf, out_file = tempfile(fileext = ".txt"))
 #> Use 'read_ipc_file' instead.
 #> See help("Deprecated")
 #> ℹ Writing Migrate-N (S) file: 94 loci...
-#> ✔ Migrate-N file written to /tmp/RtmpVdrUAs/file31535f02c0cf.txt
+#> ✔ Migrate-N file written to /tmp/RtmpzpcbET/file1d4d4181ce2a.txt
 ```

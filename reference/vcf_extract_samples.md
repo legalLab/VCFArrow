@@ -112,7 +112,7 @@ vcf_extract_samples(vcf, samples = c("Pv14", "Pv27", "Pv28"))
 #>   Phased:  1971 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpVdrUAs/arrow_vcf_samp_315331e55608 
+#>   Path: /tmp/RtmpzpcbET/arrow_vcf_samp_1d4d76a7461e 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):
@@ -189,7 +189,7 @@ vcf_extract_samples(vcf, samples = c("Pb2Jp", "Pb2Scx", "Pb1Rd"),
 #>   Phased:  29610 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpVdrUAs/arrow_vcf_samp_3153667986f5 
+#>   Path: /tmp/RtmpzpcbET/arrow_vcf_samp_1d4d1a5b7941 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):

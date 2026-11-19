@@ -82,6 +82,6 @@ vcf2plink_bed(vcf, out_file = file.path(tempdir(), "plink_out"))
 #> Warning: 'arrow::read_feather' is deprecated.
 #> Use 'read_ipc_file' instead.
 #> See help("Deprecated")
-#> ℹ Chromosome names were recoded as integers; mapping written to /tmp/RtmpVdrUAs/plink_out.chrommap
-#> ✔ PLINK binary fileset written to /tmp/RtmpVdrUAs/plink_out.bed, /tmp/RtmpVdrUAs/plink_out.bim, /tmp/RtmpVdrUAs/plink_out.fam
+#> ℹ Chromosome names were recoded as integers; mapping written to /tmp/RtmpzpcbET/plink_out.chrommap
+#> ✔ PLINK binary fileset written to /tmp/RtmpzpcbET/plink_out.bed, /tmp/RtmpzpcbET/plink_out.bim, /tmp/RtmpzpcbET/plink_out.fam
 ```

@@ -64,5 +64,5 @@ vcf2genepop(vcf, out_file = tempfile(fileext = ".gen"))
 #> Use 'read_ipc_file' instead.
 #> See help("Deprecated")
 #> ℹ Writing Genepop file...
-#> ✔ Genepop file written to /tmp/RtmpVdrUAs/file315368e316f7.gen
+#> ✔ Genepop file written to /tmp/RtmpzpcbET/file1d4d7ae13212.gen
 ```

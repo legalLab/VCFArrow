@@ -65,7 +65,7 @@ vcf_filter_biallelic(vcf)
 #>   Phased:  45612 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpVdrUAs/arrow_vcf_315341a2483c 
+#>   Path: /tmp/RtmpzpcbET/arrow_vcf_1d4d205eae4e 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):

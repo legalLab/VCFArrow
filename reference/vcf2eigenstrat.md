@@ -83,9 +83,9 @@ vcf2eigenstrat(vcf, out_file = file.path(tempdir(), "eigenstrat_in"))
 #> Warning: 'arrow::read_feather' is deprecated.
 #> Use 'read_ipc_file' instead.
 #> See help("Deprecated")
-#> ℹ Chromosome names were recoded as integers; mapping written to /tmp/RtmpVdrUAs/eigenstrat_in.chrommap
+#> ℹ Chromosome names were recoded as integers; mapping written to /tmp/RtmpzpcbET/eigenstrat_in.chrommap
 #> Warning: Chromosome codes go up to 9309: EIGENSOFT reads chromosomes above its numchrom
 #> parameter (default 22) as X, Y, ...
 #> ℹ Set `numchrom: 9309` (or higher) in the parameter file.
-#> ✔ EIGENSTRAT fileset written to /tmp/RtmpVdrUAs/eigenstrat_in.geno, /tmp/RtmpVdrUAs/eigenstrat_in.ind, /tmp/RtmpVdrUAs/eigenstrat_in.snp
+#> ✔ EIGENSTRAT fileset written to /tmp/RtmpzpcbET/eigenstrat_in.geno, /tmp/RtmpzpcbET/eigenstrat_in.ind, /tmp/RtmpzpcbET/eigenstrat_in.snp
 ```

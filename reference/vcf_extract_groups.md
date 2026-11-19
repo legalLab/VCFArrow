@@ -112,7 +112,7 @@ vcf_extract_groups(vcf, groups = c("GS", "BS"))
 #>   Phased:  14450 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpVdrUAs/arrow_vcf_samp_315375ae2c3a 
+#>   Path: /tmp/RtmpzpcbET/arrow_vcf_samp_1d4d4dc4f557 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):
@@ -189,7 +189,7 @@ vcf_extract_groups(vcf, groups = "OG", keep = FALSE)
 #>   Phased:  29610 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpVdrUAs/arrow_vcf_samp_315372c26e17 
+#>   Path: /tmp/RtmpzpcbET/arrow_vcf_samp_1d4d395ea189 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):

@@ -57,5 +57,5 @@ vcf2related(vcf, out_file = tempfile(fileext = ".txt"))
 #> Use 'read_ipc_file' instead.
 #> See help("Deprecated")
 #> ℹ Writing Related file...
-#> ✔ Related file written to /tmp/RtmpVdrUAs/file31531adc5297.txt
+#> ✔ Related file written to /tmp/RtmpzpcbET/file1d4d7878679b.txt
 ```

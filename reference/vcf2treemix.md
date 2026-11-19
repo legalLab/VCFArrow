@@ -68,5 +68,5 @@ vcf2treemix(vcf, out_file = tempfile(fileext = ".gz"))
 #> Warning: 'arrow::read_feather' is deprecated.
 #> Use 'read_ipc_file' instead.
 #> See help("Deprecated")
-#> ✔ Treemix file written to /tmp/RtmpVdrUAs/file3153352e6a6d.gz
+#> ✔ Treemix file written to /tmp/RtmpzpcbET/file1d4d947293c.gz
 ```

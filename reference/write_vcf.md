@@ -83,7 +83,7 @@ write_vcf(vcf, out_file = tempfile(fileext = ".vcf"))
 #> Warning: 'arrow::read_feather' is deprecated.
 #> Use 'read_ipc_file' instead.
 #> See help("Deprecated")
-#> ✔ VCFArrow object successfully written to /tmp/RtmpVdrUAs/file3153bb76e28.vcf
+#> ✔ VCFArrow object successfully written to /tmp/RtmpzpcbET/file1d4d6aa71a71.vcf
 write_vcf(vcf, out_file = tempfile(fileext = ".vcf.gz"))
 #> Warning: 'arrow::read_feather' is deprecated.
 #> Use 'read_ipc_file' instead.
@@ -92,5 +92,5 @@ write_vcf(vcf, out_file = tempfile(fileext = ".vcf.gz"))
 #> Warning: 'arrow::read_feather' is deprecated.
 #> Use 'read_ipc_file' instead.
 #> See help("Deprecated")
-#> ✔ VCFArrow object successfully written to /tmp/RtmpVdrUAs/file3153dc8f12c.vcf.gz
+#> ✔ VCFArrow object successfully written to /tmp/RtmpzpcbET/file1d4d27e667b1.vcf.gz
 ```

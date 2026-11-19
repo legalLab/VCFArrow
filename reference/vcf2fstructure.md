@@ -59,5 +59,5 @@ vcf2fstructure(vcf, out_file = tempfile(fileext = ".str"))
 #> Use 'read_ipc_file' instead.
 #> See help("Deprecated")
 #> ℹ Writing Structure file...
-#> ✔ Structure file written to /tmp/RtmpVdrUAs/file315310d864b2.str
+#> ✔ Structure file written to /tmp/RtmpzpcbET/file1d4d10561840.str
 ```

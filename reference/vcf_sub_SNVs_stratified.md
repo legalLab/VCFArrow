@@ -78,7 +78,7 @@ vcf_sub_SNVs_stratified(vcf, n_SNVs = 1000, seed = 42)
 #>   Phased:  4788 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpVdrUAs/arrow_vcf_31535b005909 
+#>   Path: /tmp/RtmpzpcbET/arrow_vcf_1d4d1233006c 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):

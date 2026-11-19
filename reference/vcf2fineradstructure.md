@@ -81,5 +81,5 @@ vcf2fineradstructure(vcf_linked, out_file = tempfile(fileext = ".txt"))
 #> Use 'read_ipc_file' instead.
 #> See help("Deprecated")
 #> ℹ Writing fineRADstructure file: 4 loci from 8 SNVs...
-#> ✔ fineRADstructure file written to /tmp/RtmpVdrUAs/file31532eb153b2.txt
+#> ✔ fineRADstructure file written to /tmp/RtmpzpcbET/file1d4d60f0644a.txt
 ```

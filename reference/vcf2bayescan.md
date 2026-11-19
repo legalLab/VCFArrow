@@ -57,5 +57,5 @@ vcf2bayescan(vcf, out_file = tempfile(fileext = ".txt"))
 #> Use 'read_ipc_file' instead.
 #> See help("Deprecated")
 #> ℹ Writing BayesScan file...
-#> ✔ BayesScan file written to /tmp/RtmpVdrUAs/file31532ccfd333.txt
+#> ✔ BayesScan file written to /tmp/RtmpzpcbET/file1d4d7acf734.txt
 ```

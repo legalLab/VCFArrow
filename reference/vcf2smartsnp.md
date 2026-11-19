@@ -65,5 +65,5 @@ vcf2smartsnp(vcf, out_file = tempfile(fileext = ".txt"))
 #> Warning: 'arrow::read_feather' is deprecated.
 #> Use 'read_ipc_file' instead.
 #> See help("Deprecated")
-#> ✔ SmartSNP files written to /tmp/RtmpVdrUAs/file3153bf6b517.txt and /tmp/RtmpVdrUAs/file3153bf6b517_samples.smartsnp
+#> ✔ SmartSNP files written to /tmp/RtmpzpcbET/file1d4d64c2b2c8.txt and /tmp/RtmpzpcbET/file1d4d64c2b2c8_samples.smartsnp
 ```

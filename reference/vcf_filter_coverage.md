@@ -52,7 +52,7 @@ FALSE the genotypes are not changed, and only the variants that have at
 least two called genotypes with DP \>= threshold and are polymorphic
 among them are kept; the kept variants can still contain called
 genotypes with DP below the threshold. With strict_poly = FALSE (the
-default), polymorphic means that not all of these genotypes' alleles are
+default), polymorphic means that not all alleles of these genotypes are
 the same, e.g. both REF and ALT alleles occur. With strict_poly = TRUE,
 it means that not all of these genotypes are the same, so a variant
 whose genotypes with DP \>= threshold are all heterozygous is removed
@@ -105,7 +105,7 @@ vcf_filter_coverage(vcf, threshold = 10)
 #>   Phased:  45612 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpVdrUAs/arrow_vcf_coverage_31533e4a3457 
+#>   Path: /tmp/RtmpzpcbET/arrow_vcf_coverage_1d4d7786eefb 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):
@@ -174,7 +174,7 @@ vcf_filter_coverage(vcf, threshold = 10, strict = FALSE)
 #>   Phased:  26622 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpVdrUAs/arrow_vcf_3153643841ae 
+#>   Path: /tmp/RtmpzpcbET/arrow_vcf_1d4d7d216416 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):
@@ -242,7 +242,7 @@ vcf_filter_coverage(vcf, threshold = 10, strict = FALSE, strict_poly = TRUE)
 #>   Phased:  25506 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpVdrUAs/arrow_vcf_3153643841ae 
+#>   Path: /tmp/RtmpzpcbET/arrow_vcf_1d4d7d216416 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):

@@ -60,5 +60,5 @@ vcf2bayesass(vcf, out_file = tempfile(fileext = ".immanc"))
 #> Use 'read_ipc_file' instead.
 #> See help("Deprecated")
 #> ℹ Writing BayesAss file...
-#> ✔ BayesAss file written to /tmp/RtmpVdrUAs/file315335cce7c9.immanc
+#> ✔ BayesAss file written to /tmp/RtmpzpcbET/file1d4d34a1dae4.immanc
 ```

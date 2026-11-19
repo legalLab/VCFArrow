@@ -58,5 +58,5 @@ vcf2snapp(vcf, out_file = tempfile(fileext = ".nex"))
 #> Use 'read_ipc_file' instead.
 #> See help("Deprecated")
 #> ℹ Writing SNAPP file...
-#> ✔ SNAPP file written to /tmp/RtmpVdrUAs/file3153de55924.nex
+#> ✔ SNAPP file written to /tmp/RtmpzpcbET/file1d4d6fcfd441.nex
 ```

@@ -1,6 +1,6 @@
 # set_vcf_groups
 
-Associate samples with group info based on "strt" file
+Associate samples with group info based on a "strt" file or data frame
 
 ## Usage
 
@@ -16,12 +16,14 @@ set_vcf_groups(vcf_arrow, data_path, strt = "strata")
 
 - data_path:
 
-  -\> path to data (where strata are located)
+  -\> path to data (where strata are located); not needed when strt is a
+  data frame
 
 - strt:
 
   -\> file with 2+ columns, one id column and one pop column (tab- or
-  space-separated, with a header line), default 'strata'
+  space-separated, with a header line), or a data frame with these
+  columns, default 'strata' (character or data.frame)
 
 ## Value
 
@@ -30,18 +32,23 @@ vcf_arrow object with groups slot filled
 ## Details
 
 This function assigns each sample of a VCFArrow object to a group, based
-on a strata file. The strt is a file with a header line and 2+ columns,
-two of them named 'id' (sample name) and 'pop' (group); other columns
-are ignored. The file is read as tab-separated when its header line
-contains a tab, so fields may contain spaces and may be empty; otherwise
-its columns are separated by spaces (any whitespace). All columns are
-read as text, so ids such as '007' keep their leading zeros. Ids in the
-file that are not samples of the object are ignored. An id listed more
-than once with different groups is an error. Samples not in the file, or
-with an empty group, get the group NA and a warning lists them;
-functions that need groups (e.g. the exporters) stop until every sample
-has one. By default strt is named 'strata' and found in the datapath
-where the VCF file is found.
+on a strata file or a data frame. The strt is a file with a header line
+and 2+ columns, two of them named 'id' (sample name) and 'pop' (group);
+other columns are ignored. The file is read as tab-separated when its
+header line contains a tab, so fields may contain spaces and may be
+empty; otherwise its columns are separated by spaces (any whitespace).
+All columns are read as text, so ids such as '007' keep their leading
+zeros. Ids in the file that are not samples of the object are ignored.
+An id listed more than once with different groups is an error. Samples
+not in the file, or with an empty group, get the group NA and a warning
+lists them; functions that need groups (e.g. the exporters) stop until
+every sample has one. By default strt is named 'strata' and found in the
+datapath where the VCF file is found. strt can also be a data frame (or
+tibble) with the columns 'id' and 'pop', e.g. a strata file already read
+into R; data_path is then not needed. Its columns are used as text, as
+for a file: factors and numbers are converted to text (numbers lose
+leading zeros, so keep such ids as text), spaces at either end are
+removed, and empty values are missing.
 
 ## Author
 
@@ -62,4 +69,11 @@ table(vcf@groups)
 #> 
 #> BS GS OG WA 
 #>  5  5  3  5 
+# groups from a data frame
+strata_df <- data.frame(id = vcf@samples, pop = substr(vcf@samples, 1, 2))
+vcf <- set_vcf_groups(vcf, strt = strata_df)
+table(vcf@groups)
+#> 
+#> Pb Pv 
+#>  3 15 
 ```

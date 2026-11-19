@@ -73,5 +73,5 @@ vcf2gt_long(vcf, out_file = tempfile(), format = "csv")
 #> Warning: 'arrow::read_feather' is deprecated.
 #> Use 'read_ipc_file' instead.
 #> See help("Deprecated")
-#> ✔ gt_long table written to /tmp/RtmpVdrUAs/file31532817b514.csv
+#> ✔ gt_long table written to /tmp/RtmpzpcbET/file1d4d1a253a63.csv
 ```

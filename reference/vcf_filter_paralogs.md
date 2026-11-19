@@ -91,7 +91,7 @@ vcf_filter_paralogs(vcf, threshold_rk = 0.2, threshold_rpt = 0.5)
 #>   Phased:  45612 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpVdrUAs/arrow_vcf_31533f90a884 
+#>   Path: /tmp/RtmpzpcbET/arrow_vcf_1d4d4ce97d12 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):

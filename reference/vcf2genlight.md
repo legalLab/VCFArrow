@@ -103,5 +103,5 @@ gl <- vcf2genlight(vcf, out_file = tempfile(fileext = ".rds"),
 #> See help("Deprecated")
 #> ℹ Building Genlight object...
 #> ℹ Writing Genlight object...
-#> ✔ Genlight object written to /tmp/RtmpVdrUAs/file31533bb69833.rds
+#> ✔ Genlight object written to /tmp/RtmpzpcbET/file1d4d7c2915a7.rds
 ```

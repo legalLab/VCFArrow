@@ -81,7 +81,7 @@ vcf_filter_invariant(vcf)
 #>   Phased:  45612 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpVdrUAs/arrow_vcf_315344655556 
+#>   Path: /tmp/RtmpzpcbET/arrow_vcf_1d4daa688b0 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):
@@ -149,7 +149,7 @@ vcf_filter_invariant(vcf, strict_poly = TRUE)
 #>   Phased:  45612 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpVdrUAs/arrow_vcf_315344655556 
+#>   Path: /tmp/RtmpzpcbET/arrow_vcf_1d4daa688b0 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):

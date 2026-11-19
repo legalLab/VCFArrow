@@ -80,7 +80,7 @@ vcf_filter_missingness(vcf, threshold = 0.2)
 #>   Phased:  9756 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpVdrUAs/arrow_vcf_315316fafbb4 
+#>   Path: /tmp/RtmpzpcbET/arrow_vcf_1d4d6e248e7a 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):

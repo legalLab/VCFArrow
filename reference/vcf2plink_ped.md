@@ -91,6 +91,6 @@ vcf2plink_ped(vcf, out_file = file.path(tempdir(), "plink_out"))
 #> Use 'read_ipc_file' instead.
 #> See help("Deprecated")
 #> ℹ Writing PLINK file...
-#> ℹ Chromosome names were recoded as integers; mapping written to /tmp/RtmpVdrUAs/plink_out.chrommap
-#> ✔ PLINK text fileset written to /tmp/RtmpVdrUAs/plink_out.ped, /tmp/RtmpVdrUAs/plink_out.map
+#> ℹ Chromosome names were recoded as integers; mapping written to /tmp/RtmpzpcbET/plink_out.chrommap
+#> ✔ PLINK text fileset written to /tmp/RtmpzpcbET/plink_out.ped, /tmp/RtmpzpcbET/plink_out.map
 ```

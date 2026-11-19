@@ -188,7 +188,7 @@ vcf_bind(ingroup, outgroup, mode = "intersect")
 #>   Phased:  4284 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpVdrUAs/arrow_vcf_bind_31536bf7c13e 
+#>   Path: /tmp/RtmpzpcbET/arrow_vcf_bind_1d4d27d004f5 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):
@@ -268,7 +268,7 @@ vcf_bind(ingroup, outgroup, mode = "union", absent_as = "missing")
 #>   Phased:  45612 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpVdrUAs/arrow_vcf_bind_31538f3ad9 
+#>   Path: /tmp/RtmpzpcbET/arrow_vcf_bind_1d4d3877f4bf 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):
@@ -354,7 +354,7 @@ vcf_bind(vcf_filter_missingness(ingroup, 0.2), outgroup, outgroup = TRUE,
 #>   Phased:  11322 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpVdrUAs/arrow_vcf_bind_31537b59acf6 
+#>   Path: /tmp/RtmpzpcbET/arrow_vcf_bind_1d4d503434fc 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):
