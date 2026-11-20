@@ -46,8 +46,6 @@ f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
                  package = "VCFArrow")
 vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 #> ℹ VCF is being read in chunks of 50000 variants
-#> Warning: write_feather(version = 2) has been superseded by write_ipc_file().
-#> Warning: `format = "feather"` is deprecated; use `format = "ipc"` instead.
 #> ✔ VCF successfully read into a VCFArrow object
 vcf_filter_rank(vcf, threshold = 0.5)
 #> ℹ Applying RANK filter
@@ -68,16 +66,13 @@ vcf_filter_rank(vcf, threshold = 0.5)
 #> 
 #> BS GS OG WA 
 #>  5  5  3  5 
-#> Warning: 'arrow::read_feather' is deprecated.
-#> Use 'read_ipc_file' instead.
-#> See help("Deprecated")
 #> 
 #> Genotypes (first chunk with variants): 158562 
 #>   Missing: 50.36% 
 #>   Phased:  39528 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpzpcbET/arrow_vcf_1d4d626fa027 
+#>   Path: /tmp/RtmpKz15ZV/arrow_vcf_1d3a3d03cb06 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):

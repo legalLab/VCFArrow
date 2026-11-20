@@ -62,23 +62,13 @@ f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
                  package = "VCFArrow")
 vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 #> ℹ VCF is being read in chunks of 50000 variants
-#> Warning: write_feather(version = 2) has been superseded by write_ipc_file().
-#> Warning: `format = "feather"` is deprecated; use `format = "ipc"` instead.
 #> ✔ VCF successfully read into a VCFArrow object
 vcf2 <- rename_vcf_samples(vcf, c(Pv120 = "WA_Pv120", Pv13 = "WA_Pv13"))
-#> Warning: 'arrow::read_feather' is deprecated.
-#> Use 'read_ipc_file' instead.
-#> See help("Deprecated")
-#> Warning: write_feather(version = 2) has been superseded by write_ipc_file().
 #> ℹ Renamed 2 samples; group assignments kept.
 head(vcf2@samples)
 #> [1] "WA_Pv120" "Pv126"    "WA_Pv13"  "Pv14"     "Pv27"     "Pv28"    
 # rename and move a sample to another group
 new <- data.frame(id = "Pv120", new_id = "OG_Pv120", pop = "OG")
 vcf3 <- rename_vcf_samples(vcf, new, update_groups = TRUE)
-#> Warning: 'arrow::read_feather' is deprecated.
-#> Use 'read_ipc_file' instead.
-#> See help("Deprecated")
-#> Warning: write_feather(version = 2) has been superseded by write_ipc_file().
 #> ℹ Renamed 1 sample; 1 group assignment(s) updated.
 ```

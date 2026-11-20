@@ -45,14 +45,9 @@ f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
                  package = "VCFArrow")
 vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 #> ℹ VCF is being read in chunks of 50000 variants
-#> Warning: write_feather(version = 2) has been superseded by write_ipc_file().
-#> Warning: `format = "feather"` is deprecated; use `format = "ipc"` instead.
 #> ✔ VCF successfully read into a VCFArrow object
 vcf2fasta(vcf, out_file = tempfile(fileext = ".fas"))
 #> ℹ Accumulating FASTA: 9313 variants x 18 samples (0 MiB raw storage)
-#> Warning: 'arrow::read_feather' is deprecated.
-#> Use 'read_ipc_file' instead.
-#> See help("Deprecated")
 #> ℹ Writing FASTA file...
-#> ✔ FASTA file written to /tmp/RtmpzpcbET/file1d4d571a9b1e.fas
+#> ✔ FASTA file written to /tmp/RtmpKz15ZV/file1d3a3da7c1a3.fas
 ```

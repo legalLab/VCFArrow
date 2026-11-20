@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">VCFArrow</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.10.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,6 +33,15 @@
       <small>Source: <a href="https://github.com/legalLab/VCFArrow/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.11.0" id="vcfarrow-0110">VCFArrow 0.11.0<a class="anchor" aria-label="anchor" href="#vcfarrow-0110"></a></h2>
+<ul><li>Compatible with arrow 26.0.0, which deprecated <code>read_feather()</code>, <code>write_feather()</code> and <code>format = "feather"</code> in <code>open_dataset()</code>: the genotype files are now read with <code>read_ipc_file()</code>, written with <code>write_ipc_file()</code> and opened with <code>format = "ipc"</code>, so <code><a href="../reference/read_vcf.html">read_vcf()</a></code>, the filters and the exporters no longer give deprecation warnings. The files are unchanged (Arrow IPC, the format of feather version 2), and so are the results. arrow 10.0.0 or later is now required (these functions were added in arrow 9.0.0 and 10.0.0). <code>vcf2gt_long(format = "feather")</code> is unchanged.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.10.1" id="vcfarrow-0101">VCFArrow 0.10.1<a class="anchor" aria-label="anchor" href="#vcfarrow-0101"></a></h2>
+<ul><li>
+<code><a href="../reference/set_vcf_groups.html">set_vcf_groups()</a></code> now also accepts a data frame (or tibble) with columns <code>id</code> and <code>pop</code> as <code>strt</code>, e.g. <code>set_vcf_groups(vcf, strt = strata_df)</code>; <code>data_path</code> is then not needed. Its columns are used as text, as for a strata file.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.10.0" id="vcfarrow-0100">VCFArrow 0.10.0<a class="anchor" aria-label="anchor" href="#vcfarrow-0100"></a></h2>
 <ul><li>New function <code><a href="../reference/vcf2fstructure.html">vcf2fstructure()</a></code>, an alias of <code><a href="../reference/vcf2structure.html">vcf2structure()</a></code> that writes the fastSTRUCTURE format by default (<code>method = "F"</code>).</li>

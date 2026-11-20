@@ -68,21 +68,12 @@ f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
                  package = "VCFArrow")
 vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 #> ℹ VCF is being read in chunks of 50000 variants
-#> Warning: write_feather(version = 2) has been superseded by write_ipc_file().
-#> Warning: `format = "feather"` is deprecated; use `format = "ipc"` instead.
 #> ✔ VCF successfully read into a VCFArrow object
 vcf_filter_adr(vcf, mode = "correct")
 #> ℹ Applying ADR filter
 #> ℹ Applying ADR correct (threshold = 0.1) across 1 chunk...
-#> Warning: 'arrow::read_feather' is deprecated.
-#> Use 'read_ipc_file' instead.
-#> See help("Deprecated")
-#> Warning: write_feather(version = 2) has been superseded by write_ipc_file().
 #> ℹ Corrected 0 / 95245 genotypes
 #> ℹ Applying invariant filter
-#> Warning: 'arrow::read_feather' is deprecated.
-#> Use 'read_ipc_file' instead.
-#> See help("Deprecated")
 #> ℹ Retained 10000 / 10000 variants (polymorphic at the allele level)
 #> 
 #> An object of class "VCFArrow"
@@ -100,16 +91,13 @@ vcf_filter_adr(vcf, mode = "correct")
 #> 
 #> BS GS OG WA 
 #>  5  5  3  5 
-#> Warning: 'arrow::read_feather' is deprecated.
-#> Use 'read_ipc_file' instead.
-#> See help("Deprecated")
 #> 
 #> Genotypes (first chunk with variants): 180000 
 #>   Missing: 47.09% 
 #>   Phased:  45612 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpzpcbET/arrow_vcf_adr_1d4decac092 
+#>   Path: /tmp/RtmpKz15ZV/arrow_vcf_adr_1d3a6150b90c 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):

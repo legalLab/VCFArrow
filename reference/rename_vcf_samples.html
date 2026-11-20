@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">VCFArrow</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.10.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -100,24 +100,14 @@ themselves are unchanged.</p>
 <span class="r-in"><span>                 package <span class="op">=</span> <span class="st">"VCFArrow"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">vcf</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_vcf.html">read_vcf</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="set_vcf_groups.html">set_vcf_groups</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">dirname</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> VCF is being read in chunks of 50000 variants</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>write_feather(version = 2) has been superseded by write_ipc_file().</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>`format = "feather"` is deprecated; use `format = "ipc"` instead.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> VCF successfully read into a VCFArrow object</span>
 <span class="r-in"><span><span class="va">vcf2</span> <span class="op">&lt;-</span> <span class="fu">rename_vcf_samples</span><span class="op">(</span><span class="va">vcf</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>Pv120 <span class="op">=</span> <span class="st">"WA_Pv120"</span>, Pv13 <span class="op">=</span> <span class="st">"WA_Pv13"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'arrow::read_feather' is deprecated.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>write_feather(version = 2) has been superseded by write_ipc_file().</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Renamed 2 samples; group assignments kept.</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">vcf2</span><span class="op">@</span><span class="va">samples</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "WA_Pv120" "Pv126"    "WA_Pv13"  "Pv14"     "Pv27"     "Pv28"    </span>
 <span class="r-in"><span><span class="co"># rename and move a sample to another group</span></span></span>
 <span class="r-in"><span><span class="va">new</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>id <span class="op">=</span> <span class="st">"Pv120"</span>, new_id <span class="op">=</span> <span class="st">"OG_Pv120"</span>, pop <span class="op">=</span> <span class="st">"OG"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">vcf3</span> <span class="op">&lt;-</span> <span class="fu">rename_vcf_samples</span><span class="op">(</span><span class="va">vcf</span>, <span class="va">new</span>, update_groups <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'arrow::read_feather' is deprecated.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> Use 'read_ipc_file' instead.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> See help("Deprecated")</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>write_feather(version = 2) has been superseded by write_ipc_file().</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Renamed 1 sample; 1 group assignment(s) updated.</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

@@ -43,14 +43,12 @@ f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
                  package = "VCFArrow")
 vcf <- read_vcf(f)
 #> ℹ VCF is being read in chunks of 50000 variants
-#> Warning: write_feather(version = 2) has been superseded by write_ipc_file().
-#> Warning: `format = "feather"` is deprecated; use `format = "ipc"` instead.
 #> ✔ VCF successfully read into a VCFArrow object
 rm(vcf)
 vcf_gc()
 #> VCFArrow: 2 temp directories are still live (VCFArrow objects not yet GC'd):
-#>   /tmp/RtmpzpcbET/arrow_vcf_1d4d3858b9c5
-#>   /tmp/RtmpzpcbET/arrow_vcf_1d4d649d8f8c
+#>   /tmp/RtmpKz15ZV/arrow_vcf_1d3a411866eb
+#>   /tmp/RtmpKz15ZV/arrow_vcf_1d3ab0701cb
 #>   → rm() all VCFArrow objects, then call vcf_gc() again.
 #>   → Or call vcf_gc(force = TRUE) to delete regardless.
 ```

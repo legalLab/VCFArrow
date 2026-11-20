@@ -46,14 +46,9 @@ f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
                  package = "VCFArrow")
 vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 #> ℹ VCF is being read in chunks of 50000 variants
-#> Warning: write_feather(version = 2) has been superseded by write_ipc_file().
-#> Warning: `format = "feather"` is deprecated; use `format = "ipc"` instead.
 #> ✔ VCF successfully read into a VCFArrow object
 vcf_filter_missingness(vcf, threshold = 0.2)
 #> ℹ Applying locus missingness filter
-#> Warning: 'arrow::read_feather' is deprecated.
-#> Use 'read_ipc_file' instead.
-#> See help("Deprecated")
 #> ℹ Retained 2317 / 10000 variants (per-variant missingness <= 0.2) | Missing data: 7.68%
 #> 
 #> An object of class "VCFArrow"
@@ -71,16 +66,13 @@ vcf_filter_missingness(vcf, threshold = 0.2)
 #> 
 #> BS GS OG WA 
 #>  5  5  3  5 
-#> Warning: 'arrow::read_feather' is deprecated.
-#> Use 'read_ipc_file' instead.
-#> See help("Deprecated")
 #> 
 #> Genotypes (first chunk with variants): 41706 
 #>   Missing: 7.68% 
 #>   Phased:  9756 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpzpcbET/arrow_vcf_1d4d6e248e7a 
+#>   Path: /tmp/RtmpKz15ZV/arrow_vcf_1d3a41e86552 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):

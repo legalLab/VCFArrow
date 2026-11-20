@@ -69,17 +69,12 @@ f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
                  package = "VCFArrow")
 vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 #> ℹ VCF is being read in chunks of 50000 variants
-#> Warning: write_feather(version = 2) has been superseded by write_ipc_file().
-#> Warning: `format = "feather"` is deprecated; use `format = "ipc"` instead.
 #> ✔ VCF successfully read into a VCFArrow object
 vcf_linked <- vcf_filter_multiSNV(vcf)
 #> ℹ Applying linked SNV filter
 #> ℹ Retained 8 / 10000 variants (linked SNVs)
 vcf2fineradstructure(vcf_linked, out_file = tempfile(fileext = ".txt"))
 #> ℹ Accumulating fineRADstructure: 8 variants x 18 samples (0 MiB raw storage)
-#> Warning: 'arrow::read_feather' is deprecated.
-#> Use 'read_ipc_file' instead.
-#> See help("Deprecated")
 #> ℹ Writing fineRADstructure file: 4 loci from 8 SNVs...
-#> ✔ fineRADstructure file written to /tmp/RtmpzpcbET/file1d4d60f0644a.txt
+#> ✔ fineRADstructure file written to /tmp/RtmpKz15ZV/file1d3a3e46790a.txt
 ```

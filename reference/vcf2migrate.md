@@ -82,14 +82,9 @@ f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
                  package = "VCFArrow")
 vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 #> ℹ VCF is being read in chunks of 50000 variants
-#> Warning: write_feather(version = 2) has been superseded by write_ipc_file().
-#> Warning: `format = "feather"` is deprecated; use `format = "ipc"` instead.
 #> ✔ VCF successfully read into a VCFArrow object
 vcf2migrate(vcf, out_file = tempfile(fileext = ".txt"))
 #> ℹ Accumulating Migrate-N (S): 9313 variants x 18 samples (0 MiB raw storage)
-#> Warning: 'arrow::read_feather' is deprecated.
-#> Use 'read_ipc_file' instead.
-#> See help("Deprecated")
 #> ℹ Writing Migrate-N (S) file: 94 loci...
-#> ✔ Migrate-N file written to /tmp/RtmpzpcbET/file1d4d4181ce2a.txt
+#> ✔ Migrate-N file written to /tmp/RtmpKz15ZV/file1d3a1716cc9c.txt
 ```

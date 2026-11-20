@@ -74,18 +74,13 @@ f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
                  package = "VCFArrow")
 vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 #> ℹ VCF is being read in chunks of 50000 variants
-#> Warning: write_feather(version = 2) has been superseded by write_ipc_file().
-#> Warning: `format = "feather"` is deprecated; use `format = "ipc"` instead.
 #> ✔ VCF successfully read into a VCFArrow object
 vcf2eigenstrat(vcf, out_file = file.path(tempdir(), "eigenstrat_in"))
 #> ℹ Building EIGENSTRAT: 9313 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing EIGENSTRAT files...
-#> Warning: 'arrow::read_feather' is deprecated.
-#> Use 'read_ipc_file' instead.
-#> See help("Deprecated")
-#> ℹ Chromosome names were recoded as integers; mapping written to /tmp/RtmpzpcbET/eigenstrat_in.chrommap
+#> ℹ Chromosome names were recoded as integers; mapping written to /tmp/RtmpKz15ZV/eigenstrat_in.chrommap
 #> Warning: Chromosome codes go up to 9309: EIGENSOFT reads chromosomes above its numchrom
 #> parameter (default 22) as X, Y, ...
 #> ℹ Set `numchrom: 9309` (or higher) in the parameter file.
-#> ✔ EIGENSTRAT fileset written to /tmp/RtmpzpcbET/eigenstrat_in.geno, /tmp/RtmpzpcbET/eigenstrat_in.ind, /tmp/RtmpzpcbET/eigenstrat_in.snp
+#> ✔ EIGENSTRAT fileset written to /tmp/RtmpKz15ZV/eigenstrat_in.geno, /tmp/RtmpKz15ZV/eigenstrat_in.ind, /tmp/RtmpKz15ZV/eigenstrat_in.snp
 ```

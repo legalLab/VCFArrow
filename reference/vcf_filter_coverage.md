@@ -69,16 +69,10 @@ f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
                  package = "VCFArrow")
 vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 #> ℹ VCF is being read in chunks of 50000 variants
-#> Warning: write_feather(version = 2) has been superseded by write_ipc_file().
-#> Warning: `format = "feather"` is deprecated; use `format = "ipc"` instead.
 #> ✔ VCF successfully read into a VCFArrow object
 # set genotypes with DP < 10 to missing
 vcf_filter_coverage(vcf, threshold = 10)
 #> ℹ Applying read coverage filter
-#> Warning: 'arrow::read_feather' is deprecated.
-#> Use 'read_ipc_file' instead.
-#> See help("Deprecated")
-#> Warning: write_feather(version = 2) has been superseded by write_ipc_file().
 #> ℹ Set 34935 / 95245 called genotypes with DP < 10 to missing
 #> 
 #> An object of class "VCFArrow"
@@ -96,16 +90,13 @@ vcf_filter_coverage(vcf, threshold = 10)
 #> 
 #> BS GS OG WA 
 #>  5  5  3  5 
-#> Warning: 'arrow::read_feather' is deprecated.
-#> Use 'read_ipc_file' instead.
-#> See help("Deprecated")
 #> 
 #> Genotypes (first chunk with variants): 180000 
 #>   Missing: 66.49% 
 #>   Phased:  45612 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpzpcbET/arrow_vcf_coverage_1d4d7786eefb 
+#>   Path: /tmp/RtmpKz15ZV/arrow_vcf_coverage_1d3a53507804 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):
@@ -145,9 +136,6 @@ vcf_filter_coverage(vcf, threshold = 10)
 # genotypes with DP >= 10
 vcf_filter_coverage(vcf, threshold = 10, strict = FALSE)
 #> ℹ Applying read coverage filter
-#> Warning: 'arrow::read_feather' is deprecated.
-#> Use 'read_ipc_file' instead.
-#> See help("Deprecated")
 #> ℹ Retained 5983 / 10000 variants (polymorphic at the allele level with DP >= 10)
 #> 
 #> An object of class "VCFArrow"
@@ -165,16 +153,13 @@ vcf_filter_coverage(vcf, threshold = 10, strict = FALSE)
 #> 
 #> BS GS OG WA 
 #>  5  5  3  5 
-#> Warning: 'arrow::read_feather' is deprecated.
-#> Use 'read_ipc_file' instead.
-#> See help("Deprecated")
 #> 
 #> Genotypes (first chunk with variants): 107694 
 #>   Missing: 34.71% 
 #>   Phased:  26622 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpzpcbET/arrow_vcf_1d4d7d216416 
+#>   Path: /tmp/RtmpKz15ZV/arrow_vcf_1d3a69b153fd 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):
@@ -213,9 +198,6 @@ vcf_filter_coverage(vcf, threshold = 10, strict = FALSE)
 # also remove variants whose well-covered genotypes are all heterozygous
 vcf_filter_coverage(vcf, threshold = 10, strict = FALSE, strict_poly = TRUE)
 #> ℹ Applying read coverage filter
-#> Warning: 'arrow::read_feather' is deprecated.
-#> Use 'read_ipc_file' instead.
-#> See help("Deprecated")
 #> ℹ Retained 5817 / 10000 variants (polymorphic at the genotype level with DP >= 10)
 #> 
 #> An object of class "VCFArrow"
@@ -233,16 +215,13 @@ vcf_filter_coverage(vcf, threshold = 10, strict = FALSE, strict_poly = TRUE)
 #> 
 #> BS GS OG WA 
 #>  5  5  3  5 
-#> Warning: 'arrow::read_feather' is deprecated.
-#> Use 'read_ipc_file' instead.
-#> See help("Deprecated")
 #> 
 #> Genotypes (first chunk with variants): 104706 
 #>   Missing: 34.06% 
 #>   Phased:  25506 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpzpcbET/arrow_vcf_1d4d7d216416 
+#>   Path: /tmp/RtmpKz15ZV/arrow_vcf_1d3a69b153fd 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):
