@@ -86,7 +86,7 @@ read_vcf <- function(vcf_file, chunk_size = 50000) {
   # src/read_vcf_arrow.cpp)
   gt_counts <- 0
 
-  # R metadata that write_feather() attaches to a data.frame, so chunks
+  # R metadata that write_ipc_file() attaches to a data.frame, so chunks
   # written from the C++-built Arrow batches read back exactly as before
   gt_metadata <- arrow::arrow_table(data.frame(
     .row_id = integer(0), sample = character(0), a1 = integer(0), a2 = integer(0),
@@ -206,7 +206,7 @@ read_vcf <- function(vcf_file, chunk_size = 50000) {
   variants_df$.row_id <- as.integer(seq_len(nrow(variants_df)))
 
   # open Arrow Dataset (lazy, unified view)
-  gt_arrow <- arrow::open_dataset(tmp_dir, format = "feather")
+  gt_arrow <- arrow::open_dataset(tmp_dir, format = "ipc")
   # option to store as Apache parquet
   #gt_arrow <- arrow::open_dataset(tmp_dir, format = "parquet")
 
@@ -233,7 +233,7 @@ read_vcf <- function(vcf_file, chunk_size = 50000) {
 }
 
 # Write the genotype record batch of a parsed chunk to a feather file and
-# return the per-variant fields.  gt_metadata: the R metadata write_feather()
+# return the per-variant fields.  gt_metadata: the R metadata write_ipc_file()
 # attaches to a data.frame, so chunks read back exactly as before.
 
 .write_gt_batch <- function(parsed, out, gt_metadata) {
@@ -241,7 +241,7 @@ read_vcf <- function(vcf_file, chunk_size = 50000) {
     arrow::RecordBatch$import_from_c(parsed$array, parsed$schema)
   )
   gt_long$metadata <- gt_metadata
-  arrow::write_feather(gt_long, out)
+  arrow::write_ipc_file(gt_long, out)
   # option to store as Apache parquet
   #arrow::write_parquet(gt_long, sub("\\.arrow$", ".parquet", out))
   gt_long <- NULL

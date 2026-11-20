@@ -108,7 +108,7 @@ vcf2gt_long <- function(vcf_arrow, out_file, keep_groups = NULL,
   }
 
   # columns of the output, for the header / an empty result
-  empty <- arrow::read_feather(setup$feather_files[[1L]], col_select = read_cols,
+  empty <- arrow::read_ipc_file(setup$feather_files[[1L]], col_select = read_cols,
                                as_data_frame = FALSE)$Slice(0, 0)
   if (!is.null(col_select)) empty <- empty[, col_select]
   if (parallel) write_part(empty)  # CSV header
@@ -155,7 +155,7 @@ vcf2gt_long <- function(vcf_arrow, out_file, keep_groups = NULL,
 # else list(first, last: its first and last .row_id, and tbl: the sorted
 # Arrow Table, or part: the CSV file it was written to when shared$parallel).
 .gt_long_chunk <- function(task, shared) {
-  chunk <- arrow::read_feather(task$fpath, col_select = shared$read_cols,
+  chunk <- arrow::read_ipc_file(task$fpath, col_select = shared$read_cols,
                                as_data_frame = FALSE)
   row_id <- as.vector(chunk$.row_id)
   sample_order <- .sample_index(chunk, shared$samples)

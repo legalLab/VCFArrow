@@ -361,7 +361,7 @@ vcf_memory_estimate <- function(vcf_arrow,
 
   mb <- function(x) paste0(round(x / 1024^2, 1), " MiB")
 
-  # Arrow C++ pool: one chunk per read_feather() call.  Exporters read only
+  # Arrow C++ pool: one chunk per read_ipc_file() call.  Exporters read only
   # .row_id, sample, a1 and a2: about 20 bytes per genotype (4 each for the
   # integers, 4 + name length for sample), approximated as 5 x 4 bytes.
   chunk_arrow_mb <- chunk_size * n_samples * 5L * 4L

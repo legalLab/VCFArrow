@@ -174,7 +174,7 @@
 # sample names are matched once per chunk.
 
 .read_live_chunk <- function(fpath, cols, idx) {
-  chunk <- arrow::read_feather(fpath, col_select = unique(c(".row_id", "sample", cols)),
+  chunk <- arrow::read_ipc_file(fpath, col_select = unique(c(".row_id", "sample", cols)),
                                as_data_frame = FALSE)
   pos <- .match_row_id(as.vector(chunk$.row_id), idx$pos)
   s <- .sample_index(chunk, idx$samples)

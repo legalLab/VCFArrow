@@ -80,7 +80,7 @@ vcf_theta <- function(vcf_arrow, keep_groups = NULL) {
        (written as \"NA\").",
       "i" = "This usually indicates a sample-name mismatch. Check:",
       "i" = "  f <- list.files(vcf_arrow@path, pattern = '[.]arrow$', full.names = TRUE)[1]",
-      "i" = "  setdiff(vcf_arrow@samples, arrow::read_feather(f)$sample)"
+      "i" = "  setdiff(vcf_arrow@samples, arrow::read_ipc_file(f)$sample)"
     ))
   }
 
@@ -160,7 +160,7 @@ vcf_theta <- function(vcf_arrow, keep_groups = NULL) {
 # chunk's variants) is returned so the main process can check that no variant
 # is split across chunk files.
 .theta_chunk <- function(fpath, shared) {
-  chunk <- arrow::read_feather(fpath, col_select = c(".row_id", "sample", "a1", "a2"),
+  chunk <- arrow::read_ipc_file(fpath, col_select = c(".row_id", "sample", "a1", "a2"),
                                as_data_frame = FALSE)
   s <- .sample_index(chunk, shared$samples)
   vp <- .match_row_id(as.vector(chunk$.row_id), shared$var_pos)

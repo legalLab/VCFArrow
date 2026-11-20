@@ -130,7 +130,7 @@ rename_vcf_samples <- function(vcf_arrow, new_names, update_groups = FALSE) {
     info = vcf_arrow@info,
     format = vcf_arrow@format,
     variants = vcf_arrow@variants,
-    gt = suppressWarnings(arrow::open_dataset(tmp_dir, format = "feather")),
+    gt = suppressWarnings(arrow::open_dataset(tmp_dir, format = "ipc")),
     samples = new_samples,
     groups = groups,
     path = tmp_dir,
@@ -177,7 +177,7 @@ rename_vcf_samples <- function(vcf_arrow, new_names, update_groups = FALSE) {
 # The chunk stays an Arrow Table: names are matched and replaced in Arrow,
 # without converting the per-genotype strings to R.
 .rename_chunk <- function(task, shared) {
-  chunk <- arrow::read_feather(task$fpath, as_data_frame = FALSE)
+  chunk <- arrow::read_ipc_file(task$fpath, as_data_frame = FALSE)
   sample <- chunk$sample
   sample <- if (sample$num_chunks == 1L) sample$chunk(0L)
             else do.call(arrow::concat_arrays, sample$chunks)
@@ -190,7 +190,7 @@ rename_vcf_samples <- function(vcf_arrow, new_names, update_groups = FALSE) {
                                 arrow::Array$create(idx))
     chunk[["sample"]] <- arrow::call_function("coalesce", new, sample)
   }
-  arrow::write_feather(chunk, task$out)
+  arrow::write_ipc_file(chunk, task$out)
   chunk <- NULL
   .release_arrow_memory()
   invisible(TRUE)

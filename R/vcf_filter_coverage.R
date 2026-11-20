@@ -80,7 +80,7 @@ vcf_filter_coverage <- function(vcf_arrow, threshold = 10, strict = TRUE,
       info = vcf_arrow@info,
       format = vcf_arrow@format,
       variants = vcf_arrow@variants,
-      gt = suppressWarnings(arrow::open_dataset(tmp_dir, format = "feather")),
+      gt = suppressWarnings(arrow::open_dataset(tmp_dir, format = "ipc")),
       samples = vcf_arrow@samples,
       groups = vcf_arrow@groups,
       path = tmp_dir,
@@ -134,7 +134,7 @@ vcf_filter_coverage <- function(vcf_arrow, threshold = 10, strict = TRUE,
 # called and masked genotypes cover only the rows of live variants and
 # retained samples.
 .coverage_strict_chunk <- function(task, shared) {
-  chunk <- arrow::read_feather(task$fpath, as_data_frame = FALSE)
+  chunk <- arrow::read_ipc_file(task$fpath, as_data_frame = FALSE)
   a1 <- as.vector(chunk$a1)
   a2 <- as.vector(chunk$a2)
   dp <- as.vector(chunk$DP)
@@ -149,7 +149,7 @@ vcf_filter_coverage <- function(vcf_arrow, threshold = 10, strict = TRUE,
   chunk[["a1"]] <- a1
   chunk[["a2"]] <- a2
   chunk <- .set_fmt_gt(chunk, mask, a1)
-  arrow::write_feather(chunk, task$out)
+  arrow::write_ipc_file(chunk, task$out)
   chunk <- NULL
   .release_arrow_memory()
   out

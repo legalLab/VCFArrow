@@ -274,7 +274,7 @@ vcf_bind <- function(...,
                             absent_as)
 
   # ── assemble new VCFArrow ───────────────────────────────────────────────────
-  gt_arrow <- suppressWarnings(arrow::open_dataset(tmp_dir, format = "feather"))
+  gt_arrow <- suppressWarnings(arrow::open_dataset(tmp_dir, format = "ipc"))
 
   .new_vcfarrow(
     header = first@header,
@@ -404,7 +404,7 @@ vcf_bind_sparse <- function(...,
   } else {
     out <- .bind_empty_table(canon)
   }
-  arrow::write_feather(out, file.path(shared$tmp_dir, paste0("chunk_", task$ci, ".arrow")))
+  arrow::write_ipc_file(out, file.path(shared$tmp_dir, paste0("chunk_", task$ci, ".arrow")))
   parts <- out <- NULL
   .release_arrow_memory()
   n_rows
@@ -428,7 +428,7 @@ vcf_bind_sparse <- function(...,
 # persists across windows) of files already read.
 .bind_source <- function(files, samples, obj_ids) {
   rng <- vapply(files, function(f) {
-    id <- as.vector(arrow::read_feather(f, col_select = ".row_id",
+    id <- as.vector(arrow::read_ipc_file(f, col_select = ".row_id",
                                         as_data_frame = FALSE)$.row_id)
     if (length(id)) as.numeric(range(id)) else c(Inf, -Inf)
   }, numeric(2), USE.NAMES = FALSE)
@@ -450,7 +450,7 @@ vcf_bind_sparse <- function(...,
 
 # Common output schema (column types of the first object, without R metadata)
 .bind_schema <- function(srcs) {
-  sch <- arrow::read_feather(srcs[[1L]]$files[1L], col_select = .bind_gt_cols,
+  sch <- arrow::read_ipc_file(srcs[[1L]]$files[1L], col_select = .bind_gt_cols,
                              as_data_frame = FALSE)$schema
   types <- lapply(.bind_gt_cols, function(n) sch$GetFieldByName(n)$type)
   do.call(arrow::schema, stats::setNames(types, .bind_gt_cols))
@@ -481,7 +481,7 @@ vcf_bind_sparse <- function(...,
 
   parts <- lapply(need, function(f) {
     if (is.null(src$cache[[f]])) {
-      tbl <- arrow::read_feather(f, col_select = .bind_gt_cols, as_data_frame = FALSE)
+      tbl <- arrow::read_ipc_file(f, col_select = .bind_gt_cols, as_data_frame = FALSE)
       new_id <- .match_row_id(as.vector(tbl$.row_id), src$id_pos)
       s <- .sample_index(tbl, src$samples)
       keep <- which(!is.na(new_id) & !is.na(s))

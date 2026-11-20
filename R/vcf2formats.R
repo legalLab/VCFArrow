@@ -6,7 +6,7 @@
 # Architecture
 # ──────────────────────────────────────────────────────────────────────────────
 # All functions bypass the Arrow query engine and read feather chunks directly
-# with arrow::read_feather() — the same approach as write_vcf().
+# with arrow::read_ipc_file() — the same approach as write_vcf().
 #
 # Memory modes
 #   Chunk-by-chunk O(chunk):               SmartSNP, Treemix
@@ -152,7 +152,7 @@
 
 # Read one chunk's genotypes as an Arrow Table and reshape it
 .read_reshape_chunk <- function(fpath, shared) {
-  chunk <- arrow::read_feather(fpath, col_select = c(".row_id", "sample", "a1", "a2"),
+  chunk <- arrow::read_ipc_file(fpath, col_select = c(".row_id", "sample", "a1", "a2"),
                                as_data_frame = FALSE)
   .reshape_chunk(chunk, shared)
 }
@@ -397,7 +397,7 @@
   )
   cli::cli_progress_bar("Reading chunk", total = length(setup$feather_files))
   for (fpath in setup$feather_files) {
-    chunk <- arrow::read_feather(fpath,
+    chunk <- arrow::read_ipc_file(fpath,
                                  col_select = c(".row_id", "sample", "a1", "a2"),
                                  as_data_frame = FALSE)
     rc <- .reshape_chunk(chunk, setup)

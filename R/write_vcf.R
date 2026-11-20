@@ -117,7 +117,7 @@ write_vcf <- function(vcf_arrow, out_file, gzip = grepl("\\.gz$", out_file),
     stringsAsFactors = FALSE
   )
   tasks <- lapply(feather_files, function(f) {
-    id <- as.vector(arrow::read_feather(f, col_select = ".row_id",
+    id <- as.vector(arrow::read_ipc_file(f, col_select = ".row_id",
                                         as_data_frame = FALSE)$.row_id)
     in_range <- if (length(id)) meta$.row_id >= min(id) & meta$.row_id <= max(id)
                 else logical(nrow(meta))
@@ -151,7 +151,7 @@ write_vcf <- function(vcf_arrow, out_file, gzip = grepl("\\.gz$", out_file),
   # columns are derived from them at read time (a1/a2 are read to update
   # INFO)
   cols <- c(".row_id", "sample", "fmt", if (shared$update_info) c("a1", "a2"))
-  chunk <- arrow::read_feather(task$fpath, col_select = cols, as_data_frame = FALSE)
+  chunk <- arrow::read_ipc_file(task$fpath, col_select = cols, as_data_frame = FALSE)
 
   # remove filtered variants and samples from chunks
   # filtering here mirrors the .reshape_chunk() logic used in all exporters

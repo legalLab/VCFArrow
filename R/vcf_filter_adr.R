@@ -75,7 +75,7 @@ vcf_filter_adr <- function(vcf_arrow, threshold = 0.1,
     )
   }
 
-  gt_arrow <- suppressWarnings(arrow::open_dataset(tmp_dir, format = "feather"))
+  gt_arrow <- suppressWarnings(arrow::open_dataset(tmp_dir, format = "ipc"))
 
   new_vcfarrow <- .new_vcfarrow(
     header = vcf_arrow@header,
@@ -104,7 +104,7 @@ vcf_filter_adr <- function(vcf_arrow, threshold = 0.1,
 
 .adr_chunk <- function(task, shared) {
   threshold <- shared$threshold
-  chunk <- arrow::read_feather(task$fpath, as_data_frame = FALSE)
+  chunk <- arrow::read_ipc_file(task$fpath, as_data_frame = FALSE)
   adr <- as.vector(chunk$ADR)
   a1 <- as.vector(chunk$a1)
   a2 <- as.vector(chunk$a2)
@@ -135,7 +135,7 @@ vcf_filter_adr <- function(vcf_arrow, threshold = 0.1,
 
   chunk <- .set_fmt_gt(chunk, adr_flag, a1)
 
-  arrow::write_feather(chunk, task$out)
+  arrow::write_ipc_file(chunk, task$out)
   chunk <- NULL
   .release_arrow_memory()
   counts

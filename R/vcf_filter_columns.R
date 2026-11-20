@@ -86,7 +86,7 @@
     if (out_idx == 0L)
       cli::cli_abort("No genotype data remained after sample filtering.")
 
-    gt_arrow <- suppressWarnings(arrow::open_dataset(tmp_dir, format = "feather"))
+    gt_arrow <- suppressWarnings(arrow::open_dataset(tmp_dir, format = "ipc"))
 
     # Build a new VCFArrow through the canonical constructor so registration,
     # finalizer, and invariant_removed tracking are all handled correctly.
@@ -135,7 +135,7 @@
 # dominant cost.  Returns FALSE (and writes nothing) if no rows remain.
 
 .compact_chunk <- function(task, shared) {
-  chunk <- arrow::read_feather(task$fpath, as_data_frame = FALSE)
+  chunk <- arrow::read_ipc_file(task$fpath, as_data_frame = FALSE)
   in_samples <- as.vector(arrow::call_function(
     "is_in", chunk$sample,
     options = list(value_set = arrow::Array$create(shared$samples), skip_nulls = FALSE)
@@ -143,7 +143,7 @@
   keep <- !is.na(.match_row_id(as.vector(chunk$.row_id), shared$pos)) & in_samples
   chunk <- chunk$Filter(arrow::Array$create(keep))
   written <- chunk$num_rows > 0L
-  if (written) arrow::write_feather(chunk, task$out)
+  if (written) arrow::write_ipc_file(chunk, task$out)
   chunk <- NULL
   .release_arrow_memory()
   written
