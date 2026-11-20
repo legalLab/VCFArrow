@@ -1,3 +1,22 @@
+# VCFArrow 0.11.0
+
+* Compatible with arrow 26.0.0, which deprecated `read_feather()`,
+  `write_feather()` and `format = "feather"` in `open_dataset()`: the
+  genotype files are now read with `read_ipc_file()`, written with
+  `write_ipc_file()` and opened with `format = "ipc"`, so `read_vcf()`, the
+  filters and the exporters no longer give deprecation warnings. The files
+  are unchanged (Arrow IPC, the format of feather version 2), and so are the
+  results. arrow 10.0.0 or later is now required (these functions were
+  added in arrow 9.0.0 and 10.0.0). `vcf2gt_long(format = "feather")` is
+  unchanged.
+
+# VCFArrow 0.10.1
+
+* `set_vcf_groups()` now also accepts a data frame (or tibble) with columns
+  `id` and `pop` as `strt`, e.g. `set_vcf_groups(vcf, strt = strata_df)`;
+  `data_path` is then not needed. Its columns are used as text, as for a
+  strata file.
+
 # VCFArrow 0.10.0
 
 * New function `vcf2fstructure()`, an alias of `vcf2structure()` that
