@@ -18,7 +18,8 @@ vcf2admixture(
 \arguments{
 \item{vcf_arrow}{-> VCFArrow object}
 
-\item{out_file}{-> output file prefix; extensions are added automatically, no default (character)}
+\item{out_file}{-> output file prefix; extensions are added automatically,
+no default (character)}
 
 \item{keep_groups}{-> groups to retain, default NULL (character)}
 
@@ -28,15 +29,19 @@ vcf2admixture(
 
 \item{chrom_code}{-> how CHROM is written: "auto" (keep numeric CHROM,
 otherwise 0), "index" (1..n by first appearance), "zero" (all 0) or
-"keep" (verbatim), default "zero" (character)}
+"keep" (verbatim, only if every CHROM is a number), default "zero"
+(character)}
 
-\item{supervised}{-> flag to generate .pop for use in ADMIXTURE's supervised mode, default FALSE (Boolean)}
+\item{supervised}{-> flag to generate .pop for use in ADMIXTURE's
+supervised mode, default FALSE (Boolean)}
 
 \item{reference_groups}{-> groups whose samples are of known ancestry in a
-supervised run, default NULL (all groups) (character)}
+supervised run; their names must begin with a letter or digit, default
+NULL (all groups, a fully supervised run, with a warning) (character)}
 }
 \value{
-Invisibly returns the input VCFArrow object; called for its side effect of writing \code{out_file}.
+Invisibly returns the input VCFArrow object; called for
+its side effect of writing \code{out_file}.
 }
 \description{
 Converts a VCFArrow object to a PLINK .bed format infile plus ADMIXTURE-specific .pop file
@@ -54,9 +59,23 @@ For supervised analyses, the supervised flag needs to be true to generate
 .pop file needed for ADMIXTURE's supervised mode.
 The .pop file has one line per sample, in the order of the .fam file: the
 sample's group, its known ancestry, if the group is in reference_groups,
-and '-' (ancestry to be estimated) otherwise.  With reference_groups = NULL
+and '-' (ancestry to be estimated) otherwise. With reference_groups = NULL
 (the default) every sample's group is written, which is a fully supervised
-run.  reference_groups can only be given with supervised = TRUE.
+run: the ancestry of every sample is fixed and only the allele frequencies
+are estimated, so a warning is given. reference_groups can only be given
+with supervised = TRUE, must be groups of the exported samples, and must
+begin with a letter or digit, as ADMIXTURE reads a .pop line beginning
+with any other character as unknown ancestry. In a supervised run, K
+(given to ADMIXTURE) must equal the number of reference groups.
+ADMIXTURE (from version 1.3) requires numeric chromosome names, so
+chrom_code = "keep" is only allowed if every CHROM is a number; with
+"zero" (the default), "auto" or "index" the names are always numeric.
+Haploid analyses (ADMIXTURE's --haploid option) of sex chromosomes need
+their numeric codes (e.g. 23 and 24 in humans), which "auto" and "keep"
+retain.
+ADMIXTURE does not model linkage disequilibrium, and its manual
+recommends thinning linked markers, e.g. keeping one SNV per locus with
+vcf_filter_oneSNV() before export.
 }
 \examples{
 f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
