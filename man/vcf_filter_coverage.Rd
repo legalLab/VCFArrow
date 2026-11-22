@@ -46,8 +46,8 @@ With strict_poly = FALSE (the default), polymorphic means that not all
 alleles of these genotypes are the same, e.g. both REF and ALT alleles
 occur. With strict_poly = TRUE, it means that not all of these genotypes
 are the same, so a variant whose genotypes with DP >= threshold are all
-heterozygous is removed although both alleles occur. strict_poly is
-ignored with strict = TRUE.
+heterozygous is removed although both alleles occur; genotypes are compared
+as in vcf_filter_invariant(). strict_poly is ignored with strict = TRUE.
 }
 \examples{
 f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",

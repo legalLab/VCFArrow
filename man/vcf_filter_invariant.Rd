@@ -30,6 +30,9 @@ heterozygote is kept.  With strict_poly = TRUE, polymorphic means that not
 all called genotypes are the same, so a variant where every called sample
 is heterozygous is removed although both alleles occur (such sites are
 often paralogs).
+Genotypes are compared without regard to allele order or phase (0/1, 1/0,
+0|1 and 1|0 are the same genotype), and at multiallelic sites every
+genotype is distinct, e.g. 0/2 differs from 1/1 and 0/3 from 1/2.
 }
 \examples{
 f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",

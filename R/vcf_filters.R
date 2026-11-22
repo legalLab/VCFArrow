@@ -251,18 +251,30 @@
 
 # ── Polymorphism test (vcf_filter_invariant(), vcf_filter_coverage()) ──────────
 #
-# A variant's counted genotypes are summarised by n (their number), s1 (the
-# sum of g = a1 + a2) and s2 (a sum of squares, see .poly_squares()).  Values
-# are all equal exactly when count * sum(x^2) == sum(x)^2, so:
+# A variant's counted genotypes are summarised by n (their number), s1 (a
+# sum, see .poly_values()) and s2 (a sum of squares, see .poly_squares()).
+# Values are all equal exactly when count * sum(x^2) == sum(x)^2, so:
 #   genotype level (strict_poly = TRUE): not all genotypes equal, over the n
-#     genotype values g:      n * sum(g^2)  != sum(g)^2
+#     genotype codes g:       n * sum(g^2)  != sum(g)^2
+#     g = k * (k + 1) / 2 + j with j = min(a1, a2), k = max(a1, a2), the VCF
+#     order of genotypes in Number=G fields (0/0 0, 0/1 1, 1/1 2, 0/2 3,
+#     1/2 4, 2/2 5, ...): one code per unordered genotype, so 0/2 and 1/1
+#     differ, and phase is ignored.  At biallelic sites g = a1 + a2.
 #     (a variant where every sample is heterozygous is not polymorphic)
 #   allele level (strict_poly = FALSE): not all alleles equal, over the 2n
 #     allele codes a:         2n * sum(a^2) != sum(a)^2
 #     (some REF and some ALT alleles; also correct for multiallelic sites)
+# The codes stay small, so the sums are exact in doubles.
+
+.poly_values <- function(a1, a2, strict_poly) {
+  if (strict_poly) {
+    j <- pmin(a1, a2); k <- pmax(a1, a2)
+    k * (k + 1) / 2 + j
+  } else a1 + a2
+}
 
 .poly_squares <- function(a1, a2, strict_poly) {
-  if (strict_poly) (a1 + a2)^2 else a1 * a1 + a2 * a2
+  if (strict_poly) .poly_values(a1, a2, TRUE)^2 else a1 * a1 + a2 * a2
 }
 
 .is_polymorphic <- function(n, s1, s2, strict_poly) {

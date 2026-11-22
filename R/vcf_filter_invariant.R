@@ -23,6 +23,9 @@
 #' all called genotypes are the same, so a variant where every called sample
 #' is heterozygous is removed although both alleles occur (such sites are
 #' often paralogs).
+#' Genotypes are compared without regard to allele order or phase (0/1, 1/0,
+#' 0|1 and 1|0 are the same genotype), and at multiallelic sites every
+#' genotype is distinct, e.g. 0/2 differs from 1/1 and 0/3 from 1/2.
 #'
 #' @examples
 #' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
@@ -48,8 +51,8 @@ vcf_filter_invariant <- function(vcf_arrow, strict_poly = FALSE) {
   parts <- .map_chunks(ffiles, .invariant_chunk,
                        shared = c(idx[c("pos", "samples")], strict_poly = strict_poly),
                        label = "Scanning chunk")
-  # Per variant: count of called genotypes, sum of their allele_sum and sum
-  # of squares (of genotypes or alleles, see .is_polymorphic())
+  # Per variant: count of called genotypes, sum and sum of squares
+  # (of genotype codes or alleles, see .is_polymorphic())
   n_pass <- .merge_ranges(parts, "n", integer(idx$n_var))
   s1 <- .merge_ranges(parts, "s1", numeric(idx$n_var))
   s2 <- .merge_ranges(parts, "s2", numeric(idx$n_var))
@@ -82,14 +85,14 @@ vcf_filter_invariant <- function(vcf_arrow, strict_poly = FALSE) {
   return(vcf_arrow)
 }
 
-# Per-chunk count, sum of allele_sum and sum of squares (of genotypes or
-# alleles, see .poly_squares()) per variant, over called genotypes
+# Per-chunk count, sum and sum of squares (of genotype codes or alleles,
+# see .poly_values()) per variant, over called genotypes
 .invariant_chunk <- function(fpath, shared) {
   ch <- .read_live_chunk(fpath, c("a1", "a2"), shared)
   called <- !is.na(ch$a1) & !is.na(ch$a2)
   pos <- ch$pos[called]
   a1 <- ch$a1[called]
   a2 <- ch$a2[called]
-  list(n = .range_count(pos), s1 = .range_sum(pos, a1 + a2),
+  list(n = .range_count(pos), s1 = .range_sum(pos, .poly_values(a1, a2, shared$strict_poly)),
        s2 = .range_sum(pos, .poly_squares(a1, a2, shared$strict_poly)))
 }

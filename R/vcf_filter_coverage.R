@@ -32,8 +32,8 @@
 #' alleles of these genotypes are the same, e.g. both REF and ALT alleles
 #' occur. With strict_poly = TRUE, it means that not all of these genotypes
 #' are the same, so a variant whose genotypes with DP >= threshold are all
-#' heterozygous is removed although both alleles occur. strict_poly is
-#' ignored with strict = TRUE.
+#' heterozygous is removed although both alleles occur; genotypes are compared
+#' as in vcf_filter_invariant(). strict_poly is ignored with strict = TRUE.
 #'
 #' @examples
 #' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
@@ -93,9 +93,8 @@ vcf_filter_coverage <- function(vcf_arrow, threshold = 10, strict = TRUE,
               strict_poly = strict_poly)
   parts <- .map_chunks(ffiles, .coverage_chunk, shared = shared,
                        label = "Scanning chunk")
-  # Per variant: count of DP-passing called genotypes, sum of their
-  # allele_sum and sum of squares (of genotypes or alleles, see
-  # .is_polymorphic())
+  # Per variant: count of DP-passing called genotypes, sum and sum
+  # of squares (of genotype codes or alleles, see .is_polymorphic())
   dp_pass <- .merge_ranges(parts, "n", integer(idx$n_var))
   s1 <- .merge_ranges(parts, "s1", numeric(idx$n_var))
   s2 <- .merge_ranges(parts, "s2", numeric(idx$n_var))
@@ -116,8 +115,8 @@ vcf_filter_coverage <- function(vcf_arrow, threshold = 10, strict = TRUE,
   return(vcf_arrow)
 }
 
-# Per-chunk count, sum of allele_sum and sum of squares (of genotypes or
-# alleles, see .poly_squares()) per variant, over called genotypes with
+# Per-chunk count, sum and sum of squares (of genotype codes or alleles,
+# see .poly_values()) per variant, over called genotypes with
 # DP >= threshold
 .coverage_chunk <- function(fpath, shared) {
   ch <- .read_live_chunk(fpath, c("a1", "a2", "DP"), shared)
@@ -125,7 +124,7 @@ vcf_filter_coverage <- function(vcf_arrow, threshold = 10, strict = TRUE,
   pos <- ch$pos[ok]
   a1 <- ch$a1[ok]
   a2 <- ch$a2[ok]
-  list(n = .range_count(pos), s1 = .range_sum(pos, a1 + a2),
+  list(n = .range_count(pos), s1 = .range_sum(pos, .poly_values(a1, a2, shared$strict_poly)),
        s2 = .range_sum(pos, .poly_squares(a1, a2, shared$strict_poly)))
 }
 
