@@ -4,36 +4,63 @@
 \alias{vcf_filter_multiSNV}
 \title{vcf_filter_multiSNV}
 \usage{
-vcf_filter_multiSNV(vcf_arrow, block_size = 10000, minSNV = 2, maxSNV = 5)
+vcf_filter_multiSNV(
+  vcf_arrow,
+  block_size = 10000,
+  minSNV = 2,
+  maxSNV = 5,
+  over_max = c("remove", "truncate")
+)
 }
 \arguments{
 \item{vcf_arrow}{-> VCFArrow object}
 
 \item{block_size}{-> size of linked SNV blocks, default 10000 bp (integer)}
 
-\item{minSNV}{-> minimum linked block size, default 2 (integer)}
+\item{minSNV}{-> minimum number of SNVs per block; blocks with fewer are
+removed, default 2 (integer)}
 
-\item{maxSNV}{-> maximum number of selected linked SNVs per block, default 5 (integer)}
+\item{maxSNV}{-> maximum number of SNVs per block, default 5 (integer); Inf
+keeps every SNV of each block}
+
+\item{over_max}{-> what to do with blocks with more than maxSNV SNVs:
+"remove" the whole block or "truncate" it to its first maxSNV SNVs (by
+position), default "remove" (character)}
 }
 \value{
 subsetted VCFArrow object
 }
 \description{
-Subset a VCFArrow object keeping only loci with 2+ SNVs per locus
+Subset a VCFArrow object keeping only loci with several linked SNVs
 }
 \details{
-This function subsets a VCFArrow object keeping only loci with between
-min and max # of SNVs per locus, returning a new VCFArrow object.
-Default min = 2 and max = 5 SNVs per locus
-(recommended as input for fineRADstructure analyses).
-Locus is defined as a different chromosome or a block of the
-'block_size' parameter value within a chromosome.
+This function subsets a VCFArrow object keeping only linked SNVs, i.e.
+blocks (loci) with at least minSNV SNVs, returning a new VCFArrow object.
+A block is a CHROM, or within a CHROM a window of block_size bp counted
+from its first SNV; with de novo RAD data, where each locus is its own
+CHROM, a block is a locus.
+Blocks with fewer than minSNV SNVs are removed. Blocks with more than
+maxSNV SNVs are removed (over_max = "remove") or truncated to their first
+maxSNV SNVs (over_max = "truncate"); blocks with minSNV to maxSNV SNVs are
+kept whole.
+With RAD loci and de novo SNV discovery, an unusually high number of SNVs
+in a short locus often indicates misassembled paralogs, so such loci are
+best removed (the default; fineRADstructure's Stacks2fineRAD.py script
+likewise removes loci with more than a maximum number of SNPs). With SNVs
+from whole genome data mapped to a reference, a block is an arbitrary
+window and many SNVs indicate a variable region rather than an artefact;
+over_max = "truncate" keeps the first, most tightly linked, maxSNV SNVs of
+such blocks, which suits unphased data, where the haplotypes of loci with
+several heterozygous SNVs are arbitrary, and maxSNV = Inf keeps all SNVs,
+e.g. for phased data.
 }
 \examples{
 f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
                  package = "VCFArrow")
 vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf_filter_multiSNV(vcf, block_size = 10000, minSNV = 2, maxSNV = 5)
+# whole genome data: truncate blocks with many SNVs instead of removing them
+vcf_filter_multiSNV(vcf, minSNV = 2, maxSNV = 5, over_max = "truncate")
 
 }
 \author{
