@@ -20,7 +20,8 @@ subsetted VCFArrow object
 Remove loci above missingness threshold from a VCFArrow object
 }
 \details{
-This function removes loci above missingness threshold from a VCFArrow object,
+This function removes loci above missingness threshold from a VCFArrow object
+(loci at the threshold are kept),
 returning a new VCFArrow object.
 Missingness is a locus focused metric, i.e. missing data per locus.
 With verbose = TRUE, the number of retained variants and the final \%

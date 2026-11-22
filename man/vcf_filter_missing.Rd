@@ -15,7 +15,9 @@ vcf_filter_missing(
 \arguments{
 \item{vcf_arrow}{-> VCFArrow object}
 
-\item{threshold}{-> decimal missing threshold, default 0.5 (numeric)}
+\item{threshold}{-> decimal missing threshold; samples with a proportion of
+missing genotypes above it are removed, those at it are kept, default 0.5
+(numeric)}
 
 \item{f_invar}{-> filter invariant loci flag, default TRUE (Boolean)}
 
@@ -30,11 +32,12 @@ vcf_filter_invariant(), default FALSE (Boolean)}
 subsetted VCFArrow object
 }
 \description{
-Remove samples with > \% missing data from a VCFArrow object
+Remove samples with more than a threshold of missing data from a VCFArrow object
 }
 \details{
 This function removes samples from a VCFArrow object if they have
-above threshold missing loci, returning a new VCFArrow object.
+a proportion of missing genotypes above the threshold (samples at the
+threshold are kept), returning a new VCFArrow object.
 By default will remove any loci that may have become invariant as the
 result of the removal of samples.
 By default will report removed samples, final \% missing data, and number of

@@ -6,12 +6,15 @@
 #' @author Tomas Hrbek April 2026
 #'
 #' @param vcf_arrow -> VCFArrow object
-#' @param threshold -> heterozygosity threshold, default 0.5 (numeric)
+#' @param threshold -> heterozygosity threshold; loci with a proportion of
+#'   heterozygous called genotypes above it are removed, those at it are kept,
+#'   default 0.5 (numeric)
 #'
 #' @return subsetted VCFArrow object
 #'
 #' @details
-#' This function removes loci above a heterozygosity threshold from a VCFArrow object,
+#' This function removes loci above a heterozygosity threshold from a VCFArrow object
+#' (loci at the threshold are kept), as well as loci without called genotypes,
 #' returning a new VCFArrow object.
 #' High heterozygosities are indicative of potential paralogs.
 #'
@@ -41,12 +44,12 @@ vcf_filter_hets <- function(vcf_arrow, threshold = 0.5) {
 
   het_rate <- ifelse(n_called > 0L, n_het / n_called, NA_real_)
   # n_called == 0 → excluded (matches the original's implicit-omission behaviour)
-  pass <- n_called > 0L & het_rate < threshold
+  pass <- n_called > 0L & het_rate <= threshold
   keep <- vcf_arrow@variants$.row_id[pass]
 
   cli::cli_alert_info(
     "Retained {length(keep)} / {idx$n_var} variant{?s} \\
-     (heterozygosity rate < {threshold})"
+     (heterozygosity rate <= {threshold})"
   )
   # apply filter using unified API
   vcf_arrow <- .vcf_filter_rows(vcf_arrow, keep)

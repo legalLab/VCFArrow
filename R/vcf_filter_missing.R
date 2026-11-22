@@ -1,12 +1,14 @@
 #' @title vcf_filter_missing
 #'
 #' @description
-#' Remove samples with > % missing data from a VCFArrow object
+#' Remove samples with more than a threshold of missing data from a VCFArrow object
 #'
 #' @author Tomas Hrbek April 2026
 #'
 #' @param vcf_arrow -> VCFArrow object
-#' @param threshold -> decimal missing threshold, default 0.5 (numeric)
+#' @param threshold -> decimal missing threshold; samples with a proportion of
+#'   missing genotypes above it are removed, those at it are kept, default 0.5
+#'   (numeric)
 #' @param f_invar -> filter invariant loci flag, default TRUE (Boolean)
 #' @param verbose -> report removed samples, numbers of retained variants and
 #'   samples, and the final % missing data, default TRUE (Boolean)
@@ -18,7 +20,8 @@
 #'
 #' @details
 #' This function removes samples from a VCFArrow object if they have
-#' above threshold missing loci, returning a new VCFArrow object.
+#' a proportion of missing genotypes above the threshold (samples at the
+#' threshold are kept), returning a new VCFArrow object.
 #' By default will remove any loci that may have become invariant as the
 #' result of the removal of samples.
 #' By default will report removed samples, final % missing data, and number of
@@ -61,7 +64,7 @@ vcf_filter_missing <- function(vcf_arrow, threshold = 0.5,
   }
 
   p_miss <- ifelse(total_n > 0L, miss_n / total_n, 1)
-  keep <- samples[p_miss < threshold]
+  keep <- samples[p_miss <= threshold]
 
   if (length(keep) == 0L)
     cli::cli_abort("All samples removed by vcf_filter_missing(threshold = {threshold})")

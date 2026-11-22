@@ -9,7 +9,9 @@ vcf_filter_hets(vcf_arrow, threshold = 0.5)
 \arguments{
 \item{vcf_arrow}{-> VCFArrow object}
 
-\item{threshold}{-> heterozygosity threshold, default 0.5 (numeric)}
+\item{threshold}{-> heterozygosity threshold; loci with a proportion of
+heterozygous called genotypes above it are removed, those at it are kept,
+default 0.5 (numeric)}
 }
 \value{
 subsetted VCFArrow object
@@ -18,7 +20,8 @@ subsetted VCFArrow object
 Remove loci above a heterozygosity threshold from a VCFArrow object
 }
 \details{
-This function removes loci above a heterozygosity threshold from a VCFArrow object,
+This function removes loci above a heterozygosity threshold from a VCFArrow object
+(loci at the threshold are kept), as well as loci without called genotypes,
 returning a new VCFArrow object.
 High heterozygosities are indicative of potential paralogs.
 }
