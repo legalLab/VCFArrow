@@ -19,7 +19,7 @@
 #' Writing occurs in chunks whose size is determined by the read_vcf() function.
 #' Larger chunks result in faster writing speeds.
 #' It writes both uncompressed and gz compressed files. Compressing increases
-#' writing time be about 50%.
+#' writing time by about 50%.
 #' For large files, it is recommended to output an uncompressed VCF file,
 #' and then compress with GZIP or PIGZ (or BGZIP, which tabix needs to
 #' index the file).
@@ -51,6 +51,8 @@
 write_vcf <- function(vcf_arrow, out_file, gzip = grepl("\\.gz$", out_file),
                       update_info = TRUE) {
 
+  if (!inherits(vcf_arrow, "VCFArrow"))
+    cli::cli_abort("Expecting a VCFArrow object")
   if (missing(out_file)) cli::cli_abort("{.arg out_file} must be supplied.")
 
   # write header (with gzip, as its own gzip member: the chunks are appended

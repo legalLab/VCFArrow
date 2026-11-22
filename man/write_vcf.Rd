@@ -33,7 +33,7 @@ This function writes a VCFArrow object to an external VCF file.
 Writing occurs in chunks whose size is determined by the read_vcf() function.
 Larger chunks result in faster writing speeds.
 It writes both uncompressed and gz compressed files. Compressing increases
-writing time be about 50\%.
+writing time by about 50\%.
 For large files, it is recommended to output an uncompressed VCF file,
 and then compress with GZIP or PIGZ (or BGZIP, which tabix needs to
 index the file).
