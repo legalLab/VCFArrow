@@ -16,6 +16,14 @@
 #' Writing occurs in chunks whose size is determined by the read_vcf() function.
 #' Larger chunks result in faster writing speeds.
 #' If no groups are defined, the default behavior is to use all groups.
+#' Only biallelic SNVs are exported (multiallelic sites and indels are left
+#' out), and every sample must be assigned to a group (see set_vcf_groups()),
+#' also when keep_groups is NULL.
+#'
+#' Each sample is one sequence of its genotypes at the SNVs: the REF or
+#' ALT nucleotide for homozygotes, the IUPAC ambiguity code of the two
+#' nucleotides for heterozygotes (e.g. R for A/G), and '?' if missing.
+#' The matrix is declared as DNA data (FORMAT DATATYPE=DNA MISSING=?).
 #'
 #' @examples
 #' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",

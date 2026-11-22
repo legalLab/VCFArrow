@@ -33,6 +33,9 @@ Remove loci above REPEAT and below RANK threshold from a VCFArrow object
 This function removes loci below the RANK threshold and above the REPEAT
 threshold from a VCFArrow object, returning a new VCFArrow object.
 It applies vcf_filter_rank() and then vcf_filter_rpt().
+If only one of the Rk and RPT fields is present, only that filter is
+applied (the other returns its input unfiltered, with a warning); if
+neither is present, the object is returned unfiltered, with a warning.
 RANK and REPEAT metrics focus on different paralog signals, and used
 jointly maximize true positive and minimize false positive detections.
 Simulations indicate that removing loci with Rk < 0.2 or RPT > 0.5 gives the

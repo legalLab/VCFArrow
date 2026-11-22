@@ -18,7 +18,7 @@ assess_vcf_coverage(
 
 \item{res_path}{-> path to results (directory for output dataframe and plots)}
 
-\item{species}{-> sample name for plot (character)}
+\item{species}{-> species name, the plot title (character)}
 
 \item{project}{-> project name / base output file name (character)}
 
@@ -27,7 +27,9 @@ assess_vcf_coverage(
 \item{max_points_per_sample}{-> maximum number of SNVs from which to plot coverage, default 5000 (integer)}
 }
 \value{
-violin plot of read depth for each sample in VCF
+Invisibly returns the input VCFArrow object; called for its side
+effect of writing a violin plot of the read depth of each sample to
+\verb{<project>_coverage.pdf}, \code{.svg} and \code{.png} in \code{res_path}.
 }
 \description{
 Quantifying read depth of all samples in VCF

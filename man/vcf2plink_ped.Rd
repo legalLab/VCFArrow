@@ -44,6 +44,9 @@ This function converts a VCFArrow object to an external PLINK .ped formatted fil
 Writing occurs in chunks whose size is determined by the read_vcf() function.
 Larger chunks result in faster writing speeds.
 If no groups are defined, the default behavior is to use all groups.
+Only biallelic SNVs are exported (multiallelic sites and indels are left
+out), and every sample must be assigned to a group (see set_vcf_groups()),
+also when keep_groups is NULL.
 Sex and phenotype vectors are optional. If not defined sex = 0, pheno = -9.
 Missing alleles are written as 0.  In the "12" coding allele 1 is ALT and
 allele 2 is REF, as in vcf2plink_bed().  With either coding, PLINK 1.9

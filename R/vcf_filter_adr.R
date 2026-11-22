@@ -7,8 +7,10 @@
 #' @author Tomas Hrbek April 2026
 #'
 #' @param vcf_arrow -> VCFArrow object
-#' @param mode -> switch between 'correct' or 'remove' mode (character)
-#' @param threshold -> decimal missing threshold, default 0.1 (numeric)
+#' @param mode -> switch between 'correct' or 'remove' mode, default 'correct'
+#'   (character)
+#' @param threshold -> allele depth ratio (ADR) threshold, strictly between 0
+#'   and 0.5, default 0.1 (numeric)
 #' @param f_invar -> filter invariant loci flag, default TRUE (Boolean)
 #' @param strict_poly -> when removing invariant loci, polymorphism at the
 #'   genotype level (TRUE) or the allele level (FALSE), see

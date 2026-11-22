@@ -32,7 +32,8 @@ otherwise 0), "index" (1..n by first appearance), "zero" (all 0) or
 
 \item{supervised}{-> flag to generate .pop for use in ADMIXTURE's supervised mode, default FALSE (Boolean)}
 
-\item{reference_groups}{-> vector of ancestry group labels, default NULL (character)}
+\item{reference_groups}{-> groups whose samples are of known ancestry in a
+supervised run, default NULL (all groups) (character)}
 }
 \value{
 Invisibly returns the input VCFArrow object; called for its side effect of writing \code{out_file}.
@@ -45,11 +46,17 @@ This function converts a VCFArrow object to an external PLINK .bed formatted fil
 Writing occurs in chunks whose size is determined by the read_vcf() function.
 Larger chunks result in faster writing speeds.
 If no groups are defined, the default behavior is to use all groups.
+Only biallelic SNVs are exported (multiallelic sites and indels are left
+out), and every sample must be assigned to a group (see set_vcf_groups()),
+also when keep_groups is NULL.
 Sex and phenotype vectors are optional. If not defined sex = 0, pheno = -9.
 For supervised analyses, the supervised flag needs to be true to generate
 .pop file needed for ADMIXTURE's supervised mode.
-The reference_groups vector specifies ancestral information of individuals.
-When NULL, or for any missing individual, ancestry is inferred.
+The .pop file has one line per sample, in the order of the .fam file: the
+sample's group, its known ancestry, if the group is in reference_groups,
+and '-' (ancestry to be estimated) otherwise.  With reference_groups = NULL
+(the default) every sample's group is written, which is a fully supervised
+run.  reference_groups can only be given with supervised = TRUE.
 }
 \examples{
 f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",

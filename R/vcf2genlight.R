@@ -21,6 +21,9 @@
 #' it with `install.packages("adegenet")` to use this function.
 #' Genotypes are read in chunks whose size is determined by the read_vcf() function.
 #' If no groups are defined, the default behavior is to use all groups.
+#' Only biallelic SNVs are exported (multiallelic sites and indels are left
+#' out), and every sample must be assigned to a group (see set_vcf_groups()),
+#' also when keep_groups is NULL.
 #' Genlight objects can encode polyploid genomes, but VCFArrow stores diploid
 #' genotypes, so the ploidy is always 2.
 #' Genlight objects are in-memory S4 objects and are always returned; if

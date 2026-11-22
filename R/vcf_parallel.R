@@ -18,7 +18,9 @@
 #' serially). Results do not depend on the number of workers.  The workers are started once and reused
 #' until `vcf_set_workers(1)` is called or the session ends.
 #' Each worker holds one chunk in memory at a time, so memory use grows with
-#' the number of workers (see vcf_memory_estimate()).  Useful values are up
+#' the number of workers: about one chunk's memory per worker (reported as
+#' chunk_arrow_bytes by vcf_memory_estimate()).  vcf_suggest_chunk_size()
+#' takes the number of workers into account.  Useful values are up
 #' to the number of physical CPU cores; disk speed limits the gain beyond that.
 #'
 #' @examples

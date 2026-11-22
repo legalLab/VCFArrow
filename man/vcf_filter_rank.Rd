@@ -27,6 +27,8 @@ and registered as Rk in INFO.
 RANK is calculated as sqrt(chi-sqr/n) of allele read counts, and
 used for paralog detection -> very low rank values (<0.4) are
 indicative of paralogs.
+If no variant has an Rk value (e.g. VCFs not from DiscoSNP-RAD), the object
+is returned unfiltered, with a warning.
 }
 \examples{
 f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",

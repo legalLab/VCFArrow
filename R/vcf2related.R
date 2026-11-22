@@ -16,6 +16,9 @@
 #' Writing occurs in chunks whose size is determined by the read_vcf() function.
 #' Larger chunks result in faster writing speeds.
 #' If no groups are defined, the default behavior is to use all groups.
+#' Only biallelic SNVs are exported (multiallelic sites and indels are left
+#' out), and every sample must be assigned to a group (see set_vcf_groups()),
+#' also when keep_groups is NULL.
 #' Each line holds a sample name followed by two columns per locus, the
 #' alleles coded A = 1, C = 2, G = 3, T = 4 (written 01-04); a missing
 #' genotype is '0 0', as related's readgenotypedata() expects.

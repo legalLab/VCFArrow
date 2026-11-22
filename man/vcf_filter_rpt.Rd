@@ -28,6 +28,9 @@ and registered as RPT in INFO.
 REPEAT is calculated as max of overlap, depth score and is 1 if in a
 giant-component bubble, and is used for paralog detection -> high repeat
 values (>0.5) are indicative of paralogs.
+If no variant has an RPT value (e.g. VCFs not from DiscoSNP-RAD, or not
+processed by disco_haplotypes), the object is returned unfiltered, with a
+warning.
 }
 \examples{
 f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",

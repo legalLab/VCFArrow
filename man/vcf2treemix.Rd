@@ -32,6 +32,9 @@ This function converts a VCFArrow object to an external Treemix formatted file.
 Writing occurs in chunks whose size is determined by the read_vcf() function.
 Larger chunks result in faster writing speeds.
 If no groups are defined, the default behavior is to use all groups.
+Only biallelic SNVs are exported (multiallelic sites and indels are left
+out), and every sample must be assigned to a group (see set_vcf_groups()),
+also when keep_groups is NULL.
 The first line holds the group names; each further line one SNP, with the
 REF and ALT allele counts of each group as "ref,alt", separated by spaces.
 TreeMix reads gzip-compressed input (treemix -i file.gz): name out_file

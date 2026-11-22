@@ -9,12 +9,16 @@
 #' @param vcf_arrow -> VCFArrow object
 #' @param keep_groups -> groups to retain, default NULL (character)
 #'
-#' @return list of statistics
+#' @return A list with `pi` and `theta_w`, nucleotide diversity and
+#'   Watterson's theta of all samples, and `theta_g`, a data frame with one
+#'   row per sample (sample, group, n_ind = number of samples in the group,
+#'   theta_w and pi of the group).
 #'
 #' @details
 #' This function calculates Watterson's theta and pi for the entire VCFArrow
 #' object, and for groups of individuals whose grouping is indicated by
 #' the groups slot in the VCFArrow object.
+#' Every sample must be assigned to a group (see set_vcf_groups()).
 #' Only biallelic SNVs are used, and a site is used for a group (valid) when
 #' at least two of its samples are called. With n called alleles and ALT
 #' allele frequency p at a site, the site's nucleotide diversity is

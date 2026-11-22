@@ -47,7 +47,7 @@ vcf_extract_samples <- function(vcf_arrow, samples, keep = TRUE, f_invar = TRUE,
 
   # keep only valid samples
   if (any(samples != "") && any(!(samples %in% all_samples))) {
-    cli::cli_alert_info("Some samples do not exits in VCF")
+    cli::cli_alert_info("Some samples do not exist in VCF")
   }
 
   # if empty → keep all - "keep everything" sentinel

@@ -18,6 +18,9 @@
 #' Writing occurs in chunks whose size is determined by the read_vcf() function.
 #' Larger chunks result in faster writing speeds.
 #' If no groups are defined, the default behavior is to use all groups.
+#' Only biallelic SNVs are exported (multiallelic sites and indels are left
+#' out), and every sample must be assigned to a group (see set_vcf_groups()),
+#' also when keep_groups is NULL.
 #' The first line holds the sample names; each further line is one RAD
 #' locus, defined as in vcf_filter_multiSNV(): the SNVs on one CHROM within
 #' the same block of block_size bases (counted from the CHROM's first SNV).
@@ -26,9 +29,9 @@
 #' sample missing at any SNV of the locus has an empty cell.
 #' The genotypes are taken as phased: the first allele of each SNV (a1)
 #' forms one haplotype and the second (a2) the other.  This holds for
-#' phased VCFs, and for loci reconstructed as phased genotypes such as the
-#' output of vcf_filter_multiSNV(); for unphased heterozygotes at several
-#' SNVs of a locus the haplotypes are arbitrary.
+#' phased VCFs; for unphased genotypes with heterozygotes at several SNVs of
+#' a locus the haplotypes are arbitrary.  vcf_filter_multiSNV() selects the
+#' SNVs of each locus but does not phase them.
 #' Use the same block_size as in vcf_filter_multiSNV().
 #' All genotypes are held in memory while writing (2 bytes per sample and
 #' SNV, see vcf_memory_estimate(format = "individual")).

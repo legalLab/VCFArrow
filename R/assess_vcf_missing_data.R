@@ -7,15 +7,20 @@
 #'
 #' @param vcf_arrow -> VCFArrow object
 #' @param res_path -> path to results (directory for output dataframe and plots)
-#' @param species -> sample name for plot (character)
+#' @param species -> species name, the plot title (character)
 #' @param project -> project name / base output file name (character)
 #' @param details -> flag for adding project name into figure title, default TRUE (Boolean)
 #'
-#' @return dataframe and plot of missing data for each sample in VCF
+#' @return Invisibly returns the input VCFArrow object; called for its side
+#'   effects of writing a table of the missing data of each sample to
+#'   `<project>_missingness.csv` and a bar plot of it to
+#'   `<project>_missingness.pdf`, `.svg` and `.png` in `res_path`.
 #'
 #' @details
-#' This function generates a dataframe of absolute and relative missing data
-#' per sample, and a plot of relative missing data % per sample.
+#' This function generates a table of absolute and relative missing data
+#' per sample (columns sample, group, missing_n, missing_p and total_loci,
+#' missing_p being the proportion of missing genotypes), and a bar plot of
+#' the proportion of missing data per sample.
 #'
 #' @examples
 #' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",

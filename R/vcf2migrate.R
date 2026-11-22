@@ -21,11 +21,14 @@
 #' Writing occurs in chunks whose size is determined by the read_vcf() function.
 #' Larger chunks result in faster writing speeds.
 #' If no groups are defined, the default behavior is to use all groups.
+#' Only biallelic SNVs are exported (multiallelic sites and indels are left
+#' out), and every sample must be assigned to a group (see set_vcf_groups()),
+#' also when keep_groups is NULL.
 #' The data file follows the Migrate-N manual (section 4, "Data file
 #' specification",
 #' <https://peterbeerli.com/downloads/migrate/docs/migratedoc.pdf>).
 #' Method "S" writes sequence data: each sample as two haplotypes
-#' (<name>_1, <name>_2) of the SNPs' nucleotides ('?' if missing), cut into
+#' (`<name>_1`, `<name>_2`) of the SNPs' nucleotides ('?' if missing), cut into
 #' loci of block_size consecutive SNPs, labelled "(sK)" (a sequence locus of
 #' K sites).
 #' Method "N" writes the same sequences cut into loci of the SNPs on one
@@ -53,21 +56,23 @@
 #' @export
 #'
 
-# method = "C"  (allele counts, population-level)
-#   Format:  n_pops n_loci
-#            max_obs pop_name
-#            ref_count alt_count   (one line per variant)
+# method = "C"  (allele counts, population-level; Migrate-N HapMap format,
+#   data type H, see write_migrate_cpp())
+#   First line: H n_pops n_loci title; then per population a line with its
+#   number of allele copies (2 x samples) and name, followed by one line per
+#   SNP: position, REF and ALT nucleotides with their counts, and the total.
+#   SNPs without called alleles in some population are left out.
 #
 # method = "S"  (nucleotide sequences, individual-level, fixed blocks)
 #   Alleles are written as single nucleotide characters (REF or ALT).
 #   Haplotypes are concatenated into a sequence string per line.
-#   Block header uses (s{block_size}) for full blocks and (n{r}) for the
-#   last partial block.  Missing allele: "?".
+#   Loci are blocks of block_size consecutive SNPs (the last may be smaller),
+#   each labelled (sK), K being its number of SNPs.  Missing allele: "?".
 #
 # method = "N"  (nucleotide sequences, individual-level, chromosome intervals)
-#   Same output structure as "S" but block sizes are computed from CHROM/POS:
-#   each block spans block_size bp within a chromosome.  All block labels
-#   use (s{count}) regardless of whether the last interval is partial.
+#   Same output structure as "S" but loci are runs of SNPs on one CHROM within
+#   the same interval of block_size bp, each labelled (nK), K being its number
+#   of SNPs; data type N on the first line.
 
 vcf2migrate <- function(vcf_arrow, out_file, keep_groups = NULL,
                         block_size = 100L, method = c("S", "N", "C")) {

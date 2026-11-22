@@ -37,11 +37,14 @@ This function converts a VCFArrow object to an external MIGRATE-N formatted file
 Writing occurs in chunks whose size is determined by the read_vcf() function.
 Larger chunks result in faster writing speeds.
 If no groups are defined, the default behavior is to use all groups.
+Only biallelic SNVs are exported (multiallelic sites and indels are left
+out), and every sample must be assigned to a group (see set_vcf_groups()),
+also when keep_groups is NULL.
 The data file follows the Migrate-N manual (section 4, "Data file
 specification",
 \url{https://peterbeerli.com/downloads/migrate/docs/migratedoc.pdf}).
 Method "S" writes sequence data: each sample as two haplotypes
-(\if{html}{\out{<name>}}_1, \if{html}{\out{<name>}}_2) of the SNPs' nucleotides ('?' if missing), cut into
+(\verb{<name>_1}, \verb{<name>_2}) of the SNPs' nucleotides ('?' if missing), cut into
 loci of block_size consecutive SNPs, labelled "(sK)" (a sequence locus of
 K sites).
 Method "N" writes the same sequences cut into loci of the SNPs on one

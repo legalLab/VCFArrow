@@ -18,7 +18,7 @@
 #' @return Invisibly returns the input VCFArrow object; called for its side effect of writing `<project>_stats.csv` in `res_path`.
 #'
 #' @details
-#' This function calculates average read depth, heterozygosity
+#' This function calculates average read depth, heterozygosity,
 #' number of heterozygotes, number of reference and alternative homozygotes,
 #' missing data and total number SNPs of each sample in an VCFArrow object.
 #' The average read depth is the mean DP of the sample's called genotypes.

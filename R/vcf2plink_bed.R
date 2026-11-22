@@ -21,6 +21,9 @@
 #' Writing occurs in chunks whose size is determined by the read_vcf() function.
 #' Larger chunks result in faster writing speeds.
 #' If no groups are defined, the default behavior is to use all groups.
+#' Only biallelic SNVs are exported (multiallelic sites and indels are left
+#' out), and every sample must be assigned to a group (see set_vcf_groups()),
+#' also when keep_groups is NULL.
 #' Sex and phenotype vectors are optional. If not defined sex = 0, pheno = -9.
 #' Allele 1 (column 5 of the .bim file) is ALT and allele 2 (column 6) is
 #' REF, as in the files PLINK writes from a VCF (plink --vcf), so PLINK's A1

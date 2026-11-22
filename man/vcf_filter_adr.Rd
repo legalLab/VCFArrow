@@ -15,9 +15,11 @@ vcf_filter_adr(
 \arguments{
 \item{vcf_arrow}{-> VCFArrow object}
 
-\item{threshold}{-> decimal missing threshold, default 0.1 (numeric)}
+\item{threshold}{-> allele depth ratio (ADR) threshold, strictly between 0
+and 0.5, default 0.1 (numeric)}
 
-\item{mode}{-> switch between 'correct' or 'remove' mode (character)}
+\item{mode}{-> switch between 'correct' or 'remove' mode, default 'correct'
+(character)}
 
 \item{f_invar}{-> filter invariant loci flag, default TRUE (Boolean)}
 

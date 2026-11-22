@@ -49,7 +49,7 @@ vcf_extract_groups <- function(vcf_arrow, groups, keep = TRUE, f_invar = TRUE, v
   if (any(groups != "") && any(is.na(all_groups))) {
     cli::cli_abort("Some samples are not assigned to groups - use set_vcf_groups()")
   } else if (any(groups != "") && any(!(groups %in% all_groups))) {
-    cli::cli_abort("Some selected groups do not exits in VCFArrow")
+    cli::cli_abort("Some selected groups do not exist in VCFArrow")
   }
 
   # if empty → keep all - "keep everything" sentinel

@@ -1,19 +1,19 @@
 #' @title vcf_filter_hets
 #'
 #' @description
-#' Remove loci above a heterozigosity threshold from a VCFArrow object
+#' Remove loci above a heterozygosity threshold from a VCFArrow object
 #'
 #' @author Tomas Hrbek April 2026
 #'
 #' @param vcf_arrow -> VCFArrow object
-#' @param threshold -> heterozigosity threshold, default 0.5 (numeric)
+#' @param threshold -> heterozygosity threshold, default 0.5 (numeric)
 #'
 #' @return subsetted VCFArrow object
 #'
 #' @details
-#' This function removes loci above a heterozigosity threshold from a VCFArrow object,
+#' This function removes loci above a heterozygosity threshold from a VCFArrow object,
 #' returning a new VCFArrow object.
-#' High heterozigosities are indicative of potential paralogs.
+#' High heterozygosities are indicative of potential paralogs.
 #'
 #' @examples
 #' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",

@@ -19,7 +19,8 @@ vcf2gt_long(
 
 \item{keep_groups}{-> groups to retain, default NULL (character)}
 
-\item{format}{-> one of three output formats (arrow, parquet, CSV) (character)}
+\item{format}{-> output format, "feather" (Arrow IPC), "parquet" or "csv",
+default "feather" (character)}
 
 \item{col_select}{-> optional selection of columns to save, default ALL}
 }
@@ -34,6 +35,9 @@ This function converts a VCFArrow object to an external tidy long-format genotyp
 Writing occurs in chunks whose size is determined by the read_vcf() function.
 Larger chunks result in faster writing speeds.
 If no groups are defined, the default behavior is to use all groups.
+Only biallelic SNVs are exported (multiallelic sites and indels are left
+out), and every sample must be assigned to a group (see set_vcf_groups()),
+also when keep_groups is NULL.
 The tidy data can be saved in either Arrow, Parquet or CSV formats.
 File extension is added automatically if missing.
 Optionally, specific columns can be saved, by default all columns are saved.

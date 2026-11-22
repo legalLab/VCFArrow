@@ -16,6 +16,9 @@
 #' Writing occurs in chunks whose size is determined by the read_vcf() function.
 #' Larger chunks result in faster writing speeds.
 #' If no groups are defined, the default behavior is to use all groups.
+#' Only biallelic SNVs are exported (multiallelic sites and indels are left
+#' out), and every sample must be assigned to a group (see set_vcf_groups()),
+#' also when keep_groups is NULL.
 #' The file is in BA3's native format: one line per individual and locus,
 #' 'indivID popID locID allele1 allele2', separated by spaces, with the
 #' alleles labelled 1 (REF) and 2 (ALT) and a missing genotype as '0 0'.

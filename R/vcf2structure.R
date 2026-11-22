@@ -18,6 +18,9 @@
 #' Writing occurs in chunks whose size is determined by the read_vcf() function.
 #' Larger chunks result in faster writing speeds.
 #' If no groups are defined, the default behavior is to use all groups.
+#' Only biallelic SNVs are exported (multiallelic sites and indels are left
+#' out), and every sample must be assigned to a group (see set_vcf_groups()),
+#' also when keep_groups is NULL.
 #' The flag parameter controls whether Structure (flag = 'S') or
 #' FastStructure (flag = 'F') formatted output is written out.
 #' Each sample is written on two lines (one per allele copy): its name, its

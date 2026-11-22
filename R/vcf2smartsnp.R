@@ -17,6 +17,9 @@
 #' Writing occurs in chunks whose size is determined by the read_vcf() function.
 #' Larger chunks result in faster writing speeds.
 #' If no groups are defined, the default behavior is to use all groups.
+#' Only biallelic SNVs are exported (multiallelic sites and indels are left
+#' out), and every sample must be assigned to a group (see set_vcf_groups()),
+#' also when keep_groups is NULL.
 #' The genotype file has one line per SNP and one column per sample,
 #' separated by spaces: the number of ALT alleles (0, 1, 2), 9 if missing.
 #' It has no header line, as smartsnp requires ("without row names or

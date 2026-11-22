@@ -24,6 +24,9 @@ This function converts a VCFArrow object to an external Arlequin formatted file.
 Writing occurs in chunks whose size is determined by the read_vcf() function.
 Larger chunks result in faster writing speeds.
 If no groups are defined, the default behavior is to use all groups.
+Only biallelic SNVs are exported (multiallelic sites and indels are left
+out), and every sample must be assigned to a group (see set_vcf_groups()),
+also when keep_groups is NULL.
 }
 \examples{
 f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",

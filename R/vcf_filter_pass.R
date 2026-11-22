@@ -37,7 +37,7 @@ vcf_filter_pass <- function(vcf_arrow) {
 
   # report if missing values in FILTER
   if (any(vcf_arrow@variants$FILTER == ".")) {
-    cli::cli_alert_warning("Some FILTER values are NA. Defaulting to PASS")
+    cli::cli_alert_warning("Some FILTER values are '.' (no filters applied). Treating them as PASS")
   }
 
   # select passing variants

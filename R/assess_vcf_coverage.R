@@ -7,12 +7,14 @@
 #'
 #' @param vcf_arrow -> VCFArrow object
 #' @param res_path -> path to results (directory for output dataframe and plots)
-#' @param species -> sample name for plot (character)
+#' @param species -> species name, the plot title (character)
 #' @param project -> project name / base output file name (character)
 #' @param details -> flag for adding project name into figure title, default TRUE (Boolean)
 #' @param max_points_per_sample -> maximum number of SNVs from which to plot coverage, default 5000 (integer)
 #'
-#' @return violin plot of read depth for each sample in VCF
+#' @return Invisibly returns the input VCFArrow object; called for its side
+#'   effect of writing a violin plot of the read depth of each sample to
+#'   `<project>_coverage.pdf`, `.svg` and `.png` in `res_path`.
 #'
 #' @details
 #' This function generates a violin plot of read depths (DP) per sample,

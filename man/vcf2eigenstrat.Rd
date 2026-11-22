@@ -37,6 +37,9 @@ This function converts a VCFArrow object to an external EIGENSTRAT formatted fil
 Writing occurs in chunks whose size is determined by the read_vcf() function.
 Larger chunks result in faster writing speeds.
 If no groups are defined, the default behavior is to use all groups.
+Only biallelic SNVs are exported (multiallelic sites and indels are left
+out), and every sample must be assigned to a group (see set_vcf_groups()),
+also when keep_groups is NULL.
 In the .geno file, each digit is the number of copies of the reference
 allele, as EIGENSTRAT defines it: the REF allele, given in column 5 of
 the .snp file (2 = REF homozygote, 1 = heterozygote, 0 = ALT

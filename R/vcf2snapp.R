@@ -16,6 +16,9 @@
 #' Writing occurs in chunks whose size is determined by the read_vcf() function.
 #' Larger chunks result in faster writing speeds.
 #' If no groups are defined, the default behavior is to use all groups.
+#' Only biallelic SNVs are exported (multiallelic sites and indels are left
+#' out), and every sample must be assigned to a group (see set_vcf_groups()),
+#' also when keep_groups is NULL.
 #' Genotypes are coded as SNAPP expects for diploid data: 0 (REF
 #' homozygote), 1 (heterozygote), 2 (ALT homozygote), ? (missing), in a
 #' NEXUS file declared as integer data with symbols 0, 1 and 2
