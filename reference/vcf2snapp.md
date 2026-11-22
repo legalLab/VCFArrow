@@ -32,11 +32,14 @@ of writing `out_file`.
 This function converts a VCFArrow object to an external SNAPP/SNAPPER
 formatted file. Writing occurs in chunks whose size is determined by the
 read_vcf() function. Larger chunks result in faster writing speeds. If
-no groups are defined, the default behavior is to use all groups.
-Genotypes are coded as SNAPP expects for diploid data: 0 (REF
-homozygote), 1 (heterozygote), 2 (ALT homozygote), ? (missing), in a
-NEXUS file declared as integer data with symbols 0, 1 and 2 (FORMAT
-DATATYPE=INTEGERDATA SYMBOLS="012"), which BEAUti imports with 3 states.
+no groups are defined, the default behavior is to use all groups. Only
+biallelic SNVs are exported (multiallelic sites and indels are left
+out), and every sample must be assigned to a group (see
+set_vcf_groups()), also when keep_groups is NULL. Genotypes are coded as
+SNAPP expects for diploid data: 0 (REF homozygote), 1 (heterozygote), 2
+(ALT homozygote), ? (missing), in a NEXUS file declared as integer data
+with symbols 0, 1 and 2 (FORMAT DATATYPE=INTEGERDATA SYMBOLS="012"),
+which BEAUti imports with 3 states.
 
 ## Author
 
@@ -53,5 +56,5 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf2snapp(vcf, out_file = tempfile(fileext = ".nex"))
 #> ℹ Accumulating SNAPP: 9313 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing SNAPP file...
-#> ✔ SNAPP file written to /tmp/RtmpKz15ZV/file1d3a367942d5.nex
+#> ✔ SNAPP file written to /tmp/RtmppaKiJH/file1c7d22579f59.nex
 ```

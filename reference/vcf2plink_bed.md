@@ -54,13 +54,16 @@ of writing `out_file`.
 This function converts a VCFArrow object to an external PLINK .bed
 formatted file. Writing occurs in chunks whose size is determined by the
 read_vcf() function. Larger chunks result in faster writing speeds. If
-no groups are defined, the default behavior is to use all groups. Sex
-and phenotype vectors are optional. If not defined sex = 0, pheno = -9.
-Allele 1 (column 5 of the .bim file) is ALT and allele 2 (column 6) is
-REF, as in the files PLINK writes from a VCF (plink –vcf), so PLINK's A1
-counts and frequencies refer to ALT. PLINK 1.9 makes the minor allele A1
-when it loads the files unless run with –keep-allele-order; PLINK 2
-keeps this order.
+no groups are defined, the default behavior is to use all groups. Only
+biallelic SNVs are exported (multiallelic sites and indels are left
+out), and every sample must be assigned to a group (see
+set_vcf_groups()), also when keep_groups is NULL. Sex and phenotype
+vectors are optional. If not defined sex = 0, pheno = -9. Allele 1
+(column 5 of the .bim file) is ALT and allele 2 (column 6) is REF, as in
+the files PLINK writes from a VCF (plink –vcf), so PLINK's A1 counts and
+frequencies refer to ALT. PLINK 1.9 makes the minor allele A1 when it
+loads the files unless run with –keep-allele-order; PLINK 2 keeps this
+order.
 
 ## Author
 
@@ -77,6 +80,6 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf2plink_bed(vcf, out_file = file.path(tempdir(), "plink_out"))
 #> ℹ Building PLINK: 9313 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing PLINK files...
-#> ℹ Chromosome names were recoded as integers; mapping written to /tmp/RtmpKz15ZV/plink_out.chrommap
-#> ✔ PLINK binary fileset written to /tmp/RtmpKz15ZV/plink_out.bed, /tmp/RtmpKz15ZV/plink_out.bim, /tmp/RtmpKz15ZV/plink_out.fam
+#> ℹ Chromosome names were recoded as integers; mapping written to /tmp/RtmppaKiJH/plink_out.chrommap
+#> ✔ PLINK binary fileset written to /tmp/RtmppaKiJH/plink_out.bed, /tmp/RtmppaKiJH/plink_out.bim, /tmp/RtmppaKiJH/plink_out.fam
 ```

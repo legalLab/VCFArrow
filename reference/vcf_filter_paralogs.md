@@ -42,7 +42,10 @@ subsetted VCFArrow object
 
 This function removes loci below the RANK threshold and above the REPEAT
 threshold from a VCFArrow object, returning a new VCFArrow object. It
-applies vcf_filter_rank() and then vcf_filter_rpt(). RANK and REPEAT
+applies vcf_filter_rank() and then vcf_filter_rpt(). If only one of the
+Rk and RPT fields is present, only that filter is applied (the other
+returns its input unfiltered, with a warning); if neither is present,
+the object is returned unfiltered, with a warning. RANK and REPEAT
 metrics focus on different paralog signals, and used jointly maximize
 true positive and minimize false positive detections. Simulations
 indicate that removing loci with Rk \< 0.2 or RPT \> 0.5 gives the best
@@ -86,7 +89,7 @@ vcf_filter_paralogs(vcf, threshold_rk = 0.2, threshold_rpt = 0.5)
 #>   Phased:  45612 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpKz15ZV/arrow_vcf_1d3a1e4a0568 
+#>   Path: /tmp/RtmppaKiJH/arrow_vcf_1c7d255ea254 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):

@@ -49,27 +49,30 @@ of writing `out_file`.
 This function converts a VCFArrow object to an external MIGRATE-N
 formatted file. Writing occurs in chunks whose size is determined by the
 read_vcf() function. Larger chunks result in faster writing speeds. If
-no groups are defined, the default behavior is to use all groups. The
-data file follows the Migrate-N manual (section 4, "Data file
-specification",
+no groups are defined, the default behavior is to use all groups. Only
+biallelic SNVs are exported (multiallelic sites and indels are left
+out), and every sample must be assigned to a group (see
+set_vcf_groups()), also when keep_groups is NULL. The data file follows
+the Migrate-N manual (section 4, "Data file specification",
 <https://peterbeerli.com/downloads/migrate/docs/migratedoc.pdf>). Method
-"S" writes sequence data: each sample as two haplotypes (\_1, \_2) of
-the SNPs' nucleotides ('?' if missing), cut into loci of block_size
-consecutive SNPs, labelled "(sK)" (a sequence locus of K sites). Method
-"N" writes the same sequences cut into loci of the SNPs on one CHROM
-within the same interval of block_size bp, labelled "(nK)" (K linked
-SNPs), with the data type N (SNPs) on the first line. Method "C" writes
-the allele counts of each population in Migrate-N's HapMap format (data
-type H): for each SNP its position, REF and ALT nucleotides with their
-counts, and the total; the manual describes this format as preliminary.
-SNPs without called alleles in some population are left out (with a
-warning), as Migrate-N cannot compute their allele frequencies there.
-The first line gives the number of populations and of loci. Individual
-names are written in a fixed field of 10 characters, Migrate-N's
-default; if longer names are needed, a warning gives the nmlength to set
-in the parmfile. Population names must not start with a number. Whether
-loci of SNPs should be treated as linked depends on whether the SNPs
-were mapped (so that linkage is known) or called de novo.
+"S" writes sequence data: each sample as two haplotypes (`<name>_1`,
+`<name>_2`) of the SNPs' nucleotides ('?' if missing), cut into loci of
+block_size consecutive SNPs, labelled "(sK)" (a sequence locus of K
+sites). Method "N" writes the same sequences cut into loci of the SNPs
+on one CHROM within the same interval of block_size bp, labelled "(nK)"
+(K linked SNPs), with the data type N (SNPs) on the first line. Method
+"C" writes the allele counts of each population in Migrate-N's HapMap
+format (data type H): for each SNP its position, REF and ALT nucleotides
+with their counts, and the total; the manual describes this format as
+preliminary. SNPs without called alleles in some population are left out
+(with a warning), as Migrate-N cannot compute their allele frequencies
+there. The first line gives the number of populations and of loci.
+Individual names are written in a fixed field of 10 characters,
+Migrate-N's default; if longer names are needed, a warning gives the
+nmlength to set in the parmfile. Population names must not start with a
+number. Whether loci of SNPs should be treated as linked depends on
+whether the SNPs were mapped (so that linkage is known) or called de
+novo.
 
 ## Author
 
@@ -86,5 +89,5 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf2migrate(vcf, out_file = tempfile(fileext = ".txt"))
 #> ℹ Accumulating Migrate-N (S): 9313 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing Migrate-N (S) file: 94 loci...
-#> ✔ Migrate-N file written to /tmp/RtmpKz15ZV/file1d3a1716cc9c.txt
+#> ✔ Migrate-N file written to /tmp/RtmppaKiJH/file1c7d74bef0d1.txt
 ```

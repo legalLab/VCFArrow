@@ -9,7 +9,7 @@ and for sample groups from VCFArrow format data."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">VCFArrow</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,13 +60,17 @@ and for sample groups from VCFArrow format data.</p>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>list of statistics</p>
+    <p>A list with <code>pi</code> and <code>theta_w</code>, nucleotide diversity and
+Watterson's theta of all samples, and <code>theta_g</code>, a data frame with one
+row per sample (sample, group, n_ind = number of samples in the group,
+theta_w and pi of the group).</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>This function calculates Watterson's theta and pi for the entire VCFArrow
 object, and for groups of individuals whose grouping is indicated by
 the groups slot in the VCFArrow object.
+Every sample must be assigned to a group (see set_vcf_groups()).
 Only biallelic SNVs are used, and a site is used for a group (valid) when
 at least two of its samples are called. With n called alleles and ALT
 allele frequency p at a site, the site's nucleotide diversity is

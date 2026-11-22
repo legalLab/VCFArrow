@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">VCFArrow</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,8 +73,10 @@
 
 
 <dt id="arg-lowmem">lowmem<a class="anchor" aria-label="anchor" href="#arg-lowmem"></a></dt>
-<dd><p>If TRUE, estimate uses raw-byte matrices (vcf2*() lowmem
-variants); otherwise integer matrices.</p></dd>
+<dd><p>For format = "individual": if TRUE, count the genotype
+matrices at 1 byte per cell, the raw storage used while the chunks
+are read; if FALSE (default), at 4 bytes per cell, the integer matrices
+the exporters create to write the file, which gives their peak memory.</p></dd>
 
 </dl></div>
     <div class="section level2">

@@ -33,7 +33,8 @@ returning a new VCFArrow object. RANK is calculated by kissreads2 in
 DiscoSNP-RAD (Gauthier et. al. 2020) and registered as Rk in INFO. RANK
 is calculated as sqrt(chi-sqr/n) of allele read counts, and used for
 paralog detection -\> very low rank values (\<0.4) are indicative of
-paralogs.
+paralogs. If no variant has an Rk value (e.g. VCFs not from
+DiscoSNP-RAD), the object is returned unfiltered, with a warning.
 
 ## Author
 
@@ -72,7 +73,7 @@ vcf_filter_rank(vcf, threshold = 0.5)
 #>   Phased:  39528 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpKz15ZV/arrow_vcf_1d3a3d03cb06 
+#>   Path: /tmp/RtmppaKiJH/arrow_vcf_1c7d51e10ff 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):

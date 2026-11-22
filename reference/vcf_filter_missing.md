@@ -1,6 +1,7 @@
 # vcf_filter_missing
 
-Remove samples with \> % missing data from a VCFArrow object
+Remove samples with more than a threshold of missing data from a
+VCFArrow object
 
 ## Usage
 
@@ -22,7 +23,9 @@ vcf_filter_missing(
 
 - threshold:
 
-  -\> decimal missing threshold, default 0.5 (numeric)
+  -\> decimal missing threshold; samples with a proportion of missing
+  genotypes above it are removed, those at it are kept, default 0.5
+  (numeric)
 
 - f_invar:
 
@@ -45,8 +48,9 @@ subsetted VCFArrow object
 
 ## Details
 
-This function removes samples from a VCFArrow object if they have above
-threshold missing loci, returning a new VCFArrow object. By default will
+This function removes samples from a VCFArrow object if they have a
+proportion of missing genotypes above the threshold (samples at the
+threshold are kept), returning a new VCFArrow object. By default will
 remove any loci that may have become invariant as the result of the
 removal of samples. By default will report removed samples, final %
 missing data, and number of retained samples after sample filtering. The
@@ -95,7 +99,7 @@ vcf |>
 #>   Phased:  9756 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpKz15ZV/arrow_vcf_1d3a1b6b1 
+#>   Path: /tmp/RtmppaKiJH/arrow_vcf_1c7d17deec93 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):

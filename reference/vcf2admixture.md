@@ -45,7 +45,8 @@ vcf2admixture(
 
   -\> how CHROM is written: "auto" (keep numeric CHROM, otherwise 0),
   "index" (1..n by first appearance), "zero" (all 0) or "keep"
-  (verbatim), default "zero" (character)
+  (verbatim, only if every CHROM is a number), default "zero"
+  (character)
 
 - supervised:
 
@@ -54,7 +55,9 @@ vcf2admixture(
 
 - reference_groups:
 
-  -\> vector of ancestry group labels, default NULL (character)
+  -\> groups whose samples are of known ancestry in a supervised run;
+  their names must begin with a letter or digit, default NULL (all
+  groups, a fully supervised run, with a warning) (character)
 
 ## Value
 
@@ -66,12 +69,31 @@ of writing `out_file`.
 This function converts a VCFArrow object to an external PLINK .bed
 formatted file. Writing occurs in chunks whose size is determined by the
 read_vcf() function. Larger chunks result in faster writing speeds. If
-no groups are defined, the default behavior is to use all groups. Sex
-and phenotype vectors are optional. If not defined sex = 0, pheno = -9.
-For supervised analyses, the supervised flag needs to be true to
-generate .pop file needed for ADMIXTURE's supervised mode. The
-reference_groups vector specifies ancestral information of individuals.
-When NULL, or for any missing individual, ancestry is inferred.
+no groups are defined, the default behavior is to use all groups. Only
+biallelic SNVs are exported (multiallelic sites and indels are left
+out), and every sample must be assigned to a group (see
+set_vcf_groups()), also when keep_groups is NULL. Sex and phenotype
+vectors are optional. If not defined sex = 0, pheno = -9. For supervised
+analyses, the supervised flag needs to be true to generate .pop file
+needed for ADMIXTURE's supervised mode. The .pop file has one line per
+sample, in the order of the .fam file: the sample's group, its known
+ancestry, if the group is in reference_groups, and '-' (ancestry to be
+estimated) otherwise. With reference_groups = NULL (the default) every
+sample's group is written, which is a fully supervised run: the ancestry
+of every sample is fixed and only the allele frequencies are estimated,
+so a warning is given. reference_groups can only be given with
+supervised = TRUE, must be groups of the exported samples, and must
+begin with a letter or digit, as ADMIXTURE reads a .pop line beginning
+with any other character as unknown ancestry. In a supervised run, K
+(given to ADMIXTURE) must equal the number of reference groups.
+ADMIXTURE (from version 1.3) requires numeric chromosome names, so
+chrom_code = "keep" is only allowed if every CHROM is a number; with
+"zero" (the default), "auto" or "index" the names are always numeric.
+Haploid analyses (ADMIXTURE's –haploid option) of sex chromosomes need
+their numeric codes (e.g. 23 and 24 in humans), which "auto" and "keep"
+retain. ADMIXTURE does not model linkage disequilibrium, and its manual
+recommends thinning linked markers, e.g. keeping one SNV per locus with
+vcf_filter_oneSNV() before export.
 
 ## Author
 
@@ -88,15 +110,15 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf2admixture(vcf, out_file = file.path(tempdir(), "admixture_in"))
 #> ℹ Building PLINK: 9313 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing PLINK files...
-#> ℹ Chromosome names were recoded as integers; mapping written to /tmp/RtmpKz15ZV/admixture_in.chrommap
-#> ✔ PLINK binary fileset written to /tmp/RtmpKz15ZV/admixture_in.bed, /tmp/RtmpKz15ZV/admixture_in.bim, /tmp/RtmpKz15ZV/admixture_in.fam
+#> ℹ Chromosome names were recoded as integers; mapping written to /tmp/RtmppaKiJH/admixture_in.chrommap
+#> ✔ PLINK binary fileset written to /tmp/RtmppaKiJH/admixture_in.bed, /tmp/RtmppaKiJH/admixture_in.bim, /tmp/RtmppaKiJH/admixture_in.fam
 vcf2admixture(vcf, out_file = file.path(tempdir(), "admixture_sup"),
               supervised = TRUE,
               reference_groups = c("GS", "BS", "WA"))
 #> ℹ Building PLINK: 9313 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing PLINK files...
-#> ℹ Chromosome names were recoded as integers; mapping written to /tmp/RtmpKz15ZV/admixture_sup.chrommap
-#> ✔ PLINK binary fileset written to /tmp/RtmpKz15ZV/admixture_sup.bed, /tmp/RtmpKz15ZV/admixture_sup.bim, /tmp/RtmpKz15ZV/admixture_sup.fam
-#> ✔ ADMIXTURE .pop file written to /tmp/RtmpKz15ZV/admixture_sup.pop
-#> ℹ Supervised mode: 15 reference samples, 3 samples with ancestry to be estimated.
+#> ℹ Chromosome names were recoded as integers; mapping written to /tmp/RtmppaKiJH/admixture_sup.chrommap
+#> ✔ PLINK binary fileset written to /tmp/RtmppaKiJH/admixture_sup.bed, /tmp/RtmppaKiJH/admixture_sup.bim, /tmp/RtmppaKiJH/admixture_sup.fam
+#> ✔ ADMIXTURE .pop file written to /tmp/RtmppaKiJH/admixture_sup.pop
+#> ℹ Supervised mode: 15 reference samples in 3 groups (use K = 3), 3 samples with ancestry to be estimated.
 ```

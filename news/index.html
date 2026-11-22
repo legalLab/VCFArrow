@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">VCFArrow</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,6 +33,17 @@
       <small>Source: <a href="https://github.com/legalLab/VCFArrow/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.11.1" id="vcfarrow-0111">VCFArrow 0.11.1<a class="anchor" aria-label="anchor" href="#vcfarrow-0111"></a></h2>
+<ul><li>
+<code><a href="../reference/vcf_filter_missing.html">vcf_filter_missing()</a></code> and <code><a href="../reference/vcf_filter_hets.html">vcf_filter_hets()</a></code> now keep samples and loci exactly at the threshold (missingness or heterozygosity &lt;= <code>threshold</code>), as <code><a href="../reference/vcf_filter_missingness.html">vcf_filter_missingness()</a></code> already did; before, they were removed.</li>
+<li>With <code>strict_poly = TRUE</code>, <code><a href="../reference/vcf_filter_invariant.html">vcf_filter_invariant()</a></code> and <code><a href="../reference/vcf_filter_coverage.html">vcf_filter_coverage()</a></code> (and the functions that call <code><a href="../reference/vcf_filter_invariant.html">vcf_filter_invariant()</a></code>) now tell apart all genotypes at multiallelic sites. Before, genotypes were compared by the sum of their allele codes, so e.g. 0/2 and 1/1 counted as the same genotype and a site with only these was removed as invariant. Biallelic sites give the same results as before.</li>
+<li>
+<code><a href="../reference/vcf_filter_multiSNV.html">vcf_filter_multiSNV()</a></code> now removes blocks with more than <code>maxSNV</code> SNVs by default, as its help page described; before, it truncated them to their first <code>maxSNV</code> SNVs. The new argument <code>over_max = "truncate"</code> keeps that behaviour, e.g. for whole genome data, where a block is an arbitrary window rather than a RAD locus, and <code>maxSNV = Inf</code> keeps all SNVs of each block.</li>
+<li>
+<code><a href="../reference/vcf2admixture.html">vcf2admixture()</a></code> checks its input against the ADMIXTURE manual before writing: <code>chrom_code = "keep"</code> is refused when a CHROM is not a number (ADMIXTURE &gt;= 1.3 requires numeric chromosome names); <code>reference_groups</code> must be groups of the exported samples and begin with a letter or digit (ADMIXTURE reads other .pop lines as unknown ancestry); and <code>supervised = TRUE</code> without <code>reference_groups</code> (a fully supervised run) gives a warning. The supervised message gives the K to use, and the help page notes the need for numeric chromosome names and LD thinning.</li>
+<li>Smaller changes that do not affect results: <code><a href="../reference/write_vcf.html">write_vcf()</a></code> stops with a clear error when its input is not a VCFArrow object; <code><a href="../reference/vcf_filter_pass.html">vcf_filter_pass()</a></code> says that FILTER values <code>.</code> (no filters applied) are treated as PASS (before, it called them NA), and <code><a href="../reference/vcf_filter_biallelic.html">vcf_filter_biallelic()</a></code> reports “biallelic variants” (before, “biallelic SNVs”, although indels are kept); the <code><a href="../reference/vcf_bind.html">vcf_bind()</a></code> help page explains that <code>absent_as</code> codes only the genotypes that are neither in an object nor recovered from its genotype files.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.11.0" id="vcfarrow-0110">VCFArrow 0.11.0<a class="anchor" aria-label="anchor" href="#vcfarrow-0110"></a></h2>
 <ul><li>Compatible with arrow 26.0.0, which deprecated <code>read_feather()</code>, <code>write_feather()</code> and <code>format = "feather"</code> in <code>open_dataset()</code>: the genotype files are now read with <code>read_ipc_file()</code>, written with <code>write_ipc_file()</code> and opened with <code>format = "ipc"</code>, so <code><a href="../reference/read_vcf.html">read_vcf()</a></code>, the filters and the exporters no longer give deprecation warnings. The files are unchanged (Arrow IPC, the format of feather version 2), and so are the results. arrow 10.0.0 or later is now required (these functions were added in arrow 9.0.0 and 10.0.0). <code>vcf2gt_long(format = "feather")</code> is unchanged.</li>

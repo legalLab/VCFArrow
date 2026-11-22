@@ -20,7 +20,7 @@ assess_vcf_missing_data(vcf_arrow, res_path, species, project, details = TRUE)
 
 - species:
 
-  -\> sample name for plot (character)
+  -\> species name, the plot title (character)
 
 - project:
 
@@ -33,12 +33,17 @@ assess_vcf_missing_data(vcf_arrow, res_path, species, project, details = TRUE)
 
 ## Value
 
-dataframe and plot of missing data for each sample in VCF
+Invisibly returns the input VCFArrow object; called for its side effects
+of writing a table of the missing data of each sample to
+`<project>_missingness.csv` and a bar plot of it to
+`<project>_missingness.pdf`, `.svg` and `.png` in `res_path`.
 
 ## Details
 
-This function generates a dataframe of absolute and relative missing
-data per sample, and a plot of relative missing data % per sample.
+This function generates a table of absolute and relative missing data
+per sample (columns sample, group, missing_n, missing_p and total_loci,
+missing_p being the proportion of missing genotypes), and a bar plot of
+the proportion of missing data per sample.
 
 ## Author
 

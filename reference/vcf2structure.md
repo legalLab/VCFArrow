@@ -37,14 +37,17 @@ This function converts a VCFArrow object to an external Structure or
 FastStructure formatted file. Writing occurs in chunks whose size is
 determined by the read_vcf() function. Larger chunks result in faster
 writing speeds. If no groups are defined, the default behavior is to use
-all groups. The flag parameter controls whether Structure (flag = 'S')
-or FastStructure (flag = 'F') formatted output is written out. Each
-sample is written on two lines (one per allele copy): its name, its
-group number and, for FastStructure, four columns of 0 (FastStructure
-ignores the first six columns), then one allele per SNP: 0 (REF), 1
-(ALT) or -9 (missing). FastStructure adds the extension '.str' to the
-name given with –input, so give out_file the extension .str (e.g.
-"data.str", read with –input=data –format=str).
+all groups. Only biallelic SNVs are exported (multiallelic sites and
+indels are left out), and every sample must be assigned to a group (see
+set_vcf_groups()), also when keep_groups is NULL. The flag parameter
+controls whether Structure (flag = 'S') or FastStructure (flag = 'F')
+formatted output is written out. Each sample is written on two lines
+(one per allele copy): its name, its group number and, for
+FastStructure, four columns of 0 (FastStructure ignores the first six
+columns), then one allele per SNP: 0 (REF), 1 (ALT) or -9 (missing).
+FastStructure adds the extension '.str' to the name given with –input,
+so give out_file the extension .str (e.g. "data.str", read with
+–input=data –format=str).
 
 ## Author
 
@@ -61,10 +64,10 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf2structure(vcf, out_file = tempfile(fileext = ".str"))
 #> ℹ Accumulating Structure: 9313 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing Structure file...
-#> ✔ Structure file written to /tmp/RtmpKz15ZV/file1d3a626c8889.str
+#> ✔ Structure file written to /tmp/RtmppaKiJH/file1c7d391b4ddf.str
 vcf2structure(vcf, out_file = tempfile(fileext = ".str"),
               method = "F")
 #> ℹ Accumulating Structure: 9313 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing Structure file...
-#> ✔ Structure file written to /tmp/RtmpKz15ZV/file1d3a7fdbf61.str
+#> ✔ Structure file written to /tmp/RtmppaKiJH/file1c7d69837f15.str
 ```

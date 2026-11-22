@@ -34,7 +34,10 @@ the same, e.g. both REF and ALT alleles occur; a variant with a single
 called heterozygote is kept. With strict_poly = TRUE, polymorphic means
 that not all called genotypes are the same, so a variant where every
 called sample is heterozygous is removed although both alleles occur
-(such sites are often paralogs).
+(such sites are often paralogs). Genotypes are compared without regard
+to allele order or phase (0/1, 1/0, 0\|1 and 1\|0 are the same
+genotype), and at multiallelic sites every genotype is distinct, e.g.
+0/2 differs from 1/1 and 0/3 from 1/2.
 
 ## Author
 
@@ -73,7 +76,7 @@ vcf_filter_invariant(vcf)
 #>   Phased:  45612 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpKz15ZV/arrow_vcf_1d3a29c533b1 
+#>   Path: /tmp/RtmppaKiJH/arrow_vcf_1c7d2cc6a712 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):
@@ -135,7 +138,7 @@ vcf_filter_invariant(vcf, strict_poly = TRUE)
 #>   Phased:  45612 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpKz15ZV/arrow_vcf_1d3a29c533b1 
+#>   Path: /tmp/RtmppaKiJH/arrow_vcf_1c7d2cc6a712 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):

@@ -9,7 +9,7 @@ from a VCFArrow object"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">VCFArrow</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,11 +61,13 @@ from a VCFArrow object</p>
 
 
 <dt id="arg-threshold">threshold<a class="anchor" aria-label="anchor" href="#arg-threshold"></a></dt>
-<dd><p>-&gt; decimal missing threshold, default 0.1 (numeric)</p></dd>
+<dd><p>-&gt; allele depth ratio (ADR) threshold, strictly between 0
+and 0.5, default 0.1 (numeric)</p></dd>
 
 
 <dt id="arg-mode">mode<a class="anchor" aria-label="anchor" href="#arg-mode"></a></dt>
-<dd><p>-&gt; switch between 'correct' or 'remove' mode (character)</p></dd>
+<dd><p>-&gt; switch between 'correct' or 'remove' mode, default 'correct'
+(character)</p></dd>
 
 
 <dt id="arg-f-invar">f_invar<a class="anchor" aria-label="anchor" href="#arg-f-invar"></a></dt>
@@ -137,7 +139,7 @@ result of the change/removal of genotypes.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Phased:  45612 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Storage:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Path: /tmp/RtmpKz15ZV/arrow_vcf_adr_1d3a6150b90c </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Path: /tmp/RtmppaKiJH/arrow_vcf_adr_1c7d60c7abea </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Genotype chunk files: 1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Variants (first 5 rows):</span>

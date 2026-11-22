@@ -37,7 +37,7 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 #> ✔ VCF successfully read into a VCFArrow object
 vcf_filter_biallelic(vcf)
 #> ℹ Applying biallelic filter
-#> ℹ Retained 10000 / 10000 variants (biallelic SNVs)
+#> ℹ Retained 10000 / 10000 variants (biallelic variants)
 #> 
 #> An object of class "VCFArrow"
 #> 
@@ -60,7 +60,7 @@ vcf_filter_biallelic(vcf)
 #>   Phased:  45612 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpKz15ZV/arrow_vcf_1d3a655aadb6 
+#>   Path: /tmp/RtmppaKiJH/arrow_vcf_1c7d7cc54191 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):

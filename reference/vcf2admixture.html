@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">VCFArrow</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,7 +61,8 @@
 
 
 <dt id="arg-out-file">out_file<a class="anchor" aria-label="anchor" href="#arg-out-file"></a></dt>
-<dd><p>-&gt; output file prefix; extensions are added automatically, no default (character)</p></dd>
+<dd><p>-&gt; output file prefix; extensions are added automatically,
+no default (character)</p></dd>
 
 
 <dt id="arg-keep-groups">keep_groups<a class="anchor" aria-label="anchor" href="#arg-keep-groups"></a></dt>
@@ -79,20 +80,25 @@
 <dt id="arg-chrom-code">chrom_code<a class="anchor" aria-label="anchor" href="#arg-chrom-code"></a></dt>
 <dd><p>-&gt; how CHROM is written: "auto" (keep numeric CHROM,
 otherwise 0), "index" (1..n by first appearance), "zero" (all 0) or
-"keep" (verbatim), default "zero" (character)</p></dd>
+"keep" (verbatim, only if every CHROM is a number), default "zero"
+(character)</p></dd>
 
 
 <dt id="arg-supervised">supervised<a class="anchor" aria-label="anchor" href="#arg-supervised"></a></dt>
-<dd><p>-&gt; flag to generate .pop for use in ADMIXTURE's supervised mode, default FALSE (Boolean)</p></dd>
+<dd><p>-&gt; flag to generate .pop for use in ADMIXTURE's
+supervised mode, default FALSE (Boolean)</p></dd>
 
 
 <dt id="arg-reference-groups">reference_groups<a class="anchor" aria-label="anchor" href="#arg-reference-groups"></a></dt>
-<dd><p>-&gt; vector of ancestry group labels, default NULL (character)</p></dd>
+<dd><p>-&gt; groups whose samples are of known ancestry in a
+supervised run; their names must begin with a letter or digit, default
+NULL (all groups, a fully supervised run, with a warning) (character)</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>Invisibly returns the input VCFArrow object; called for its side effect of writing <code>out_file</code>.</p>
+    <p>Invisibly returns the input VCFArrow object; called for
+its side effect of writing <code>out_file</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -100,11 +106,31 @@ otherwise 0), "index" (1..n by first appearance), "zero" (all 0) or
 Writing occurs in chunks whose size is determined by the read_vcf() function.
 Larger chunks result in faster writing speeds.
 If no groups are defined, the default behavior is to use all groups.
+Only biallelic SNVs are exported (multiallelic sites and indels are left
+out), and every sample must be assigned to a group (see set_vcf_groups()),
+also when keep_groups is NULL.
 Sex and phenotype vectors are optional. If not defined sex = 0, pheno = -9.
 For supervised analyses, the supervised flag needs to be true to generate
 .pop file needed for ADMIXTURE's supervised mode.
-The reference_groups vector specifies ancestral information of individuals.
-When NULL, or for any missing individual, ancestry is inferred.</p>
+The .pop file has one line per sample, in the order of the .fam file: the
+sample's group, its known ancestry, if the group is in reference_groups,
+and '-' (ancestry to be estimated) otherwise. With reference_groups = NULL
+(the default) every sample's group is written, which is a fully supervised
+run: the ancestry of every sample is fixed and only the allele frequencies
+are estimated, so a warning is given. reference_groups can only be given
+with supervised = TRUE, must be groups of the exported samples, and must
+begin with a letter or digit, as ADMIXTURE reads a .pop line beginning
+with any other character as unknown ancestry. In a supervised run, K
+(given to ADMIXTURE) must equal the number of reference groups.
+ADMIXTURE (from version 1.3) requires numeric chromosome names, so
+chrom_code = "keep" is only allowed if every CHROM is a number; with
+"zero" (the default), "auto" or "index" the names are always numeric.
+Haploid analyses (ADMIXTURE's –haploid option) of sex chromosomes need
+their numeric codes (e.g. 23 and 24 in humans), which "auto" and "keep"
+retain.
+ADMIXTURE does not model linkage disequilibrium, and its manual
+recommends thinning linked markers, e.g. keeping one SNV per locus with
+vcf_filter_oneSNV() before export.</p>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
@@ -121,17 +147,17 @@ When NULL, or for any missing individual, ancestry is inferred.</p>
 <span class="r-in"><span><span class="fu">vcf2admixture</span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"admixture_in"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Building PLINK: 9313 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Writing PLINK files...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Chromosome names were recoded as integers; mapping written to <span style="color: #0000BB;">/tmp/RtmpKz15ZV/admixture_in.chrommap</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> PLINK binary fileset written to <span style="color: #0000BB;">/tmp/RtmpKz15ZV/admixture_in.bed</span>, <span style="color: #0000BB;">/tmp/RtmpKz15ZV/admixture_in.bim</span>, <span style="color: #0000BB;">/tmp/RtmpKz15ZV/admixture_in.fam</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Chromosome names were recoded as integers; mapping written to <span style="color: #0000BB;">/tmp/RtmppaKiJH/admixture_in.chrommap</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> PLINK binary fileset written to <span style="color: #0000BB;">/tmp/RtmppaKiJH/admixture_in.bed</span>, <span style="color: #0000BB;">/tmp/RtmppaKiJH/admixture_in.bim</span>, <span style="color: #0000BB;">/tmp/RtmppaKiJH/admixture_in.fam</span></span>
 <span class="r-in"><span><span class="fu">vcf2admixture</span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"admixture_sup"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>              supervised <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>              reference_groups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GS"</span>, <span class="st">"BS"</span>, <span class="st">"WA"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Building PLINK: 9313 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Writing PLINK files...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Chromosome names were recoded as integers; mapping written to <span style="color: #0000BB;">/tmp/RtmpKz15ZV/admixture_sup.chrommap</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> PLINK binary fileset written to <span style="color: #0000BB;">/tmp/RtmpKz15ZV/admixture_sup.bed</span>, <span style="color: #0000BB;">/tmp/RtmpKz15ZV/admixture_sup.bim</span>, <span style="color: #0000BB;">/tmp/RtmpKz15ZV/admixture_sup.fam</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> ADMIXTURE .pop file written to <span style="color: #0000BB;">/tmp/RtmpKz15ZV/admixture_sup.pop</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Supervised mode: 15 reference samples, 3 samples with ancestry to be estimated.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Chromosome names were recoded as integers; mapping written to <span style="color: #0000BB;">/tmp/RtmppaKiJH/admixture_sup.chrommap</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> PLINK binary fileset written to <span style="color: #0000BB;">/tmp/RtmppaKiJH/admixture_sup.bed</span>, <span style="color: #0000BB;">/tmp/RtmppaKiJH/admixture_sup.bim</span>, <span style="color: #0000BB;">/tmp/RtmppaKiJH/admixture_sup.fam</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> ADMIXTURE .pop file written to <span style="color: #0000BB;">/tmp/RtmppaKiJH/admixture_sup.pop</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Supervised mode: 15 reference samples in 3 groups (use K = 3), 3 samples with ancestry to be estimated.</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

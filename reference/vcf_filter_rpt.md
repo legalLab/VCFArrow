@@ -34,7 +34,9 @@ object, returning a new VCFArrow object. REPEAT is calculated by
 disco_haplotypes in DiscoSNP-RAD (Gauthier et. al. 2020) and registered
 as RPT in INFO. REPEAT is calculated as max of overlap, depth score and
 is 1 if in a giant-component bubble, and is used for paralog detection
--\> high repeat values (\>0.5) are indicative of paralogs.
+-\> high repeat values (\>0.5) are indicative of paralogs. If no variant
+has an RPT value (e.g. VCFs not from DiscoSNP-RAD, or not processed by
+disco_haplotypes), the object is returned unfiltered, with a warning.
 
 ## Author
 
@@ -72,7 +74,7 @@ vcf_filter_rpt(vcf, threshold = 0.5)
 #>   Phased:  45612 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpKz15ZV/arrow_vcf_1d3a4c85601d 
+#>   Path: /tmp/RtmppaKiJH/arrow_vcf_1c7d6f7452fe 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):

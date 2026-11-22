@@ -61,13 +61,16 @@ of writing `out_file`.
 This function converts a VCFArrow object to an external PLINK .ped
 formatted file. Writing occurs in chunks whose size is determined by the
 read_vcf() function. Larger chunks result in faster writing speeds. If
-no groups are defined, the default behavior is to use all groups. Sex
-and phenotype vectors are optional. If not defined sex = 0, pheno = -9.
-Missing alleles are written as 0. In the "12" coding allele 1 is ALT and
-allele 2 is REF, as in vcf2plink_bed(). With either coding, PLINK 1.9
-makes the minor allele A1 when it loads a .ped file; PLINK 2 (and PLINK
-1.9 with –keep-allele-order) take the "12" coding's 1 as A1. PLINK reads
-both allele codings; ADMIXTURE reads .ped files only in the "12" coding
+no groups are defined, the default behavior is to use all groups. Only
+biallelic SNVs are exported (multiallelic sites and indels are left
+out), and every sample must be assigned to a group (see
+set_vcf_groups()), also when keep_groups is NULL. Sex and phenotype
+vectors are optional. If not defined sex = 0, pheno = -9. Missing
+alleles are written as 0. In the "12" coding allele 1 is ALT and allele
+2 is REF, as in vcf2plink_bed(). With either coding, PLINK 1.9 makes the
+minor allele A1 when it loads a .ped file; PLINK 2 (and PLINK 1.9 with
+–keep-allele-order) take the "12" coding's 1 as A1. PLINK reads both
+allele codings; ADMIXTURE reads .ped files only in the "12" coding
 (allele_code = "12"), and needs integer chromosome codes (chrom_code),
 as for .bed input.
 
@@ -86,6 +89,6 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf2plink_ped(vcf, out_file = file.path(tempdir(), "plink_out"))
 #> ℹ Accumulating PLINK .ped: 9313 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing PLINK file...
-#> ℹ Chromosome names were recoded as integers; mapping written to /tmp/RtmpKz15ZV/plink_out.chrommap
-#> ✔ PLINK text fileset written to /tmp/RtmpKz15ZV/plink_out.ped, /tmp/RtmpKz15ZV/plink_out.map
+#> ℹ Chromosome names were recoded as integers; mapping written to /tmp/RtmppaKiJH/plink_out.chrommap
+#> ✔ PLINK text fileset written to /tmp/RtmppaKiJH/plink_out.ped, /tmp/RtmppaKiJH/plink_out.map
 ```

@@ -1,5 +1,54 @@
 # Changelog
 
+## VCFArrow 0.11.1
+
+- [`vcf_filter_missing()`](https://legallab.github.io/VCFArrow/reference/vcf_filter_missing.md)
+  and
+  [`vcf_filter_hets()`](https://legallab.github.io/VCFArrow/reference/vcf_filter_hets.md)
+  now keep samples and loci exactly at the threshold (missingness or
+  heterozygosity \<= `threshold`), as
+  [`vcf_filter_missingness()`](https://legallab.github.io/VCFArrow/reference/vcf_filter_missingness.md)
+  already did; before, they were removed.
+- With `strict_poly = TRUE`,
+  [`vcf_filter_invariant()`](https://legallab.github.io/VCFArrow/reference/vcf_filter_invariant.md)
+  and
+  [`vcf_filter_coverage()`](https://legallab.github.io/VCFArrow/reference/vcf_filter_coverage.md)
+  (and the functions that call
+  [`vcf_filter_invariant()`](https://legallab.github.io/VCFArrow/reference/vcf_filter_invariant.md))
+  now tell apart all genotypes at multiallelic sites. Before, genotypes
+  were compared by the sum of their allele codes, so e.g. 0/2 and 1/1
+  counted as the same genotype and a site with only these was removed as
+  invariant. Biallelic sites give the same results as before.
+- [`vcf_filter_multiSNV()`](https://legallab.github.io/VCFArrow/reference/vcf_filter_multiSNV.md)
+  now removes blocks with more than `maxSNV` SNVs by default, as its
+  help page described; before, it truncated them to their first `maxSNV`
+  SNVs. The new argument `over_max = "truncate"` keeps that behaviour,
+  e.g. for whole genome data, where a block is an arbitrary window
+  rather than a RAD locus, and `maxSNV = Inf` keeps all SNVs of each
+  block.
+- [`vcf2admixture()`](https://legallab.github.io/VCFArrow/reference/vcf2admixture.md)
+  checks its input against the ADMIXTURE manual before writing:
+  `chrom_code = "keep"` is refused when a CHROM is not a number
+  (ADMIXTURE \>= 1.3 requires numeric chromosome names);
+  `reference_groups` must be groups of the exported samples and begin
+  with a letter or digit (ADMIXTURE reads other .pop lines as unknown
+  ancestry); and `supervised = TRUE` without `reference_groups` (a fully
+  supervised run) gives a warning. The supervised message gives the K to
+  use, and the help page notes the need for numeric chromosome names and
+  LD thinning.
+- Smaller changes that do not affect results:
+  [`write_vcf()`](https://legallab.github.io/VCFArrow/reference/write_vcf.md)
+  stops with a clear error when its input is not a VCFArrow object;
+  [`vcf_filter_pass()`](https://legallab.github.io/VCFArrow/reference/vcf_filter_pass.md)
+  says that FILTER values `.` (no filters applied) are treated as PASS
+  (before, it called them NA), and
+  [`vcf_filter_biallelic()`](https://legallab.github.io/VCFArrow/reference/vcf_filter_biallelic.md)
+  reports “biallelic variants” (before, “biallelic SNVs”, although
+  indels are kept); the
+  [`vcf_bind()`](https://legallab.github.io/VCFArrow/reference/vcf_bind.md)
+  help page explains that `absent_as` codes only the genotypes that are
+  neither in an object nor recovered from its genotype files.
+
 ## VCFArrow 0.11.0
 
 - Compatible with arrow 26.0.0, which deprecated `read_feather()`,

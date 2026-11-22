@@ -43,7 +43,7 @@ This function writes a VCFArrow object to an external VCF file. Writing
 occurs in chunks whose size is determined by the read_vcf() function.
 Larger chunks result in faster writing speeds. It writes both
 uncompressed and gz compressed files. Compressing increases writing time
-be about 50%. For large files, it is recommended to output an
+by about 50%. For large files, it is recommended to output an
 uncompressed VCF file, and then compress with GZIP or PIGZ (or BGZIP,
 which tabix needs to index the file). The sample fields are written as
 stored; genotypes changed by VCFArrow (e.g. by vcf_filter_adr() or
@@ -75,8 +75,8 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 #> ✔ VCF successfully read into a VCFArrow object
 write_vcf(vcf, out_file = tempfile(fileext = ".vcf"))
 #> ℹ VCF is being written in 1 chunk
-#> ✔ VCFArrow object successfully written to /tmp/RtmpKz15ZV/file1d3a7bc5632f.vcf
+#> ✔ VCFArrow object successfully written to /tmp/RtmppaKiJH/file1c7d46052a80.vcf
 write_vcf(vcf, out_file = tempfile(fileext = ".vcf.gz"))
 #> ℹ VCF is being written in 1 chunk
-#> ✔ VCFArrow object successfully written to /tmp/RtmpKz15ZV/file1d3ad634e69.vcf.gz
+#> ✔ VCFArrow object successfully written to /tmp/RtmppaKiJH/file1c7d716d969a.vcf.gz
 ```

@@ -42,18 +42,21 @@ of writing `out_file`.
 This function converts a VCFArrow object to an external fineRADstructure
 formatted file. Writing occurs in chunks whose size is determined by the
 read_vcf() function. Larger chunks result in faster writing speeds. If
-no groups are defined, the default behavior is to use all groups. The
-first line holds the sample names; each further line is one RAD locus,
-defined as in vcf_filter_multiSNV(): the SNVs on one CHROM within the
-same block of block_size bases (counted from the CHROM's first SNV).
-Each cell holds a sample's two haplotypes over the locus's SNVs in
-RADpainter's syntax, e.g. 'TGAT/CGAT', or 'TGAT' if both are the same; a
-sample missing at any SNV of the locus has an empty cell. The genotypes
-are taken as phased: the first allele of each SNV (a1) forms one
-haplotype and the second (a2) the other. This holds for phased VCFs, and
-for loci reconstructed as phased genotypes such as the output of
-vcf_filter_multiSNV(); for unphased heterozygotes at several SNVs of a
-locus the haplotypes are arbitrary. Use the same block_size as in
+no groups are defined, the default behavior is to use all groups. Only
+biallelic SNVs are exported (multiallelic sites and indels are left
+out), and every sample must be assigned to a group (see
+set_vcf_groups()), also when keep_groups is NULL. The first line holds
+the sample names; each further line is one RAD locus, defined as in
+vcf_filter_multiSNV(): the SNVs on one CHROM within the same block of
+block_size bases (counted from the CHROM's first SNV). Each cell holds a
+sample's two haplotypes over the locus's SNVs in RADpainter's syntax,
+e.g. 'TGAT/CGAT', or 'TGAT' if both are the same; a sample missing at
+any SNV of the locus has an empty cell. The genotypes are taken as
+phased: the first allele of each SNV (a1) forms one haplotype and the
+second (a2) the other. This holds for phased VCFs; for unphased
+genotypes with heterozygotes at several SNVs of a locus the haplotypes
+are arbitrary. vcf_filter_multiSNV() selects the SNVs of each locus but
+does not phase them. Use the same block_size as in
 vcf_filter_multiSNV(). All genotypes are held in memory while writing (2
 bytes per sample and SNV, see vcf_memory_estimate(format =
 "individual")).
@@ -73,8 +76,9 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf_linked <- vcf_filter_multiSNV(vcf)
 #> ℹ Applying linked SNV filter
 #> ℹ Retained 8 / 10000 variants (linked SNVs)
+#> ℹ 0 blocks with more than 5 SNVs removed
 vcf2fineradstructure(vcf_linked, out_file = tempfile(fileext = ".txt"))
 #> ℹ Accumulating fineRADstructure: 8 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing fineRADstructure file: 4 loci from 8 SNVs...
-#> ✔ fineRADstructure file written to /tmp/RtmpKz15ZV/file1d3a3e46790a.txt
+#> ✔ fineRADstructure file written to /tmp/RtmppaKiJH/file1c7d38856a10.txt
 ```

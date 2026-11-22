@@ -30,7 +30,8 @@ vcf2gt_long(
 
 - format:
 
-  -\> one of three output formats (arrow, parquet, CSV) (character)
+  -\> output format, "feather" (Arrow IPC), "parquet" or "csv", default
+  "feather" (character)
 
 - col_select:
 
@@ -45,11 +46,14 @@ Invisibly returns the path of the written file.
 This function converts a VCFArrow object to an external tidy long-format
 genotype file. Writing occurs in chunks whose size is determined by the
 read_vcf() function. Larger chunks result in faster writing speeds. If
-no groups are defined, the default behavior is to use all groups. The
-tidy data can be saved in either Arrow, Parquet or CSV formats. File
-extension is added automatically if missing. Optionally, specific
-columns can be saved, by default all columns are saved. The gt long slot
-contains pre-calculated metrics in addition to just genotypes.
+no groups are defined, the default behavior is to use all groups. Only
+biallelic SNVs are exported (multiallelic sites and indels are left
+out), and every sample must be assigned to a group (see
+set_vcf_groups()), also when keep_groups is NULL. The tidy data can be
+saved in either Arrow, Parquet or CSV formats. File extension is added
+automatically if missing. Optionally, specific columns can be saved, by
+default all columns are saved. The gt long slot contains pre-calculated
+metrics in addition to just genotypes.
 
 ## Author
 
@@ -65,5 +69,5 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 #> ✔ VCF successfully read into a VCFArrow object
 vcf2gt_long(vcf, out_file = tempfile(), format = "csv")
 #> ℹ Writing gt_long: 9313 variants x 18 samples
-#> ✔ gt_long table written to /tmp/RtmpKz15ZV/file1d3a547990cb.csv
+#> ✔ gt_long table written to /tmp/RtmppaKiJH/file1c7d60318ec3.csv
 ```

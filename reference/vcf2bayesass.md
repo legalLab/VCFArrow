@@ -32,13 +32,16 @@ of writing `out_file`.
 This function converts a VCFArrow object to an external BayesAss
 formatted file. Writing occurs in chunks whose size is determined by the
 read_vcf() function. Larger chunks result in faster writing speeds. If
-no groups are defined, the default behavior is to use all groups. The
-file is in BA3's native format: one line per individual and locus,
-'indivID popID locID allele1 allele2', separated by spaces, with the
-alleles labelled 1 (REF) and 2 (ALT) and a missing genotype as '0 0'.
-Sample names, group labels and locus names must not contain spaces. BA3
-accepts at most 100,000 loci, 100 populations and 20,000 individuals; a
-warning is given above these limits.
+no groups are defined, the default behavior is to use all groups. Only
+biallelic SNVs are exported (multiallelic sites and indels are left
+out), and every sample must be assigned to a group (see
+set_vcf_groups()), also when keep_groups is NULL. The file is in BA3's
+native format: one line per individual and locus, 'indivID popID locID
+allele1 allele2', separated by spaces, with the alleles labelled 1 (REF)
+and 2 (ALT) and a missing genotype as '0 0'. Sample names, group labels
+and locus names must not contain spaces. BA3 accepts at most 100,000
+loci, 100 populations and 20,000 individuals; a warning is given above
+these limits.
 
 ## Author
 
@@ -55,5 +58,5 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf2bayesass(vcf, out_file = tempfile(fileext = ".immanc"))
 #> ℹ Accumulating BayesAss: 9313 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing BayesAss file...
-#> ✔ BayesAss file written to /tmp/RtmpKz15ZV/file1d3a54cbea83.immanc
+#> ✔ BayesAss file written to /tmp/RtmppaKiJH/file1c7d56f0960a.immanc
 ```

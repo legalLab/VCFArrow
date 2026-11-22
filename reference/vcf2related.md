@@ -32,10 +32,13 @@ of writing `out_file`.
 This function converts a VCFArrow object to an external Related
 formatted file. Writing occurs in chunks whose size is determined by the
 read_vcf() function. Larger chunks result in faster writing speeds. If
-no groups are defined, the default behavior is to use all groups. Each
-line holds a sample name followed by two columns per locus, the alleles
-coded A = 1, C = 2, G = 3, T = 4 (written 01-04); a missing genotype is
-'0 0', as related's readgenotypedata() expects.
+no groups are defined, the default behavior is to use all groups. Only
+biallelic SNVs are exported (multiallelic sites and indels are left
+out), and every sample must be assigned to a group (see
+set_vcf_groups()), also when keep_groups is NULL. Each line holds a
+sample name followed by two columns per locus, the alleles coded A = 1,
+C = 2, G = 3, T = 4 (written 01-04); a missing genotype is '0 0', as
+related's readgenotypedata() expects.
 
 ## Author
 
@@ -52,5 +55,5 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf2related(vcf, out_file = tempfile(fileext = ".txt"))
 #> ℹ Accumulating Related: 9313 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing Related file...
-#> ✔ Related file written to /tmp/RtmpKz15ZV/file1d3a7f129ab5.txt
+#> ✔ Related file written to /tmp/RtmppaKiJH/file1c7d3c59ccf9.txt
 ```

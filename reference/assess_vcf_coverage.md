@@ -27,7 +27,7 @@ assess_vcf_coverage(
 
 - species:
 
-  -\> sample name for plot (character)
+  -\> species name, the plot title (character)
 
 - project:
 
@@ -45,7 +45,9 @@ assess_vcf_coverage(
 
 ## Value
 
-violin plot of read depth for each sample in VCF
+Invisibly returns the input VCFArrow object; called for its side effect
+of writing a violin plot of the read depth of each sample to
+`<project>_coverage.pdf`, `.svg` and `.png` in `res_path`.
 
 ## Details
 

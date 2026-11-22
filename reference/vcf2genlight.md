@@ -49,12 +49,14 @@ It requires the 'adegenet' package, which VCFArrow only suggests:
 install it with `install.packages("adegenet")` to use this function.
 Genotypes are read in chunks whose size is determined by the read_vcf()
 function. If no groups are defined, the default behavior is to use all
-groups. Genlight objects can encode polyploid genomes, but VCFArrow
-stores diploid genotypes, so the ploidy is always 2. Genlight objects
-are in-memory S4 objects and are always returned; if save = TRUE, the
-object is also written to out_file with saveRDS(). Unlike the other
-exporters, out_file is optional because nothing is written unless save =
-TRUE.
+groups. Only biallelic SNVs are exported (multiallelic sites and indels
+are left out), and every sample must be assigned to a group (see
+set_vcf_groups()), also when keep_groups is NULL. Genlight objects can
+encode polyploid genomes, but VCFArrow stores diploid genotypes, so the
+ploidy is always 2. Genlight objects are in-memory S4 objects and are
+always returned; if save = TRUE, the object is also written to out_file
+with saveRDS(). Unlike the other exporters, out_file is optional because
+nothing is written unless save = TRUE.
 
 ## Author
 
@@ -95,5 +97,5 @@ gl <- vcf2genlight(vcf, out_file = tempfile(fileext = ".rds"),
 #> ℹ Accumulating Genlight: 9313 variants x 18 samples (0 MiB raw storage)
 #> ℹ Building Genlight object...
 #> ℹ Writing Genlight object...
-#> ✔ Genlight object written to /tmp/RtmpKz15ZV/file1d3a2eaa178a.rds
+#> ✔ Genlight object written to /tmp/RtmppaKiJH/file1c7d7ba44fcd.rds
 ```

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">VCFArrow</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,7 +66,8 @@
 
 
 <dt id="arg-format">format<a class="anchor" aria-label="anchor" href="#arg-format"></a></dt>
-<dd><p>-&gt; one of three output formats (arrow, parquet, CSV) (character)</p></dd>
+<dd><p>-&gt; output format, "feather" (Arrow IPC), "parquet" or "csv",
+default "feather" (character)</p></dd>
 
 
 <dt id="arg-col-select">col_select<a class="anchor" aria-label="anchor" href="#arg-col-select"></a></dt>
@@ -83,6 +84,9 @@
 Writing occurs in chunks whose size is determined by the read_vcf() function.
 Larger chunks result in faster writing speeds.
 If no groups are defined, the default behavior is to use all groups.
+Only biallelic SNVs are exported (multiallelic sites and indels are left
+out), and every sample must be assigned to a group (see set_vcf_groups()),
+also when keep_groups is NULL.
 The tidy data can be saved in either Arrow, Parquet or CSV formats.
 File extension is added automatically if missing.
 Optionally, specific columns can be saved, by default all columns are saved.
@@ -102,7 +106,7 @@ The gt long slot contains pre-calculated metrics in addition to just genotypes.<
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> VCF successfully read into a VCFArrow object</span>
 <span class="r-in"><span><span class="fu">vcf2gt_long</span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span>, format <span class="op">=</span> <span class="st">"csv"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Writing gt_long: 9313 variants x 18 samples</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> gt_long table written to <span style="color: #0000BB;">/tmp/RtmpKz15ZV/file1d3a547990cb.csv</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> gt_long table written to <span style="color: #0000BB;">/tmp/RtmppaKiJH/file1c7d60318ec3.csv</span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

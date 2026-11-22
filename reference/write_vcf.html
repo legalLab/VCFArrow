@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">VCFArrow</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,7 +80,7 @@ genotypes written, where present, default TRUE (Boolean)</p></dd>
 Writing occurs in chunks whose size is determined by the read_vcf() function.
 Larger chunks result in faster writing speeds.
 It writes both uncompressed and gz compressed files. Compressing increases
-writing time be about 50%.
+writing time by about 50%.
 For large files, it is recommended to output an uncompressed VCF file,
 and then compress with GZIP or PIGZ (or BGZIP, which tabix needs to
 index the file).
@@ -113,10 +113,10 @@ A '##source=VCFArrow' line with the package version is added to the header.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> VCF successfully read into a VCFArrow object</span>
 <span class="r-in"><span><span class="fu">write_vcf</span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".vcf"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> VCF is being written in 1 chunk</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> VCFArrow object successfully written to <span style="color: #0000BB;">/tmp/RtmpKz15ZV/file1d3a7bc5632f.vcf</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> VCFArrow object successfully written to <span style="color: #0000BB;">/tmp/RtmppaKiJH/file1c7d46052a80.vcf</span></span>
 <span class="r-in"><span><span class="fu">write_vcf</span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".vcf.gz"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> VCF is being written in 1 chunk</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> VCFArrow object successfully written to <span style="color: #0000BB;">/tmp/RtmpKz15ZV/file1d3ad634e69.vcf.gz</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> VCFArrow object successfully written to <span style="color: #0000BB;">/tmp/RtmppaKiJH/file1c7d716d969a.vcf.gz</span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

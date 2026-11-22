@@ -1,6 +1,6 @@
 # vcf_filter_hets
 
-Remove loci above a heterozigosity threshold from a VCFArrow object
+Remove loci above a heterozygosity threshold from a VCFArrow object
 
 ## Usage
 
@@ -16,7 +16,9 @@ vcf_filter_hets(vcf_arrow, threshold = 0.5)
 
 - threshold:
 
-  -\> heterozigosity threshold, default 0.5 (numeric)
+  -\> heterozygosity threshold; loci with a proportion of heterozygous
+  called genotypes above it are removed, those at it are kept, default
+  0.5 (numeric)
 
 ## Value
 
@@ -24,9 +26,10 @@ subsetted VCFArrow object
 
 ## Details
 
-This function removes loci above a heterozigosity threshold from a
-VCFArrow object, returning a new VCFArrow object. High heterozigosities
-are indicative of potential paralogs.
+This function removes loci above a heterozygosity threshold from a
+VCFArrow object (loci at the threshold are kept), as well as loci
+without called genotypes, returning a new VCFArrow object. High
+heterozygosities are indicative of potential paralogs.
 
 ## Author
 
@@ -42,30 +45,30 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 #> ✔ VCF successfully read into a VCFArrow object
 vcf_filter_hets(vcf, threshold = 0.5)
 #> ℹ Applying heterozygosity filter
-#> ℹ Retained 8508 / 10000 variants (heterozygosity rate < 0.5)
+#> ℹ Retained 8984 / 10000 variants (heterozygosity rate <= 0.5)
 #> 
 #> An object of class "VCFArrow"
 #> 
 #> Dimensions:
-#>   Variants: 8508 
+#>   Variants: 8984 
 #>   Samples:  18 
 #> 
 #> Variant types:
-#>   Biallelic SNVs: 8004 
+#>   Biallelic SNVs: 8436 
 #>   Multiallelic:   0 
-#>   Indels:         504 
+#>   Indels:         548 
 #> 
 #> Groups: 4 
 #> 
 #> BS GS OG WA 
 #>  5  5  3  5 
 #> 
-#> Genotypes (first chunk with variants): 153144 
-#>   Missing: 47.16% 
-#>   Phased:  36468 
+#> Genotypes (first chunk with variants): 161712 
+#>   Missing: 48.39% 
+#>   Phased:  39474 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpKz15ZV/arrow_vcf_1d3a77f9f9ea 
+#>   Path: /tmp/RtmppaKiJH/arrow_vcf_1c7d7497dabc 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):
@@ -81,7 +84,7 @@ vcf_filter_hets(vcf, threshold = 0.5)
 #> 3         TRUE    FALSE       3
 #> 4         TRUE    FALSE       4
 #> 5         TRUE    FALSE       5
-#>   ... 8503 more
+#>   ... 8979 more
 #> 
 #> INFO (first 5):
 #> [1] "Ty=SNP;Rk=1.0;UL=11;UR=8;CL=11;CR=27;Genome=.;Sd=.;Cluster=20022615;ClSize=3"

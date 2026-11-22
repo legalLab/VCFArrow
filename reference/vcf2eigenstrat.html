@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">VCFArrow</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -86,6 +86,9 @@ or "keep" (verbatim), default "auto" (character)</p></dd>
 Writing occurs in chunks whose size is determined by the read_vcf() function.
 Larger chunks result in faster writing speeds.
 If no groups are defined, the default behavior is to use all groups.
+Only biallelic SNVs are exported (multiallelic sites and indels are left
+out), and every sample must be assigned to a group (see set_vcf_groups()),
+also when keep_groups is NULL.
 In the .geno file, each digit is the number of copies of the reference
 allele, as EIGENSTRAT defines it: the REF allele, given in column 5 of
 the .snp file (2 = REF homozygote, 1 = heterozygote, 0 = ALT
@@ -113,11 +116,11 @@ the parameter file; a warning gives the value.</p>
 <span class="r-in"><span><span class="fu">vcf2eigenstrat</span><span class="op">(</span><span class="va">vcf</span>, out_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"eigenstrat_in"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Building EIGENSTRAT: 9313 variants x 18 samples (<span style="font-weight: bold;">0</span> MiB raw storage)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Writing EIGENSTRAT files...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Chromosome names were recoded as integers; mapping written to <span style="color: #0000BB;">/tmp/RtmpKz15ZV/eigenstrat_in.chrommap</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Chromosome names were recoded as integers; mapping written to <span style="color: #0000BB;">/tmp/RtmppaKiJH/eigenstrat_in.chrommap</span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Chromosome codes go up to 9309: EIGENSOFT reads chromosomes above its numchrom</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> parameter (default 22) as X, Y, ...</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Set `numchrom: 9309` (or higher) in the parameter file.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> EIGENSTRAT fileset written to <span style="color: #0000BB;">/tmp/RtmpKz15ZV/eigenstrat_in.geno</span>, <span style="color: #0000BB;">/tmp/RtmpKz15ZV/eigenstrat_in.ind</span>, <span style="color: #0000BB;">/tmp/RtmpKz15ZV/eigenstrat_in.snp</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> EIGENSTRAT fileset written to <span style="color: #0000BB;">/tmp/RtmppaKiJH/eigenstrat_in.geno</span>, <span style="color: #0000BB;">/tmp/RtmppaKiJH/eigenstrat_in.ind</span>, <span style="color: #0000BB;">/tmp/RtmppaKiJH/eigenstrat_in.snp</span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

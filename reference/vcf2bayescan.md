@@ -32,10 +32,13 @@ of writing `out_file`.
 This function converts a VCFArrow object to an external BayeScan
 formatted file. Writing occurs in chunks whose size is determined by the
 read_vcf() function. Larger chunks result in faster writing speeds. If
-no groups are defined, the default behavior is to use all groups. For
-each population, each line gives the locus number, the number of called
-alleles (genes), the number of alleles (2) and the counts of the REF and
-ALT alleles, as BayeScan's SNP format requires.
+no groups are defined, the default behavior is to use all groups. Only
+biallelic SNVs are exported (multiallelic sites and indels are left
+out), and every sample must be assigned to a group (see
+set_vcf_groups()), also when keep_groups is NULL. For each population,
+each line gives the locus number, the number of called alleles (genes),
+the number of alleles (2) and the counts of the REF and ALT alleles, as
+BayeScan's SNP format requires.
 
 ## Author
 
@@ -52,5 +55,5 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf2bayescan(vcf, out_file = tempfile(fileext = ".txt"))
 #> ℹ Accumulating BayesScan: 9313 variants x 4 pops (0 MiB raw storage, vs 0 MiB with integer matrices)
 #> ℹ Writing BayesScan file...
-#> ✔ BayesScan file written to /tmp/RtmpKz15ZV/file1d3a16fd188d.txt
+#> ✔ BayesScan file written to /tmp/RtmppaKiJH/file1c7d50576af8.txt
 ```

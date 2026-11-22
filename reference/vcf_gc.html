@@ -11,7 +11,7 @@ whose reference count has already reached zero."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">VCFArrow</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,15 +54,15 @@ whose reference count has already reached zero.</p>
 
 
 <dl><dt id="arg-force">force<a class="anchor" aria-label="anchor" href="#arg-force"></a></dt>
-<dd><p>Logical.  If TRUE, also force-deregister and delete directories
-for objects that are still nominally live in the registry.  Use this when
+<dd><p>Logical. If TRUE, also force-deregister and delete directories
+for objects that are still nominally live in the registry. Use this when
 you have called <code><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm()</a></code> on all VCFArrow objects but the temp
 directories have not been cleaned up (common in RStudio, which can hold
 display references that delay GC).</p></dd>
 
 
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
-<dd><p>Logical.  Print a status message.</p></dd>
+<dd><p>Logical. Print a status message.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -76,7 +76,7 @@ temporary directories.</p>
 
 <div class="sourceCode"><pre><code><span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">vcf1</span>, <span class="va">vcf2</span>, <span class="va">vcf3</span><span class="op">)</span></span>
-<span>  <span class="fu"><a href="../reference/vcf_gc.html">vcf_gc</a></span><span class="op">(</span><span class="op">)</span>              <span class="co"># usually sufficient</span></span>
+<span>  <span class="fu"><a href="../reference/vcf_gc.html">vcf_gc</a></span><span class="op">(</span><span class="op">)</span>  <span class="co"># usually sufficient</span></span>
 <span>  <span class="fu"><a href="../reference/vcf_gc.html">vcf_gc</a></span><span class="op">(</span>force <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>  <span class="co"># if directories remain after rm()</span></span></code></pre></div>
 
     </div>
@@ -91,8 +91,8 @@ temporary directories.</p>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">vcf</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">vcf_gc</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> VCFArrow: 2 temp directories are still live (VCFArrow objects not yet GC'd):</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   /tmp/RtmpKz15ZV/arrow_vcf_1d3a411866eb</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   /tmp/RtmpKz15ZV/arrow_vcf_1d3ab0701cb</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   /tmp/RtmppaKiJH/arrow_vcf_1c7d141ca922</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   /tmp/RtmppaKiJH/arrow_vcf_1c7d6234647b</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   → rm() all VCFArrow objects, then call vcf_gc() again.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   → Or call vcf_gc(force = TRUE) to delete regardless.</span>
 <span class="r-in"><span></span></span>

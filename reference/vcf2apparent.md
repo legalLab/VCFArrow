@@ -36,12 +36,14 @@ of writing `out_file`.
 This function converts a VCFArrow object to an external Apparent
 formatted file. Writing occurs in chunks whose size is determined by the
 read_vcf() function. Larger chunks result in faster writing speeds. If
-no groups are defined, the default behavior is to use all groups.
-Possible relationships defined by the parameter 'key' are All, Pa, Mo,
-Fa, Off. Each line (no header) holds the sample name, the key and one
-genotype per SNP as two nucleotides separated by '/', with '-/-' for a
-missing genotype, as apparent expects. The same key is given to every
-sample.
+no groups are defined, the default behavior is to use all groups. Only
+biallelic SNVs are exported (multiallelic sites and indels are left
+out), and every sample must be assigned to a group (see
+set_vcf_groups()), also when keep_groups is NULL. Possible relationships
+defined by the parameter 'key' are All, Pa, Mo, Fa, Off. Each line (no
+header) holds the sample name, the key and one genotype per SNP as two
+nucleotides separated by '/', with '-/-' for a missing genotype, as
+apparent expects. The same key is given to every sample.
 
 ## Author
 
@@ -58,5 +60,5 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf2apparent(vcf, out_file = tempfile(fileext = ".txt"))
 #> ℹ Accumulating Apparent: 9313 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing Apparent file...
-#> ✔ Apparent file written to /tmp/RtmpKz15ZV/file1d3a6d1032a5.txt
+#> ✔ Apparent file written to /tmp/RtmppaKiJH/file1c7d2a98a565.txt
 ```

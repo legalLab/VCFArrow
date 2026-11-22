@@ -76,7 +76,7 @@ vcf_filter_oneSNV(vcf)
 #>   Phased:  45540 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpKz15ZV/arrow_vcf_1d3a3a16be89 
+#>   Path: /tmp/RtmppaKiJH/arrow_vcf_1c7d30a1363e 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):
@@ -139,7 +139,7 @@ vcf_filter_oneSNV(vcf, by_quality = TRUE)
 #>   Phased:  45540 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpKz15ZV/arrow_vcf_1d3a3a16be89 
+#>   Path: /tmp/RtmppaKiJH/arrow_vcf_1c7d30a1363e 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):

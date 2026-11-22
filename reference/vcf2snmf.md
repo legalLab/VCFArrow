@@ -32,7 +32,10 @@ of writing `out_file`.
 This function converts a VCFArrow object to an external sNMF formatted
 file. Writing occurs in chunks whose size is determined by the
 read_vcf() function. Larger chunks result in faster writing speeds. If
-no groups are defined, the default behavior is to use all groups.
+no groups are defined, the default behavior is to use all groups. Only
+biallelic SNVs are exported (multiallelic sites and indels are left
+out), and every sample must be assigned to a group (see
+set_vcf_groups()), also when keep_groups is NULL.
 
 ## Author
 
@@ -49,5 +52,5 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf2snmf(vcf, out_file = tempfile(fileext = ".geno"))
 #> ℹ Formatting sNMF: 9313 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing sNMF file...
-#> ✔ sNMF file written to /tmp/RtmpKz15ZV/file1d3a1bf0210a.geno
+#> ✔ sNMF file written to /tmp/RtmppaKiJH/file1c7d7c0c0815.geno
 ```

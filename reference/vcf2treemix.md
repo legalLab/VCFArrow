@@ -42,11 +42,14 @@ of writing `out_file`.
 This function converts a VCFArrow object to an external Treemix
 formatted file. Writing occurs in chunks whose size is determined by the
 read_vcf() function. Larger chunks result in faster writing speeds. If
-no groups are defined, the default behavior is to use all groups. The
-first line holds the group names; each further line one SNP, with the
-REF and ALT allele counts of each group as "ref,alt", separated by
-spaces. TreeMix reads gzip-compressed input (treemix -i file.gz): name
-out_file with the extension .gz to compress it.
+no groups are defined, the default behavior is to use all groups. Only
+biallelic SNVs are exported (multiallelic sites and indels are left
+out), and every sample must be assigned to a group (see
+set_vcf_groups()), also when keep_groups is NULL. The first line holds
+the group names; each further line one SNP, with the REF and ALT allele
+counts of each group as "ref,alt", separated by spaces. TreeMix reads
+gzip-compressed input (treemix -i file.gz): name out_file with the
+extension .gz to compress it.
 
 ## Author
 
@@ -63,5 +66,5 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf2treemix(vcf, out_file = tempfile(fileext = ".gz"))
 #> ℹ Building Treemix: 9313 variants x 4 pops (0 MiB raw storage)
 #> ℹ Writing Treemix file...
-#> ✔ Treemix file written to /tmp/RtmpKz15ZV/file1d3a35587516.gz
+#> ✔ Treemix file written to /tmp/RtmppaKiJH/file1c7d535f7c05.gz
 ```

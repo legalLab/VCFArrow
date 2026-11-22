@@ -71,7 +71,7 @@ vcf
 #>   Phased:  45612 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpKz15ZV/arrow_vcf_1d3a4b3d08a0 
+#>   Path: /tmp/RtmppaKiJH/arrow_vcf_1c7d2ce6f31a 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):

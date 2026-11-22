@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">VCFArrow</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,6 +80,9 @@ default 0.5 (numeric)</p></dd>
     <p>This function removes loci below the RANK threshold and above the REPEAT
 threshold from a VCFArrow object, returning a new VCFArrow object.
 It applies vcf_filter_rank() and then vcf_filter_rpt().
+If only one of the Rk and RPT fields is present, only that filter is
+applied (the other returns its input unfiltered, with a warning); if
+neither is present, the object is returned unfiltered, with a warning.
 RANK and REPEAT metrics focus on different paralog signals, and used
 jointly maximize true positive and minimize false positive detections.
 Simulations indicate that removing loci with Rk &lt; 0.2 or RPT &gt; 0.5 gives the
@@ -123,7 +126,7 @@ best results, with Rk &lt; 0.4 or RPT &gt; 0.5 being slightly more conservative.
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Phased:  45612 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Storage:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Path: /tmp/RtmpKz15ZV/arrow_vcf_1d3a1e4a0568 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Path: /tmp/RtmppaKiJH/arrow_vcf_1c7d255ea254 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Genotype chunk files: 1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Variants (first 5 rows):</span>

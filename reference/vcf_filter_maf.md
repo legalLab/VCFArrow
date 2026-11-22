@@ -64,7 +64,7 @@ vcf_filter_maf(vcf, threshold = 0.05)
 #>   Phased:  41688 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpKz15ZV/arrow_vcf_1d3a5455b7b5 
+#>   Path: /tmp/RtmppaKiJH/arrow_vcf_1c7d503d069c 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):

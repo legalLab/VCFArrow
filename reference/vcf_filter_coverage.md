@@ -56,7 +56,8 @@ default), polymorphic means that not all alleles of these genotypes are
 the same, e.g. both REF and ALT alleles occur. With strict_poly = TRUE,
 it means that not all of these genotypes are the same, so a variant
 whose genotypes with DP \>= threshold are all heterozygous is removed
-although both alleles occur. strict_poly is ignored with strict = TRUE.
+although both alleles occur; genotypes are compared as in
+vcf_filter_invariant(). strict_poly is ignored with strict = TRUE.
 
 ## Author
 
@@ -96,7 +97,7 @@ vcf_filter_coverage(vcf, threshold = 10)
 #>   Phased:  45612 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpKz15ZV/arrow_vcf_coverage_1d3a53507804 
+#>   Path: /tmp/RtmppaKiJH/arrow_vcf_coverage_1c7d4f01159d 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):
@@ -159,7 +160,7 @@ vcf_filter_coverage(vcf, threshold = 10, strict = FALSE)
 #>   Phased:  26622 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpKz15ZV/arrow_vcf_1d3a69b153fd 
+#>   Path: /tmp/RtmppaKiJH/arrow_vcf_1c7d3bd3e71 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):
@@ -221,7 +222,7 @@ vcf_filter_coverage(vcf, threshold = 10, strict = FALSE, strict_poly = TRUE)
 #>   Phased:  25506 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpKz15ZV/arrow_vcf_1d3a69b153fd 
+#>   Path: /tmp/RtmppaKiJH/arrow_vcf_1c7d3bd3e71 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):

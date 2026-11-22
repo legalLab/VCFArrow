@@ -37,12 +37,15 @@ of writing `out_file`.
 This function converts a VCFArrow object to an external Genepop
 formatted file. Writing occurs in chunks whose size is determined by the
 read_vcf() function. Larger chunks result in faster writing speeds. If
-no groups are defined, the default behavior is to use all groups. Each
-population starts with a line holding the word Pop alone, as the GENEPOP
-documentation shows it; GENEPOP itself names each population after its
-last individual. Some readers, e.g. adegenet::read.genepop(), accept
-only this form. With pop_names = TRUE, the line also holds the group
-name ('pop WA'), which other programs may read as the population name.
+no groups are defined, the default behavior is to use all groups. Only
+biallelic SNVs are exported (multiallelic sites and indels are left
+out), and every sample must be assigned to a group (see
+set_vcf_groups()), also when keep_groups is NULL. Each population starts
+with a line holding the word Pop alone, as the GENEPOP documentation
+shows it; GENEPOP itself names each population after its last
+individual. Some readers, e.g. adegenet::read.genepop(), accept only
+this form. With pop_names = TRUE, the line also holds the group name
+('pop WA'), which other programs may read as the population name.
 
 ## Author
 
@@ -59,5 +62,5 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf2genepop(vcf, out_file = tempfile(fileext = ".gen"))
 #> ℹ Accumulating Genepop: 9313 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing Genepop file...
-#> ✔ Genepop file written to /tmp/RtmpKz15ZV/file1d3a741f1454.gen
+#> ✔ Genepop file written to /tmp/RtmppaKiJH/file1c7d4f301306.gen
 ```

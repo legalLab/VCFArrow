@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">VCFArrow</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,13 +60,18 @@
 
 <dt id="arg-mode">mode<a class="anchor" aria-label="anchor" href="#arg-mode"></a></dt>
 <dd><p>-&gt; "intersect" keeps variants present in all objects, "union"
-keeps variants present in any object, default "intersect" (character)</p></dd>
+keeps variants present in any object (and variants removed from them as
+invariant, see Details), default "intersect" (character)</p></dd>
 
 
 <dt id="arg-absent-as">absent_as<a class="anchor" aria-label="anchor" href="#arg-absent-as"></a></dt>
-<dd><p>-&gt; for mode = "union" or outgroup = TRUE, how genotypes
-absent from a source object are coded, "missing" or "hom_ref",
-default "missing" (character)</p></dd>
+<dd><p>-&gt; for mode = "union" or outgroup = TRUE, how the
+genotypes a source object does not provide are coded, "missing" or
+"hom_ref", default "missing" (character); these are genotypes neither in
+the object nor recovered from its genotype files (with recover_loci =
+TRUE or outgroup = TRUE), e.g. of variants the object removed by
+filtering (without recover_loci) or never had (objects from different
+VCF files)</p></dd>
 
 
 <dt id="arg-outgroup">outgroup<a class="anchor" aria-label="anchor" href="#arg-outgroup"></a></dt>
@@ -99,13 +104,18 @@ individuals, returning a new VCFArrow object. Sample names must be unique
 across objects.
 The objects need not have the same variants: mode = "intersect" keeps the
 variants present in all objects, mode = "union" keeps the variants present
-in any object and codes the genotypes an object lacks according to
-absent_as.
+in any object, or removed from it as invariant, and codes the genotypes an
+object lacks according to absent_as.
 For objects with the same variants both modes give the same result.
-In mode = "union", variants an object removed stay removed for it: a
-variant that one object removed by filtering but that another object
-contains is included, with the genotypes of the object that removed it
-coded according to absent_as. Binding in steps and binding all objects in
+In mode = "union", variants an object removed by filtering stay removed
+for it: a variant that one object removed (e.g. with vcf_filter_maf()) but
+that another object contains is included, with the genotypes of the object
+that removed it coded according to absent_as. Variants an object removed as
+invariant (e.g. after extracting samples, see vcf_filter_invariant()) are
+the exception: they count as the object's own and are included with their
+real genotypes, also when every object removed them, so that differences
+fixed between separately extracted groups (e.g. an ingroup and an
+outgroup) are kept. Binding in steps and binding all objects in
 one call then give the same result. With recover_loci = TRUE, the real
 genotypes of such variants are restored instead, read from the genotype
 files of the object that removed them (which keep every variant the object
@@ -184,7 +194,7 @@ are kept, so bound objects can be bound again.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Phased:  4284 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Storage:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Path: /tmp/RtmpKz15ZV/arrow_vcf_bind_1d3afd2429c </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Path: /tmp/RtmppaKiJH/arrow_vcf_bind_1c7d347d820f </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Genotype chunk files: 1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Variants (first 5 rows):</span>
@@ -245,7 +255,7 @@ are kept, so bound objects can be bound again.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Phased:  45612 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Storage:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Path: /tmp/RtmpKz15ZV/arrow_vcf_bind_1d3a27015b1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Path: /tmp/RtmppaKiJH/arrow_vcf_bind_1c7d711039d9 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Genotype chunk files: 1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Variants (first 5 rows):</span>
@@ -309,7 +319,7 @@ are kept, so bound objects can be bound again.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Phased:  11322 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Storage:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Path: /tmp/RtmpKz15ZV/arrow_vcf_bind_1d3a77921db5 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Path: /tmp/RtmppaKiJH/arrow_vcf_bind_1c7d3a0ab50 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Genotype chunk files: 1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Variants (first 5 rows):</span>

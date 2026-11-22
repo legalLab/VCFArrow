@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">VCFArrow</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,7 +72,10 @@ e.g. both REF and ALT alleles occur; a variant with a single called
 heterozygote is kept.  With strict_poly = TRUE, polymorphic means that not
 all called genotypes are the same, so a variant where every called sample
 is heterozygous is removed although both alleles occur (such sites are
-often paralogs).</p>
+often paralogs).
+Genotypes are compared without regard to allele order or phase (0/1, 1/0,
+0|1 and 1|0 are the same genotype), and at multiallelic sites every
+genotype is distinct, e.g. 0/2 differs from 1/1 and 0/3 from 1/2.</p>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
@@ -111,7 +114,7 @@ often paralogs).</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Phased:  45612 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Storage:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Path: /tmp/RtmpKz15ZV/arrow_vcf_1d3a29c533b1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Path: /tmp/RtmppaKiJH/arrow_vcf_1c7d2cc6a712 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Genotype chunk files: 1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Variants (first 5 rows):</span>
@@ -173,7 +176,7 @@ often paralogs).</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Phased:  45612 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Storage:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Path: /tmp/RtmpKz15ZV/arrow_vcf_1d3a29c533b1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Path: /tmp/RtmppaKiJH/arrow_vcf_1c7d2cc6a712 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Genotype chunk files: 1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Variants (first 5 rows):</span>

@@ -32,15 +32,18 @@ of writing `out_file` and its sample file.
 This function converts a VCFArrow object to an external SmartSNP
 formatted file. Writing occurs in chunks whose size is determined by the
 read_vcf() function. Larger chunks result in faster writing speeds. If
-no groups are defined, the default behavior is to use all groups. The
-genotype file has one line per SNP and one column per sample, separated
-by spaces: the number of ALT alleles (0, 1, 2), 9 if missing. It has no
-header line, as smartsnp requires ("without row names or column
-headings"). The samples and their groups, in the order of the columns,
-are written to a separate tab-separated file with a header line (sample,
-group), named after out_file without its extension plus
-'\_samples.smartsnp' (e.g. 'data.txt' gives 'data_samples.smartsnp').
-Its group column is what smartsnp's analyses take as sample_group, e.g.
+no groups are defined, the default behavior is to use all groups. Only
+biallelic SNVs are exported (multiallelic sites and indels are left
+out), and every sample must be assigned to a group (see
+set_vcf_groups()), also when keep_groups is NULL. The genotype file has
+one line per SNP and one column per sample, separated by spaces: the
+number of ALT alleles (0, 1, 2), 9 if missing. It has no header line, as
+smartsnp requires ("without row names or column headings"). The samples
+and their groups, in the order of the columns, are written to a separate
+tab-separated file with a header line (sample, group), named after
+out_file without its extension plus '\_samples.smartsnp' (e.g.
+'data.txt' gives 'data_samples.smartsnp'). Its group column is what
+smartsnp's analyses take as sample_group, e.g.
 `s <- read.delim("data_samples.smartsnp")` then
 `smartsnp::smart_pca("data.txt", sample_group = s$group)` or
 `smartsnp::smart_permanova("data.txt", sample_group = s$group)`.
@@ -60,5 +63,5 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf2smartsnp(vcf, out_file = tempfile(fileext = ".txt"))
 #> ℹ Building SmartSNP: 9313 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing SmartSNP file...
-#> ✔ SmartSNP files written to /tmp/RtmpKz15ZV/file1d3a762a67dc.txt and /tmp/RtmpKz15ZV/file1d3a762a67dc_samples.smartsnp
+#> ✔ SmartSNP files written to /tmp/RtmppaKiJH/file1c7d11725447.txt and /tmp/RtmppaKiJH/file1c7d11725447_samples.smartsnp
 ```

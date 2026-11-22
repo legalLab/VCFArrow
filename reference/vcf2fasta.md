@@ -32,7 +32,14 @@ of writing `out_file`.
 This function converts a VCFArrow object to an external FASTA formatted
 file. Writing occurs in chunks whose size is determined by the
 read_vcf() function. Larger chunks result in faster writing speeds. If
-no groups are defined, the default behavior is to use all groups.
+no groups are defined, the default behavior is to use all groups. Only
+biallelic SNVs are exported (multiallelic sites and indels are left
+out), and every sample must be assigned to a group (see
+set_vcf_groups()), also when keep_groups is NULL.
+
+Each sample is one sequence of its genotypes at the SNVs: the REF or ALT
+nucleotide for homozygotes, the IUPAC ambiguity code of the two
+nucleotides for heterozygotes (e.g. R for A/G), and '?' if missing.
 
 ## Author
 
@@ -49,5 +56,5 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf2fasta(vcf, out_file = tempfile(fileext = ".fas"))
 #> ℹ Accumulating FASTA: 9313 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing FASTA file...
-#> ✔ FASTA file written to /tmp/RtmpKz15ZV/file1d3a3da7c1a3.fas
+#> ✔ FASTA file written to /tmp/RtmppaKiJH/file1c7d7b4a2ba6.fas
 ```

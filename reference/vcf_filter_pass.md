@@ -40,7 +40,7 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 #> ✔ VCF successfully read into a VCFArrow object
 vcf_filter_pass(vcf)
 #> ℹ Applying PASS filter
-#> ! Some FILTER values are NA. Defaulting to PASS
+#> ! Some FILTER values are '.' (no filters applied). Treating them as PASS
 #> ℹ Retained 10000 / 10000 variants (PASS)
 #> 
 #> An object of class "VCFArrow"
@@ -64,7 +64,7 @@ vcf_filter_pass(vcf)
 #>   Phased:  45612 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpKz15ZV/arrow_vcf_1d3a66dc338b 
+#>   Path: /tmp/RtmppaKiJH/arrow_vcf_1c7d174fbba4 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):

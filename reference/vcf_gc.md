@@ -33,7 +33,7 @@ temporary directories.
 
 
       rm(vcf1, vcf2, vcf3)
-      vcf_gc()              # usually sufficient
+      vcf_gc()  # usually sufficient
       vcf_gc(force = TRUE)  # if directories remain after rm()
 
 ## Examples
@@ -47,8 +47,8 @@ vcf <- read_vcf(f)
 rm(vcf)
 vcf_gc()
 #> VCFArrow: 2 temp directories are still live (VCFArrow objects not yet GC'd):
-#>   /tmp/RtmpKz15ZV/arrow_vcf_1d3a411866eb
-#>   /tmp/RtmpKz15ZV/arrow_vcf_1d3ab0701cb
+#>   /tmp/RtmppaKiJH/arrow_vcf_1c7d141ca922
+#>   /tmp/RtmppaKiJH/arrow_vcf_1c7d6234647b
 #>   → rm() all VCFArrow objects, then call vcf_gc() again.
 #>   → Or call vcf_gc(force = TRUE) to delete regardless.
 ```

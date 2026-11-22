@@ -30,10 +30,11 @@ subsetted VCFArrow object
 ## Details
 
 This function removes loci above missingness threshold from a VCFArrow
-object, returning a new VCFArrow object. Missingness is a locus focused
-metric, i.e. missing data per locus. With verbose = TRUE, the number of
-retained variants and the final % missing data (missing genotypes over
-the retained variants and samples) are reported.
+object (loci at the threshold are kept), returning a new VCFArrow
+object. Missingness is a locus focused metric, i.e. missing data per
+locus. With verbose = TRUE, the number of retained variants and the
+final % missing data (missing genotypes over the retained variants and
+samples) are reported.
 
 ## Author
 
@@ -72,7 +73,7 @@ vcf_filter_missingness(vcf, threshold = 0.2)
 #>   Phased:  9756 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpKz15ZV/arrow_vcf_1d3a41e86552 
+#>   Path: /tmp/RtmppaKiJH/arrow_vcf_1c7dfaddfa6 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):

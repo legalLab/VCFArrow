@@ -23,11 +23,13 @@ vcf_filter_adr(
 
 - threshold:
 
-  -\> decimal missing threshold, default 0.1 (numeric)
+  -\> allele depth ratio (ADR) threshold, strictly between 0 and 0.5,
+  default 0.1 (numeric)
 
 - mode:
 
-  -\> switch between 'correct' or 'remove' mode (character)
+  -\> switch between 'correct' or 'remove' mode, default 'correct'
+  (character)
 
 - f_invar:
 
@@ -97,7 +99,7 @@ vcf_filter_adr(vcf, mode = "correct")
 #>   Phased:  45612 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmpKz15ZV/arrow_vcf_adr_1d3a6150b90c 
+#>   Path: /tmp/RtmppaKiJH/arrow_vcf_adr_1c7d60c7abea 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):
