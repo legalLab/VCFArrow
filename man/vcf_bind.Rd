@@ -17,11 +17,16 @@ vcf_bind(
 \item{...}{-> a collection of VCFArrow objects}
 
 \item{mode}{-> "intersect" keeps variants present in all objects, "union"
-keeps variants present in any object, default "intersect" (character)}
+keeps variants present in any object (and variants removed from them as
+invariant, see Details), default "intersect" (character)}
 
-\item{absent_as}{-> for mode = "union" or outgroup = TRUE, how genotypes
-absent from a source object are coded, "missing" or "hom_ref",
-default "missing" (character)}
+\item{absent_as}{-> for mode = "union" or outgroup = TRUE, how the
+genotypes a source object does not provide are coded, "missing" or
+"hom_ref", default "missing" (character); these are genotypes neither in
+the object nor recovered from its genotype files (with recover_loci =
+TRUE or outgroup = TRUE), e.g. of variants the object removed by
+filtering (without recover_loci) or never had (objects from different
+VCF files)}
 
 \item{outgroup}{-> add the other objects (e.g. outgroups) to the first
 object (e.g. a filtered ingroup), keeping exactly the variants of the
@@ -48,13 +53,18 @@ individuals, returning a new VCFArrow object. Sample names must be unique
 across objects.
 The objects need not have the same variants: mode = "intersect" keeps the
 variants present in all objects, mode = "union" keeps the variants present
-in any object and codes the genotypes an object lacks according to
-absent_as.
+in any object, or removed from it as invariant, and codes the genotypes an
+object lacks according to absent_as.
 For objects with the same variants both modes give the same result.
-In mode = "union", variants an object removed stay removed for it: a
-variant that one object removed by filtering but that another object
-contains is included, with the genotypes of the object that removed it
-coded according to absent_as. Binding in steps and binding all objects in
+In mode = "union", variants an object removed by filtering stay removed
+for it: a variant that one object removed (e.g. with vcf_filter_maf()) but
+that another object contains is included, with the genotypes of the object
+that removed it coded according to absent_as. Variants an object removed as
+invariant (e.g. after extracting samples, see vcf_filter_invariant()) are
+the exception: they count as the object's own and are included with their
+real genotypes, also when every object removed them, so that differences
+fixed between separately extracted groups (e.g. an ingroup and an
+outgroup) are kept. Binding in steps and binding all objects in
 one call then give the same result. With recover_loci = TRUE, the real
 genotypes of such variants are restored instead, read from the genotype
 files of the object that removed them (which keep every variant the object

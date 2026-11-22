@@ -7,13 +7,13 @@
 vcf_gc(force = FALSE, verbose = TRUE)
 }
 \arguments{
-\item{force}{Logical.  If TRUE, also force-deregister and delete directories
-for objects that are still nominally live in the registry.  Use this when
+\item{force}{Logical. If TRUE, also force-deregister and delete directories
+for objects that are still nominally live in the registry. Use this when
 you have called \code{rm()} on all VCFArrow objects but the temp
 directories have not been cleaned up (common in RStudio, which can hold
 display references that delay GC).}
 
-\item{verbose}{Logical.  Print a status message.}
+\item{verbose}{Logical. Print a status message.}
 }
 \value{
 Invisibly returns \code{NULL}; called for its side effect of deleting
@@ -28,7 +28,7 @@ whose reference count has already reached zero.
 
 \preformatted{
   rm(vcf1, vcf2, vcf3)
-  vcf_gc()              # usually sufficient
+  vcf_gc()  # usually sufficient
   vcf_gc(force = TRUE)  # if directories remain after rm()
 }
 }

@@ -25,10 +25,9 @@ vcf_memory_estimate(
 (as in read_vcf()).}
 
 \item{lowmem}{For format = "individual": if TRUE, count the genotype
-matrices at 1 byte per cell, the raw storage used while
-the chunks are read; if FALSE (default), at 4 bytes per
-cell, the integer matrices the exporters create to write
-the file, which gives their peak memory.}
+matrices at 1 byte per cell, the raw storage used while the chunks
+are read; if FALSE (default), at 4 bytes per cell, the integer matrices
+the exporters create to write the file, which gives their peak memory.}
 }
 \value{
 Invisibly, a list with elements:

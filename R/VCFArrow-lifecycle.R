@@ -13,11 +13,11 @@
 #                         yet succeeded (Arrow file handles may still be open)
 #
 # Lifecycle of a temp directory
-#   read_vcf / vcf_bind         →  .register_vcfarrow()   [count = 1]
-#   each filter that inherits the same path  →  .register_vcfarrow()  [count + 1]
-#   GC of a VCFArrow object fires finalizer  →  .deregister_vcfarrow()
-#     if count → 0: move path to .vcfarrow_pending, attempt immediate unlink
-#   vcf_gc() or session exit  →  retry unlink for everything in .vcfarrow_pending
+#   read_vcf / vcf_bind -> .register_vcfarrow() [count = 1]
+#   each filter that inherits the same path -> .register_vcfarrow() [count + 1]
+#   GC of a VCFArrow object fires finalize -> .deregister_vcfarrow()
+#   if count -> 0: move path to .vcfarrow_pending, attempt immediate unlink
+#   vcf_gc() or session exit -> retry unlink for everything in .vcfarrow_pending
 #
 # Why finalizer_env is a SLOT (not attr())
 #   S4 slots of type "environment" have reference semantics: they are not
@@ -218,12 +218,12 @@
 #' finalizer -> pending-queue -> unlink chain), then flushes any directories
 #' whose reference count has already reached zero.
 #'
-#' @param force Logical.  If TRUE, also force-deregister and delete directories
-#'   for objects that are still nominally live in the registry.  Use this when
+#' @param force Logical. If TRUE, also force-deregister and delete directories
+#'   for objects that are still nominally live in the registry. Use this when
 #'   you have called \code{rm()} on all VCFArrow objects but the temp
 #'   directories have not been cleaned up (common in RStudio, which can hold
 #'   display references that delay GC).
-#' @param verbose Logical.  Print a status message.
+#' @param verbose Logical. Print a status message.
 #'
 #' @return Invisibly returns `NULL`; called for its side effect of deleting
 #'   temporary directories.
@@ -231,7 +231,7 @@
 #' @section Typical workflow:
 #' \preformatted{
 #'   rm(vcf1, vcf2, vcf3)
-#'   vcf_gc()              # usually sufficient
+#'   vcf_gc()  # usually sufficient
 #'   vcf_gc(force = TRUE)  # if directories remain after rm()
 #' }
 #'
@@ -247,8 +247,8 @@
 vcf_gc <- function(force = FALSE, verbose = TRUE) {
 
   # Three full GC passes:
-  #   pass 1 – collect VCFArrow objects → fires finalizer_env finalizers
-  #             → .deregister_vcfarrow() → moves paths to .vcfarrow_pending
+  #   pass 1 – collect VCFArrow objects -> fires finalizer_env finalizers
+  #             -> .deregister_vcfarrow() -> moves paths to .vcfarrow_pending
   #   pass 2 – collect anything freed in pass 1 (including Arrow Dataset SEXPs
   #             which were referenced by VCFArrow@gt)
   #   pass 3 – collect anything freed in pass 2 (Arrow's internal C++ objects)
@@ -316,13 +316,15 @@ vcf_gc <- function(force = FALSE, verbose = TRUE) {
 #'
 #' @param vcf_arrow A VCFArrow object.
 #' @param keep_groups Groups to export (NULL = all).
-#' @param format     One of "individual" (Structure, Arlequin, FASTA, ...) or
-#'                   "pop" (BayesScan, Treemix, Migrate-N C, ...) or
-#'                   "chunk" (SmartSNP, sNMF, EIGENSTRAT, ...).
+#' @param format One of "individual" (Structure, Arlequin, FASTA, ...) or 
+#'   "pop" (BayesScan, Treemix, Migrate-N C, ...) or 
+#'   "chunk" (SmartSNP, sNMF, EIGENSTRAT, ...).
 #' @param chunk_size Feather chunk size used at read_vcf() time, default 50000
-#'                   (as in read_vcf()).
-#' @param lowmem     If TRUE, estimate uses raw-byte matrices (vcf2*() lowmem
-#'                   variants); otherwise integer matrices.
+#'   (as in read_vcf()).
+#' @param lowmem For format = "individual": if TRUE, count the genotype 
+#'   matrices at 1 byte per cell, the raw storage used while the chunks 
+#'   are read; if FALSE (default), at 4 bytes per cell, the integer matrices 
+#'   the exporters create to write the file, which gives their peak memory.
 #'
 #' @return Invisibly, a list with elements:
 #'   * `n_var`: number of variants
@@ -413,27 +415,26 @@ vcf_memory_estimate <- function(vcf_arrow,
 #' Suggest a chunk_size for read_vcf() given available RAM
 #'
 #' @param available_gb RAM available in gigabytes.
-#' @param n_samples    Number of samples.
-#' @param fmt_chars    Average length in characters of a sample's FORMAT text
-#'                     in the VCF (e.g. 24 for "0/1:12,8:20:99:200,0,300"),
-#'                     default 25.  Longer FORMAT fields (e.g. PL with many
-#'                     alleles) need more memory.
+#' @param n_samples Number of samples.
+#' @param fmt_chars Average length in characters of a sample's FORMAT text
+#'   in the VCF (e.g. 24 for "0/1:12,8:20:99:200,0,300"), default 25.  
+#'   Longer FORMAT fields (e.g. PL with many alleles) need more memory.
 #' @param sample_chars Average length of the sample names, default 10.
-#' @param workers      Number of worker processes read_vcf() will use (see
-#'                     vcf_set_workers()), default the number currently set.
-#' @param n_columns    Deprecated and ignored: the size of a genotype row is
-#'                     now computed from its columns.
+#' @param workers Number of worker processes read_vcf() will use (see
+#'   vcf_set_workers()), default the number currently set.
+#' @param n_columns Deprecated and ignored: the size of a genotype row is
+#'   now computed from its columns.
 #'
 #' @return Invisibly, the suggested chunk size (integer).
 #'
 #' @details
 #' Half of `available_gb` is left for the operating system, R and later
 #' operations; the other half is shared by the chunks read_vcf() holds at
-#' once (one per worker).  A chunk holds one row per variant and sample, of
+#' once (one per worker). A chunk holds one row per variant and sample, of
 #' about 44 + sample_chars + fmt_chars bytes in memory: .row_id, a1 and a2
 #' (4 bytes each), the sample name and the sample's FORMAT text (each 4
 #' bytes plus its characters), phased (1 bit), and DP, GQ and ADR (8 bytes
-#' each).  The FORMAT text is kept so write_vcf() can write the sample fields
+#' each). The FORMAT text is kept so write_vcf() can write the sample fields
 #' unchanged; it is often the largest column.  With workers, each chunk's
 #' raw VCF lines (about fmt_chars + 1 bytes per genotype) are also held, by
 #' the main process and by the worker parsing them.  The result is limited to
@@ -460,7 +461,7 @@ vcf_suggest_chunk_size <- function(available_gb, n_samples, fmt_chars = 25,
   arrow_budget <- available_gb * 1024^3 / 2 / workers
   # bytes per genotype of a chunk in Arrow memory: .row_id, a1, a2 (int32),
   # sample and fmt (4-byte offset + text), phased (1 bit), DP, GQ, ADR
-  # (double).  Measured on the example data: 71 bytes, of which fmt 26.5.
+  # (double). Measured on the example data: 71 bytes, of which fmt 26.5.
   bytes_per_gt <- 3 * 4 + (4 + sample_chars) + (4 + fmt_chars) + 1 / 8 + 3 * 8
   # with workers, the chunk's raw VCF lines are held by the main process and
   # by the worker parsing them
