@@ -4,12 +4,12 @@
 \alias{vcf_filter_maf}
 \title{vcf_filter_maf}
 \usage{
-vcf_filter_maf(vcf_arrow, threshold = 0.05)
+vcf_filter_maf(vcf_arrow, threshold = 0.01)
 }
 \arguments{
 \item{vcf_arrow}{-> VCFArrow object}
 
-\item{threshold}{-> decimal MAF threshold, default 0.05 (numeric)}
+\item{threshold}{-> decimal MAF threshold, default 0.01 (numeric)}
 }
 \value{
 subsetted VCFArrow object
@@ -19,7 +19,13 @@ Remove loci below MAF threshold from a VCFArrow object
 }
 \details{
 This function removes loci below MAF threshold from a VCFArrow object,
-returning a new VCFArrow object.
+returning a new VCFArrow object. Loci at the threshold are kept.
+
+The default threshold of 0.01 follows the conventional definition of a
+polymorphism as a variant whose minor allele has a frequency of at least
+1\% in a population (Karki et al. 2015). Karki et al. note that this
+cutoff is a convention rather than a biological boundary, so set
+\code{threshold} to suit the data and the analysis.
 }
 \examples{
 f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
@@ -27,6 +33,11 @@ f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
 vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf_filter_maf(vcf, threshold = 0.05)
 
+}
+\references{
+Karki R, Pandya D, Elston RC, Ferlini C (2015). Defining "mutation" and
+"polymorphism" in the era of personal genomics. \emph{BMC Medical Genomics}
+8:37. \doi{10.1186/s12920-015-0115-z}
 }
 \author{
 Tomas Hrbek April 2026

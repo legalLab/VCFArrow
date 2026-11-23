@@ -6,13 +6,24 @@
 #' @author Tomas Hrbek April 2026
 #'
 #' @param vcf_arrow -> VCFArrow object
-#' @param threshold -> decimal MAF threshold, default 0.05 (numeric)
+#' @param threshold -> decimal MAF threshold, default 0.01 (numeric)
 #'
 #' @return subsetted VCFArrow object
 #'
 #' @details
 #' This function removes loci below MAF threshold from a VCFArrow object,
-#' returning a new VCFArrow object.
+#' returning a new VCFArrow object. Loci at the threshold are kept.
+#'
+#' The default threshold of 0.01 follows the conventional definition of a
+#' polymorphism as a variant whose minor allele has a frequency of at least
+#' 1% in a population (Karki et al. 2015). Karki et al. note that this
+#' cutoff is a convention rather than a biological boundary, so set
+#' `threshold` to suit the data and the analysis.
+#'
+#' @references
+#' Karki R, Pandya D, Elston RC, Ferlini C (2015). Defining "mutation" and
+#' "polymorphism" in the era of personal genomics. *BMC Medical Genomics*
+#' 8:37. \doi{10.1186/s12920-015-0115-z}
 #'
 #' @examples
 #' f <- system.file("extdata", "vaillantii_discosnp_sub.vcf.gz",
@@ -23,7 +34,7 @@
 #' @export
 #'
 
-vcf_filter_maf <- function(vcf_arrow, threshold = 0.05) {
+vcf_filter_maf <- function(vcf_arrow, threshold = 0.01) {
 
   if (!inherits(vcf_arrow, "VCFArrow"))
     cli::cli_abort("Expecting a VCFArrow object")
