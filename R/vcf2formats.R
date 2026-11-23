@@ -213,7 +213,7 @@
 .alloc_raw_matrix <- function(nrow, ncol) {
   # rawMatrix is not a base type; use a raw vector and track dims ourselves.
   m <- raw(nrow * ncol)  # all 0x00 by default
-  m[seq_len(nrow * ncol)] <- as.raw(0xFF)  # initialise to NA marker (0xFF)
+  m[seq_len(nrow * ncol)] <- as.raw(0xFF)  # initialize to NA marker (0xFF)
   attr(m, "dim") <- c(nrow, ncol)
   m
 }

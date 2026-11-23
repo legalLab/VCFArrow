@@ -326,7 +326,7 @@ vcf_bind_sparse <- function(...,
   ), .frequency = "regularly", .frequency_id = "VCFArrow_vcf_bind_sparse")
   # forward absent_as only if supplied, so vcf_bind() still warns about an
   # unspecified absent_as in union mode
-  # recover_loci = TRUE: the behaviour vcf_bind_sparse() always had
+  # recover_loci = TRUE: the behavior vcf_bind_sparse() always had
   if (missing(absent_as)) vcf_bind(..., mode = mode, recover_loci = TRUE)
   else vcf_bind(..., mode = mode, absent_as = absent_as, recover_loci = TRUE)
 }

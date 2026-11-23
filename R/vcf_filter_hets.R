@@ -43,7 +43,7 @@ vcf_filter_hets <- function(vcf_arrow, threshold = 0.5) {
   n_het <- .merge_ranges(parts, "het", integer(idx$n_var))
 
   het_rate <- ifelse(n_called > 0L, n_het / n_called, NA_real_)
-  # n_called == 0 → excluded (matches the original's implicit-omission behaviour)
+  # n_called == 0 → excluded (matches the original's implicit-omission behavior)
   pass <- n_called > 0L & het_rate <= threshold
   keep <- vcf_arrow@variants$.row_id[pass]
 

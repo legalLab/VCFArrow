@@ -29,10 +29,10 @@
 #' <https://peterbeerli.com/downloads/migrate/docs/migratedoc.pdf>).
 #' Method "S" writes sequence data: each sample as two haplotypes
 #' (`<name>_1`, `<name>_2`) of the SNPs' nucleotides ('?' if missing), cut into
-#' loci of block_size consecutive SNPs, labelled "(sK)" (a sequence locus of
+#' loci of block_size consecutive SNPs, labeled "(sK)" (a sequence locus of
 #' K sites).
 #' Method "N" writes the same sequences cut into loci of the SNPs on one
-#' CHROM within the same interval of block_size bp, labelled "(nK)" (K linked
+#' CHROM within the same interval of block_size bp, labeled "(nK)" (K linked
 #' SNPs), with the data type N (SNPs) on the first line.
 #' Method "C" writes the allele counts of each population in Migrate-N's
 #' HapMap format (data type H): for each SNP its position, REF and ALT
@@ -67,11 +67,11 @@
 #   Alleles are written as single nucleotide characters (REF or ALT).
 #   Haplotypes are concatenated into a sequence string per line.
 #   Loci are blocks of block_size consecutive SNPs (the last may be smaller),
-#   each labelled (sK), K being its number of SNPs.  Missing allele: "?".
+#   each labeled (sK), K being its number of SNPs.  Missing allele: "?".
 #
 # method = "N"  (nucleotide sequences, individual-level, chromosome intervals)
 #   Same output structure as "S" but loci are runs of SNPs on one CHROM within
-#   the same interval of block_size bp, each labelled (nK), K being its number
+#   the same interval of block_size bp, each labeled (nK), K being its number
 #   of SNPs; data type N on the first line.
 
 vcf2migrate <- function(vcf_arrow, out_file, keep_groups = NULL,

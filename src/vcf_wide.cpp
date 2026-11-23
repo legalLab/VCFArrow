@@ -395,7 +395,7 @@ void write_bayescan_cpp(const IntegerMatrix& ref_mat,
 
 // Write a BA3 (BayesAss 3) input file in its native format: one line per
 // individual and locus, "indivID popID locID allele1 allele2", separated by
-// spaces.  Alleles are labelled 1 (REF) and 2 (ALT); a missing genotype is
+// spaces.  Alleles are labeled 1 (REF) and 2 (ALT); a missing genotype is
 // "0 0" (BA3's missing allele label).  Individuals in group order.
 // [[Rcpp::export]]
 void write_bayesass_cpp(const IntegerMatrix& a1_mat,

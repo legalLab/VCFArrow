@@ -251,7 +251,7 @@
 
 # ── Polymorphism test (vcf_filter_invariant(), vcf_filter_coverage()) ──────────
 #
-# A variant's counted genotypes are summarised by n (their number), s1 (a
+# A variant's counted genotypes are summarized by n (their number), s1 (a
 # sum, see .poly_values()) and s2 (a sum of squares, see .poly_squares()).
 # Values are all equal exactly when count * sum(x^2) == sum(x)^2, so:
 #   genotype level (strict_poly = TRUE): not all genotypes equal, over the n

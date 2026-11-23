@@ -41,7 +41,7 @@ assess_vcf_coverage <- function(vcf_arrow, res_path, species, project,
 
   group_df <- tibble::tibble(sample = vcf_arrow@samples, group = vcf_arrow@groups)
 
-  # materialise a bounded (sample, DP) sample directly from feather chunks
+  # materialize a bounded (sample, DP) sample directly from feather chunks
   scan <- .scan_vcf_gt(vcf_arrow, collect_dp = TRUE,
                        max_points_per_sample = max_points_per_sample)
 

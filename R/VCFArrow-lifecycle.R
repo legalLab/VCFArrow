@@ -23,17 +23,17 @@
 #   S4 slots of type "environment" have reference semantics: they are not
 #   copied when the S4 object is copied.  The reference count on the
 #   environment therefore precisely tracks all live VCFArrow copies.
-#   attr() on S4 objects has undefined copy behaviour and must not be used.
+#   attr() on S4 objects has undefined copy behavior and must not be used.
 #
 # Why .onLoad has ONE definition
-#   R silently keeps only the last .onLoad in a file.  All initialisation
+#   R silently keeps only the last .onLoad in a file.  All initialization
 #   (registry setup + stale-dir cleanup) must be in a single function.
 
 # ── Arrow allocator: switch from jemalloc to system malloc ────────────────────
 #
 # Must be called BEFORE any Arrow objects are created in the session.
 # The best place is .onLoad(); doing it lazily (on first use) is too late
-# because Arrow initialises its pool at package load time.
+# because Arrow initializes its pool at package load time.
 #
 # Effect: freed Arrow C++ memory is returned to the OS immediately, so cgroup
 # memory tracks R's actual working set rather than Arrow's held pool.
