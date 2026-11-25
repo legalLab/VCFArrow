@@ -35,11 +35,11 @@ install the binary file:
 # if necessary install dependencies
 install.packages(c("Rcpp", "arrow", "cli", "dplyr", "ggplot2", "stringr", "tibble", "vctrs"))
 # then install directly from Github
-install.packages("https://github.com/legalLab/VCFArrow/releases/download/v0.10.0/VCFArrow_0.10.0.zip", repos = NULL, type = "win.binary")  # Windows
-install.packages("https://github.com/legalLab/VCFArrow/releases/download/v0.10.0/VCFArrow_0.10.0.tgz", repos = NULL, type = "mac.binary")  # macOS
+install.packages("https://github.com/legalLab/VCFArrow/releases/download/v1.0.0/VCFArrow_1.0.0.zip", repos = NULL, type = "win.binary")  # Windows
+install.packages("https://github.com/legalLab/VCFArrow/releases/download/v1.0.0/VCFArrow_1.0.0.tgz", repos = NULL, type = "mac.binary")  # macOS
 # or your download folder if you downloaded it
-install.packages("~/Downloads/VCFArrow_0.10.0.zip", repos = NULL)  # Windows
-install.packages("~/Downloads/VCFArrow_0.10.0.tgz", repos = NULL)  # macOS
+install.packages("~/Downloads/VCFArrow_1.0.0.zip", repos = NULL)  # Windows
+install.packages("~/Downloads/VCFArrow_1.0.0.tgz", repos = NULL)  # macOS
 ```
 
 Two packages are optional and only needed for specific functions:
@@ -94,8 +94,6 @@ workflows is available in the
 
 ## News
 
-The Github version is ahead of CRAN. It has a new function
-`rename_vcf_samples()`, a new alias function `vcf2fstructure()`, plus it
-updates a number of filters and exporters. See
+The Github version is in sync with CRAN. See
 [NEWS](https://github.com/legalLab/VCFArrow/blob/main/NEWS.md) for
 details.
