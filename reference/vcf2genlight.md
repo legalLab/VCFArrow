@@ -97,5 +97,5 @@ gl <- vcf2genlight(vcf, out_file = tempfile(fileext = ".rds"),
 #> ℹ Accumulating Genlight: 9313 variants x 18 samples (0 MiB raw storage)
 #> ℹ Building Genlight object...
 #> ℹ Writing Genlight object...
-#> ✔ Genlight object written to /tmp/RtmppaKiJH/file1c7d7ba44fcd.rds
+#> ✔ Genlight object written to /tmp/Rtmpq4egqB/file1db22d1d6e26.rds
 ```

@@ -68,7 +68,7 @@ vcf_filter_hets(vcf, threshold = 0.5)
 #>   Phased:  39474 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmppaKiJH/arrow_vcf_1c7d7497dabc 
+#>   Path: /tmp/Rtmpq4egqB/arrow_vcf_1db267d8f414 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):

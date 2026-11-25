@@ -110,15 +110,15 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf2admixture(vcf, out_file = file.path(tempdir(), "admixture_in"))
 #> ℹ Building PLINK: 9313 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing PLINK files...
-#> ℹ Chromosome names were recoded as integers; mapping written to /tmp/RtmppaKiJH/admixture_in.chrommap
-#> ✔ PLINK binary fileset written to /tmp/RtmppaKiJH/admixture_in.bed, /tmp/RtmppaKiJH/admixture_in.bim, /tmp/RtmppaKiJH/admixture_in.fam
+#> ℹ Chromosome names were recoded as integers; mapping written to /tmp/Rtmpq4egqB/admixture_in.chrommap
+#> ✔ PLINK binary fileset written to /tmp/Rtmpq4egqB/admixture_in.bed, /tmp/Rtmpq4egqB/admixture_in.bim, /tmp/Rtmpq4egqB/admixture_in.fam
 vcf2admixture(vcf, out_file = file.path(tempdir(), "admixture_sup"),
               supervised = TRUE,
               reference_groups = c("GS", "BS", "WA"))
 #> ℹ Building PLINK: 9313 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing PLINK files...
-#> ℹ Chromosome names were recoded as integers; mapping written to /tmp/RtmppaKiJH/admixture_sup.chrommap
-#> ✔ PLINK binary fileset written to /tmp/RtmppaKiJH/admixture_sup.bed, /tmp/RtmppaKiJH/admixture_sup.bim, /tmp/RtmppaKiJH/admixture_sup.fam
-#> ✔ ADMIXTURE .pop file written to /tmp/RtmppaKiJH/admixture_sup.pop
+#> ℹ Chromosome names were recoded as integers; mapping written to /tmp/Rtmpq4egqB/admixture_sup.chrommap
+#> ✔ PLINK binary fileset written to /tmp/Rtmpq4egqB/admixture_sup.bed, /tmp/Rtmpq4egqB/admixture_sup.bim, /tmp/Rtmpq4egqB/admixture_sup.fam
+#> ✔ ADMIXTURE .pop file written to /tmp/Rtmpq4egqB/admixture_sup.pop
 #> ℹ Supervised mode: 15 reference samples in 3 groups (use K = 3), 3 samples with ancestry to be estimated.
 ```

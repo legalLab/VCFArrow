@@ -60,7 +60,7 @@ vcf_filter_indels(vcf)
 #>   Phased:  45612 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmppaKiJH/arrow_vcf_1c7d645054b4 
+#>   Path: /tmp/Rtmpq4egqB/arrow_vcf_1db252b96156 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):

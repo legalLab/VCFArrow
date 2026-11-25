@@ -57,5 +57,5 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf2fstructure(vcf, out_file = tempfile(fileext = ".str"))
 #> ℹ Accumulating Structure: 9313 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing Structure file...
-#> ✔ Structure file written to /tmp/RtmppaKiJH/file1c7d6b0b2402.str
+#> ✔ Structure file written to /tmp/Rtmpq4egqB/file1db270ecf60d.str
 ```

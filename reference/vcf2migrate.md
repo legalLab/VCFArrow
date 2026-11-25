@@ -57,9 +57,9 @@ the Migrate-N manual (section 4, "Data file specification",
 <https://peterbeerli.com/downloads/migrate/docs/migratedoc.pdf>). Method
 "S" writes sequence data: each sample as two haplotypes (`<name>_1`,
 `<name>_2`) of the SNPs' nucleotides ('?' if missing), cut into loci of
-block_size consecutive SNPs, labelled "(sK)" (a sequence locus of K
+block_size consecutive SNPs, labeled "(sK)" (a sequence locus of K
 sites). Method "N" writes the same sequences cut into loci of the SNPs
-on one CHROM within the same interval of block_size bp, labelled "(nK)"
+on one CHROM within the same interval of block_size bp, labeled "(nK)"
 (K linked SNPs), with the data type N (SNPs) on the first line. Method
 "C" writes the allele counts of each population in Migrate-N's HapMap
 format (data type H): for each SNP its position, REF and ALT nucleotides
@@ -89,5 +89,5 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf2migrate(vcf, out_file = tempfile(fileext = ".txt"))
 #> ℹ Accumulating Migrate-N (S): 9313 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing Migrate-N (S) file: 94 loci...
-#> ✔ Migrate-N file written to /tmp/RtmppaKiJH/file1c7d74bef0d1.txt
+#> ✔ Migrate-N file written to /tmp/Rtmpq4egqB/file1db22b736061.txt
 ```

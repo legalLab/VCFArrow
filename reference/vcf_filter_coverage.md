@@ -97,7 +97,7 @@ vcf_filter_coverage(vcf, threshold = 10)
 #>   Phased:  45612 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmppaKiJH/arrow_vcf_coverage_1c7d4f01159d 
+#>   Path: /tmp/Rtmpq4egqB/arrow_vcf_coverage_1db217239667 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):
@@ -160,7 +160,7 @@ vcf_filter_coverage(vcf, threshold = 10, strict = FALSE)
 #>   Phased:  26622 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmppaKiJH/arrow_vcf_1c7d3bd3e71 
+#>   Path: /tmp/Rtmpq4egqB/arrow_vcf_1db261a6ce26 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):
@@ -222,7 +222,7 @@ vcf_filter_coverage(vcf, threshold = 10, strict = FALSE, strict_poly = TRUE)
 #>   Phased:  25506 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmppaKiJH/arrow_vcf_1c7d3bd3e71 
+#>   Path: /tmp/Rtmpq4egqB/arrow_vcf_1db261a6ce26 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):

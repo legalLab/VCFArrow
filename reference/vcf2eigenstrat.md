@@ -80,9 +80,9 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf2eigenstrat(vcf, out_file = file.path(tempdir(), "eigenstrat_in"))
 #> ℹ Building EIGENSTRAT: 9313 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing EIGENSTRAT files...
-#> ℹ Chromosome names were recoded as integers; mapping written to /tmp/RtmppaKiJH/eigenstrat_in.chrommap
+#> ℹ Chromosome names were recoded as integers; mapping written to /tmp/Rtmpq4egqB/eigenstrat_in.chrommap
 #> Warning: Chromosome codes go up to 9309: EIGENSOFT reads chromosomes above its numchrom
 #> parameter (default 22) as X, Y, ...
 #> ℹ Set `numchrom: 9309` (or higher) in the parameter file.
-#> ✔ EIGENSTRAT fileset written to /tmp/RtmppaKiJH/eigenstrat_in.geno, /tmp/RtmppaKiJH/eigenstrat_in.ind, /tmp/RtmppaKiJH/eigenstrat_in.snp
+#> ✔ EIGENSTRAT fileset written to /tmp/Rtmpq4egqB/eigenstrat_in.geno, /tmp/Rtmpq4egqB/eigenstrat_in.ind, /tmp/Rtmpq4egqB/eigenstrat_in.snp
 ```

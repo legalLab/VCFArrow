@@ -66,5 +66,5 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf2treemix(vcf, out_file = tempfile(fileext = ".gz"))
 #> ℹ Building Treemix: 9313 variants x 4 pops (0 MiB raw storage)
 #> ℹ Writing Treemix file...
-#> ✔ Treemix file written to /tmp/RtmppaKiJH/file1c7d535f7c05.gz
+#> ✔ Treemix file written to /tmp/Rtmpq4egqB/file1db2319a2494.gz
 ```

@@ -55,5 +55,5 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf2related(vcf, out_file = tempfile(fileext = ".txt"))
 #> ℹ Accumulating Related: 9313 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing Related file...
-#> ✔ Related file written to /tmp/RtmppaKiJH/file1c7d3c59ccf9.txt
+#> ✔ Related file written to /tmp/Rtmpq4egqB/file1db21a02541c.txt
 ```

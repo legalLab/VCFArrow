@@ -1,5 +1,9 @@
 # Changelog
 
+## VCFArrow 1.0.0
+
+- Stable version, second CRAN release.
+
 ## VCFArrow 0.11.1
 
 - [`vcf_filter_missing()`](https://legallab.github.io/VCFArrow/reference/vcf_filter_missing.md)
@@ -22,10 +26,14 @@
 - [`vcf_filter_multiSNV()`](https://legallab.github.io/VCFArrow/reference/vcf_filter_multiSNV.md)
   now removes blocks with more than `maxSNV` SNVs by default, as its
   help page described; before, it truncated them to their first `maxSNV`
-  SNVs. The new argument `over_max = "truncate"` keeps that behaviour,
+  SNVs. The new argument `over_max = "truncate"` keeps that behavior,
   e.g. for whole genome data, where a block is an arbitrary window
   rather than a RAD locus, and `maxSNV = Inf` keeps all SNVs of each
   block.
+- The default `threshold` of
+  [`vcf_filter_maf()`](https://legallab.github.io/VCFArrow/reference/vcf_filter_maf.md)
+  is now 0.01 (before, 0.05), the conventional minor allele frequency of
+  a polymorphism; the help page cites Karki et al. (2015) for it.
 - [`vcf2admixture()`](https://legallab.github.io/VCFArrow/reference/vcf2admixture.md)
   checks its input against the ADMIXTURE manual before writing:
   `chrom_code = "keep"` is refused when a CHROM is not a number
@@ -274,11 +282,11 @@
     follows the Migrate-N manual’s data file format:
     - the first line gives the number of loci (blocks), not of SNVs, and
       for method `"N"` starts with the data type `N` (SNPs);
-    - the loci are labelled `(sK)` for method `"S"` and `(nK)` for
-      method `"N"` throughout (method `"S"` labelled its last block
-      `(nK)`, method `"N"` all blocks `(sK)`), and for method `"N"` the
-      block lengths follow the order of the sequences (they were listed
-      in sorted CHROM order);
+    - the loci are labeled `(sK)` for method `"S"` and `(nK)` for method
+      `"N"` throughout (method `"S"` labeled its last block `(nK)`,
+      method `"N"` all blocks `(sK)`), and for method `"N"` the block
+      lengths follow the order of the sequences (they were listed in
+      sorted CHROM order);
     - individual names are written in a fixed field of 10 characters,
       with a warning giving the `nmlength` to set for longer names (they
       were followed by a tab, which Migrate-N would read as part of the

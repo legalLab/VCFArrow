@@ -89,6 +89,6 @@ vcf <- read_vcf(f) |> set_vcf_groups(dirname(f))
 vcf2plink_ped(vcf, out_file = file.path(tempdir(), "plink_out"))
 #> ℹ Accumulating PLINK .ped: 9313 variants x 18 samples (0 MiB raw storage)
 #> ℹ Writing PLINK file...
-#> ℹ Chromosome names were recoded as integers; mapping written to /tmp/RtmppaKiJH/plink_out.chrommap
-#> ✔ PLINK text fileset written to /tmp/RtmppaKiJH/plink_out.ped, /tmp/RtmppaKiJH/plink_out.map
+#> ℹ Chromosome names were recoded as integers; mapping written to /tmp/Rtmpq4egqB/plink_out.chrommap
+#> ✔ PLINK text fileset written to /tmp/Rtmpq4egqB/plink_out.ped, /tmp/Rtmpq4egqB/plink_out.map
 ```

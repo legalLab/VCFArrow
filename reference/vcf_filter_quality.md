@@ -69,7 +69,7 @@ vcf_filter_quality(vcf, threshold = 30)
 #>   Phased:  45612 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmppaKiJH/arrow_vcf_1c7d3d82d42a 
+#>   Path: /tmp/Rtmpq4egqB/arrow_vcf_1db21a04ed4c 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):

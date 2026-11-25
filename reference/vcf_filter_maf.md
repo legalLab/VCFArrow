@@ -5,7 +5,7 @@ Remove loci below MAF threshold from a VCFArrow object
 ## Usage
 
 ``` r
-vcf_filter_maf(vcf_arrow, threshold = 0.05)
+vcf_filter_maf(vcf_arrow, threshold = 0.01)
 ```
 
 ## Arguments
@@ -16,7 +16,7 @@ vcf_filter_maf(vcf_arrow, threshold = 0.05)
 
 - threshold:
 
-  -\> decimal MAF threshold, default 0.05 (numeric)
+  -\> decimal MAF threshold, default 0.01 (numeric)
 
 ## Value
 
@@ -25,7 +25,20 @@ subsetted VCFArrow object
 ## Details
 
 This function removes loci below MAF threshold from a VCFArrow object,
-returning a new VCFArrow object.
+returning a new VCFArrow object. Loci at the threshold are kept.
+
+The default threshold of 0.01 follows the conventional definition of a
+polymorphism as a variant whose minor allele has a frequency of at least
+1% in a population (Karki et al. 2015). Karki et al. note that this
+cutoff is a convention rather than a biological boundary, so set
+`threshold` to suit the data and the analysis.
+
+## References
+
+Karki R, Pandya D, Elston RC, Ferlini C (2015). Defining "mutation" and
+"polymorphism" in the era of personal genomics. *BMC Medical Genomics*
+8:37.
+[doi:10.1186/s12920-015-0115-z](https://doi.org/10.1186/s12920-015-0115-z)
 
 ## Author
 
@@ -64,7 +77,7 @@ vcf_filter_maf(vcf, threshold = 0.05)
 #>   Phased:  41688 
 #> 
 #> Storage:
-#>   Path: /tmp/RtmppaKiJH/arrow_vcf_1c7d503d069c 
+#>   Path: /tmp/Rtmpq4egqB/arrow_vcf_1db226eed1e5 
 #>   Genotype chunk files: 1 
 #> 
 #> Variants (first 5 rows):
